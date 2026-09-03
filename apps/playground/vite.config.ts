@@ -1,5 +1,6 @@
 import { createReadStream, statSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin } from 'vite'
 
@@ -48,11 +49,12 @@ function slowImages(): Plugin {
 }
 
 export default defineConfig({
-  plugins: [react(), slowImages()],
+  plugins: [react(), tailwindcss(), slowImages()],
   resolve: {
     alias: {
       '@uiness/image': `${root}../../packages/image/src/index.ts`,
       '@uiness/island': `${root}../../packages/island/src/index.ts`,
+      '@': `${root}../../packages/ui/registry`,
     },
   },
 })

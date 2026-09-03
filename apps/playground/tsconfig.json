@@ -5,7 +5,8 @@
     "types": ["vite/client", "node"],
     "paths": {
       "@uiness/image": ["../../packages/image/src/index.ts"],
-      "@uiness/island": ["../../packages/island/src/index.ts"]
+      "@uiness/island": ["../../packages/island/src/index.ts"],
+      "@/*": ["../../packages/ui/registry/*"]
     }
   },
   "include": ["src", "vite.config.ts"]

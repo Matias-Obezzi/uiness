@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vitest/globals"],
+    "paths": {
+      "@/*": ["./registry/*"],
+      "@uiness/island": ["../island/src/index.ts"],
+      "@uiness/image": ["../image/src/index.ts"]
+    }
+  },
+  "include": ["registry", "vitest.config.ts", "vitest.setup.ts"]
+}
