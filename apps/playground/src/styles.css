@@ -1,0 +1,89 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+  background: #0f1115;
+  color: #e6e6e6;
+}
+
+body {
+  margin: 0;
+  padding: 24px;
+}
+
+h1 {
+  font-size: 20px;
+  margin: 0 0 16px;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+.controls label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+button {
+  font: inherit;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #1c1f26;
+  color: inherit;
+  cursor: pointer;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: #171a21;
+  border: 1px solid #262a33;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.card h2 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.card h2 span {
+  font-weight: 400;
+  color: #8a93a5;
+  font-variant-numeric: tabular-nums;
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+}
+
+.card [data-uiness-image] {
+  width: 100%;
+  border-radius: 6px;
+  color: #6ee7b7;
+}
+
+.hook-demo {
+  margin-top: 32px;
+  font-size: 14px;
+}
+
+.hook-demo progress {
+  width: 200px;
+}
