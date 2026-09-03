@@ -37,7 +37,9 @@ function Timer({ from }: { from: number }) {
 function Player({ onClose }: { onClose: () => void }) {
   const [playing, setPlaying] = useState(true)
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 14, width: 320 }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', gap: 14, width: 320, maxWidth: '100%' }}
+    >
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <div
           style={{

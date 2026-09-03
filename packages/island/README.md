@@ -8,7 +8,7 @@ pnpm add @uiness/island
 
 ## Usage
 
-Mount `<Island />` once, then call the API from anywhere.
+Mount `<Island />` once, then call the API from anywhere. The island floats over your page like a notch, so leave some room at the top of the layout (around 60px) for the idle pill.
 
 ```tsx
 import { Island, island } from '@uiness/island'
@@ -92,7 +92,7 @@ The box takes CSS variables, so pass them through `style` or set them on an ance
 
 The island measures its content, then animates width, height and radius from the previous size with the Web Animations API. The easing is a real damped spring sampled into a CSS `linear()` function, so it overshoots like the iOS one and can be interrupted mid-flight. Browsers without `linear()` fall back to an ease-out curve. `prefers-reduced-motion` disables the morph and the blur cross fades.
 
-Give expanded content a stable width (the `width` option or a fixed width inside) so it does not reflow while the box is animating.
+Give expanded content a stable width (the `width` option or a fixed width inside) so it does not reflow while the box is animating, and add `max-width: 100%` so it still fits on narrow screens. The panel is capped at `100vw - 24px` with 16px of padding, so about 319px remain for content on a 375px phone.
 
 ### Multiple islands
 

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
+    "dev": "turbo run dev -- --host",
     "test": "turbo run test",
     "lint": "biome check .",
     "lint:fix": "biome check --write .",
