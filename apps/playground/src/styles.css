@@ -6,6 +6,9 @@
 }
 
 body {
+  /* At least the viewport height, padding included. */
+  box-sizing: border-box;
+  min-height: 100dvh;
   /* Keep the page below the status bar when installed as an app. */
   padding-top: calc(env(safe-area-inset-top, 0px) + 72px);
   margin: 0;
