@@ -6,7 +6,8 @@
     "paths": {
       "@/*": ["./registry/*"],
       "@uiness/island": ["../island/src/index.ts"],
-      "@uiness/image": ["../image/src/index.ts"]
+      "@uiness/image": ["../image/src/index.ts"],
+      "@uiness/fx": ["../fx/src/index.ts"]
     }
   },
   "include": ["registry", "vitest.config.ts", "vitest.setup.ts"]

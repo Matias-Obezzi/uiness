@@ -54,6 +54,7 @@ export default defineConfig({
     alias: {
       '@uiness/image': `${root}../../packages/image/src/index.ts`,
       '@uiness/island': `${root}../../packages/island/src/index.ts`,
+      '@uiness/fx': `${root}../../packages/fx/src/index.ts`,
       '@': `${root}../../packages/ui/registry`,
     },
   },

@@ -9,6 +9,7 @@ export default defineConfig({
       '@': `${root}registry`,
       '@uiness/island': `${root}../island/src/index.ts`,
       '@uiness/image': `${root}../image/src/index.ts`,
+      '@uiness/fx': `${root}../fx/src/index.ts`,
     },
   },
   test: {

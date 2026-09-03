@@ -6,7 +6,8 @@
     "paths": {
       "@uiness/image": ["../../packages/image/src/index.ts"],
       "@uiness/island": ["../../packages/island/src/index.ts"],
-      "@/*": ["../../packages/ui/registry/*"]
+      "@/*": ["../../packages/ui/registry/*"],
+      "@uiness/fx": ["../../packages/fx/src/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]

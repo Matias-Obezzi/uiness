@@ -40,6 +40,7 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `dialog`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
 | `island` | `<Island />` wired to the theme tokens, re-exports the `@uiness/island` API. |
 | `image` | `<Image />` with theme defaults, re-exports the `@uiness/image` variants and hook. |
+| `fx` | `<Fx />` canvas effects with theme defaults, re-exports every `@uiness/fx` effect. |
 
 Components import the unified `radix-ui` package and mark themselves `'use client'` where they hold state, so they work in Next.js App Router out of the box.
 

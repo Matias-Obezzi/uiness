@@ -63,7 +63,11 @@
       "description": "Class name helper built on clsx and tailwind-merge.",
       "dependencies": ["clsx", "tailwind-merge"],
       "files": [
-        { "path": "registry/lib/utils.ts", "type": "registry:lib", "target": "lib/utils.ts" }
+        {
+          "path": "registry/lib/utils.ts",
+          "type": "registry:lib",
+          "target": "lib/utils.ts"
+        }
       ]
     },
     {
@@ -73,7 +77,12 @@
       "description": "Button with variants, sizes and asChild.",
       "dependencies": ["radix-ui", "class-variance-authority"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/button.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "badge",
@@ -81,28 +90,48 @@
       "title": "Badge",
       "dependencies": ["radix-ui", "class-variance-authority"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/badge.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/badge.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "card",
       "type": "registry:ui",
       "title": "Card",
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/card.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/card.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/input.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/input.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "textarea",
       "type": "registry:ui",
       "title": "Textarea",
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/textarea.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/textarea.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "label",
@@ -110,7 +139,12 @@
       "title": "Label",
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/label.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/label.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "checkbox",
@@ -118,7 +152,12 @@
       "title": "Checkbox",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/checkbox.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/checkbox.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "switch",
@@ -126,7 +165,12 @@
       "title": "Switch",
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/switch.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "separator",
@@ -134,7 +178,12 @@
       "title": "Separator",
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/separator.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/separator.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "dialog",
@@ -142,7 +191,12 @@
       "title": "Dialog",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/dialog.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "dropdown-menu",
@@ -150,7 +204,12 @@
       "title": "Dropdown Menu",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/dropdown-menu.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "tooltip",
@@ -158,7 +217,12 @@
       "title": "Tooltip",
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/tooltip.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/tooltip.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "popover",
@@ -166,7 +230,12 @@
       "title": "Popover",
       "dependencies": ["radix-ui"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/popover.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "island",
@@ -174,7 +243,12 @@
       "title": "Island",
       "description": "Dynamic Island wired to the theme tokens. Installs @uiness/island.",
       "dependencies": ["@uiness/island"],
-      "files": [{ "path": "registry/ui/island.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/island.tsx",
+          "type": "registry:ui"
+        }
+      ]
     },
     {
       "name": "image",
@@ -183,7 +257,26 @@
       "description": "Image with loading transitions and theme defaults. Installs @uiness/image.",
       "dependencies": ["@uiness/image"],
       "registryDependencies": ["utils"],
-      "files": [{ "path": "registry/ui/image.tsx", "type": "registry:ui" }]
+      "files": [
+        {
+          "path": "registry/ui/image.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "fx",
+      "type": "registry:ui",
+      "title": "Fx",
+      "description": "Canvas image effects with theme defaults. Installs @uiness/fx.",
+      "dependencies": ["@uiness/fx"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/fx.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

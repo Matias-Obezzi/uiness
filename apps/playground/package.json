@@ -9,6 +9,7 @@
     "gen:images": "node scripts/gen-images.mjs"
   },
   "dependencies": {
+    "@uiness/fx": "workspace:*",
     "@uiness/image": "workspace:*",
     "@uiness/island": "workspace:*",
     "class-variance-authority": "^0.7.1",

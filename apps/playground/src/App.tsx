@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { FxDemo } from './FxDemo'
 import { ImageDemo } from './ImageDemo'
 import { IslandDemo } from './IslandDemo'
 import { UiDemo } from './UiDemo'
@@ -7,6 +8,7 @@ const pages = {
   image: { title: '@uiness/image', Component: ImageDemo },
   island: { title: '@uiness/island', Component: IslandDemo },
   ui: { title: '@uiness/ui', Component: UiDemo },
+  fx: { title: '@uiness/fx', Component: FxDemo },
 } as const
 
 type Page = keyof typeof pages
