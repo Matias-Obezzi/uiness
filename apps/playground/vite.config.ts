@@ -52,6 +52,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@uiness/image': `${root}../../packages/image/src/index.ts`,
+      '@uiness/island': `${root}../../packages/island/src/index.ts`,
     },
   },
 })

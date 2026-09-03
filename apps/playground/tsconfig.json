@@ -4,7 +4,8 @@
     "noEmit": true,
     "types": ["vite/client", "node"],
     "paths": {
-      "@uiness/image": ["../../packages/image/src/index.ts"]
+      "@uiness/image": ["../../packages/image/src/index.ts"],
+      "@uiness/island": ["../../packages/island/src/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]

@@ -5,7 +5,7 @@ UI primitives for React, published under the `@uiness` scope.
 | Package | Description |
 | --- | --- |
 | [`@uiness/image`](packages/image) | `<img>` with loading transitions: blur, pixelate, fade, reveal, real download progress. |
-| `@uiness/island` | Dynamic island for the web. Planned. |
+| [`@uiness/island`](packages/island) | Dynamic Island for the web: morphing pill for statuses, live activities, alerts and confirms. |
 | `@uiness/ui` | Radix based components distributed through a shadcn registry. Planned. |
 
 ## Development
