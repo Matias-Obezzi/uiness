@@ -14,6 +14,23 @@ import type { IslandEntry, IslandMode, IslandStore } from './types'
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
+/** Geometry of the physical Dynamic Island, in CSS px (points). */
+export interface HardwareIsland {
+  /** Width of the cutout. Default 126. */
+  width?: number
+  /** Height of the cutout. Default 37. */
+  height?: number
+  /** Distance from the screen edge to the cutout. Default 11. */
+  top?: number
+  /**
+   * Extra black area around the cutout so small differences between devices
+   * stay hidden. Default 5.
+   */
+  margin?: number
+}
+
+const HARDWARE_DEFAULTS: Required<HardwareIsland> = { width: 126, height: 37, top: 11, margin: 5 }
+
 export interface IslandProps {
   /** Store to render. Defaults to the shared `island` store. */
   store?: IslandStore
@@ -23,10 +40,17 @@ export interface IslandProps {
   offset?: number
   /**
    * 'safe-area' (default) keeps the island below the status bar / notch.
-   * 'edge' measures from the physical screen edge, which lets a standalone PWA
-   * overlay the island on the real Dynamic Island. See the README.
+   * 'edge' measures from the physical screen edge.
    */
   anchor?: 'safe-area' | 'edge'
+  /**
+   * Wrap the physical Dynamic Island of an iPhone. Only for installed apps with
+   * `viewport-fit=cover`, where the page extends under the status bar.
+   * The idle state is the cutout itself, compact slots sit on both sides of it and
+   * expanded content stacks below it, so the exact device geometry does not matter.
+   * Pass an object to override the default geometry.
+   */
+  hardware?: boolean | HardwareIsland
   /**
    * Content shown when nothing is on the stack. Defaults to an empty pill.
    * Pass `false` to hide the island completely while idle.
@@ -60,6 +84,13 @@ interface Rendered {
   node: ReactNode
 }
 
+interface CompactLayout {
+  /** Width reserved in the middle of the pill. */
+  spacer: number
+  /** Give both sides the same width so the middle stays centered on screen. */
+  symmetric: boolean
+}
+
 const STYLE_ID = 'uiness-island-styles'
 const KEYFRAMES = `@keyframes uiness-island-spin{to{transform:rotate(360deg)}}`
 
@@ -79,33 +110,50 @@ const reducedMotion = () =>
 const canAnimate = (el: Element | null): el is HTMLElement =>
   !!el && typeof (el as HTMLElement).animate === 'function'
 
-function entryNode(entry: IslandEntry, idleWidth: number): ReactNode {
+const sideStyle = (symmetric: boolean, align: 'flex-start' | 'flex-end'): CSSProperties => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: align,
+  gap: 10,
+  flexShrink: 0,
+  ...(symmetric ? { justifySelf: align === 'flex-start' ? 'start' : 'end', minWidth: 0 } : null),
+})
+
+/** Text that does not fit beside the cutout gets an ellipsis instead of sliding under it. */
+const clipStyle: CSSProperties = {
+  minWidth: 0,
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  whiteSpace: 'nowrap',
+}
+
+const clip = (symmetric: boolean, node: ReactNode) =>
+  symmetric && node != null ? <span style={clipStyle}>{node}</span> : node
+
+function entryNode(entry: IslandEntry, layout: CompactLayout): ReactNode {
   if (entry.mode === 'expanded') return entry.content
   const hasSides = entry.leading != null || entry.trailing != null
+  const showSpacer = layout.symmetric || (hasSides && entry.content == null)
+  // With a physical cutout in the middle, center content moves next to the trailing slot.
+  const centerOnRight = layout.symmetric && entry.content != null
+  const center = entry.content != null && (
+    <span data-island-center="" style={{ display: 'flex', alignItems: 'center' }}>
+      {entry.content}
+    </span>
+  )
   return (
     <>
-      {entry.leading != null && (
-        <span
-          data-island-leading=""
-          style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}
-        >
-          {entry.leading}
-        </span>
+      <span data-island-leading="" style={sideStyle(layout.symmetric, 'flex-start')}>
+        {clip(layout.symmetric, entry.leading)}
+      </span>
+      {!centerOnRight && center}
+      {showSpacer && (
+        <span data-island-spacer="" style={{ flex: '0 0 auto', width: layout.spacer }} />
       )}
-      {entry.content != null && (
-        <span data-island-center="" style={{ display: 'flex', alignItems: 'center' }}>
-          {entry.content}
-        </span>
-      )}
-      {hasSides && entry.content == null && <span style={{ flex: 1, minWidth: idleWidth / 3 }} />}
-      {entry.trailing != null && (
-        <span
-          data-island-trailing=""
-          style={{ display: 'flex', alignItems: 'center', flexShrink: 0 }}
-        >
-          {entry.trailing}
-        </span>
-      )}
+      <span data-island-trailing="" style={sideStyle(layout.symmetric, 'flex-end')}>
+        {centerOnRight && clip(layout.symmetric, center)}
+        {clip(layout.symmetric, entry.trailing)}
+      </span>
     </>
   )
 }
@@ -117,11 +165,12 @@ function entryNode(entry: IslandEntry, idleWidth: number): ReactNode {
 export function Island({
   store: storeProp,
   position = 'top',
-  offset = 12,
-  anchor = 'safe-area',
-  idle,
-  idleWidth = 120,
-  idleHeight = 36,
+  offset: offsetProp = 12,
+  anchor: anchorProp = 'safe-area',
+  hardware = false,
+  idle: idleProp,
+  idleWidth: idleWidthProp = 120,
+  idleHeight: idleHeightProp = 36,
   expandedRadius = 28,
   spring,
   pauseOnHover = true,
@@ -133,13 +182,26 @@ export function Island({
   const entry = useIslandEntry(store)
   useInjectStyles()
 
+  const hw: Required<HardwareIsland> | null = hardware
+    ? { ...HARDWARE_DEFAULTS, ...(typeof hardware === 'object' ? hardware : null) }
+    : null
+  // In hardware mode the box always wraps the cutout with a black margin.
+  const anchor = hw ? 'edge' : anchorProp
+  const offset = hw ? hw.top - hw.margin : offsetProp
+  const idleWidth = hw ? hw.width + hw.margin * 2 : idleWidthProp
+  const idleHeight = hw ? hw.height + hw.margin * 2 : idleHeightProp
+  const idle = hw ? false : idleProp
+  const layout: CompactLayout = hw
+    ? { spacer: hw.width + hw.margin * 2, symmetric: true }
+    : { spacer: Math.round(idleWidth / 3), symmetric: false }
+
   const boxRef = useRef<HTMLDivElement | null>(null)
   const contentRef = useRef<HTMLDivElement | null>(null)
   const outgoingRef = useRef<HTMLDivElement | null>(null)
 
   const mode: IslandMode = entry?.mode ?? 'compact'
   const key = entry ? `${entry.id}:${entry.mode}` : 'idle'
-  const node = entry ? entryNode(entry, idleWidth) : idle
+  const node = entry ? entryNode(entry, layout) : idle
   const shouldShow = !!entry || idle !== false
 
   const [visible, setVisible] = useState(shouldShow)
@@ -249,12 +311,37 @@ export function Island({
     return () => animation.cancel()
   }, [outgoing])
 
-  // Whole island in and out when `idle={false}`.
+  // Whole island in and out when idle is hidden.
   const wasVisible = useRef(shouldShow)
   useEffect(() => {
     const box = boxRef.current
     if (shouldShow === wasVisible.current) return
     wasVisible.current = shouldShow
+
+    if (hw) {
+      // Grow out of the cutout and shrink back into it: the size morph does the work,
+      // the box only needs to stay visible until the shrink has finished.
+      if (shouldShow) {
+        setVisible(true)
+        return
+      }
+      const running = animationRef.current
+      if (!running) {
+        setVisible(false)
+        return
+      }
+      let cancelled = false
+      running.finished.then(
+        () => {
+          if (!cancelled) setVisible(false)
+        },
+        () => {},
+      )
+      return () => {
+        cancelled = true
+      }
+    }
+
     if (shouldShow) {
       setVisible(true)
       if (canAnimate(box) && !reducedMotion()) {
@@ -283,7 +370,7 @@ export function Island({
       return () => animation.cancel()
     }
     setVisible(false)
-  }, [shouldShow])
+  }, [shouldShow, hw])
 
   // Escape and outside pointer down.
   useEffect(() => {
@@ -355,7 +442,8 @@ export function Island({
     background: 'var(--island-bg, #000)',
     color: 'var(--island-color, #fff)',
     borderRadius: mode === 'expanded' ? expandedRadius : idleHeight / 2,
-    boxShadow: 'var(--island-shadow, 0 8px 32px rgba(0, 0, 0, 0.35))',
+    // A shadow around the physical cutout reads as a smudge on the status bar.
+    boxShadow: hw ? 'none' : 'var(--island-shadow, 0 8px 32px rgba(0, 0, 0, 0.35))',
     fontFamily: 'var(--island-font, system-ui, -apple-system, sans-serif)',
     fontSize: 14,
     lineHeight: 1.2,
@@ -365,6 +453,10 @@ export function Island({
     ...style,
   }
 
+  // Expanded content stacks below the cutout band in hardware mode.
+  const padding = 'var(--island-padding, 16px)'
+  const expandedPadding = hw ? `${idleHeight}px ${padding} ${padding}` : padding
+
   const contentStyle: CSSProperties =
     mode === 'expanded'
       ? {
@@ -372,14 +464,16 @@ export function Island({
           flexShrink: 0,
           width: entry?.width ?? 'max-content',
           maxWidth: 'var(--island-max-width, min(420px, calc(100vw - 24px)))',
-          padding: 'var(--island-padding, 16px)',
+          padding: expandedPadding,
         }
       : {
           boxSizing: 'border-box',
           flexShrink: 0,
-          display: 'flex',
+          // Symmetric: equal columns keep the cutout centered even when the pill hits the viewport limit.
+          ...(layout.symmetric
+            ? { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)' }
+            : { display: 'flex', justifyContent: 'space-between' }),
           alignItems: 'center',
-          justifyContent: 'space-between',
           gap: 10,
           height: idleHeight,
           minWidth: idleWidth,
@@ -395,6 +489,7 @@ export function Island({
         data-uiness-island=""
         data-mode={entry ? mode : 'idle'}
         data-entry={entry?.id}
+        data-hardware={hw ? '' : undefined}
         className={className}
         style={boxStyle}
         role={entry?.role ?? 'status'}
@@ -423,15 +518,15 @@ export function Island({
             <div
               style={
                 outgoing.mode === 'expanded'
-                  ? {
-                      boxSizing: 'border-box',
-                      width: '100%',
-                      padding: 'var(--island-padding, 16px)',
-                    }
+                  ? { boxSizing: 'border-box', width: '100%', padding: expandedPadding }
                   : {
-                      display: 'flex',
+                      ...(layout.symmetric
+                        ? {
+                            display: 'grid',
+                            gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
+                          }
+                        : { display: 'flex', justifyContent: 'space-between' }),
                       alignItems: 'center',
-                      justifyContent: 'space-between',
                       gap: 10,
                       width: '100%',
                       height: idleHeight,
@@ -448,21 +543,6 @@ export function Island({
     </div>
   )
 }
-
-/**
- * Props that overlay the island on the physical Dynamic Island of recent iPhones.
- * Only meaningful for a standalone PWA with `viewport-fit=cover` and a translucent
- * status bar, where the page extends under the status bar. In a browser tab the
- * island can never reach the hardware one because the browser toolbar sits above the page.
- *
- * @example <Island {...(standalone ? hardwareIsland : {})} />
- */
-export const hardwareIsland = {
-  anchor: 'edge',
-  offset: 11,
-  idleWidth: 126,
-  idleHeight: 37,
-} as const satisfies Partial<IslandProps>
 
 const standaloneQuery = '(display-mode: standalone), (display-mode: fullscreen)'
 const isStandalone = () =>

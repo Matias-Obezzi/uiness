@@ -230,6 +230,46 @@ describe('<Island>', () => {
     expect(layer().style.top).toBe('')
   })
 
+  it('hardware mode wraps the cutout, hides idle and stacks expanded content below', () => {
+    render(<Island store={store} hardware />)
+    const layer = document.querySelector<HTMLElement>('[data-uiness-island-layer]') as HTMLElement
+    expect(layer.style.top).toBe('6px')
+    expect(box().style.visibility).toBe('hidden')
+    expect(box().style.boxShadow).toBe('none')
+
+    act(() => {
+      store.show({ leading: <span>L</span>, trailing: <span>a long trailing label</span> })
+    })
+    expect(box().style.visibility).toBe('')
+    const content = box().querySelector<HTMLElement>('[data-island-content]') as HTMLElement
+    expect(content.style.height).toBe('47px')
+    expect(content.style.minWidth).toBe('136px')
+    const spacer = box().querySelector<HTMLElement>('[data-island-spacer]') as HTMLElement
+    expect(spacer.style.width).toBe('136px')
+    const leading = box().querySelector<HTMLElement>('[data-island-leading]') as HTMLElement
+    const trailing = box().querySelector<HTMLElement>('[data-island-trailing]') as HTMLElement
+    expect(content.style.gridTemplateColumns).toBe('minmax(0, 1fr) auto minmax(0, 1fr)')
+    expect(leading.style.justifySelf).toBe('start')
+    expect(trailing.style.justifySelf).toBe('end')
+
+    act(() => {
+      store.show({ content: 'panel' })
+    })
+    const panel = box().querySelector<HTMLElement>('[data-island-content]') as HTMLElement
+    expect(panel.style.padding).toContain('47px')
+  })
+
+  it('hardware mode accepts custom geometry', () => {
+    render(<Island store={store} hardware={{ width: 100, height: 30, top: 20, margin: 4 }} />)
+    const layer = document.querySelector<HTMLElement>('[data-uiness-island-layer]') as HTMLElement
+    expect(layer.style.top).toBe('16px')
+    act(() => {
+      store.show({ leading: 'x' })
+    })
+    const spacer = box().querySelector<HTMLElement>('[data-island-spacer]') as HTMLElement
+    expect(spacer.style.width).toBe('108px')
+  })
+
   it('useIsland returns the store from context or the argument', () => {
     let seen: IslandStore | undefined
     function Probe() {

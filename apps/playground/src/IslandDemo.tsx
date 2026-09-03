@@ -1,11 +1,4 @@
-import {
-  hardwareIsland,
-  Island,
-  Spinner,
-  type SpringPreset,
-  useIsland,
-  useStandalone,
-} from '@uiness/island'
+import { Island, Spinner, type SpringPreset, useIsland, useStandalone } from '@uiness/island'
 import { useEffect, useState } from 'react'
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
@@ -134,7 +127,7 @@ export function IslandDemo() {
   return (
     <>
       <Island
-        {...(matchHardware && position === 'top' ? hardwareIsland : {})}
+        hardware={matchHardware && position === 'top'}
         position={position}
         spring={spring}
         idle={hideIdle ? false : undefined}
@@ -174,7 +167,7 @@ export function IslandDemo() {
             checked={matchHardware}
             onChange={(e) => setHardware(e.target.checked)}
           />
-          match hardware island {standalone ? '(standalone)' : '(browser tab)'}
+          wrap hardware island {standalone ? '(standalone)' : '(browser tab)'}
         </label>
       </div>
 

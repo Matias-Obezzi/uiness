@@ -95,9 +95,9 @@ The island measures its content, then animates width, height and radius from the
 
 Give expanded content a stable width (the `width` option or a fixed width inside) so it does not reflow while the box is animating, and add `max-width: 100%` so it still fits on narrow screens. The panel is capped at `100vw - 24px` with 16px of padding, so about 319px remain for content on a 375px phone.
 
-### Aligning with the real Dynamic Island
+### Wrapping the real Dynamic Island
 
-In a browser tab the island can never sit where the hardware one is: the browser toolbar and the status bar live above the page, and no web content can draw there. It only becomes possible when the site runs as an installed app, where the page extends under the status bar.
+In a browser tab the island can never sit where the hardware one is: the browser toolbar and the status bar live above the page, and no web content can draw there. It becomes possible when the site runs as an installed app, where the page extends under the status bar.
 
 1. Add the tags that let the page cover the status bar:
 
@@ -107,16 +107,24 @@ In a browser tab the island can never sit where the hardware one is: the browser
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 ```
 
-2. When running standalone, anchor the island to the screen edge with the hardware size:
+2. Turn on `hardware` mode when running standalone:
 
 ```tsx
-import { Island, hardwareIsland, useStandalone } from '@uiness/island'
+import { Island, useStandalone } from '@uiness/island'
 
 const standalone = useStandalone()
-<Island {...(standalone ? hardwareIsland : {})} />
+<Island hardware={standalone} />
 ```
 
-`hardwareIsland` is `{ anchor: 'edge', offset: 11, idleWidth: 126, idleHeight: 37 }`, the geometry of the iPhone 14 Pro to 16 family in points. Tweak `offset` if a model differs. Because the physical cutout is black, the idle pill blends into it and expanded entries appear to grow out of it. Keep your app's content below `env(safe-area-inset-top)` as usual.
+Devices differ by a few points and a web page cannot read the cutout geometry, so hardware mode never tries to match the cutout exactly. Instead:
+
+- The idle state is the cutout itself. Nothing is drawn until an entry shows up, then the box grows out of the cutout and shrinks back into it.
+- The box is always a little larger than the cutout (5px margin by default) and pure black, so the cutout disappears inside it.
+- Compact slots sit on both sides of the cutout, with both sides the same width so the cutout stays centered. Center `content` moves next to the trailing slot. Each side gets about 80px on a 375px phone, so keep compact labels short and use expanded alerts for sentences; text that does not fit gets an ellipsis.
+- Expanded content stacks below the cutout band instead of beside it.
+- No shadow, which would read as a smudge on the status bar.
+
+Pass an object to change the geometry: `hardware={{ width: 126, height: 37, top: 11, margin: 5 }}` are the defaults, matching the iPhone 14 Pro to 16 family in points. Keep your app's content below `env(safe-area-inset-top)` as usual.
 
 ### Multiple islands
 

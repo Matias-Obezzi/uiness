@@ -1,6 +1,6 @@
 export { AlertContent, ConfirmContent, type ConfirmContentProps, Spinner } from './content'
 export { IslandProvider, useIsland, useIslandEntry, useIslandStack } from './context'
-export { hardwareIsland, Island, type IslandProps, useStandalone } from './island'
+export { type HardwareIsland, Island, type IslandProps, useStandalone } from './island'
 export {
   resolveSpring,
   type SpringConfig,
