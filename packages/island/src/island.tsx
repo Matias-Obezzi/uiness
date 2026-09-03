@@ -202,20 +202,23 @@ export function Island({
     animation.oncancel = clear
   })
 
-  // Incoming content: blur in. Re-runs whenever the rendered entry changes.
+  // Incoming content: blur in while the box grows, so clipped edges stay soft.
+  // Re-runs whenever the rendered entry changes.
   // biome-ignore lint/correctness/useExhaustiveDependencies: `key` is the trigger, not a value used inside
   useEffect(() => {
     const content = contentRef.current
     if (!canAnimate(content) || reducedMotion()) return
+    const morph = springEasing(spring).duration
+    const duration = Math.min(450, Math.max(220, morph * 0.55))
     const animation = content.animate(
       [
-        { opacity: 0, filter: 'blur(8px)', transform: 'scale(0.9)' },
+        { opacity: 0, filter: 'blur(12px)', transform: 'scale(0.85)' },
         { opacity: 1, filter: 'blur(0px)', transform: 'scale(1)' },
       ],
-      { duration: 280, delay: 40, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'backwards' },
+      { duration, delay: 30, easing: 'cubic-bezier(0.2, 0.8, 0.2, 1)', fill: 'backwards' },
     )
     return () => animation.cancel()
-  }, [key])
+  }, [key, spring])
 
   // Outgoing content: blur out, then drop it.
   useEffect(() => {
@@ -332,6 +335,10 @@ export function Island({
   const boxStyle: CSSProperties = {
     position: 'relative',
     overflow: 'hidden',
+    // Center the content so a box narrower than its content clips both edges evenly.
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     pointerEvents: 'auto',
     boxSizing: 'border-box',
     background: 'var(--island-bg, #000)',
@@ -351,12 +358,14 @@ export function Island({
     mode === 'expanded'
       ? {
           boxSizing: 'border-box',
+          flexShrink: 0,
           width: entry?.width ?? 'max-content',
           maxWidth: 'var(--island-max-width, min(420px, calc(100vw - 24px)))',
           padding: 'var(--island-padding, 16px)',
         }
       : {
           boxSizing: 'border-box',
+          flexShrink: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
