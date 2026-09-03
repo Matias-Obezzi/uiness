@@ -6,9 +6,13 @@
 }
 
 body {
+  /* Keep the page below the status bar when installed as an app. */
+  padding-top: calc(env(safe-area-inset-top, 0px) + 72px);
   margin: 0;
   /* Leave room for the island (offset 12 + height 36) plus breathing space. */
-  padding: 72px 24px 24px;
+  padding-right: 24px;
+  padding-bottom: 24px;
+  padding-left: 24px;
 }
 
 h1 {

@@ -6,6 +6,7 @@ import {
   useLayoutEffect,
   useRef,
   useState,
+  useSyncExternalStore,
 } from 'react'
 import { useIsland, useIslandEntry } from './context'
 import { type SpringConfig, type SpringPreset, springEasing } from './spring'
@@ -18,8 +19,14 @@ export interface IslandProps {
   store?: IslandStore
   /** Screen edge the island sticks to. Default 'top'. */
   position?: 'top' | 'bottom'
-  /** Distance from the edge in px, on top of the safe area inset. Default 12. */
+  /** Distance from the edge in px. Added to the safe area inset unless `anchor` is 'edge'. Default 12. */
   offset?: number
+  /**
+   * 'safe-area' (default) keeps the island below the status bar / notch.
+   * 'edge' measures from the physical screen edge, which lets a standalone PWA
+   * overlay the island on the real Dynamic Island. See the README.
+   */
+  anchor?: 'safe-area' | 'edge'
   /**
    * Content shown when nothing is on the stack. Defaults to an empty pill.
    * Pass `false` to hide the island completely while idle.
@@ -111,6 +118,7 @@ export function Island({
   store: storeProp,
   position = 'top',
   offset = 12,
+  anchor = 'safe-area',
   idle,
   idleWidth = 120,
   idleHeight = 36,
@@ -180,6 +188,8 @@ export function Island({
       animationRef.current = null
     }
     if (!canAnimate(box)) return
+    // A collapsed box (hidden container, zero viewport) has nothing sensible to morph from.
+    if (first.width === 0 || first.height === 0 || last.width === 0 || last.height === 0) return
 
     const { easing, duration } = springEasing(spring)
     const reduce = reducedMotion()
@@ -320,7 +330,8 @@ export function Island({
     if (pauseOnHover && entry) store.resume(entry.id)
   }, [pauseOnHover, entry, store])
 
-  const edge = `calc(env(safe-area-inset-${position}, 0px) + ${offset}px)`
+  const edge =
+    anchor === 'edge' ? `${offset}px` : `calc(env(safe-area-inset-${position}, 0px) + ${offset}px)`
   const layerStyle: CSSProperties = {
     position: 'fixed',
     left: 0,
@@ -436,4 +447,37 @@ export function Island({
       </div>
     </div>
   )
+}
+
+/**
+ * Props that overlay the island on the physical Dynamic Island of recent iPhones.
+ * Only meaningful for a standalone PWA with `viewport-fit=cover` and a translucent
+ * status bar, where the page extends under the status bar. In a browser tab the
+ * island can never reach the hardware one because the browser toolbar sits above the page.
+ *
+ * @example <Island {...(standalone ? hardwareIsland : {})} />
+ */
+export const hardwareIsland = {
+  anchor: 'edge',
+  offset: 11,
+  idleWidth: 126,
+  idleHeight: 37,
+} as const satisfies Partial<IslandProps>
+
+const standaloneQuery = '(display-mode: standalone), (display-mode: fullscreen)'
+const isStandalone = () =>
+  typeof window !== 'undefined' &&
+  ((typeof matchMedia === 'function' && matchMedia(standaloneQuery).matches) ||
+    (navigator as Navigator & { standalone?: boolean }).standalone === true)
+const subscribeStandalone = (onChange: () => void) => {
+  if (typeof matchMedia !== 'function') return () => {}
+  const query = matchMedia(standaloneQuery)
+  query.addEventListener('change', onChange)
+  return () => query.removeEventListener('change', onChange)
+}
+const serverStandalone = () => false
+
+/** True when the page runs as an installed app (standalone or fullscreen display mode). */
+export function useStandalone(): boolean {
+  return useSyncExternalStore(subscribeStandalone, isStandalone, serverStandalone)
 }

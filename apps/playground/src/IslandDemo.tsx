@@ -1,4 +1,11 @@
-import { Island, Spinner, type SpringPreset, useIsland } from '@uiness/island'
+import {
+  hardwareIsland,
+  Island,
+  Spinner,
+  type SpringPreset,
+  useIsland,
+  useStandalone,
+} from '@uiness/island'
 import { useEffect, useState } from 'react'
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
@@ -98,6 +105,9 @@ export function IslandDemo() {
   const [position, setPosition] = useState<'top' | 'bottom'>('top')
   const [spring, setSpring] = useState<SpringPreset>('bouncy')
   const [hideIdle, setHideIdle] = useState(false)
+  const standalone = useStandalone()
+  const [hardware, setHardware] = useState<boolean | null>(null)
+  const matchHardware = hardware ?? standalone
   const [log, setLog] = useState<string[]>([])
 
   const note = (line: string) => setLog((l) => [line, ...l].slice(0, 8))
@@ -124,6 +134,7 @@ export function IslandDemo() {
   return (
     <>
       <Island
+        {...(matchHardware && position === 'top' ? hardwareIsland : {})}
         position={position}
         spring={spring}
         idle={hideIdle ? false : undefined}
@@ -156,6 +167,14 @@ export function IslandDemo() {
             onChange={(e) => setHideIdle(e.target.checked)}
           />
           hide when idle
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={matchHardware}
+            onChange={(e) => setHardware(e.target.checked)}
+          />
+          match hardware island {standalone ? '(standalone)' : '(browser tab)'}
         </label>
       </div>
 

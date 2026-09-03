@@ -62,7 +62,8 @@ const island = useIsland()
 | Prop | Default | Description |
 | --- | --- | --- |
 | `position` | `'top'` | `'top'` or `'bottom'`, safe area aware. |
-| `offset` | `12` | Distance from the edge in px. |
+| `offset` | `12` | Distance from the edge in px, added to the safe area inset. |
+| `anchor` | `'safe-area'` | `'edge'` ignores the safe area inset. Used with `hardwareIsland` in installed apps. |
 | `idle` | empty pill | Content while nothing is shown. `false` hides the island when idle. |
 | `idleWidth`, `idleHeight` | `120`, `36` | Size of the idle pill and of compact entries. |
 | `expandedRadius` | `28` | Corner radius of expanded entries. |
@@ -93,6 +94,29 @@ The box takes CSS variables, so pass them through `style` or set them on an ance
 The island measures its content, then animates width, height and radius from the previous size with the Web Animations API. The easing is a real damped spring sampled into a CSS `linear()` function, so it overshoots like the iOS one and can be interrupted mid-flight. Browsers without `linear()` fall back to an ease-out curve. `prefers-reduced-motion` disables the morph and the blur cross fades.
 
 Give expanded content a stable width (the `width` option or a fixed width inside) so it does not reflow while the box is animating, and add `max-width: 100%` so it still fits on narrow screens. The panel is capped at `100vw - 24px` with 16px of padding, so about 319px remain for content on a 375px phone.
+
+### Aligning with the real Dynamic Island
+
+In a browser tab the island can never sit where the hardware one is: the browser toolbar and the status bar live above the page, and no web content can draw there. It only becomes possible when the site runs as an installed app, where the page extends under the status bar.
+
+1. Add the tags that let the page cover the status bar:
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+```
+
+2. When running standalone, anchor the island to the screen edge with the hardware size:
+
+```tsx
+import { Island, hardwareIsland, useStandalone } from '@uiness/island'
+
+const standalone = useStandalone()
+<Island {...(standalone ? hardwareIsland : {})} />
+```
+
+`hardwareIsland` is `{ anchor: 'edge', offset: 11, idleWidth: 126, idleHeight: 37 }`, the geometry of the iPhone 14 Pro to 16 family in points. Tweak `offset` if a model differs. Because the physical cutout is black, the idle pill blends into it and expanded entries appear to grow out of it. Keep your app's content below `env(safe-area-inset-top)` as usual.
 
 ### Multiple islands
 

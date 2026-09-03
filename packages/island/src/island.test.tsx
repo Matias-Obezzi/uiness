@@ -218,6 +218,18 @@ describe('<Island>', () => {
     expect(store.getCurrent()).toBeUndefined()
   })
 
+  it('anchors to the safe area by default and to the edge on request', () => {
+    const { unmount } = render(<Island store={store} offset={11} />)
+    const layer = () =>
+      document.querySelector<HTMLElement>('[data-uiness-island-layer]') as HTMLElement
+    expect(layer().style.top).toContain('env(safe-area-inset-top')
+    expect(layer().style.top).toContain('11px')
+    unmount()
+    render(<Island store={store} offset={11} anchor="edge" position="bottom" />)
+    expect(layer().style.bottom).toBe('11px')
+    expect(layer().style.top).toBe('')
+  })
+
   it('useIsland returns the store from context or the argument', () => {
     let seen: IslandStore | undefined
     function Probe() {
