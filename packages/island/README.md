@@ -121,8 +121,10 @@ Devices differ by a few points and a web page cannot read the cutout geometry, s
 - The idle state is the cutout itself. Nothing is drawn until an entry shows up, then the box grows out of the cutout and shrinks back into it.
 - The box is always a little larger than the cutout (5px margin by default) and pure black, so the cutout disappears inside it.
 - Compact slots sit on both sides of the cutout, with both sides the same width so the cutout stays centered. Center `content` moves next to the trailing slot. Each side gets about 80px on a 375px phone, so keep compact labels short and use expanded alerts for sentences; text that does not fit gets an ellipsis.
-- Expanded content stacks below the cutout band instead of beside it.
+- Expanded content stacks below the cutout band instead of beside it, and the band also clears `env(safe-area-inset-top)`: iOS blurs whatever an installed app draws under the status bar, so text placed there would look smudged. Compact slots live beside the cutout by design and do get that blur, which the app cannot disable, so keep them to icons and short numbers.
 - No shadow, which would read as a smudge on the status bar.
+
+Prefer a shape that reads as part of the system? `hardware={{ mode: 'stack' }}` makes the box two rows: the top row is the island line, kept empty and black even when there is nothing to show there, and every entry lives on the row below. Both rows grow horizontally together as one shape, compact entries lay out like a plain pill on the second row, and nothing sits under the status bar blur.
 
 Pass an object to change the geometry: `hardware={{ width: 126, height: 37, top: 11, margin: 5 }}` are the defaults, matching the iPhone 14 Pro to 16 family in points. Keep your app's content below `env(safe-area-inset-top)` as usual.
 

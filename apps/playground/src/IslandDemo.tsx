@@ -99,8 +99,8 @@ export function IslandDemo() {
   const [spring, setSpring] = useState<SpringPreset>('bouncy')
   const [hideIdle, setHideIdle] = useState(false)
   const standalone = useStandalone()
-  const [hardware, setHardware] = useState<boolean | null>(null)
-  const matchHardware = hardware ?? standalone
+  const [hardwareChoice, setHardwareChoice] = useState<'auto' | 'off' | 'wrap' | 'stack'>('auto')
+  const hardwareMode = hardwareChoice === 'auto' ? (standalone ? 'stack' : 'off') : hardwareChoice
   const [log, setLog] = useState<string[]>([])
 
   const note = (line: string) => setLog((l) => [line, ...l].slice(0, 8))
@@ -127,7 +127,7 @@ export function IslandDemo() {
   return (
     <>
       <Island
-        hardware={matchHardware && position === 'top'}
+        hardware={position === 'top' && hardwareMode !== 'off' ? { mode: hardwareMode } : false}
         position={position}
         spring={spring}
         idle={hideIdle ? false : undefined}
@@ -162,12 +162,18 @@ export function IslandDemo() {
           hide when idle
         </label>
         <label>
-          <input
-            type="checkbox"
-            checked={matchHardware}
-            onChange={(e) => setHardware(e.target.checked)}
-          />
-          wrap hardware island {standalone ? '(standalone)' : '(browser tab)'}
+          hardware island
+          <select
+            value={hardwareChoice}
+            onChange={(e) => setHardwareChoice(e.target.value as typeof hardwareChoice)}
+          >
+            <option value="auto">
+              auto ({standalone ? 'stack, standalone' : 'off, browser tab'})
+            </option>
+            <option value="off">off</option>
+            <option value="wrap">wrap</option>
+            <option value="stack">stack</option>
+          </select>
         </label>
       </div>
 

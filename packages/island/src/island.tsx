@@ -14,8 +14,15 @@ import type { IslandEntry, IslandMode, IslandStore } from './types'
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
 
-/** Geometry of the physical Dynamic Island, in CSS px (points). */
+/** How the island relates to the physical Dynamic Island. */
 export interface HardwareIsland {
+  /**
+   * 'wrap' (default): compact slots sit beside the cutout, expanded content below it.
+   * 'stack': the box is always two rows. The top row is the island line, kept empty and
+   * black so it reads as part of the system, and every entry lives on the row below.
+   * Both rows grow horizontally together as one shape.
+   */
+  mode?: 'wrap' | 'stack'
   /** Width of the cutout. Default 126. */
   width?: number
   /** Height of the cutout. Default 37. */
@@ -29,7 +36,13 @@ export interface HardwareIsland {
   margin?: number
 }
 
-const HARDWARE_DEFAULTS: Required<HardwareIsland> = { width: 126, height: 37, top: 11, margin: 5 }
+const HARDWARE_DEFAULTS: Required<HardwareIsland> = {
+  mode: 'wrap',
+  width: 126,
+  height: 37,
+  top: 11,
+  margin: 5,
+}
 
 export interface IslandProps {
   /** Store to render. Defaults to the shared `island` store. */
@@ -191,9 +204,12 @@ export function Island({
   const idleWidth = hw ? hw.width + hw.margin * 2 : idleWidthProp
   const idleHeight = hw ? hw.height + hw.margin * 2 : idleHeightProp
   const idle = hw ? false : idleProp
-  const layout: CompactLayout = hw
-    ? { spacer: hw.width + hw.margin * 2, symmetric: true }
-    : { spacer: Math.round(idleWidth / 3), symmetric: false }
+  // Stack: entries go on a second row, so compact slots never share a line with the cutout.
+  const stack = hw?.mode === 'stack'
+  const layout: CompactLayout =
+    hw && !stack
+      ? { spacer: hw.width + hw.margin * 2, symmetric: true }
+      : { spacer: Math.round(idleWidthProp / 3), symmetric: false }
 
   const boxRef = useRef<HTMLDivElement | null>(null)
   const contentRef = useRef<HTMLDivElement | null>(null)
@@ -222,7 +238,7 @@ export function Island({
     const box = boxRef.current
     const content = contentRef.current
     if (!box || !content) return
-    const radius = mode === 'expanded' ? expandedRadius : idleHeight / 2
+    const radius = mode === 'expanded' || (stack && entry) ? expandedRadius : idleHeight / 2
     const rect = content.getBoundingClientRect()
     const last: Size = { width: rect.width, height: rect.height, radius }
     const target = sizeRef.current
@@ -313,12 +329,13 @@ export function Island({
 
   // Whole island in and out when idle is hidden.
   const wasVisible = useRef(shouldShow)
+  const isHardware = !!hw
   useEffect(() => {
     const box = boxRef.current
     if (shouldShow === wasVisible.current) return
     wasVisible.current = shouldShow
 
-    if (hw) {
+    if (isHardware) {
       // Grow out of the cutout and shrink back into it: the size morph does the work,
       // the box only needs to stay visible until the shrink has finished.
       if (shouldShow) {
@@ -370,7 +387,7 @@ export function Island({
       return () => animation.cancel()
     }
     setVisible(false)
-  }, [shouldShow, hw])
+  }, [shouldShow, isHardware])
 
   // Escape and outside pointer down.
   useEffect(() => {
@@ -441,7 +458,7 @@ export function Island({
     boxSizing: 'border-box',
     background: 'var(--island-bg, #000)',
     color: 'var(--island-color, #fff)',
-    borderRadius: mode === 'expanded' ? expandedRadius : idleHeight / 2,
+    borderRadius: mode === 'expanded' || (stack && entry) ? expandedRadius : idleHeight / 2,
     // A shadow around the physical cutout reads as a smudge on the status bar.
     boxShadow: hw ? 'none' : 'var(--island-shadow, 0 8px 32px rgba(0, 0, 0, 0.35))',
     fontFamily: 'var(--island-font, system-ui, -apple-system, sans-serif)',
@@ -453,9 +470,29 @@ export function Island({
     ...style,
   }
 
-  // Expanded content stacks below the cutout band in hardware mode.
+  // Expanded content stacks below the cutout band in hardware mode. iOS blurs whatever an
+  // installed app draws under the status bar, so the band also clears the safe area inset.
   const padding = 'var(--island-padding, 16px)'
-  const expandedPadding = hw ? `${idleHeight}px ${padding} ${padding}` : padding
+  const band = `max(${idleHeight}px, calc(env(safe-area-inset-top, 0px) - ${offset}px + 8px))`
+  const expandedPadding = hw ? `${band} ${padding} ${padding}` : padding
+
+  // Compact row on the second line in stack mode: the band above it stays empty.
+  const stackedCompact = stack && !!entry && mode === 'compact'
+  const compactStyle: CSSProperties = {
+    boxSizing: 'border-box',
+    flexShrink: 0,
+    // Symmetric: equal columns keep the cutout centered even when the pill hits the viewport limit.
+    ...(layout.symmetric
+      ? { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)' }
+      : { display: 'flex', justifyContent: 'space-between' }),
+    alignItems: 'center',
+    gap: 10,
+    height: stackedCompact ? `calc(${band} + ${idleHeightProp}px)` : idleHeight,
+    minWidth: idleWidth,
+    maxWidth: 'calc(100vw - 24px)',
+    padding: stackedCompact ? `${band} 14px 0px` : '0 14px',
+    whiteSpace: 'nowrap',
+  }
 
   const contentStyle: CSSProperties =
     mode === 'expanded'
@@ -466,21 +503,7 @@ export function Island({
           maxWidth: 'var(--island-max-width, min(420px, calc(100vw - 24px)))',
           padding: expandedPadding,
         }
-      : {
-          boxSizing: 'border-box',
-          flexShrink: 0,
-          // Symmetric: equal columns keep the cutout centered even when the pill hits the viewport limit.
-          ...(layout.symmetric
-            ? { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)' }
-            : { display: 'flex', justifyContent: 'space-between' }),
-          alignItems: 'center',
-          gap: 10,
-          height: idleHeight,
-          minWidth: idleWidth,
-          maxWidth: 'calc(100vw - 24px)',
-          padding: '0 14px',
-          whiteSpace: 'nowrap',
-        }
+      : compactStyle
 
   return (
     <div data-uiness-island-layer="" style={layerStyle}>
@@ -489,7 +512,7 @@ export function Island({
         data-uiness-island=""
         data-mode={entry ? mode : 'idle'}
         data-entry={entry?.id}
-        data-hardware={hw ? '' : undefined}
+        data-hardware={hw?.mode}
         className={className}
         style={boxStyle}
         role={entry?.role ?? 'status'}
@@ -529,8 +552,8 @@ export function Island({
                       alignItems: 'center',
                       gap: 10,
                       width: '100%',
-                      height: idleHeight,
-                      padding: '0 14px',
+                      height: stack ? `calc(${band} + ${idleHeightProp}px)` : idleHeight,
+                      padding: stack ? `${band} 14px 0px` : '0 14px',
                       whiteSpace: 'nowrap',
                     }
               }

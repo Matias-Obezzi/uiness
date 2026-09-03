@@ -1,4 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
+import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useIsland } from './context'
 import { Island } from './island'
@@ -268,6 +269,74 @@ describe('<Island>', () => {
     })
     const spacer = box().querySelector<HTMLElement>('[data-island-spacer]') as HTMLElement
     expect(spacer.style.width).toBe('108px')
+  })
+
+  it('stack hardware mode keeps the island row empty and puts entries on a second row', () => {
+    render(<Island store={store} hardware={{ mode: 'stack' }} />)
+    expect(box().dataset.hardware).toBe('stack')
+    expect(box().style.visibility).toBe('hidden')
+    act(() => {
+      store.show({ leading: 'L', trailing: 'a long trailing label' })
+    })
+    const content = box().querySelector<HTMLElement>('[data-island-content]') as HTMLElement
+    expect(content.style.display).toBe('flex')
+    expect(content.style.height).toContain('47px')
+    expect(content.style.height).toContain('36px')
+    expect(content.style.height).toContain('env(safe-area-inset-top')
+    expect(box().querySelector('[data-island-spacer]')?.getAttribute('style')).toContain('40px')
+    expect(box().style.borderRadius).toBe('28px')
+  })
+
+  it('hardware mode hides the box after the shrink even if something re-renders meanwhile', async () => {
+    const fakeAnimation = () => {
+      let resolveFinished: () => void = () => {}
+      const finished = new Promise<void>((r) => {
+        resolveFinished = r
+      })
+      return {
+        finished,
+        cancel: () => {},
+        finish: () => resolveFinished(),
+        onfinish: null,
+        oncancel: null,
+        playState: 'running',
+        currentTime: 0,
+      }
+    }
+    const animations: ReturnType<typeof fakeAnimation>[] = []
+    // jsdom has no Web Animations API; install a fake that only resolves `finished` on demand.
+    const proto = HTMLElement.prototype as unknown as { animate?: unknown }
+    proto.animate = () => {
+      const a = fakeAnimation()
+      animations.push(a)
+      return a as unknown as Animation
+    }
+    // jsdom reports zero sizes; give elements a size that depends on their text so a morph runs.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      const width = 100 + (this.textContent?.length ?? 0) * 7
+      return { x: 0, y: 0, top: 0, left: 0, right: width, bottom: 40, width, height: 40 } as DOMRect
+    })
+    let rerender: () => void = () => {}
+    function Host() {
+      const [, setTick] = useState(0)
+      rerender = () => setTick((t) => t + 1)
+      return <Island store={store} hardware />
+    }
+    render(<Host />)
+    act(() => {
+      store.show({ leading: 'x' })
+    })
+    act(() => store.dismissAll())
+    expect(box().style.visibility).toBe('')
+    act(() => rerender())
+    await act(async () => {
+      for (const a of animations) a.finish()
+      await Promise.resolve()
+    })
+    expect(box().style.visibility).toBe('hidden')
+    proto.animate = undefined
   })
 
   it('useIsland returns the store from context or the argument', () => {
