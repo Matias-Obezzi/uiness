@@ -33,10 +33,11 @@ import { Textarea } from '@/ui/textarea'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/tooltip'
 
 export function UiDemo() {
-  const [dark, setDark] = useState(true)
+  const [dark, setDark] = useState(() => document.documentElement.classList.contains('dark'))
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
-    return () => document.documentElement.classList.remove('dark')
+    // The rest of the playground is dark, so leave it that way when this page unmounts.
+    return () => document.documentElement.classList.add('dark')
   }, [dark])
 
   return (
