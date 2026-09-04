@@ -45,8 +45,27 @@ function slowImages(): Plugin {
   }
 }
 
+const base = process.env.DOCS_BASE_PATH ?? '/'
+
+/**
+ * Demos and pages reference assets as "/img/..." so the shown source stays clean.
+ * When the site is served from a subpath (GitHub Pages), rewrite those literals.
+ */
+function baseAssets(): Plugin {
+  return {
+    name: 'base-assets',
+    transform(code, id) {
+      if (base === '/' || !id.includes('/apps/docs/src/') || id.includes('?raw')) return null
+      if (!/\.(tsx|ts|mdx)$/.test(id)) return null
+      return code.replace(/(['"`])\/(img|slow)\//g, `$1${base}$2/`)
+    },
+  }
+}
+
 export default defineConfig({
+  base,
   plugins: [
+    baseAssets(),
     {
       enforce: 'pre',
       ...mdx({ providerImportSource: '@mdx-js/react', remarkPlugins: [remarkGfm] }),

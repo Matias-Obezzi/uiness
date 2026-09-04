@@ -4,13 +4,7 @@ The registry works with the CLI you likely already use to add components to a Ta
 
 Add the `@uiness` namespace to the `registries` field of your `components.json`. If the file does not exist yet, run `npx shadcn@latest init` first.
 
-```json
-{
-  "registries": {
-    "@uiness": "https://uiness.dev/r/{name}.json"
-  }
-}
-```
+<RegistryConfig />
 
 ## Add the theme
 
@@ -57,7 +51,7 @@ pnpm add @uiness/image @uiness/island @uiness/fx
 
 ## Manual installation
 
-Every registry item is a JSON file with the source inline, so you can copy files by hand: open `https://uiness.dev/r/button.json`, paste the content of each file into your project, and install the dependencies it lists.
+Every registry item is a JSON file with the source inline, so you can copy files by hand: open <RegistryLink name="button" />, paste the content of each file into your project, and install the dependencies it lists.
 
 ## Next.js
 

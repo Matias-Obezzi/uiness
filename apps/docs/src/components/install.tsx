@@ -1,4 +1,4 @@
-import { installCommand } from '~/lib/site'
+import { installCommand, registryUrl, site } from '~/lib/site'
 import { CodeBlock } from './code-block'
 
 /** Install block for a registry item. */
@@ -17,5 +17,25 @@ export function InstallPackage({ name }: { name: string }) {
     <div className="not-prose my-6">
       <CodeBlock code={`pnpm add ${name}`} lang="bash" />
     </div>
+  )
+}
+
+/** The components.json snippet, pointing at wherever this site is served from. */
+export function RegistryConfig() {
+  const json = JSON.stringify({ registries: { [site.registryNamespace]: registryUrl() } }, null, 2)
+  return (
+    <div className="not-prose my-6">
+      <CodeBlock code={json} lang="json" title="components.json" />
+    </div>
+  )
+}
+
+/** Inline link to one registry item's JSON. */
+export function RegistryLink({ name }: { name: string }) {
+  const url = registryUrl(name)
+  return (
+    <a href={url} target="_blank" rel="noreferrer">
+      <code>{url}</code>
+    </a>
   )
 }

@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import { cn } from '@/lib/utils'
 import { CodeBlock } from './code-block'
 import { ComponentPreview } from './component-preview'
-import { Install, InstallPackage } from './install'
+import { Install, InstallPackage, RegistryConfig, RegistryLink } from './install'
 
 const slug = (children: ReactNode) =>
   String(childrenText(children))
@@ -95,6 +95,8 @@ export const mdxComponents: MDXComponents = {
   ComponentPreview,
   Install,
   InstallPackage,
+  RegistryConfig,
+  RegistryLink,
   Steps,
   Callout,
 }

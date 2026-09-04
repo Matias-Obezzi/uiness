@@ -11,7 +11,7 @@ Point the shadcn CLI at the registry once, in `components.json`:
 ```json
 {
   "registries": {
-    "@uiness": "https://uiness.dev/r/{name}.json"
+    "@uiness": "https://matiasobezzi.github.io/uiness/r/{name}.json"
   }
 }
 ```

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite",
     "registry": "node scripts/copy-registry.mjs",
-    "build": "node scripts/copy-registry.mjs && vite build",
+    "build": "node scripts/copy-registry.mjs && vite build && node scripts/postbuild.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },

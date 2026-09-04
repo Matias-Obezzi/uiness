@@ -12,6 +12,14 @@
     "pixelate",
     "uiness"
   ],
+  "author": "Mat\u00edas Obezzi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/matiasobezzi/uiness.git",
+    "directory": "packages/image"
+  },
+  "homepage": "https://matiasobezzi.github.io/uiness/docs/image",
+  "bugs": "https://github.com/matiasobezzi/uiness/issues",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
