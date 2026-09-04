@@ -1,0 +1,34 @@
+<ComponentPreview name="dialog-demo" />
+
+## Installation
+
+<Install name="dialog" />
+
+## Usage
+
+```tsx
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+
+<Dialog>
+  <DialogTrigger>Open</DialogTrigger>
+  <DialogContent>
+    <DialogHeader>
+      <DialogTitle>Are you sure?</DialogTitle>
+      <DialogDescription>This action cannot be undone.</DialogDescription>
+    </DialogHeader>
+    <DialogFooter>...</DialogFooter>
+  </DialogContent>
+</Dialog>
+```
+
+`DialogContent` renders a close button in the corner; pass `showCloseButton={false}` to drop it. Control the dialog with `open` and `onOpenChange` on the root.
+
+For a quick confirmation that should not cover the page, consider [Island](/docs/island#confirm), which asks from the top of the screen and resolves a promise.

@@ -1,0 +1,67 @@
+Everything is driven by CSS variables. Change them once and every component, the island and the image wrappers follow.
+
+## Variables
+
+The theme item defines these on `:root` and again on `.dark`:
+
+| Variable | Used for |
+| --- | --- |
+| `--background`, `--foreground` | Page surface and text. The island uses the foreground color as its background. |
+| `--card`, `--card-foreground` | Cards. |
+| `--popover`, `--popover-foreground` | Menus, popovers, tooltips. |
+| `--primary`, `--primary-foreground` | Primary buttons, checked controls, confirm buttons. |
+| `--secondary`, `--secondary-foreground` | Secondary buttons and badges. |
+| `--muted`, `--muted-foreground` | Subtle backgrounds, helper text, image placeholders. |
+| `--accent`, `--accent-foreground` | Hover and focus surfaces. |
+| `--destructive` | Danger buttons and destructive menu items. |
+| `--border`, `--input`, `--ring` | Borders, field borders, focus rings. |
+| `--radius` | Base corner radius. Sizes derive from it. |
+
+Colors are written in `oklch`, which keeps contrast even across hues when you shift a value.
+
+```css
+:root {
+  --radius: 0.75rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  /* ... */
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  /* ... */
+}
+```
+
+## Dark mode
+
+Dark mode is class based. Add `dark` to the `html` element and everything switches. The docs site stores the choice in `localStorage` and applies it before the first paint with a tiny inline script, which avoids a flash of the wrong theme.
+
+```html
+<html class="dark">
+```
+
+## Tailwind
+
+The theme file maps each variable to a Tailwind color through `@theme inline`, so `bg-primary`, `text-muted-foreground` or `border-border` work as utilities.
+
+```css
+@theme inline {
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --radius-lg: var(--radius);
+}
+```
+
+## A brand color
+
+Point `--primary` at your brand and keep `--primary-foreground` readable against it. Then decide whether the island should follow: by default it uses `--foreground`, which reads as a black pill on light pages and a light pill on dark pages. Set `--island-bg` on the island wrapper to change that.
+
+```tsx
+<Island style={{ '--island-bg': 'var(--primary)', '--island-color': 'var(--primary-foreground)' }} />
+```

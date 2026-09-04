@@ -5,3 +5,4 @@ coverage
 *.log
 .DS_Store
 packages/ui/public
+apps/docs/public/r

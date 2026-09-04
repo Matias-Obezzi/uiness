@@ -1,0 +1,64 @@
+The registry works with the CLI you likely already use to add components to a Tailwind project. Register uiness once, then add items by name.
+
+## Register the registry
+
+Add the `@uiness` namespace to the `registries` field of your `components.json`. If the file does not exist yet, run `npx shadcn@latest init` first.
+
+```json
+{
+  "registries": {
+    "@uiness": "https://uiness.dev/r/{name}.json"
+  }
+}
+```
+
+## Add the theme
+
+The theme item writes the CSS variables for light and dark mode into your globals. It also installs `tw-animate-css`, which the overlays use for their enter and exit animations.
+
+<Install name="theme" />
+
+Make sure your global CSS imports both:
+
+```css
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+```
+
+## Add components
+
+<Install name="button" extra="Dependencies and the cn() helper are installed along with it." />
+
+Then import from wherever your components live:
+
+```tsx
+import { Button } from '@/components/ui/button'
+
+export function Page() {
+  return <Button>Hello</Button>
+}
+```
+
+Several items at once:
+
+```bash
+npx shadcn@latest add @uiness/dialog @uiness/dropdown-menu @uiness/island
+```
+
+## Packages
+
+`island`, `image` and `fx` are registry items too. They install the npm package and drop a thin wrapper in `components/ui` that connects the package to your theme tokens. You can also use the packages directly without the registry:
+
+```bash
+pnpm add @uiness/image @uiness/island @uiness/fx
+```
+
+## Manual installation
+
+Every registry item is a JSON file with the source inline, so you can copy files by hand: open `https://uiness.dev/r/button.json`, paste the content of each file into your project, and install the dependencies it lists.
+
+## Next.js
+
+The components that hold state start with `'use client'`, so they can be imported from server components directly. The packages ship with the same directive.

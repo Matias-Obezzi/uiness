@@ -1,0 +1,24 @@
+uiness is a small set of React building blocks that do one thing each, and do it with some care for the details you normally do not have time for: how an image arrives, how a status appears, how a picture can look like it came from a Game Boy.
+
+It comes in two flavours.
+
+**Packages on npm.** `@uiness/image`, `@uiness/island` and `@uiness/fx` are regular dependencies. Zero runtime dependencies, ESM and CommonJS, typed, and marked `'use client'` so they work in server component setups.
+
+**A component registry.** Buttons, dialogs, menus and the rest are not a dependency. You add them with a command and the source lands in your project, under `components/ui`. From then on the code is yours: rename it, restyle it, delete what you do not use. The registry also has entries for the three packages above, wired to your theme.
+
+## Principles
+
+- **Own the code you ship.** Components are copied, not imported, so there is no version to chase and no API to fight.
+- **Accessible by default.** Interactive components build on Radix primitives: focus management, keyboard support and ARIA come for free.
+- **Compatible tokens.** The theme uses the CSS variable names that most Tailwind component ecosystems already use, so uiness pieces mix with what you have.
+- **No surprises in the bundle.** The packages have no runtime dependencies. The registry components depend on `radix-ui`, `class-variance-authority`, `clsx` and `tailwind-merge`, which you probably already have.
+
+## Where to start
+
+- [Installation](/docs/installation) sets up the registry in a couple of minutes.
+- [Image](/docs/image), [Island](/docs/island) and [Fx](/docs/fx) are the pieces you will not find elsewhere.
+- Or browse the components, starting with [Button](/docs/components/button).
+
+## Requirements
+
+React 18 or 19, Tailwind CSS v4 for the registry components, and a modern browser. The packages work with any styling solution.

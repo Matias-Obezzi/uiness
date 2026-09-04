@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["vite/client", "node"],
+    "paths": {
+      "@uiness/image": ["../../packages/image/src/index.ts"],
+      "@uiness/island": ["../../packages/island/src/index.ts"],
+      "@uiness/fx": ["../../packages/fx/src/index.ts"],
+      "@/*": ["../../packages/ui/registry/*"],
+      "~/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts"]
+}

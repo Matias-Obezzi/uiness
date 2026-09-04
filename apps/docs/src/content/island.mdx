@@ -1,0 +1,126 @@
+A pill fixed to the top of the page that morphs with a spring to show statuses, live activities, alerts and confirms. You drive it from anywhere with an imperative API, the way you would fire a toast.
+
+<ComponentPreview name="island-basic" />
+
+## Installation
+
+<Install name="island" extra="Installs @uiness/island and a wrapper that maps the island colors to your theme tokens." />
+
+Or the package on its own:
+
+<InstallPackage name="@uiness/island" />
+
+## Usage
+
+Mount `<Island />` once, near the root, then call the API.
+
+```tsx
+import { Island, island } from '@/components/ui/island'
+
+function App() {
+  return (
+    <>
+      <Island />
+      <Page />
+    </>
+  )
+}
+
+island.show({ leading: <Spinner />, trailing: 'Uploading' })
+```
+
+The island floats over your page like a notch, so leave some room at the top of the layout, around 60px, for the idle pill. Pass `idle={false}` to hide it completely while nothing is shown, which is what this site does.
+
+## Live activities
+
+`show()` returns a handle. Update it in place as things progress, then let it go.
+
+<ComponentPreview name="island-live" />
+
+Reusing an `id` also updates in place instead of stacking, handy when the call site does not keep the handle.
+
+## Confirm
+
+`confirm()` expands into a small dialog and resolves to a boolean. Escape, a click outside or the cancel button resolve `false`.
+
+<ComponentPreview name="island-confirm" />
+
+```tsx
+const ok = await island.confirm({
+  title: 'Delete 3 photos?',
+  description: 'They will be removed from all your devices.',
+  confirmText: 'Delete',
+  destructive: true,
+})
+```
+
+## Promise
+
+Track a promise through loading, success and error states.
+
+<ComponentPreview name="island-promise" />
+
+## Alert
+
+Expanded with an icon, title and description, or compact with icon and title only. Both auto dismiss.
+
+<ComponentPreview name="island-alert" />
+
+## Entries and the stack
+
+Entries stack: a confirm pushed on top of a live activity gives the activity back when it closes. Timers pause while the pointer is over the island.
+
+| Option | Description |
+| --- | --- |
+| `mode` | `'compact'` keeps the pill height with `leading`, `content` and `trailing` in a row. `'expanded'` grows into a panel. Inferred when omitted. |
+| `leading`, `trailing` | Compact slots, left and right. |
+| `content` | Center content in compact mode, the whole panel in expanded mode. |
+| `duration` | Auto dismiss in ms. |
+| `dismissible` | Escape and outside click. Default `true` for expanded, `false` for compact. |
+| `role` | `status`, `alert`, `dialog` or `alertdialog`. Dialogs receive focus and give it back. |
+| `width` | Width of the expanded panel. |
+| `onDismiss` | Called when the entry leaves, whatever the reason. |
+
+## `<Island />` props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `position` | `'top'` | `'top'` or `'bottom'`, safe area aware. |
+| `offset` | `12` | Distance from the edge in px. |
+| `idle` | empty pill | Content while nothing is shown. `false` hides the island when idle. |
+| `idleWidth`, `idleHeight` | `120`, `36` | Size of the idle pill and of compact entries. |
+| `expandedRadius` | `28` | Corner radius of expanded entries. |
+| `spring` | `{ stiffness: 380, damping: 28 }` | `'smooth'`, `'bouncy'`, `'stiff'` or a config object. |
+| `pauseOnHover` | `true` | Pause auto dismiss timers while hovered. |
+| `hardware` | `false` | Wrap the physical Dynamic Island in installed apps. See below. |
+| `store` | shared | A store from `createIsland()` for isolated islands. |
+
+## Theming
+
+The wrapper maps the island to your tokens: background from `--foreground`, text from `--background`, confirm buttons from `--primary` and `--destructive`. Override any of the island variables through `style`:
+
+```css
+--island-bg, --island-color, --island-shadow, --island-accent, --island-danger,
+--island-muted, --island-padding, --island-max-width, --island-font
+```
+
+## On an iPhone
+
+In a browser tab the island can never sit where the hardware one is, because the browser toolbar and the status bar live above the page. It becomes possible when the site runs as an installed app with `viewport-fit=cover` and a translucent status bar.
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+```
+
+```tsx
+const standalone = useStandalone()
+<Island hardware={standalone ? { mode: 'stack' } : false} />
+```
+
+Devices differ by a few points and a page cannot measure the cutout, so hardware mode never tries to match it. `'stack'` keeps the top row as the island line, black and empty, and puts every entry on the row below; both rows grow together as one shape. `'wrap'` puts compact slots beside the cutout instead. iOS blurs whatever an installed app draws under the status bar, which is why entries stay below it.
+
+## How the animation works
+
+The island measures its content, then animates width, height and radius from the previous size with the Web Animations API. The easing is a damped spring sampled into a CSS `linear()` function, so it overshoots and can be interrupted mid flight. Browsers without `linear()` fall back to an ease out curve. `prefers-reduced-motion` disables the morph and the blur cross fades.

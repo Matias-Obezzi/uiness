@@ -1,0 +1,93 @@
+Chain effects and render an image through them on a canvas. Process at a low working resolution for a crisp pixel look, animate the effects that depend on time, or write your own in a few lines.
+
+<ComponentPreview name="fx-gameboy" />
+
+## Installation
+
+<Install name="fx" extra="Installs @uiness/fx and a wrapper with rounded corners and a muted background while the image loads. Every effect is re-exported from it." />
+
+Or the package on its own:
+
+<InstallPackage name="@uiness/fx" />
+
+## Usage
+
+```tsx
+import { Fx, pixelate, palette, palettes } from '@/components/ui/fx'
+
+<Fx src="/photo.jpg" alt="Photo" effects={[pixelate(6), palette(palettes.gameboy)]} />
+```
+
+The component draws the image into a `<canvas role="img">`, runs the effects in order and upscales without smoothing when the canvas is smaller than its box. Order matters: `[pixelate(8), dither()]` dithers the blocks, `[dither(), pixelate(8)]` averages the dither away.
+
+## Gallery
+
+<ComponentPreview name="fx-gallery" align="start" />
+
+## Animated effects
+
+Effects that depend on time keep the canvas rendering at `fps` frames per second. `crt()` combines a chromatic fringe, scanlines, a vignette and live grain.
+
+<ComponentPreview name="fx-crt" />
+
+## ASCII
+
+Characters picked by brightness. `colored` keeps the average color of each cell.
+
+<ComponentPreview name="fx-ascii" />
+
+## Custom effects
+
+A pixel effect gets the RGBA buffer and an env with `random()`, `time`, `frame`, `width` and `height`. A draw effect gets the same env plus the 2D context.
+
+<ComponentPreview name="fx-custom" />
+
+## Effects
+
+| Effect | Kind | Notes |
+| --- | --- | --- |
+| `pixelate(size)` | canvas | Block average then nearest neighbour upscale. Works on cross origin images. |
+| `flip(axis)` | canvas | Mirror. |
+| `blur(radius)` | pixels | Three box passes, near gaussian. |
+| `grayscale(amount)`, `invert()`, `sepia(amount)` | pixels | |
+| `brightness(v)`, `contrast(v)`, `saturate(v)` | pixels | 1 is unchanged. |
+| `posterize(levels)`, `threshold(level)` | pixels | |
+| `palette(colors)` | pixels | Nearest color. `palettes.mono`, `gray4`, `gameboy`, `cga`, `pico8` included. |
+| `dither(options)` | pixels | `bayer` (2, 4 or 8), `floyd-steinberg`, `atkinson`, to `levels` or a `palette`. |
+| `scanlines()`, `vignette()`, `chromatic(offset)` | pixels | |
+| `noise(amount, { animated })` | pixels | Film grain, seeded. |
+| `glitch({ intensity, animated })` | pixels | Displaced slices with channel shift, flickers between frames. |
+| `halftone({ size })` | canvas | Newspaper dots. |
+| `ascii({ size, chars, colored })` | canvas | Characters by brightness. |
+| `edge()`, `emboss()` | pixels | Sobel edges, relief. |
+| `crt()` | combo | chromatic, scanlines, vignette and live grain. |
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `src` | | URL, or an image, canvas or video element already loaded. |
+| `effects` | | Effect, list, or nested lists. |
+| `resolution` | `'display'` | Working resolution: max dimension in px, `'display'` for the on screen size, `'native'` for the source size. Lower is faster and chunkier. |
+| `width`, `height` | container width | Display size in CSS px. |
+| `fit` | `'cover'` | `cover`, `contain` or `fill`. |
+| `animate` | auto | Keep rendering. On by default when an effect is animated. |
+| `fps` | `30` | Frame rate for animated renders. |
+| `seed` | `1` | Seed for noise and glitch. |
+| `smooth` | auto | Force smooth or pixelated upscaling. |
+| `crossOrigin` | `'anonymous'` | Cross origin mode for URL sources. |
+| `onStatusChange`, `onRender` | | `loading`, `ready`, `error`, and a callback after each frame. |
+
+A ref gives you `canvas`, `render()` and `toDataURL()`.
+
+## Cross origin images
+
+Pixel effects call `getImageData`, which the browser only allows on same origin images or images served with `Access-Control-Allow-Origin`. Without it the canvas is tainted: the component sets `data-status="error"` and logs the reason. `pixelate` and `flip` only draw, so they work on any image.
+
+## Outside React
+
+```ts
+import { renderEffects, pixelate } from '@uiness/fx'
+
+const canvas = renderEffects(imageElement, [pixelate(4)], { width: 320, height: 200 })
+```

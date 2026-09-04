@@ -1,0 +1,19 @@
+<ComponentPreview name="checkbox-demo" />
+
+## Installation
+
+<Install name="checkbox" />
+
+## Usage
+
+```tsx
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+
+<div className="flex items-center gap-3">
+  <Checkbox id="terms" />
+  <Label htmlFor="terms">Accept terms and conditions</Label>
+</div>
+```
+
+Controlled with `checked` and `onCheckedChange`. The value can be `true`, `false` or `'indeterminate'`.

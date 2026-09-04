@@ -1,0 +1,109 @@
+A drop-in `<img>` replacement. While the bytes arrive it shows a placeholder, a color, or nothing, then transitions to the real picture. Every `<img>` prop is forwarded.
+
+<ComponentPreview name="image-blur" />
+
+## Installation
+
+<Install name="image" extra="Installs @uiness/image and a wrapper with theme defaults: muted background while loading and rounded corners." />
+
+Or the package on its own:
+
+<InstallPackage name="@uiness/image" />
+
+## Usage
+
+```tsx
+import { Image } from '@/components/ui/image'
+
+<Image
+  src="/photos/lake.jpg"
+  placeholder={lakeTinyDataUri} // 16 to 32 px wide is plenty
+  variant="blur"
+  width={1200}
+  height={800}
+  alt="Lake at sunrise"
+/>
+```
+
+Give the image a size, with `width` and `height` or with CSS, so the box exists before the bytes arrive, exactly like a plain `<img>`.
+
+## Variants
+
+<ComponentPreview name="image-variants" align="start" />
+
+| Variant | What it does |
+| --- | --- |
+| `fade` | Cross fade from the placeholder or the `color`. The default. |
+| `blur` | Blurred placeholder that sharpens as the image arrives. |
+| `pixelate` | Low resolution mosaic that refines into the final image. Canvas based, works with or without a placeholder. |
+| `reveal` | Clip path wipe from any edge. |
+| `bar` | Thin progress bar along the bottom edge. Pairs with `progressive`. |
+| `none` | No animation. |
+
+Built-in variants accept options through their factories:
+
+```tsx
+import { blur, pixelate, reveal, bar } from '@/components/ui/image'
+
+<Image variant={blur({ amount: 40 })} />
+<Image variant={pixelate({ size: 48 })} />
+<Image variant={reveal({ from: 'bottom' })} />
+<Image variant={bar({ thickness: 4 })} />
+```
+
+## Real progress
+
+Browsers give no progress events for `<img>`. With `progressive`, the file is downloaded with `fetch`, the stream is read as it comes, and the bytes are handed to the image as a blob URL. Blur, pixelate and bar then follow the real download.
+
+<ComponentPreview name="image-progressive" />
+
+Two trade-offs: the image host must allow CORS for your origin, and `srcSet` and `sizes` are ignored because the request goes to `src` only. `loading="lazy"` is honored with an intersection observer, so the download waits until the image is near the viewport.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `variant` | `'fade'` | Built-in name or a custom variant. |
+| `placeholder` | | Tiny version of the image, data URI or URL. |
+| `color` | `var(--muted)` | Wrapper background while loading. |
+| `duration` | `600` | Transition length in ms once the image is decoded. |
+| `easing` | `cubic-bezier(0.4, 0, 0.2, 1)` | CSS easing for the transition. |
+| `progressive` | `false` | Stream with `fetch` for real progress. |
+| `fetchInit` | | Extra `RequestInit` for the progressive request. |
+| `fallback` | | Node rendered inside the wrapper when the image fails. |
+| `wrapperProps` | | Props for the wrapping `<span>`. |
+| `onProgress` | | `(progress: number) => void`, 0 to 1. |
+| `onStatusChange` | | `(status: 'loading' \| 'loaded' \| 'error') => void`. |
+
+The wrapper exposes `data-status`, `data-variant` and `data-progress` for styling from CSS.
+
+## Custom variants
+
+A variant is an object of style functions. Each receives the current context and returns inline styles for the wrapper, the image or the placeholder. An optional `overlay` component can render anything on top.
+
+```tsx
+import { defineVariant } from '@/components/ui/image'
+
+const slideUp = defineVariant({
+  name: 'slide-up',
+  image: (ctx) => ({
+    opacity: ctx.status === 'loaded' ? 1 : 0,
+    transform: ctx.status === 'loaded' ? 'none' : 'translateY(12px)',
+    transition: `opacity ${ctx.duration}ms ${ctx.easing}, transform ${ctx.duration}ms ${ctx.easing}`,
+  }),
+})
+
+<Image variant={slideUp} />
+```
+
+`ctx.value` is the effective progress: real bytes in progressive mode, otherwise 0 until the image is decoded and then 1.
+
+## The hook
+
+`useImageLoad` is the primitive behind the component. Use it to build your own markup.
+
+<ComponentPreview name="image-hook" />
+
+## Server rendering
+
+The package ships with the `'use client'` directive and renders the loading state on the server. Images already in the browser cache are detected on hydration and appear without animation.

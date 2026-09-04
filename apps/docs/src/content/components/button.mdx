@@ -1,0 +1,45 @@
+<ComponentPreview name="button-demo" />
+
+## Installation
+
+<Install name="button" />
+
+## Usage
+
+```tsx
+import { Button } from '@/components/ui/button'
+
+<Button variant="outline">Button</Button>
+```
+
+## Examples
+
+### Variants
+
+<ComponentPreview name="button-variants" />
+
+### Sizes
+
+<ComponentPreview name="button-sizes" />
+
+### With icon
+
+Icons inside a button are sized and spaced automatically.
+
+<ComponentPreview name="button-icon" />
+
+### As a link
+
+`asChild` renders the child element with the button styles, so a link or a router `Link` gets the same look.
+
+<ComponentPreview name="button-link" />
+
+## Props
+
+| Prop | Type | Default |
+| --- | --- | --- |
+| `variant` | `default \| secondary \| outline \| ghost \| link \| destructive` | `default` |
+| `size` | `default \| sm \| lg \| icon` | `default` |
+| `asChild` | `boolean` | `false` |
+
+Every other prop goes to the underlying `<button>`. `buttonVariants` is exported for styling other elements the same way.

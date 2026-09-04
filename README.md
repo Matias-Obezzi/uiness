@@ -15,6 +15,7 @@ UI primitives for React, published under the `@uiness` scope.
 pnpm install
 pnpm --filter playground gen:images   # once, generates the sample images
 pnpm --filter playground dev          # visual playground on http://localhost:5173
+pnpm --filter docs dev                # documentation site on http://localhost:5174
 pnpm test
 pnpm build
 pnpm lint
