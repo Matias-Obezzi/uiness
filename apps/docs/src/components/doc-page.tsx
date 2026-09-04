@@ -1,6 +1,6 @@
 import { MDXProvider } from '@mdx-js/react'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
-import { type ComponentType, lazy, Suspense, useEffect, useMemo } from 'react'
+import { type ComponentType, lazy, Suspense, useEffect } from 'react'
 import { Link, useLocation } from 'react-router'
 import { Badge } from '@/ui/badge'
 import { Button } from '@/ui/button'
@@ -8,21 +8,23 @@ import { findPage, pageHref, pages } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { mdxComponents } from './mdx-components'
 
-const content = import.meta.glob('../content/**/*.mdx') as Record<
+const loaders = import.meta.glob('../content/**/*.mdx') as Record<
   string,
   () => Promise<{ default: ComponentType }>
 >
+
+// Lazy components are created once here. Creating them during render would give
+// every suspended retry a fresh promise, and a transition would never settle.
+const content = Object.fromEntries(
+  Object.entries(loaders).map(([path, loader]) => [path, lazy(loader)]),
+) as Record<string, ComponentType>
 
 export function DocPage() {
   const { pathname, hash } = useLocation()
   const slug = pathname.replace(/^\/docs\/?/, '')
   const page = findPage(slug)
 
-  const Content = useMemo(() => {
-    if (!page) return null
-    const loader = content[`../content/${page.file}`]
-    return loader ? lazy(loader) : null
-  }, [page])
+  const Content = page ? content[`../content/${page.file}`] : null
 
   useEffect(() => {
     document.title = page ? `${page.title} · ${site.name}` : site.name
