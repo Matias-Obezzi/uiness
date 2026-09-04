@@ -1,6 +1,6 @@
 {
   "name": "@uiness/island",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Dynamic Island for the web: a morphing pill for statuses, alerts, confirms and live activities. React, zero dependencies.",
   "keywords": [
     "react",
