@@ -37,7 +37,11 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `theme` | CSS variables for light and dark, radius 0.75rem. Expects `tw-animate-css` imported in your globals. |
 | `utils` | `cn()` on top of clsx and tailwind-merge. |
 | `button`, `badge`, `card`, `input`, `textarea`, `label`, `checkbox`, `switch`, `separator` | Form and layout basics. |
-| `dialog`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
+| `select`, `combobox` | Pick from a list; the combobox searches. |
+| `dialog`, `drawer`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
+| `navbar` | Bar that becomes a menu or a bottom tab bar on phones. |
+| `command` | Command palette with fuzzy search, plus `useCommandShortcut`. |
+| `scroll-area` | Scrollable region with themed bars. |
 | `alert`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
 | `island` | `<Island />` wired to the theme tokens, re-exports the `@uiness/island` API. |

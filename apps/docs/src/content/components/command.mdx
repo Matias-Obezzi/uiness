@@ -1,0 +1,74 @@
+A list you search with the keyboard: a command palette, a page switcher, the inside of a combobox.
+
+<ComponentPreview name="command-demo" />
+
+## Installation
+
+<Install name="command" />
+
+## Usage
+
+```tsx
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+
+<Command>
+  <CommandInput placeholder="Type a command or search…" />
+  <CommandList>
+    <CommandEmpty>No results found.</CommandEmpty>
+    <CommandGroup heading="Suggestions">
+      <CommandItem onSelect={(value) => run(value)}>Calendar</CommandItem>
+      <CommandItem keywords={['emoji']}>Search emoji</CommandItem>
+    </CommandGroup>
+  </CommandList>
+</Command>
+```
+
+Items are matched by their text, plus any `keywords` you add. The match is forgiving: exact and prefix matches come first, then substrings, then letters scattered in order, so `stgs` still finds Settings. Accents are ignored, which matters if your labels are in Spanish.
+
+## In a dialog
+
+<ComponentPreview name="command-dialog" />
+
+`CommandDialog` is the palette in a dialog, and `useCommandShortcut` binds it to cmd+K on a Mac and ctrl+K everywhere else.
+
+```tsx
+const [open, setOpen] = useState(false)
+useCommandShortcut(() => setOpen((o) => !o))
+
+<CommandDialog open={open} onOpenChange={setOpen}>
+  <CommandInput placeholder="Search…" />
+  <CommandList>...</CommandList>
+</CommandDialog>
+```
+
+The hook takes another key with `{ key: 'j' }`, and `{ inInputs: false }` if the shortcut should not fire while someone is typing in a field.
+
+## Your own results
+
+Turn off the built in filter when the results come from a server:
+
+```tsx
+<Command shouldFilter={false} value={query} onValueChange={setQuery}>
+```
+
+Or keep it and change the ranking with `filter`, which gets the value, the search and the keywords, and returns a number. Zero hides the item. `commandScore` is exported if you want to build on it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `shouldFilter` | `true` | Filter as you type. |
+| `filter` | `commandScore` | Custom scoring. |
+| `loop` | `true` | Arrows wrap around the ends. |
+| `label` | `'Command menu'` | Accessible name. |
+
+## Keyboard
+
+Arrows move, Home and End jump to the ends, cmd and an arrow does the same, Enter selects and disabled items are skipped. The input keeps focus the whole time and points at the active item with `aria-activedescendant`, so a screen reader announces the selection without the focus moving.

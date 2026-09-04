@@ -1,0 +1,30 @@
+A scrollable box with slim bars that follow your theme instead of the ones the operating system draws.
+
+<ComponentPreview name="scroll-area-demo" />
+
+## Installation
+
+<Install name="scroll-area" />
+
+## Usage
+
+```tsx
+import { ScrollArea } from '@/components/ui/scroll-area'
+
+<ScrollArea className="h-56 w-56 rounded-lg border">
+  <div className="p-4">...</div>
+</ScrollArea>
+```
+
+The height comes from you: without one there is nothing to scroll. For a horizontal area add the bar yourself:
+
+```tsx
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+
+<ScrollArea className="w-96 whitespace-nowrap">
+  <div className="flex gap-4 pb-3">...</div>
+  <ScrollBar orientation="horizontal" />
+</ScrollArea>
+```
+
+The bars appear while the pointer is over the area. `type="always"` keeps them on screen, `type="scroll"` shows them only while scrolling, and `type="auto"` behaves like the ones the browser draws. Touch devices keep their native scrolling either way.

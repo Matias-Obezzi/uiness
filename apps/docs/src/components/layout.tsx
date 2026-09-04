@@ -1,11 +1,19 @@
 import { MenuIcon, MoonIcon, SearchIcon, SunIcon } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
-import { Dialog, DialogContent, DialogTitle } from '@/ui/dialog'
-import { Input } from '@/ui/input'
-import { nav, pageHref, pages } from '~/lib/nav'
+import {
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  useCommandShortcut,
+} from '@/ui/command'
+import { Drawer, DrawerBody, DrawerContent, DrawerDescription, DrawerTitle } from '@/ui/drawer'
+import { nav, pageHref } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { useTheme } from '~/lib/theme'
 
@@ -58,78 +66,42 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 function Search({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-  const [query, setQuery] = useState('')
   const navigate = useNavigate()
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    return (
-      q ? pages.filter((p) => `${p.title} ${p.description}`.toLowerCase().includes(q)) : pages
-    ).slice(0, 8)
-  }, [query])
-  const [active, setActive] = useState(0)
-
-  useEffect(() => {
-    if (open) {
-      setQuery('')
-      setActive(0)
-    }
-  }, [open])
-
-  const go = (index: number) => {
-    const p = results[index]
-    if (!p) return
-    navigate(pageHref(p))
-    onOpenChange(false)
-  }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="top-[20%] translate-y-0 gap-0 p-0 sm:max-w-md"
-        showCloseButton={false}
-      >
-        <DialogTitle className="sr-only">Search the docs</DialogTitle>
-        <div className="flex items-center gap-2 border-b px-3">
-          <SearchIcon className="size-4 text-muted-foreground" />
-          <Input
-            autoFocus
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value)
-              setActive(0)
-            }}
-            onKeyDown={(e) => {
-              if (e.key === 'ArrowDown') setActive((a) => Math.min(results.length - 1, a + 1))
-              if (e.key === 'ArrowUp') setActive((a) => Math.max(0, a - 1))
-              if (e.key === 'Enter') go(active)
-            }}
-            placeholder="Search docs…"
-            className="border-0 shadow-none focus-visible:ring-0 dark:bg-transparent"
-          />
-        </div>
-        <ul className="max-h-80 overflow-y-auto p-2">
-          {results.length === 0 && (
-            <li className="px-3 py-6 text-center text-muted-foreground text-sm">No results.</li>
-          )}
-          {results.map((p, i) => (
-            <li key={p.slug}>
-              <button
-                type="button"
-                onMouseEnter={() => setActive(i)}
-                onClick={() => go(i)}
-                className={cn(
-                  'flex w-full flex-col items-start rounded-md px-3 py-2 text-left text-sm',
-                  i === active && 'bg-accent text-accent-foreground',
-                )}
+    <CommandDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Search the docs"
+      description="Find a page by its name or what it does"
+    >
+      <CommandInput placeholder="Search docs…" />
+      <CommandList>
+        <CommandEmpty>No results.</CommandEmpty>
+        {nav.map((section) => (
+          <CommandGroup key={section.title} heading={section.title}>
+            {section.pages.map((p) => (
+              <CommandItem
+                key={p.slug}
+                value={p.title}
+                keywords={[p.description, p.slug]}
+                onSelect={() => {
+                  navigate(pageHref(p))
+                  onOpenChange(false)
+                }}
               >
-                <span className="font-medium">{p.title}</span>
-                <span className="line-clamp-1 text-muted-foreground text-xs">{p.description}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </DialogContent>
-    </Dialog>
+                <span className="flex min-w-0 flex-col">
+                  <span className="font-medium">{p.title}</span>
+                  <span className="line-clamp-1 text-muted-foreground text-xs">
+                    {p.description}
+                  </span>
+                </span>
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        ))}
+      </CommandList>
+    </CommandDialog>
   )
 }
 
@@ -140,16 +112,7 @@ export function Layout() {
   const { pathname } = useLocation()
   const inDocs = pathname.startsWith('/docs')
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault()
-        setSearchOpen((o) => !o)
-      }
-    }
-    document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
-  }, [])
+  useCommandShortcut(() => setSearchOpen((o) => !o))
 
   return (
     <div className="flex min-h-dvh flex-col">
@@ -221,14 +184,15 @@ export function Layout() {
 
       <Search open={searchOpen} onOpenChange={setSearchOpen} />
 
-      <Dialog open={menuOpen} onOpenChange={setMenuOpen}>
-        <DialogContent className="top-0 left-0 h-dvh max-w-xs translate-x-0 translate-y-0 overflow-y-auto rounded-none border-r data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left sm:max-w-xs">
-          <DialogTitle className="sr-only">Menu</DialogTitle>
-          <div className="pt-4">
+      <Drawer open={menuOpen} onOpenChange={setMenuOpen}>
+        <DrawerContent side="left" showCloseButton={false} className="w-72">
+          <DrawerTitle className="sr-only">Menu</DrawerTitle>
+          <DrawerDescription className="sr-only">Documentation navigation</DrawerDescription>
+          <DrawerBody className="py-6">
             <SidebarNav onNavigate={() => setMenuOpen(false)} />
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
 
       {inDocs ? (
         <div className="mx-auto flex w-full max-w-7xl flex-1 gap-10 px-4 sm:px-6">
