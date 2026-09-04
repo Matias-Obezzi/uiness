@@ -38,9 +38,12 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `utils` | `cn()` on top of clsx and tailwind-merge. |
 | `button`, `badge`, `card`, `input`, `textarea`, `label`, `checkbox`, `switch`, `separator` | Form and layout basics. |
 | `dialog`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
+| `alert`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
+| `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
 | `island` | `<Island />` wired to the theme tokens, re-exports the `@uiness/island` API. |
 | `image` | `<Image />` with theme defaults, re-exports the `@uiness/image` variants and hook. |
 | `fx` | `<Fx />` canvas effects with theme defaults, re-exports every `@uiness/fx` effect. |
+| `toast` | `<Toaster />` wired to the theme tokens, re-exports `toast()` from `@uiness/toast`. |
 
 Components import the unified `radix-ui` package and mark themselves `'use client'` where they hold state, so they work in Next.js App Router out of the box.
 
