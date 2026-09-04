@@ -53,7 +53,7 @@ Components import the unified `radix-ui` package and mark themselves `'use clien
 
 ## Development
 
-Sources live in `registry/`. The playground renders every component at `#ui`.
+Sources live in `registry/`. Every component has a live demo in the docs site under `apps/docs`.
 
 ```bash
 pnpm --filter @uiness/ui test
