@@ -1,0 +1,53 @@
+Click any picture. It flies from its thumbnail to the center of the screen and back when you close it. Arrow keys, swipe and the thumbnail strip move between images.
+
+<ComponentPreview name="gallery-demo" align="start" />
+
+## Installation
+
+<Install name="gallery" extra="Installs the Image component as well, which the grid uses for its blur-up thumbnails." />
+
+## Usage
+
+```tsx
+import { Gallery } from '@/components/ui/gallery'
+
+const images = [
+  { src: '/photos/dawn.jpg', placeholder: dawnTiny, alt: 'Dawn at the lake', caption: 'Dawn' },
+  { src: '/photos/noon.jpg', placeholder: noonTiny, alt: 'Noon at the lake' },
+]
+
+<Gallery images={images} columns={3} aspect="3 / 2" />
+```
+
+## Images
+
+| Field | Description |
+| --- | --- |
+| `src` | Full size image, shown in the lightbox. |
+| `thumbnail` | Smaller file for the grid. Defaults to `src`. |
+| `placeholder` | Tiny version for the blur transition in the grid. |
+| `alt` | Describes the image, also used as the lightbox title. |
+| `caption` | Shown under the image in the lightbox. |
+| `width`, `height` | Intrinsic size, keeps the grid stable before the image loads. |
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `columns` | `3` | `2`, `3`, `4` or `5`. Collapses on small screens. |
+| `aspect` | `'1 / 1'` | Aspect ratio of the cells. |
+| `thumbnails` | `true` | Thumbnail strip in the lightbox. |
+
+## Lightbox on its own
+
+`Lightbox` is exported too. Control it with `open`, `index` and their change handlers, and pass an `origin` rect if you want the fly-in animation from somewhere on the page.
+
+```tsx
+import { Lightbox } from '@/components/ui/gallery'
+
+<Lightbox images={images} index={index} onIndexChange={setIndex} open={open} onOpenChange={setOpen} />
+```
+
+## Keyboard and touch
+
+Arrow keys move, Escape closes, focus stays inside the viewer. On touch, swipe sideways to move and down to close. `prefers-reduced-motion` turns the flight into a plain fade.

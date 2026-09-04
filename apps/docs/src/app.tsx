@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router'
 import { Island } from '@/ui/island'
+import { Toaster } from '@/ui/toast'
 import { DocPage } from './components/doc-page'
 import { Home } from './components/home'
 import { Layout } from './components/layout'
@@ -8,6 +9,7 @@ export function App() {
   return (
     <>
       <Island idle={false} />
+      <Toaster closeButton />
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />

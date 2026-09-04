@@ -14,6 +14,7 @@
     "@uiness/fx": "workspace:*",
     "@uiness/image": "workspace:*",
     "@uiness/island": "workspace:*",
+    "@uiness/toast": "workspace:*",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^1.40.0",

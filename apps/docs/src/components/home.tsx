@@ -27,6 +27,12 @@ const features = [
       'Canvas effects you compose like functions: pixelate, dither to a Game Boy palette, glitch, CRT, ASCII.',
   },
   {
+    title: 'Toast',
+    href: '/docs/toast',
+    description:
+      'Notifications that stack with the newest in front, expand on hover, swipe away and follow your promises.',
+  },
+  {
     title: 'Components',
     href: '/docs/components/button',
     description:
@@ -86,7 +92,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="mt-20 grid gap-4 sm:grid-cols-2">
+      <section className="mt-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {features.map((f) => (
           <Link key={f.title} to={f.href} className="group">
             <Card className="h-full transition-colors group-hover:bg-accent/40">

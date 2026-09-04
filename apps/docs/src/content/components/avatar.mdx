@@ -1,0 +1,18 @@
+<ComponentPreview name="avatar-demo" />
+
+## Installation
+
+<Install name="avatar" />
+
+## Usage
+
+```tsx
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+
+<Avatar>
+  <AvatarImage src="https://example.com/ada.png" alt="Ada Lovelace" />
+  <AvatarFallback>AL</AvatarFallback>
+</Avatar>
+```
+
+The fallback shows until the image loads, and stays if it fails. Size it with `className`, for example `size-12`, and use `rounded-lg` on both parts for a square one.

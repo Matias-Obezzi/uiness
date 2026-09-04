@@ -1,0 +1,68 @@
+{
+  "name": "@uiness/toast",
+  "version": "0.0.0",
+  "description": "Toasts and notifications for React: stacked, swipeable, with promise tracking and actions. Zero dependencies.",
+  "keywords": [
+    "react",
+    "toast",
+    "notification",
+    "snackbar",
+    "sonner",
+    "uiness"
+  ],
+  "author": "Matías Obezzi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matias-Obezzi/uiness.git",
+    "directory": "packages/toast"
+  },
+  "homepage": "https://matias-obezzi.github.io/uiness/docs/toast",
+  "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "jsdom": "^30.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tsdown": "^0.23.0",
+    "vitest": "^5.0.0"
+  }
+}

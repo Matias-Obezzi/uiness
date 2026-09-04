@@ -1,0 +1,31 @@
+<ComponentPreview name="alert-demo" />
+
+## Installation
+
+<Install name="alert" />
+
+## Usage
+
+```tsx
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+
+<Alert>
+  <TerminalIcon />
+  <AlertTitle>Heads up!</AlertTitle>
+  <AlertDescription>You can add components to your app using the CLI.</AlertDescription>
+</Alert>
+```
+
+An icon as the first child gets its own column. Without one, the text starts at the edge.
+
+## Variants
+
+<ComponentPreview name="alert-variants" />
+
+## Props
+
+| Prop | Type | Default |
+| --- | --- | --- |
+| `variant` | `default \| info \| success \| warning \| destructive` | `default` |
+
+Alerts are static and stay where they are. For messages that come and go, use [Toast](/docs/toast).

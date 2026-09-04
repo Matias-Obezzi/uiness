@@ -1,0 +1,97 @@
+Notifications that stack with the newest in front, expand when you hover the stack, swipe away, pause their timers while you look at them, and follow your promises from loading to done. Driven by a `toast()` function you can call from anywhere.
+
+<ComponentPreview name="toast-demo" />
+
+## Installation
+
+<Install name="toast" extra="Installs @uiness/toast and a Toaster wired to your theme tokens." />
+
+Or the package on its own:
+
+<InstallPackage name="@uiness/toast" />
+
+## Usage
+
+Mount `<Toaster />` once, near the root, then call `toast()`.
+
+```tsx
+import { Toaster, toast } from '@/components/ui/toast'
+
+function App() {
+  return (
+    <>
+      <Toaster />
+      <Page />
+    </>
+  )
+}
+
+toast('Event has been created')
+toast.success('Saved', { description: 'All changes are in.' })
+```
+
+## Actions
+
+`action` renders a primary button that closes the toast after its handler runs, unless the handler calls `event.preventDefault()`. `cancel` renders a secondary one.
+
+<ComponentPreview name="toast-action" />
+
+## Promise
+
+The toast starts as loading and turns into success or error with the resolved value or the thrown error.
+
+<ComponentPreview name="toast-promise" />
+
+## Custom
+
+`toast.custom()` hands you the toast and renders whatever you return in place of the card.
+
+<ComponentPreview name="toast-custom" />
+
+## Options
+
+| Option | Description |
+| --- | --- |
+| `id` | Reuse to update a toast in place. |
+| `title`, `description` | Content. |
+| `type` | `default`, `success`, `error`, `info`, `warning`, `loading`. Also available as `toast.success()` and friends. |
+| `icon` | Replace the type icon, `null` hides it. |
+| `duration` | Auto dismiss in ms, `Infinity` to keep. Loading toasts default to `Infinity`. |
+| `action`, `cancel` | `{ label, onClick }` buttons. |
+| `dismissible` | Swipe and close button. Default true. |
+| `closeButton`, `position`, `important` | Per toast overrides of the Toaster settings. |
+| `onDismiss`, `onAutoClose` | Callbacks. |
+
+`toast.dismiss(id)` closes one toast, `toast.dismiss()` closes them all.
+
+## `<Toaster />` props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `position` | `'bottom-right'` | Any corner, or the center of the top and bottom edges. |
+| `expand` | `false` | Keep the stack expanded instead of collapsing it until hovered. |
+| `visibleToasts` | `3` | Toasts visible in the collapsed stack. |
+| `richColors` | `false` | Colored backgrounds for success, error, info and warning. |
+| `closeButton` | `false` | Close button on every toast. This site turns it on. |
+| `duration` | `4000` | Default auto dismiss delay. |
+| `gap`, `offset` | `14`, `24` | Spacing in px. |
+| `icons` | | Custom icons per type. |
+| `toastClassName`, `toastStyle` | | Applied to every card. |
+
+## Theming
+
+The wrapper maps the cards to `--popover`, `--border`, `--radius` and the action button to `--primary`. Override any of the toast variables through `style`:
+
+```css
+--toast-bg, --toast-color, --toast-border, --toast-shadow, --toast-radius, --toast-width,
+--toast-action-bg, --toast-action-color,
+--toast-success-bg, --toast-success-color, --toast-success-border (and error, info, warning)
+```
+
+## Accessibility
+
+The region is labelled "Notifications". Each toast is a polite live region, or assertive with `important`. Timers pause while hovering and while the page is hidden, and swipe is only one way to dismiss: the close button and the actions work with a keyboard too.
+
+## Toast or Island?
+
+Both are transient messages. [Island](/docs/island) is a single spot at the top that morphs between states, good for one live activity or a confirm. Toasts stack, so they fit streams of events. They share the promise API, so switching is a one line change.

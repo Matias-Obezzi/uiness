@@ -8,7 +8,8 @@
       "@uiness/island": ["../../packages/island/src/index.ts"],
       "@uiness/fx": ["../../packages/fx/src/index.ts"],
       "@/*": ["../../packages/ui/registry/*"],
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "@uiness/toast": ["../../packages/toast/src/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]
