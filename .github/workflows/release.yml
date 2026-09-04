@@ -33,5 +33,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          # Provenance only works from CI, so it is enabled here rather than in publishConfig.
-          NPM_CONFIG_PROVENANCE: true
+          # Provenance only works from CI and only for public repositories.
+          NPM_CONFIG_PROVENANCE: ${{ github.event.repository.private == false }}
