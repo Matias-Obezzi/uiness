@@ -14,11 +14,11 @@
   "author": "Mat\u00edas Obezzi",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matiasobezzi/uiness.git",
+    "url": "git+https://github.com/Matias-Obezzi/uiness.git",
     "directory": "packages/island"
   },
-  "homepage": "https://matiasobezzi.github.io/uiness/docs/island",
-  "bugs": "https://github.com/matiasobezzi/uiness/issues",
+  "homepage": "https://matias-obezzi.github.io/uiness/docs/island",
+  "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,

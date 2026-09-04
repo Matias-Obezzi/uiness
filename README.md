@@ -33,4 +33,4 @@ Releases use [Changesets](https://github.com/changesets/changesets): run `pnpm c
 
 To publish by hand instead: `pnpm version` then `pnpm release`.
 
-**Docs to GitHub Pages.** The `Docs` workflow builds `apps/docs` and deploys it. In the repository settings, under Pages, set the source to GitHub Actions. The site lands on `https://<user>.github.io/<repo>/`, and the registry with it at `/r/<name>.json`, which is the URL the install pages show. If the GitHub handle or repo name differ from `matiasobezzi/uiness`, update `apps/docs/src/lib/site.ts`, `packages/ui/registry.json` and the `repository` fields of the packages.
+**Docs to GitHub Pages.** The `Docs` workflow builds `apps/docs` and deploys it. In the repository settings, under Pages, set the source to GitHub Actions. The site lands on `https://<user>.github.io/<repo>/`, and the registry with it at `/r/<name>.json`, which is the URL the install pages show. If the GitHub handle or repo name differ from `Matias-Obezzi/uiness`, update `apps/docs/src/lib/site.ts`, `packages/ui/registry.json` and the `repository` fields of the packages.

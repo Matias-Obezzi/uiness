@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "uiness",
-  "homepage": "https://matiasobezzi.github.io/uiness",
+  "homepage": "https://matias-obezzi.github.io/uiness",
   "items": [
     {
       "name": "theme",

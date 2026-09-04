@@ -16,11 +16,11 @@
   "author": "Mat\u00edas Obezzi",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/matiasobezzi/uiness.git",
+    "url": "git+https://github.com/Matias-Obezzi/uiness.git",
     "directory": "packages/fx"
   },
-  "homepage": "https://matiasobezzi.github.io/uiness/docs/fx",
-  "bugs": "https://github.com/matiasobezzi/uiness/issues",
+  "homepage": "https://matias-obezzi.github.io/uiness/docs/fx",
+  "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
   "version": "0.0.0",
   "license": "MIT",
   "type": "module",

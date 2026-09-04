@@ -2,7 +2,7 @@ export const site = {
   name: 'uiness',
   description: 'React UI primitives with a bit of magic.',
   /** Replace with your GitHub handle and repo if they differ. */
-  github: 'https://github.com/matiasobezzi/uiness',
+  github: 'https://github.com/Matias-Obezzi/uiness',
   registryNamespace: '@uiness',
 }
 
