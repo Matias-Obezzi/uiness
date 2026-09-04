@@ -13,8 +13,8 @@
     "lint:fix": "biome check --write .",
     "typecheck": "turbo run typecheck",
     "changeset": "changeset",
-    "version": "changeset version",
-    "release": "turbo run build && changeset publish"
+    "changeset:version": "changeset version",
+    "changeset:publish": "turbo run build --filter=./packages/* && changeset publish"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.12",

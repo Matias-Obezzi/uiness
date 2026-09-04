@@ -31,6 +31,6 @@ Releases use [Changesets](https://github.com/changesets/changesets): run `pnpm c
 2. Create an npm granular access token with publish rights and add it to the GitHub repository as the `NPM_TOKEN` secret.
 3. Every change that should ship gets a changeset (`pnpm changeset`). On push to `main`, the workflow opens a "Version Packages" pull request; merging it publishes the bumped packages with provenance.
 
-To publish by hand instead: `pnpm version` then `pnpm release`.
+To publish by hand instead: `pnpm changeset:version` then `pnpm changeset:publish`.
 
 **Docs to GitHub Pages.** The `Docs` workflow builds `apps/docs` and deploys it. In the repository settings, under Pages, set the source to GitHub Actions. The site lands on `https://<user>.github.io/<repo>/`, and the registry with it at `/r/<name>.json`, which is the URL the install pages show. If the GitHub handle or repo name differ from `Matias-Obezzi/uiness`, update `apps/docs/src/lib/site.ts`, `packages/ui/registry.json` and the `repository` fields of the packages.
