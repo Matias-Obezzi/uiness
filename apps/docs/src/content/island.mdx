@@ -119,6 +119,10 @@ const standalone = useStandalone()
 <Island hardware={standalone ? { mode: 'stack' } : false} />
 ```
 
+Try the modes here. Open this page on an iPhone, add it to the home screen and come back to see them line up with the real cutout.
+
+<ComponentPreview name="island-hardware" align="start" />
+
 Devices differ by a few points and a page cannot measure the cutout, so hardware mode never tries to match it. `'stack'` keeps the top row as the island line, black and empty, and puts every entry on the row below; both rows grow together as one shape. `'wrap'` puts compact slots beside the cutout instead. iOS blurs whatever an installed app draws under the status bar, which is why entries stay below it.
 
 ## How the animation works

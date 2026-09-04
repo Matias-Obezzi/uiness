@@ -14,13 +14,13 @@ UI primitives for React, published under the `@uiness` scope.
 
 ```bash
 pnpm install
-pnpm --filter playground gen:images   # once, generates the sample images
-pnpm --filter playground dev          # visual playground on http://localhost:5173
-pnpm --filter docs dev                # documentation site on http://localhost:5174
+pnpm --filter docs dev   # docs and live demos on http://localhost:5174
 pnpm test
 pnpm build
 pnpm lint
 ```
+
+Every package and every registry component has a live demo in the docs site, under `apps/docs`. That is where you try a change: `src/demos` holds one file per demo and `src/content` the pages that show them.
 
 Releases use [Changesets](https://github.com/changesets/changesets): run `pnpm changeset` with your change, merge, and the release workflow opens a version PR and publishes to npm when it lands.
 

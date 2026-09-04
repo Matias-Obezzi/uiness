@@ -2,12 +2,6 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "playground",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["--filter", "playground", "dev", "--port", "5173", "--strictPort"],
-      "port": 5173
-    },
-    {
       "name": "docs",
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "docs", "dev", "--port", "5174", "--strictPort"],

@@ -1,0 +1,31 @@
+<ComponentPreview name="select-demo" />
+
+## Installation
+
+<Install name="select" />
+
+## Usage
+
+```tsx
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+
+<Select defaultValue="art">
+  <SelectTrigger className="w-56">
+    <SelectValue placeholder="Pick a timezone" />
+  </SelectTrigger>
+  <SelectContent>
+    <SelectItem value="art">Buenos Aires</SelectItem>
+    <SelectItem value="est">New York</SelectItem>
+  </SelectContent>
+</Select>
+```
+
+Group items with `SelectGroup` and `SelectLabel`. Control it with `value` and `onValueChange`, and give the trigger `size="sm"` where the row is tight.
+
+Typing letters jumps to the matching option, and the panel scrolls itself when the list is long. For a list you need to search through, use the [Combobox](/docs/components/combobox).

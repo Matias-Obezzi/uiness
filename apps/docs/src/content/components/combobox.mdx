@@ -1,0 +1,49 @@
+A select you can search, built from the [Command](/docs/components/command) list inside a [Popover](/docs/components/popover).
+
+<ComponentPreview name="combobox-demo" />
+
+## Installation
+
+<Install name="combobox" extra="Installs Command, Popover and Button along with it." />
+
+## Usage
+
+```tsx
+import { Combobox } from '@/components/ui/combobox'
+
+const frameworks = [
+  { value: 'next', label: 'Next.js' },
+  { value: 'remix', label: 'Remix' },
+  { value: 'astro', label: 'Astro', group: 'Static' },
+]
+
+<Combobox options={frameworks} value={value} onValueChange={setValue} placeholder="Select a framework" />
+```
+
+Options with the same `group` render under a heading. `keywords` add words an option is matched by without showing them, and `icon` puts something before the label.
+
+## Multiple
+
+<ComponentPreview name="combobox-multiple" />
+
+With `multiple` the list stays open and every pick toggles. The value is an array, and the trigger shows the first two labels and a count.
+
+## In a form
+
+Pass `name` and the component renders hidden inputs, one per selected value, so a plain form submit carries it. Pair it with a [Label](/docs/components/label) through `id`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `options` | | The list, each with `value` and `label`. |
+| `multiple` | `false` | Select several. |
+| `value` | | Controlled value, a string or an array. |
+| `deselectable` | `true` | Picking the selected option clears it. |
+| `renderOption` | | Draw an option yourself. |
+| `renderValue` | | Draw the trigger label yourself. |
+| `align` | `'start'` | Where the panel sits under the trigger. |
+
+## When to use something else
+
+For a handful of fixed options a [Select](/docs/components/select) is simpler and gets the native behaviour on a phone. Reach for the combobox when the list is long enough that searching helps.

@@ -1,0 +1,70 @@
+A panel that comes from an edge of the screen. From the bottom it behaves like a sheet on a phone: drag it down to dismiss, or give it snap points and drag it between sizes.
+
+<ComponentPreview name="drawer-demo" />
+
+## Installation
+
+<Install name="drawer" />
+
+## Usage
+
+```tsx
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer'
+
+<Drawer>
+  <DrawerTrigger>Open</DrawerTrigger>
+  <DrawerContent>
+    <DrawerHeader>
+      <DrawerTitle>Filters</DrawerTitle>
+      <DrawerDescription>Narrow the list.</DrawerDescription>
+    </DrawerHeader>
+    <DrawerBody>...</DrawerBody>
+    <DrawerFooter>...</DrawerFooter>
+  </DrawerContent>
+</Drawer>
+```
+
+Put long content in `DrawerBody`. It scrolls on its own, and a drag that starts inside it only moves the drawer once the scroll is at the top, the way a native sheet behaves.
+
+## Sides
+
+<ComponentPreview name="drawer-sides" />
+
+`side="left"` and `side="right"` give you the classic slide over panel for navigation or settings, full height, dragged sideways to close. Top and bottom take the width of the screen.
+
+## Snap points
+
+<ComponentPreview name="drawer-snap" />
+
+`snapPoints` are sizes along the drawer's axis, from the closed edge. Numbers up to `1` are fractions of the screen, larger numbers are pixels, and the last one is how tall the drawer really is. Dragging settles on the nearest one, taking the speed of the gesture into account, and dragging past the first one closes it. Tapping the handle moves to the next size.
+
+```tsx
+<DrawerContent snapPoints={[0.35, 0.75, 1]} defaultSnapPoint={0}>
+```
+
+Control it with `activeSnapPoint` and `onActiveSnapPointChange`, or read it from inside with the `useDrawerSnap` hook.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `side` | `'bottom'` | `top`, `bottom`, `left` or `right`. |
+| `snapPoints` | | Sizes the drawer can rest at. |
+| `defaultSnapPoint` | `0` | Index it opens at. |
+| `dismissible` | `true` | Drag, Escape and the overlay close it. |
+| `handle` | bottom only | The bar you drag. |
+| `showCloseButton` | not bottom | Close button in the corner. |
+| `overlay` | `true` | Dim the page behind. |
+
+## Details
+
+Built on the Radix dialog, so focus is trapped, the page behind does not scroll and Escape closes. Bottom and top drawers clear the safe areas of a phone. With `prefers-reduced-motion` the drawer appears instead of sliding. Inputs, textareas, selects and anything marked `data-no-drag` never start a drag.

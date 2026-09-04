@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "vite",
     "registry": "node scripts/copy-registry.mjs",
+    "gen:gallery": "node scripts/gen-gallery.mjs",
     "build": "node scripts/copy-registry.mjs && vite build && node scripts/postbuild.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"

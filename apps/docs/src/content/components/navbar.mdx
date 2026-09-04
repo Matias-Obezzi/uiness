@@ -1,0 +1,65 @@
+Site navigation that changes shape with the screen: a bar on desktop, a menu behind a button on phones, or a bottom bar like a social app.
+
+<ComponentPreview name="navbar-demo" align="start" className="[&_[data-slot=navbar]]:static" />
+
+## Installation
+
+<Install name="navbar" extra="Installs the Drawer as well, which holds the menu on small screens." />
+
+## Usage
+
+```tsx
+import { Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarLinks } from '@/components/ui/navbar'
+
+<Navbar>
+  <NavbarBrand href="/">Acme</NavbarBrand>
+  <NavbarLinks>
+    <NavbarLink href="/" icon={<HomeIcon />} active>Home</NavbarLink>
+    <NavbarLink href="/explore" icon={<CompassIcon />}>Explore</NavbarLink>
+  </NavbarLinks>
+  <NavbarActions>
+    <Button size="sm">Sign in</Button>
+  </NavbarActions>
+</Navbar>
+```
+
+You write the links once. The bar renders them inline, the menu renders them as a list with their icons, and the bottom bar renders them as tabs. `NavbarActions` pushes itself to the right.
+
+## Bottom bar
+
+<ComponentPreview name="navbar-tabs" align="start" className="[&_[data-slot=navbar]]:static [&_[data-slot=navbar-tabs]]:absolute" />
+
+With `mobile="tabs"` the links leave the top bar on small screens and become a fixed bar at the bottom, with the icon above the label. Anything past `maxTabs` goes behind a More tab that opens a drawer. Add `NavbarSpacer` at the end of the page so the last bit of content is not hidden under the bar.
+
+```tsx
+<Navbar mobile="tabs" maxTabs={5}>...</Navbar>
+<NavbarSpacer />
+```
+
+## Links
+
+`NavbarLink` renders an `<a>` by default. With `asChild` it takes your router's link instead, which is what you want in a real app:
+
+```tsx
+<NavbarLink asChild icon={<HomeIcon />} active={pathname === '/'}>
+  <Link to="/">Home</Link>
+</NavbarLink>
+```
+
+`active` marks the current page, which sets `aria-current` too. `badge` puts a count next to the icon, and `badge` set to `true` shows a plain dot.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `mobile` | `'drawer'` | `drawer`, `tabs` or `none`. |
+| `breakpoint` | `'md'` | Where the desktop bar appears. |
+| `sticky` | `true` | Stick to the top of the page. |
+| `hideOnScroll` | `false` | Hide going down, come back going up. |
+| `maxTabs` | `5` | Slots in the bottom bar, More included. |
+| `menuSide` | `'bottom'` | Edge the menu opens from. |
+| `menu` | | Extra content under the links in the menu. |
+
+## Details
+
+The bar is a `header` with a `nav` inside, labelled Primary. Selecting a link closes the menu, and so does growing the window past the breakpoint. The bottom bar clears the home indicator on a phone with `env(safe-area-inset-bottom)`.

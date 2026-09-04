@@ -370,6 +370,90 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "scroll-area",
+      "type": "registry:ui",
+      "title": "Scroll Area",
+      "description": "Scrollable region with thin themed bars.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/scroll-area.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "type": "registry:ui",
+      "title": "Select",
+      "description": "Pick one option from a list.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "drawer",
+      "type": "registry:ui",
+      "title": "Drawer",
+      "description": "Panel from any edge with drag to close and snap points. Bottom sheet by default.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/drawer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "navbar",
+      "type": "registry:ui",
+      "title": "Navbar",
+      "description": "Site navigation that collapses into a menu or a bottom bar on small screens.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "drawer"],
+      "files": [
+        {
+          "path": "registry/ui/navbar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "command",
+      "type": "registry:ui",
+      "title": "Command",
+      "description": "Command palette and searchable lists, with a dialog and a keyboard shortcut hook.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["utils", "dialog"],
+      "files": [
+        {
+          "path": "registry/ui/command.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "combobox",
+      "type": "registry:ui",
+      "title": "Combobox",
+      "description": "Searchable select, single or multiple.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["utils", "button", "command", "popover"],
+      "files": [
+        {
+          "path": "registry/ui/combobox.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

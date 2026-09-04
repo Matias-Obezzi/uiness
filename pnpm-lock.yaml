@@ -103,67 +103,6 @@ importers:
         specifier: ^8.2.2
         version: 8.2.2(@types/node@26.4.1)(jiti@2.7.0)(yaml@2.9.0)
 
-  apps/playground:
-    dependencies:
-      '@uiness/fx':
-        specifier: workspace:*
-        version: link:../../packages/fx
-      '@uiness/image':
-        specifier: workspace:*
-        version: link:../../packages/image
-      '@uiness/island':
-        specifier: workspace:*
-        version: link:../../packages/island
-      class-variance-authority:
-        specifier: ^0.7.1
-        version: 0.7.1
-      clsx:
-        specifier: ^2.1.1
-        version: 2.1.1
-      lucide-react:
-        specifier: ^1.40.0
-        version: 1.40.0(react@19.2.8)
-      radix-ui:
-        specifier: ^1.6.7
-        version: 1.6.7(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      react:
-        specifier: ^19.2.8
-        version: 19.2.8
-      react-dom:
-        specifier: ^19.2.8
-        version: 19.2.8(react@19.2.8)
-      tailwind-merge:
-        specifier: ^3.6.0
-        version: 3.6.0
-    devDependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.3.3
-        version: 4.3.3(vite@8.2.2(@types/node@26.4.1)(jiti@2.7.0)(yaml@2.9.0))
-      '@types/node':
-        specifier: ^26.4.1
-        version: 26.4.1
-      '@types/react':
-        specifier: ^19.2.18
-        version: 19.2.18
-      '@types/react-dom':
-        specifier: ^19.2.7
-        version: 19.2.7(@types/react@19.2.18)
-      '@vitejs/plugin-react':
-        specifier: ^6.1.1
-        version: 6.1.1(vite@8.2.2(@types/node@26.4.1)(jiti@2.7.0)(yaml@2.9.0))
-      tailwindcss:
-        specifier: ^4.3.3
-        version: 4.3.3
-      tw-animate-css:
-        specifier: ^1.4.0
-        version: 1.4.0
-      typescript:
-        specifier: ^7.0.2
-        version: 7.0.2
-      vite:
-        specifier: ^8.2.2
-        version: 8.2.2(@types/node@26.4.1)(jiti@2.7.0)(yaml@2.9.0)
-
   packages/fx:
     devDependencies:
       '@testing-library/dom':
