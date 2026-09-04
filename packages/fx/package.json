@@ -13,7 +13,7 @@
     "ascii",
     "uiness"
   ],
-  "author": "Mat\u00edas Obezzi",
+  "author": "Matías Obezzi",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Matias-Obezzi/uiness.git",
@@ -56,8 +56,7 @@
     "react-dom": ">=18"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.1",
