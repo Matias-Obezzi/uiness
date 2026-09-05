@@ -1,0 +1,28 @@
+A number that counts up, or down, to its value when it scrolls into view. Screen readers get the final value.
+
+<ComponentPreview name="number-ticker-demo" align="start" />
+
+## Installation
+
+<Install name="number-ticker" />
+
+## Usage
+
+```tsx
+import { NumberTicker } from '@/components/ui/number-ticker'
+
+<NumberTicker value={128400} />
+<NumberTicker value={99.98} decimals={2} />
+<NumberTicker value={49} format={{ style: 'currency', currency: 'USD' }} />
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `from` | `0` | Where the count starts. |
+| `duration` | `1500` | Milliseconds for the whole count. |
+| `delay` | `0` | Milliseconds before it starts. |
+| `decimals` | `0` | Digits after the decimal point. |
+| `locale`, `format` | browser | Passed to `Intl.NumberFormat`. |
+| `whenVisible` | `true` | Wait until it scrolls into view. |

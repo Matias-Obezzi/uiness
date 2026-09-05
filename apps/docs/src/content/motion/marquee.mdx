@@ -1,0 +1,35 @@
+Content that scrolls forever: logos, testimonials, tags. The children are repeated so the loop has no seam, and the copies are hidden from assistive tech.
+
+<ComponentPreview name="marquee-demo" align="start" />
+
+## Installation
+
+<Install name="marquee" />
+
+## Usage
+
+```tsx
+import { Marquee } from '@/components/ui/marquee'
+
+<Marquee duration={30} pauseOnHover>
+  {logos.map((logo) => <img key={logo.src} {...logo} />)}
+</Marquee>
+```
+
+## Vertical
+
+<ComponentPreview name="marquee-vertical" />
+
+Give it a height and `vertical`. `reverse` sends either direction the other way.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `duration` | `40` | Seconds for one loop. |
+| `gap` | `'1rem'` | Space between items. |
+| `pauseOnHover` | `true` | Stop while the pointer is over it. |
+| `repeat` | `2` | Copies of the content. Raise it when the content is narrower than the box. |
+| `fade` | `true` | Fade the edges. |
+
+It stands still with `prefers-reduced-motion`.

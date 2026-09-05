@@ -1,0 +1,32 @@
+Two layers with a divider you drag to compare them. Here it is the [Fx](/docs/fx) Game Boy dither against the original.
+
+<ComponentPreview name="compare-demo" />
+
+## Installation
+
+<Install name="compare" />
+
+## Usage
+
+```tsx
+import { Compare } from '@/components/ui/compare'
+
+<Compare
+  before={<img src="/before.jpg" alt="Before" />}
+  after={<img src="/after.jpg" alt="After" />}
+  labels={['Before', 'After']}
+/>
+```
+
+Anything goes in either side, as long as both have the same size. The `after` layer sets the height; the `before` layer is clipped over it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `initial` | `50` | Starting position, 0 to 100. |
+| `value`, `onValueChange` | | Controlled position. |
+| `mode` | `'drag'` | `drag` moves it while pressing, `hover` follows the pointer. |
+| `labels` | | Two corner labels. |
+
+The divider is a slider: arrows move it by two, with shift by ten, Home and End go to the edges.

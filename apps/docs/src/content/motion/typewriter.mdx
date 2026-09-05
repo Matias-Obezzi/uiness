@@ -1,0 +1,30 @@
+Types words one character at a time, holds them, deletes them and moves on to the next. Screen readers get the current word in full, not the keystrokes.
+
+<ComponentPreview name="typewriter-demo" />
+
+## Installation
+
+<Install name="typewriter" />
+
+## Usage
+
+```tsx
+import { Typewriter } from '@/components/ui/typewriter'
+
+<h1>Build <Typewriter words={['faster.', 'with less.', 'something you own.']} /></h1>
+```
+
+A single string types once and stays. An array cycles, with `loop={false}` to stop at the last one.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `typeSpeed` | `70` | Milliseconds per typed character. |
+| `deleteSpeed` | `40` | Milliseconds per deleted character. |
+| `pause` | `1800` | Milliseconds a word stays. |
+| `loop` | `true` | Go around again. |
+| `cursor` | `true` | Blinking cursor. |
+| `onWordTyped` | | Called when a word is complete. |
+
+With `prefers-reduced-motion` the whole word shows at once.

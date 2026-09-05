@@ -33,6 +33,12 @@ const features = [
       'Notifications that stack with the newest in front, expand on hover, swipe away and follow your promises.',
   },
   {
+    title: 'Motion',
+    href: '/docs/motion/spotlight',
+    description:
+      'Spotlights, auroras, marquees, typewriters, tilting cards and more, on CSS and the Web Animations API, no animation library.',
+  },
+  {
     title: 'Components',
     href: '/docs/components/button',
     description:

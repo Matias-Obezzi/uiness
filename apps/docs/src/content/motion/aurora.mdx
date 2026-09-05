@@ -1,0 +1,31 @@
+Three blurred blobs of color drifting slowly behind your content.
+
+<ComponentPreview name="aurora-demo" align="start" />
+
+## Installation
+
+<Install name="aurora" />
+
+## Usage
+
+```tsx
+import { Aurora } from '@/components/ui/aurora'
+
+<section className="relative overflow-hidden">
+  <Aurora />
+  <div className="relative">...</div>
+</section>
+```
+
+It is absolutely positioned, so the parent needs `relative`, and the content needs `relative` too to sit on top.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `colors` | primary and two neighbours | Up to three CSS colors. |
+| `duration` | `18` | Seconds for one full drift. |
+| `blur` | `80` | Blur in pixels. Lower is sharper and cheaper. |
+| `fade` | `true` | Fade the edges. |
+
+It holds still with `prefers-reduced-motion`.

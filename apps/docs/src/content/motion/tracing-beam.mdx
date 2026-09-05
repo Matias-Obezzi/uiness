@@ -1,0 +1,25 @@
+A line beside long content that lights up as far as you have scrolled, with a dot that marks the start. Scroll this page to see it.
+
+<ComponentPreview name="tracing-beam-demo" align="start" />
+
+## Installation
+
+<Install name="tracing-beam" />
+
+## Usage
+
+```tsx
+import { TracingBeam } from '@/components/ui/tracing-beam'
+
+<TracingBeam>
+  <article>...</article>
+</TracingBeam>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `color` | primary | Color of the lit part. |
+| `anchor` | `0.6` | Where on the screen the beam catches up with you, 0 to 1. |
+| `width` | `2` | Width of the line in pixels. |

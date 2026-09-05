@@ -1,0 +1,26 @@
+Text that appears one word at a time, each fading in from a blur. The full text is in the DOM from the start, so it reads, selects and indexes like normal text.
+
+<ComponentPreview name="text-generate-demo" align="start" />
+
+## Installation
+
+<Install name="text-generate" />
+
+## Usage
+
+```tsx
+import { TextGenerate } from '@/components/ui/text-generate'
+
+<TextGenerate text="Words that arrive one after another." className="text-2xl" />
+```
+
+It waits until it scrolls into view. Pass `whenVisible={false}` to start right away.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `stagger` | `80` | Milliseconds between words. |
+| `duration` | `600` | Milliseconds each word takes to appear. |
+| `delay` | `0` | Milliseconds before the first word. |
+| `by` | `'word'` | Split by `word` or `character`. |

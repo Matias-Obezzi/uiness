@@ -1,0 +1,31 @@
+A soft light that follows the pointer over a section, and a card whose border glows around it. Nothing but a radial gradient and two CSS variables.
+
+<ComponentPreview name="spotlight-demo" align="start" />
+
+## Installation
+
+<Install name="spotlight" />
+
+## Usage
+
+```tsx
+import { Spotlight, SpotlightCard } from '@/components/ui/spotlight'
+
+<Spotlight className="rounded-xl border">
+  <h2>Hero</h2>
+</Spotlight>
+```
+
+## Cards
+
+<ComponentPreview name="spotlight-card" align="start" />
+
+`SpotlightCard` keeps only a ring of the light, so it reads as a border. Put your content inside; the card adds the border, background and radius.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `size` | `480` | Diameter of the light in pixels. Cards default to 320. |
+| `color` | primary | Any CSS color. |
+| `strength` | `0.15` | Peak opacity of the section light. |

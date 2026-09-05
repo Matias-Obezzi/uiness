@@ -1,0 +1,29 @@
+A row of overlapping avatars. Hovering one lifts it and pops a card with the name that leans towards where the pointer is.
+
+<ComponentPreview name="animated-tooltip-demo" />
+
+## Installation
+
+<Install name="animated-tooltip" />
+
+## Usage
+
+```tsx
+import { AnimatedTooltip } from '@/components/ui/animated-tooltip'
+
+<AnimatedTooltip
+  items={[
+    { id: 1, name: 'Ada Lovelace', title: 'Analyst', image: '/ada.png' },
+    { id: 2, name: 'Grace Hopper', title: 'Compiler', image: '/grace.png', href: '/grace' },
+  ]}
+/>
+```
+
+Items with `href` render as links, the rest as buttons, and each one is labelled with the name, so keyboard and screen reader users get the same information.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `items` | | `id`, `name`, `image`, optional `title` and `href`. |
+| `size` | `48` | Avatar size in pixels. |

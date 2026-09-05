@@ -1,0 +1,28 @@
+Streaks falling across a background, each with its own speed, delay and place to start.
+
+<ComponentPreview name="meteors-demo" align="start" />
+
+## Installation
+
+<Install name="meteors" />
+
+## Usage
+
+```tsx
+import { Meteors } from '@/components/ui/meteors'
+
+<div className="relative overflow-hidden">
+  <Meteors count={20} />
+  ...
+</div>
+```
+
+The positions come from a seeded generator, so the server and the client render the same sky and nothing jumps on hydration.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `count` | `20` | How many streaks. |
+| `angle` | `215` | Direction of travel in degrees. |
+| `color` | foreground | Any CSS color. |

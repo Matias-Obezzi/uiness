@@ -1,0 +1,25 @@
+One word from a list at a time, the old one blurring out as the new one blurs in, letter by letter.
+
+<ComponentPreview name="flip-words-demo" />
+
+## Installation
+
+<Install name="flip-words" />
+
+## Usage
+
+```tsx
+import { FlipWords } from '@/components/ui/flip-words'
+
+<h1>Ship <FlipWords words={['beautiful', 'accessible', 'fast']} /> interfaces.</h1>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `interval` | `2500` | Milliseconds each word stays. |
+| `duration` | `500` | Milliseconds the swap takes. |
+| `byLetter` | `true` | Animate letter by letter, or the whole word at once. |
+
+The element is `aria-live="polite"`, so the change is announced without interrupting.
