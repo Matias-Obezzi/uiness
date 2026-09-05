@@ -1,0 +1,30 @@
+Twinkling particles on a canvas, drifting slowly. Stops drawing when off screen.
+
+<ComponentPreview name="sparkles-demo" align="start" />
+
+## Installation
+
+<Install name="sparkles" />
+
+## Usage
+
+```tsx
+import { Sparkles } from '@/components/ui/sparkles'
+
+<div className="relative">
+  <Sparkles density={2} />
+  <h1 className="relative">Sparkles</h1>
+</div>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `density` | `1.2` | Particles per 10,000 square pixels. |
+| `color` | foreground | Any CSS color. |
+| `size` | `[0.6, 1.8]` | Smallest and largest radius in pixels. |
+| `speed` | `1` | Twinkle speed multiplier. |
+| `drift` | `6` | Slow drift in pixels per second. |
+
+With `prefers-reduced-motion` the particles hold still at a fixed brightness.

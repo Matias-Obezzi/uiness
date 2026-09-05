@@ -1,0 +1,25 @@
+Text with a highlight sweeping across it. Good for headlines and for a label that says something is in progress.
+
+<ComponentPreview name="shimmer-demo" />
+
+## Installation
+
+<Install name="shimmer" />
+
+## Usage
+
+```tsx
+import { Shimmer } from '@/components/ui/shimmer'
+
+<Shimmer className="text-4xl font-bold">Shimmering headline</Shimmer>
+<Shimmer asChild><h1>Or wrap your own element</h1></Shimmer>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `duration` | `3` | Seconds per sweep. |
+| `highlight` | foreground | Color of the sweep. |
+| `color` | foreground at 55% | Base color of the text. |
+| `width` | `30` | Width of the sweep as a percentage. |

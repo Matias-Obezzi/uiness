@@ -1,0 +1,28 @@
+A border with a light running around it. Wraps anything: a button with `asChild`, a card, an avatar.
+
+<ComponentPreview name="moving-border-demo" />
+
+## Installation
+
+<Install name="moving-border" />
+
+## Usage
+
+```tsx
+import { MovingBorder } from '@/components/ui/moving-border'
+
+<MovingBorder asChild radius="9999px">
+  <button><span className="px-5 py-2">Get started</span></button>
+</MovingBorder>
+```
+
+The inner surface takes the background color, so the light only shows through the border. Style it with `innerClassName`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `duration` | `4` | Seconds per lap. |
+| `color` | primary | Color of the light. |
+| `borderWidth` | `2` | Border width in pixels. |
+| `radius` | `'0.75rem'` | Border radius. |

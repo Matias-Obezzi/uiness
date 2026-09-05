@@ -96,6 +96,37 @@ export const nav: NavSection[] = [
       page('components/tooltip', 'Tooltip', 'A short hint on hover or focus.'),
     ],
   },
+  {
+    title: 'Motion',
+    pages: [
+      page(
+        'motion/spotlight',
+        'Spotlight',
+        'A light that follows the pointer, and cards whose borders glow.',
+      ),
+      page('motion/aurora', 'Aurora', 'Drifting blurred color for a background.'),
+      page('motion/meteors', 'Meteors', 'Streaks falling across a background.'),
+      page('motion/pattern', 'Pattern', 'Grid or dot background that fades at the edges.'),
+      page('motion/sparkles', 'Sparkles', 'Twinkling particles on a canvas.'),
+      page(
+        'motion/text-generate',
+        'Text Generate',
+        'Words that appear one after another from a blur.',
+      ),
+      page('motion/typewriter', 'Typewriter', 'Text typed one character at a time.'),
+      page('motion/flip-words', 'Flip Words', 'One word from a list at a time.'),
+      page('motion/shimmer', 'Shimmer', 'A highlight sweeping across text.'),
+      page('motion/number-ticker', 'Number Ticker', 'A number that counts up into view.'),
+      page('motion/reveal', 'Reveal', 'Content that transitions in when it scrolls into view.'),
+      page('motion/tilt-card', 'Tilt Card', 'A card that tilts towards the pointer in 3D.'),
+      page('motion/marquee', 'Marquee', 'Content that scrolls forever.'),
+      page('motion/moving-border', 'Moving Border', 'A light running around a border.'),
+      page('motion/animated-tooltip', 'Animated Tooltip', 'Avatars with a springy name card.'),
+      page('motion/hover-highlight', 'Hover Highlight', 'A highlight that slides between items.'),
+      page('motion/compare', 'Compare', 'Drag a divider between two layers.'),
+      page('motion/tracing-beam', 'Tracing Beam', 'A line that lights up as you scroll.'),
+    ],
+  },
 ]
 
 export const pages: NavPage[] = nav.flatMap((section) => section.pages)

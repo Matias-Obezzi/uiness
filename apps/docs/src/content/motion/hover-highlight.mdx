@@ -1,0 +1,29 @@
+A grid or list where one highlight slides between items as you hover them, instead of each item lighting up on its own.
+
+<ComponentPreview name="hover-highlight-demo" align="start" />
+
+## Installation
+
+<Install name="hover-highlight" />
+
+## Usage
+
+```tsx
+import { HoverHighlight, HoverHighlightItem } from '@/components/ui/hover-highlight'
+
+<HoverHighlight className="grid grid-cols-3 gap-2">
+  {items.map((item) => (
+    <HoverHighlightItem key={item.title} className="rounded-xl p-4">...</HoverHighlightItem>
+  ))}
+</HoverHighlight>
+```
+
+Focus moves the highlight too, so it works from the keyboard when the items contain links or buttons.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `duration` | `250` | Milliseconds the slide takes. |
+| `highlightClassName` | | Classes for the block, a muted rounded rectangle by default. |
+| `sticky` | `false` | Keep the highlight on the last item after the pointer leaves. |

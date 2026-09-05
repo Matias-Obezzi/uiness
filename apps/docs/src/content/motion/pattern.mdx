@@ -1,0 +1,29 @@
+A grid or dot background that fades towards the edges, so content in the middle stays readable.
+
+<ComponentPreview name="pattern-demo" align="start" />
+
+## Installation
+
+<Install name="pattern" />
+
+## Usage
+
+```tsx
+import { Pattern } from '@/components/ui/pattern'
+
+<section className="relative">
+  <Pattern />
+  <Pattern variant="dots" size={20} fadeAt="top left" />
+</section>
+```
+
+The lines take the border color. Override it with a text color utility, `text-primary/40` for instance.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `variant` | `'grid'` | `grid` or `dots`. |
+| `size` | `32` | Cell size in pixels. |
+| `fade` | `true` | Fade the edges. |
+| `fadeAt` | `'center'` | Where the fade is centered, CSS position. |

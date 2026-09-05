@@ -42,6 +42,10 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `navbar` | Bar that becomes a menu or a bottom tab bar on phones. |
 | `command` | Command palette with fuzzy search, plus `useCommandShortcut`. |
 | `scroll-area` | Scrollable region with themed bars. |
+| `spotlight`, `aurora`, `meteors`, `pattern`, `sparkles` | Animated backgrounds. |
+| `text-generate`, `typewriter`, `flip-words`, `shimmer`, `number-ticker` | Animated text. |
+| `reveal`, `tilt-card`, `marquee`, `moving-border`, `animated-tooltip`, `hover-highlight`, `compare`, `tracing-beam` | Motion pieces on CSS and the Web Animations API, no animation library. |
+| `use-in-view`, `use-reduced-motion` | Hooks the motion pieces share, installed into `hooks/`. |
 | `alert`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
 | `island` | `<Island />` wired to the theme tokens, re-exports the `@uiness/island` API. |

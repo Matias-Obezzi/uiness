@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "../../../packages/ui/registry/styles/theme.css";
+@import "../../../packages/ui/registry/styles/motion.css";
 
 @source "../../../packages/ui/registry";
 

@@ -1,0 +1,30 @@
+A card that tilts towards the pointer in 3D. Give children a depth with `TiltCardItem` and they float above the surface at different rates.
+
+<ComponentPreview name="tilt-card-demo" />
+
+## Installation
+
+<Install name="tilt-card" />
+
+## Usage
+
+```tsx
+import { TiltCard, TiltCardItem } from '@/components/ui/tilt-card'
+
+<TiltCard className="w-80 p-6">
+  <TiltCardItem depth={60}><h3>Title</h3></TiltCardItem>
+  <TiltCardItem depth={30}><p>Body</p></TiltCardItem>
+</TiltCard>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `max` | `12` | Largest rotation in degrees. |
+| `scale` | `1.02` | Scale while hovered. |
+| `perspective` | `1000` | Perspective in pixels. |
+| `glare` | `true` | A light reflection that moves with the tilt. |
+| `duration` | `500` | Milliseconds to settle back. |
+
+`TiltCardItem` takes `depth` in pixels, default 40. The card stays flat with `prefers-reduced-motion`.
