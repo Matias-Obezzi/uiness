@@ -80,6 +80,7 @@ export default defineConfig({
       '@uiness/island': `${root}../../packages/island/src/index.ts`,
       '@uiness/fx': `${root}../../packages/fx/src/index.ts`,
       '@uiness/toast': `${root}../../packages/toast/src/index.ts`,
+      '@uiness/scroll': `${root}../../packages/scroll/src/index.ts`,
       '@': `${root}../../packages/ui/registry`,
       '~': `${root}src`,
     },

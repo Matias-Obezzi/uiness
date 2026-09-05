@@ -1,0 +1,30 @@
+A grid whose columns scroll at different speeds, so the whole thing shifts as you scroll past it.
+
+<ComponentPreview name="parallax-grid-demo" align="start" />
+
+## Installation
+
+<Install name="parallax-grid" extra="Installs @uiness/scroll, which does the measuring." />
+
+## Usage
+
+```tsx
+import { ParallaxGrid } from '@/components/ui/parallax-grid'
+
+<ParallaxGrid images={photos} columns={3} />
+
+<ParallaxGrid columns={2} speeds={[0.3, -0.3]}>
+  <Card /><Card /><Card /><Card />
+</ParallaxGrid>
+```
+
+Children are dealt into the columns in order, so the first goes to column one, the second to column two, and so on.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `columns` | `3` | Columns on wide screens: 2, 3 or 4. |
+| `speeds` | alternating | Speed per column, as a fraction of the viewport. Positive lags, negative runs ahead. |
+| `images` | | Image sources, instead of children. |
+| `gap` | `'1rem'` | Space between items. |

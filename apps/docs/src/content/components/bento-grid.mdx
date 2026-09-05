@@ -1,0 +1,28 @@
+<ComponentPreview name="bento-grid-demo" align="start" />
+
+## Installation
+
+<Install name="bento-grid" />
+
+## Usage
+
+```tsx
+import { BentoCard, BentoGrid } from '@/components/ui/bento-grid'
+
+<BentoGrid>
+  <BentoCard span={2} icon={<ImageIcon />} title="Images" description="..." header={<img src="/a.png" alt="" />} />
+  <BentoCard title="Motion" description="..." />
+</BentoGrid>
+```
+
+Three columns on wide screens, one on phones. `span` and `rows` size a card, `header` holds a visual that lifts on hover, and `href` makes the whole card a link.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `span` | `1` | Columns the card takes: 1, 2 or 3. |
+| `rows` | `1` | Rows the card takes. |
+| `header` | | Visual at the top. |
+| `icon`, `title`, `description` | | The text part. |
+| `href` | | Render as a link. |

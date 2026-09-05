@@ -1,0 +1,33 @@
+Morphs between SVG paths. Any paths work: they are sampled into the same number of points and interpolated, so a star can become a heart can become a blob.
+
+<ComponentPreview name="path-morph-demo" />
+
+## Installation
+
+<Install name="path-morph" />
+
+## Usage
+
+```tsx
+import { PathMorph } from '@/components/ui/path-morph'
+
+<PathMorph paths={[star, heart, blob]} interval={2000} className="size-40 text-primary" />
+
+<PathMorph paths={[play, pause]} index={playing ? 1 : 0} interval={0} />
+```
+
+The paths share one coordinate space, `0 0 100 100` by default; pass `viewBox` for another. The inner `<path>` uses `currentColor`, so a text color utility colors it, and `pathProps` reaches it for a stroke.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `paths` | | Path data strings. |
+| `index` | | Which one shows. Controlled. |
+| `interval` | `2000` | Milliseconds each shape stays before the next. `0` stops cycling. |
+| `duration` | `700` | Milliseconds a morph takes. |
+| `samples` | `96` | Points each path is sampled into. |
+| `smooth` | `true` | Curve through the points, or straight lines. |
+| `closed` | `true` | Closed outlines. |
+
+`samplePath`, `alignPoints`, `morphPoints` and `toPath` are exported, for morphing outside the component. The second shape is rotated so its points line up with the first, which keeps the morph from twisting.

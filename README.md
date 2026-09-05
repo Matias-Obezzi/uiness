@@ -8,6 +8,7 @@ UI primitives for React, published under the `@uiness` scope.
 | [`@uiness/island`](packages/island) | Dynamic Island for the web: morphing pill for statuses, live activities, alerts and confirms. |
 | [`@uiness/fx`](packages/fx) | Canvas image effects: pixelate, dither, palettes, glitch, CRT, ASCII, composable and animatable. |
 | [`@uiness/toast`](packages/toast) | Toasts and notifications: `toast()` function, stacked `<Toaster />`, promises, actions, swipe to dismiss. |
+| [`@uiness/scroll`](packages/scroll) | Scroll-linked motion: progress through the viewport, parallax, active section. Zero dependencies. |
 | [`@uiness/ui`](packages/ui) | Radix + Tailwind components distributed through a shadcn registry, includes island, image, fx and toast items, plus motion pieces: spotlights, marquees, typewriters, tilting cards. |
 
 ## Development

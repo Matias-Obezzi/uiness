@@ -45,6 +45,9 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `spotlight`, `aurora`, `meteors`, `pattern`, `sparkles` | Animated backgrounds. |
 | `text-generate`, `typewriter`, `flip-words`, `shimmer`, `number-ticker` | Animated text. |
 | `reveal`, `tilt-card`, `marquee`, `moving-border`, `animated-tooltip`, `hover-highlight`, `compare`, `tracing-beam` | Motion pieces on CSS and the Web Animations API, no animation library. |
+| `parallax-grid`, `sticky-scroll`, `timeline` | Scroll-linked pieces on `@uiness/scroll`. |
+| `path-morph`, `link-preview` | SVG morphing and hover previews. |
+| `bento-grid`, `sidebar`, `calendar`, `date-picker` | Layout and date picking, no date library. |
 | `use-in-view`, `use-reduced-motion` | Hooks the motion pieces share, installed into `hooks/`. |
 | `alert`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
