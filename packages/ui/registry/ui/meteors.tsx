@@ -43,8 +43,10 @@ function Meteors({
           // biome-ignore lint/suspicious/noArrayIndexKey: meteors are positional, seeded by index
           key={i}
           data-slot="meteor"
-          className="absolute h-0.5 w-0.5 rounded-full bg-(--meteor-color) shadow-[0_0_0_1px_color-mix(in_oklab,var(--meteor-color)_15%,transparent)] before:absolute before:top-1/2 before:h-px before:w-16 before:-translate-y-1/2 before:bg-linear-to-r before:from-(--meteor-color) before:to-transparent before:content-[''] motion-reduce:hidden"
+          className="absolute h-0.5 w-0.5 rounded-full bg-(--meteor-color) opacity-0 shadow-[0_0_0_1px_color-mix(in_oklab,var(--meteor-color)_15%,transparent)] before:absolute before:top-1/2 before:h-px before:w-16 before:-translate-y-1/2 before:bg-linear-to-r before:from-(--meteor-color) before:to-transparent before:content-[''] motion-reduce:hidden"
           style={{
+            // The angle lives on `rotate`, so it holds while the animation waits out its delay.
+            rotate: 'var(--angle)',
             top: `${rand(i * 3 + 1) * 60 - 10}%`,
             left: `${rand(i * 3 + 2) * 120 - 10}%`,
             animation: `meteor ${(rand(i * 3 + 3) * 5 + 4).toFixed(2)}s linear ${(rand(i * 7 + 5) * 8).toFixed(2)}s infinite`,
