@@ -11,6 +11,7 @@ export default defineConfig({
       '@uiness/image': `${root}../image/src/index.ts`,
       '@uiness/fx': `${root}../fx/src/index.ts`,
       '@uiness/toast': `${root}../toast/src/index.ts`,
+      '@uiness/scroll': `${root}../scroll/src/index.ts`,
     },
   },
   test: {

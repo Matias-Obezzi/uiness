@@ -1,0 +1,45 @@
+A month grid to pick a day, several days or a range. Plain dates and `Intl`, no date library.
+
+<ComponentPreview name="calendar-demo" />
+
+## Installation
+
+<Install name="calendar" />
+
+## Usage
+
+```tsx
+import { Calendar } from '@/components/ui/calendar'
+
+const [date, setDate] = useState<Date | null>(null)
+<Calendar selected={date} onSelect={setDate} />
+```
+
+## Range
+
+<ComponentPreview name="calendar-range" />
+
+```tsx
+<Calendar mode="range" selected={range} onSelect={setRange} numberOfMonths={2} disabled={isWeekend} />
+```
+
+The first click sets the start, the second the end; hovering previews the range. `mode="multiple"` toggles days into an array instead.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `mode` | `'single'` | `single`, `multiple` or `range`. |
+| `selected`, `onSelect` | | A `Date`, a `Date[]` or a `{ from, to }`, by mode. |
+| `month`, `defaultMonth`, `onMonthChange` | | The month shown. |
+| `min`, `max` | | Selectable bounds. |
+| `disabled` | | `(date) => boolean` for days that cannot be picked. |
+| `locale` | browser | Names and the first day of the week. |
+| `weekStartsOn` | locale | 0 Sunday to 6 Saturday. |
+| `numberOfMonths` | `1` | Months side by side. |
+| `showOutsideDays` | `true` | Fill the grid with the neighbouring months. |
+| `fixedWeeks` | `false` | Always six rows. |
+
+## Keyboard
+
+Arrows move by a day or a week, Home and End go to the ends of the week, Page Up and Down change the month, with Shift the year. Enter and Space pick. The grid follows the ARIA date picker pattern, one tab stop with the focused day inside.

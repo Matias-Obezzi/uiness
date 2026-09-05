@@ -33,6 +33,12 @@ const features = [
       'Notifications that stack with the newest in front, expand on hover, swipe away and follow your promises.',
   },
   {
+    title: 'Scroll',
+    href: '/docs/scroll',
+    description:
+      'Progress of any element through the viewport, parallax that writes straight to the DOM, and the section being read.',
+  },
+  {
     title: 'Motion',
     href: '/docs/motion/spotlight',
     description:

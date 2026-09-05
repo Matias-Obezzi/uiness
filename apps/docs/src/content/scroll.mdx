@@ -1,0 +1,65 @@
+Scroll-linked motion primitives. The progress of any element through the viewport, parallax that writes straight to the DOM, and the section being read. Zero dependencies, and the core works without React.
+
+<ComponentPreview name="scroll-demo" align="start" />
+
+## Installation
+
+<InstallPackage name="@uiness/scroll" />
+
+The [Parallax Grid](/docs/motion/parallax-grid), [Sticky Scroll](/docs/motion/sticky-scroll) and [Timeline](/docs/motion/timeline) registry items install it for you.
+
+## Progress
+
+```tsx
+import { useScrollProgress } from '@uiness/scroll'
+
+const ref = useRef<HTMLDivElement>(null)
+const progress = useScrollProgress(ref, { offset: ['start end', 'end start'] })
+```
+
+An offset pair says when progress is 0 and when it is 1. Each entry reads `"<element edge> <viewport edge>"`: `'start end'` means the top of the element meets the bottom of the viewport, `'end start'` means the bottom of the element meets the top. Edges are `start`, `center`, `end`, a number from 0 to 1, or a pixel string like `'80px'`.
+
+`useScrollEffect(ref, callback, options)` runs a callback instead of updating state, at most once per frame, for when you want to write a style yourself.
+
+## Parallax
+
+<ComponentPreview name="scroll-parallax" />
+
+```tsx
+useParallax(ref, { speed: 0.3 })
+```
+
+`speed` is how far the element travels over its trip through the viewport, as a fraction of the viewport. Positive lags behind the page, negative runs ahead. The hook writes a `translate` to the element, so nothing re-renders.
+
+## Active section
+
+```tsx
+const active = useActiveSection(listRef, { anchor: 0.5 })
+```
+
+The index of the child of `listRef` closest to a line across the viewport. Drives panels that change with the section being read; see [Sticky Scroll](/docs/motion/sticky-scroll).
+
+## Without React
+
+```ts
+import { observeScrollProgress, scrollProgress, activeIndexAt, mapRange } from '@uiness/scroll'
+
+const stop = observeScrollProgress(el, { offset: ['start end', 'end start'] }, ({ progress }) => {
+  el.style.opacity = String(progress)
+})
+```
+
+`scrollProgress` reads once, `observeScrollProgress` keeps reading, `activeIndexAt` picks the nearest of several elements, and `mapRange` turns a progress into any other range. Pass `container` to follow an element inside a scrolling box instead of the window.
+
+## API
+
+| Export | What it does |
+| --- | --- |
+| `useScrollProgress(ref, options)` | Progress as state, 0 to 1. |
+| `useScrollEffect(ref, callback, options)` | Callback with `progress`, `size`, `viewport`, `position`. |
+| `useParallax(ref, { speed })` | Moves the element at another rate. |
+| `useActiveSection(ref, { anchor, selector })` | Index of the section under the anchor. |
+| `scrollProgress`, `observeScrollProgress` | The same without React. |
+| `activeIndexAt`, `mapRange`, `clamp`, `lerp` | Helpers. |
+
+Reads use `getBoundingClientRect`, batched to one per frame, and a `ResizeObserver` keeps them right when the element changes size.

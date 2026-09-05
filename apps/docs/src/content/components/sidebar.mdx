@@ -1,0 +1,46 @@
+A sidebar that collapses to icons and expands when you hover it, or on a click, and becomes a drawer on phones. You write the links once.
+
+<ComponentPreview name="sidebar-demo" align="start" />
+
+## Installation
+
+<Install name="sidebar" extra="Installs the Drawer as well, which holds the sidebar on small screens." />
+
+## Usage
+
+```tsx
+import {
+  Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset,
+  SidebarLink, SidebarProvider, SidebarTrigger,
+} from '@/components/ui/sidebar'
+
+<SidebarProvider collapsible="hover">
+  <div className="flex">
+    <Sidebar>
+      <SidebarHeader>Acme</SidebarHeader>
+      <SidebarContent>
+        <SidebarLink href="/" icon={<HomeIcon />} active>Home</SidebarLink>
+        <SidebarLink href="/inbox" icon={<InboxIcon />} badge={12}>Inbox</SidebarLink>
+      </SidebarContent>
+      <SidebarFooter>...</SidebarFooter>
+    </Sidebar>
+    <SidebarInset>
+      <SidebarTrigger className="md:hidden" />
+      ...
+    </SidebarInset>
+  </div>
+</SidebarProvider>
+```
+
+`SidebarTrigger` opens the drawer on phones. On desktop it toggles the sidebar when `collapsible` is `click`. Use `asChild` on `SidebarLink` for your router's link.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `collapsible` | `'hover'` | `hover`, `click` or `none`. |
+| `open`, `defaultOpen`, `onOpenChange` | | Expanded or collapsed. |
+| `breakpoint` | `'md'` | Below it the sidebar becomes a drawer. |
+| `width`, `collapsedWidth` | `240`, `60` | Pixels. |
+
+`useSidebar()` exposes `open`, `toggle`, `isMobile` and `expanded` to anything inside the provider. Labels stay in the DOM while collapsed, folded away visually, so links keep their names for assistive tech.

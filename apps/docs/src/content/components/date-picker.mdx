@@ -1,0 +1,36 @@
+<ComponentPreview name="date-picker-demo" />
+
+## Installation
+
+<Install name="date-picker" extra="Installs the Calendar, Popover and Button along with it." />
+
+## Usage
+
+```tsx
+import { DatePicker } from '@/components/ui/date-picker'
+
+<DatePicker value={date} onValueChange={setDate} min={new Date()} />
+```
+
+## Range
+
+<ComponentPreview name="date-picker-range" />
+
+```tsx
+<DatePicker mode="range" value={range} onValueChange={setRange} />
+```
+
+The popover closes once the pick is complete: a day, or both ends of a range.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `mode` | `'single'` | `single` or `range`. |
+| `value`, `defaultValue`, `onValueChange` | | A `Date` or a `{ from, to }`. |
+| `placeholder` | | Text before a pick. |
+| `format` | medium date | `Intl.DateTimeFormat` options for the label. |
+| `locale` | browser | For the label and the calendar. |
+| `min`, `max`, `disabledDates` | | Passed to the calendar. |
+| `name` | | Hidden inputs with ISO dates, for a form. |
+| `calendarProps` | | Anything else for the calendar. |

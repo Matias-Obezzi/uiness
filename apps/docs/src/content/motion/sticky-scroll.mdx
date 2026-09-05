@@ -1,0 +1,30 @@
+Text sections on one side, a sticky panel on the other that swaps its content as you read. On narrow screens the content sits under each section instead.
+
+<ComponentPreview name="sticky-scroll-demo" align="start" />
+
+## Installation
+
+<Install name="sticky-scroll" extra="Installs @uiness/scroll, which finds the active section." />
+
+## Usage
+
+```tsx
+import { StickyScroll } from '@/components/ui/sticky-scroll'
+
+<StickyScroll
+  items={[
+    { title: 'Write', description: 'Each section is plain text.', content: <Screenshot /> },
+    { title: 'Read', description: 'The panel follows.', content: <Chart /> },
+  ]}
+/>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `items` | | `title`, optional `description`, and the `content` the panel shows. |
+| `anchor` | `0.5` | Line across the viewport that decides the active item. |
+| `onActiveChange` | | Called with the index when it changes. |
+| `panelClassName` | | Classes for the sticky panel. Give it a height. |
+| `sectionClassName` | | Classes for each section. Give it a minimum height. |

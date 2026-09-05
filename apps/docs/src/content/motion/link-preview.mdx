@@ -1,0 +1,32 @@
+A link that shows a picture of its destination while you hover it. The card springs up above the link and leans towards the pointer.
+
+<ComponentPreview name="link-preview-demo" />
+
+## Installation
+
+<Install name="link-preview" />
+
+## Usage
+
+```tsx
+import { LinkPreview } from '@/components/ui/link-preview'
+
+<LinkPreview href="https://vite.dev" image="/previews/vite.png">Vite</LinkPreview>
+```
+
+Pass `image` and nothing leaves your site. Without it, `previewUrl` builds a screenshot URL from a public service, which is convenient for a blog and not what you want behind a login: swap it for your own.
+
+```tsx
+<LinkPreview href={url} previewUrl={(u) => `/api/screenshot?url=${encodeURIComponent(u)}`}>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `image` | | Preview image. |
+| `previewUrl` | screenshot service | Builds an image URL from the link. |
+| `width`, `height` | `224`, `126` | Preview size in pixels. |
+| `openDelay`, `closeDelay` | `100`, `150` | Milliseconds. |
+
+Keyboard focus opens the preview too.

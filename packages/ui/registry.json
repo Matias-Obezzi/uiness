@@ -819,6 +819,130 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "parallax-grid",
+      "type": "registry:ui",
+      "title": "Parallax Grid",
+      "description": "Columns that scroll at different speeds. Installs @uiness/scroll.",
+      "dependencies": ["@uiness/scroll"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/parallax-grid.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sticky-scroll",
+      "type": "registry:ui",
+      "title": "Sticky Scroll",
+      "description": "Text sections beside a sticky panel that swaps as you read. Installs @uiness/scroll.",
+      "dependencies": ["@uiness/scroll"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/sticky-scroll.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "timeline",
+      "type": "registry:ui",
+      "title": "Timeline",
+      "description": "Entries down a line that lights up as you scroll. Installs @uiness/scroll.",
+      "dependencies": ["@uiness/scroll"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/timeline.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "path-morph",
+      "type": "registry:ui",
+      "title": "Path Morph",
+      "description": "Morphs between any SVG paths.",
+      "registryDependencies": ["utils", "use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/path-morph.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "link-preview",
+      "type": "registry:ui",
+      "title": "Link Preview",
+      "description": "A link that shows a picture of its destination on hover.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/link-preview.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "bento-grid",
+      "type": "registry:ui",
+      "title": "Bento Grid",
+      "description": "A grid of cards with spans, headers and a hover lift.",
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/bento-grid.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sidebar",
+      "type": "registry:ui",
+      "title": "Sidebar",
+      "description": "A collapsible sidebar that becomes a drawer on phones.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils", "drawer"],
+      "files": [
+        {
+          "path": "registry/ui/sidebar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "calendar",
+      "type": "registry:ui",
+      "title": "Calendar",
+      "description": "A month grid to pick a day, several days or a range. No date library.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/calendar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "date-picker",
+      "type": "registry:ui",
+      "title": "Date Picker",
+      "description": "A button that opens a calendar, for a day or a range.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["utils", "button", "popover", "calendar"],
+      "files": [
+        {
+          "path": "registry/ui/date-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }
