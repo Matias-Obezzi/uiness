@@ -1,6 +1,6 @@
 {
   "name": "@uiness/scroll",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Scroll-linked motion primitives for React: progress through the viewport, parallax, active section. Zero dependencies.",
   "keywords": [
     "react",
