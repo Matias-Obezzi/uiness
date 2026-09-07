@@ -1,0 +1,74 @@
+Fields that carry the wiring you would otherwise write by hand for every input: the label points at the control, the control points back at its description and its error, and an invalid field says so to assistive tech.
+
+<ComponentPreview name="form-demo" align="start" />
+
+## Installation
+
+<Install name="form" />
+
+## Usage
+
+```tsx
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+
+<Form onSubmit={onSubmit}>
+  <FormField name="email" error={errors.email} required>
+    <FormLabel>Email</FormLabel>
+    <FormControl>
+      <Input name="email" type="email" />
+    </FormControl>
+    <FormDescription>We only use it to reply.</FormDescription>
+    <FormMessage />
+  </FormField>
+</Form>
+```
+
+`FormField` generates the ids and hands them down. `FormControl` clones its single child and gives it the `id`, `aria-describedby` and `aria-invalid`, so the control itself stays a plain component. `FormMessage` renders nothing while the field is valid, so you can leave it in place.
+
+## No library required
+
+`error` takes any string, and anything falsy means valid. That one prop is the whole contract, so the same field works with whatever you already use:
+
+```tsx
+// react-hook-form
+<FormField name="email" error={formState.errors.email?.message}>
+
+// a zod parse
+<FormField name="email" error={result.error?.flatten().fieldErrors.email?.[0]}>
+
+// a server action
+<FormField name="email" error={state.errors?.email}>
+
+// plain state
+<FormField name="email" error={touched && !email.includes('@') && 'Check the address.'}>
+```
+
+## Any control
+
+<ComponentPreview name="form-controls" align="start" />
+
+`FormControl` works with anything that forwards its props to a DOM node, so a [Select](/docs/components/select) trigger, a [Checkbox](/docs/components/checkbox), a [Radio Group](/docs/components/radio-group) or your own component all get wired the same way. A label can only name the elements the browser lets it name, so for a group, a radio group, a slider or a toggle group, the name is passed through `aria-labelledby` instead. You do not have to think about which one applies. For a control that cannot be cloned, read the ids yourself:
+
+```tsx
+const { id, error, descriptionId, messageId } = useFormField()
+```
+
+## Props
+
+| Prop | Description |
+| --- | --- |
+| `name` | Field name, and the base for the generated ids. |
+| `error` | The message. Falsy means valid. |
+| `required` | Marks the control required and shows the asterisk. |
+| `disabled` | Sets `data-disabled` on the field, for styling. |
+
+## Details
+
+`Form` is a plain `<form>` with `noValidate`, so the messages shown are yours and not the browser's bubbles. The error is linked through `aria-describedby` rather than announced live, which means a screen reader reads it when the field takes focus instead of interrupting mid typing.

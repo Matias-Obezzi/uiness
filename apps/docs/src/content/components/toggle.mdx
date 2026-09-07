@@ -1,0 +1,38 @@
+<ComponentPreview name="toggle-demo" />
+
+## Installation
+
+<Install name="toggle" />
+
+## Usage
+
+```tsx
+import { Toggle } from '@/components/ui/toggle'
+
+<Toggle aria-label="Bold"><BoldIcon /></Toggle>
+<Toggle variant="outline" defaultPressed>Underline</Toggle>
+```
+
+Control it with `pressed` and `onPressedChange`. An icon only toggle needs an `aria-label`, since there is no text to name it.
+
+## Groups
+
+<ComponentPreview name="toggle-group-demo" />
+
+```tsx
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+
+<ToggleGroup type="single" defaultValue="left" variant="outline">
+  <ToggleGroupItem value="left"><AlignLeftIcon /></ToggleGroupItem>
+  <ToggleGroupItem value="center"><AlignCenterIcon /></ToggleGroupItem>
+</ToggleGroup>
+```
+
+`type="single"` behaves like a segmented control, one pressed at a time; `type="multiple"` lets several be pressed, which is what a text formatting bar wants. The group passes its `variant` and `size` down, so the items join into one control with a shared border.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `variant` | `'default'` | `default` or `outline`. |
+| `size` | `'default'` | `sm`, `default` or `lg`. |

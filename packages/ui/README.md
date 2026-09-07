@@ -38,6 +38,8 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `utils` | `cn()` on top of clsx and tailwind-merge. |
 | `button`, `badge`, `card`, `input`, `textarea`, `label`, `checkbox`, `switch`, `separator` | Form and layout basics. |
 | `select`, `combobox` | Pick from a list; the combobox searches. |
+| `form` | Field wiring: ids, `aria-describedby`, `aria-invalid`, error messages. |
+| `radio-group`, `slider`, `toggle`, `toggle-group`, `input-otp` | The rest of the form controls. |
 | `dialog`, `drawer`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
 | `navbar` | Bar that becomes a menu or a bottom tab bar on phones. |
 | `command` | Command palette with fuzzy search, plus `useCommandShortcut`. |

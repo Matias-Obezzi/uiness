@@ -1,0 +1,43 @@
+A one time code field. Under the slots there is a single real input carrying the whole code, so pasting works, phones offer the code straight from the SMS, and password managers see one field instead of six.
+
+<ComponentPreview name="input-otp-demo" />
+
+## Installation
+
+<Install name="input-otp" />
+
+## Usage
+
+```tsx
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
+
+<InputOTP value={code} onValueChange={setCode} onComplete={verify}>
+  <InputOTPGroup>
+    <InputOTPSlot index={0} />
+    <InputOTPSlot index={1} />
+    <InputOTPSlot index={2} />
+  </InputOTPGroup>
+  <InputOTPSeparator />
+  <InputOTPGroup>
+    <InputOTPSlot index={3} />
+    <InputOTPSlot index={4} />
+    <InputOTPSlot index={5} />
+  </InputOTPGroup>
+</InputOTP>
+```
+
+You lay out the slots yourself, so a code can be six in a row, three and three, or four and four. `index` says which character each slot shows.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `maxLength` | `6` | How many characters. |
+| `value`, `onValueChange` | | The code. |
+| `onComplete` | | Called once the last character lands. |
+| `pattern` | digits | Allowed characters, as a regular expression source. `REGEXP_ONLY_DIGITS_AND_CHARS` is exported too. |
+| `uppercase` | `false` | Uppercase what is typed. |
+
+## Details
+
+The input carries `autocomplete="one-time-code"` and `inputmode="numeric"`, which is what makes iOS and Android offer the code above the keyboard. The caret is kept at the end, so typing always appends and you never end up editing the middle of a code by accident.
