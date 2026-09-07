@@ -943,6 +943,97 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "form",
+      "type": "registry:ui",
+      "title": "Form",
+      "description": "Fields that wire label, description and error to a control with the right ARIA. Works with any form library or none.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils", "label"],
+      "files": [
+        {
+          "path": "registry/ui/form.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-group",
+      "type": "registry:ui",
+      "title": "Radio Group",
+      "description": "Pick one of several options.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/radio-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slider",
+      "type": "registry:ui",
+      "title": "Slider",
+      "description": "Pick a number, or a range with two thumbs.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle",
+      "type": "registry:ui",
+      "title": "Toggle",
+      "description": "A button that stays pressed.",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils"],
+      "files": [
+        {
+          "path": "registry/ui/toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toggle-group",
+      "type": "registry:ui",
+      "title": "Toggle Group",
+      "description": "A row of toggles, one or several pressed at a time.",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["utils", "toggle"],
+      "files": [
+        {
+          "path": "registry/ui/toggle-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "input-otp",
+      "type": "registry:ui",
+      "title": "Input OTP",
+      "description": "A one time code field over a single real input, so paste and SMS autofill work.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["utils"],
+      "css": {
+        "@keyframes blink": {
+          "50%": {
+            "opacity": "0"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/input-otp.tsx",
+          "type": "registry:ui"
+        }
+      ]
     }
   ]
 }

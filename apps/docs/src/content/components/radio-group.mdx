@@ -1,0 +1,22 @@
+<ComponentPreview name="radio-group-demo" align="start" />
+
+## Installation
+
+<Install name="radio-group" />
+
+## Usage
+
+```tsx
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+
+<RadioGroup defaultValue="pro">
+  <div className="flex items-center gap-3">
+    <RadioGroupItem value="free" id="free" />
+    <label htmlFor="free">Free</label>
+  </div>
+</RadioGroup>
+```
+
+Control it with `value` and `onValueChange`. Arrow keys move between options and select as they go, which is how a radio group is meant to behave.
+
+Wrapping each option in a `<label>` makes the whole card clickable, and `has-[button[data-state=checked]]:border-primary` outlines the chosen one without any state of your own.
