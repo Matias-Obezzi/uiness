@@ -1,8 +1,22 @@
+<div align="center">
+
 # @uiness/ui
 
-Component registry for React: Radix primitives styled with Tailwind v4, installed into your project with the shadcn CLI. The code lands in your repo, so you own it and can change it.
+*A component registry you actually own.*
 
-The theme uses the same CSS variable names as shadcn/ui, so uiness components and shadcn components live together in one project without extra work.
+![66 Items](https://img.shields.io/badge/registry-66_items-09090b?style=flat-square)
+![React 19](https://img.shields.io/badge/React-19-09090b?style=flat-square&logo=react)
+![Tailwind v4](https://img.shields.io/badge/Tailwind-v4-09090b?style=flat-square&logo=tailwindcss)
+![Radix](https://img.shields.io/badge/primitives-Radix-09090b?style=flat-square)
+![shadcn CLI](https://img.shields.io/badge/CLI-shadcn-09090b?style=flat-square)
+
+**62 components · you own the code · mixes with shadcn/ui · no animation or date library**
+
+Radix primitives styled with Tailwind v4, installed with the shadcn CLI. The code lands in your repo, so you own it and can change it. The theme uses the same CSS variable names as shadcn/ui, so uiness and shadcn components live together in one project without extra work. The motion pieces run on CSS and the Web Animations API, and the calendar does its own date math, so neither one pulls in a library.
+
+[Documentation](https://matias-obezzi.github.io/uiness) · [Repository](https://github.com/Matias-Obezzi/uiness) · [Issues](https://github.com/Matias-Obezzi/uiness/issues)
+
+</div>
 
 ## Install
 
@@ -63,6 +77,8 @@ Components import the unified `radix-ui` package and mark themselves `'use clien
 ## Development
 
 Sources live in `registry/`. Every component has a live demo in the docs site under `apps/docs`.
+
+`registry/registry.test.ts` guards the registry itself: unique names, every file present on disk, local dependencies namespaced with `@uiness/`, no dangling dependencies, and every `@/` import declared as a dependency. It runs with the rest of the tests.
 
 ```bash
 pnpm --filter @uiness/ui test
