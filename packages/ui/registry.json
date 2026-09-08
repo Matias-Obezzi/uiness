@@ -76,7 +76,7 @@
       "title": "Button",
       "description": "Button with variants, sizes and asChild.",
       "dependencies": ["radix-ui", "class-variance-authority"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/button.tsx",
@@ -89,7 +89,7 @@
       "type": "registry:ui",
       "title": "Badge",
       "dependencies": ["radix-ui", "class-variance-authority"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/badge.tsx",
@@ -101,7 +101,7 @@
       "name": "card",
       "type": "registry:ui",
       "title": "Card",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/card.tsx",
@@ -113,7 +113,7 @@
       "name": "input",
       "type": "registry:ui",
       "title": "Input",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/input.tsx",
@@ -125,7 +125,7 @@
       "name": "textarea",
       "type": "registry:ui",
       "title": "Textarea",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/textarea.tsx",
@@ -138,7 +138,7 @@
       "type": "registry:ui",
       "title": "Label",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/label.tsx",
@@ -151,7 +151,7 @@
       "type": "registry:ui",
       "title": "Checkbox",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/checkbox.tsx",
@@ -164,7 +164,7 @@
       "type": "registry:ui",
       "title": "Switch",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/switch.tsx",
@@ -177,7 +177,7 @@
       "type": "registry:ui",
       "title": "Separator",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/separator.tsx",
@@ -190,7 +190,7 @@
       "type": "registry:ui",
       "title": "Dialog",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/dialog.tsx",
@@ -203,7 +203,7 @@
       "type": "registry:ui",
       "title": "Dropdown Menu",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/dropdown-menu.tsx",
@@ -216,7 +216,7 @@
       "type": "registry:ui",
       "title": "Tooltip",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/tooltip.tsx",
@@ -229,7 +229,7 @@
       "type": "registry:ui",
       "title": "Popover",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/popover.tsx",
@@ -256,7 +256,7 @@
       "title": "Image",
       "description": "Image with loading transitions and theme defaults. Installs @uiness/image.",
       "dependencies": ["@uiness/image"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/image.tsx",
@@ -270,7 +270,7 @@
       "title": "Fx",
       "description": "Canvas image effects with theme defaults. Installs @uiness/fx.",
       "dependencies": ["@uiness/fx"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/fx.tsx",
@@ -284,7 +284,7 @@
       "title": "Alert",
       "description": "Inline callout with info, success, warning and destructive variants.",
       "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/alert.tsx",
@@ -297,7 +297,7 @@
       "type": "registry:ui",
       "title": "Tabs",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/tabs.tsx",
@@ -310,7 +310,7 @@
       "type": "registry:ui",
       "title": "Avatar",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/avatar.tsx",
@@ -323,7 +323,7 @@
       "type": "registry:ui",
       "title": "Progress",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/progress.tsx",
@@ -335,7 +335,7 @@
       "name": "skeleton",
       "type": "registry:ui",
       "title": "Skeleton",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/skeleton.tsx",
@@ -349,7 +349,6 @@
       "title": "Toast",
       "description": "Toaster wired to the theme tokens. Installs @uiness/toast.",
       "dependencies": ["@uiness/toast"],
-      "registryDependencies": ["utils"],
       "files": [
         {
           "path": "registry/ui/toast.tsx",
@@ -363,7 +362,7 @@
       "title": "Gallery",
       "description": "Image grid with a full screen lightbox that flies from the thumbnail.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["utils", "image"],
+      "registryDependencies": ["@uiness/utils", "@uiness/image"],
       "files": [
         {
           "path": "registry/ui/gallery.tsx",
@@ -377,7 +376,7 @@
       "title": "Scroll Area",
       "description": "Scrollable region with thin themed bars.",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/scroll-area.tsx",
@@ -391,7 +390,7 @@
       "title": "Select",
       "description": "Pick one option from a list.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/select.tsx",
@@ -405,7 +404,7 @@
       "title": "Drawer",
       "description": "Panel from any edge with drag to close and snap points. Bottom sheet by default.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/drawer.tsx",
@@ -419,7 +418,7 @@
       "title": "Navbar",
       "description": "Site navigation that collapses into a menu or a bottom bar on small screens.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["utils", "drawer"],
+      "registryDependencies": ["@uiness/utils", "@uiness/drawer"],
       "files": [
         {
           "path": "registry/ui/navbar.tsx",
@@ -433,7 +432,7 @@
       "title": "Command",
       "description": "Command palette and searchable lists, with a dialog and a keyboard shortcut hook.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["utils", "dialog"],
+      "registryDependencies": ["@uiness/utils", "@uiness/dialog"],
       "files": [
         {
           "path": "registry/ui/command.tsx",
@@ -447,7 +446,12 @@
       "title": "Combobox",
       "description": "Searchable select, single or multiple.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["utils", "button", "command", "popover"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/command",
+        "@uiness/popover"
+      ],
       "files": [
         {
           "path": "registry/ui/combobox.tsx",
@@ -484,7 +488,7 @@
       "type": "registry:ui",
       "title": "Spotlight",
       "description": "A light that follows the pointer over a section, and a card whose border glows around it.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/spotlight.tsx",
@@ -497,7 +501,7 @@
       "type": "registry:ui",
       "title": "Aurora",
       "description": "Slow drifting blurred blobs of color for a background.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "css": {
         "@keyframes aurora": {
           "0%, 100%": {
@@ -523,7 +527,7 @@
       "type": "registry:ui",
       "title": "Meteors",
       "description": "Streaks falling across a background.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "css": {
         "@keyframes meteor": {
           "0%": {
@@ -551,7 +555,7 @@
       "type": "registry:ui",
       "title": "Pattern",
       "description": "Grid or dot background that fades towards the edges.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/pattern.tsx",
@@ -564,7 +568,11 @@
       "type": "registry:ui",
       "title": "Sparkles",
       "description": "Twinkling particles on a canvas.",
-      "registryDependencies": ["utils", "use-in-view", "use-reduced-motion"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
       "files": [
         {
           "path": "registry/ui/sparkles.tsx",
@@ -577,7 +585,7 @@
       "type": "registry:ui",
       "title": "Text Generate",
       "description": "Text that appears one word at a time from a blur.",
-      "registryDependencies": ["utils", "use-in-view"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-in-view"],
       "css": {
         "@keyframes blur-in": {
           "from": {
@@ -604,7 +612,7 @@
       "type": "registry:ui",
       "title": "Typewriter",
       "description": "Types words one character at a time, deletes and moves on.",
-      "registryDependencies": ["utils", "use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
       "css": {
         "@keyframes blink": {
           "50%": {
@@ -624,7 +632,7 @@
       "type": "registry:ui",
       "title": "Flip Words",
       "description": "One word from a list at a time, each swap blurred in.",
-      "registryDependencies": ["utils", "use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
       "css": {
         "@keyframes flip-in": {
           "from": {
@@ -659,7 +667,7 @@
       "title": "Shimmer",
       "description": "Text with a highlight sweeping across it.",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "css": {
         "@keyframes shimmer": {
           "from": {
@@ -682,7 +690,11 @@
       "type": "registry:ui",
       "title": "Number Ticker",
       "description": "A number that counts up to its value when it scrolls into view.",
-      "registryDependencies": ["utils", "use-in-view", "use-reduced-motion"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
       "files": [
         {
           "path": "registry/ui/number-ticker.tsx",
@@ -695,7 +707,7 @@
       "type": "registry:ui",
       "title": "Reveal",
       "description": "Plays a transition when content scrolls into view, with stagger.",
-      "registryDependencies": ["utils", "use-in-view"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-in-view"],
       "files": [
         {
           "path": "registry/ui/reveal.tsx",
@@ -708,7 +720,7 @@
       "type": "registry:ui",
       "title": "Tilt Card",
       "description": "A card that tilts in 3D towards the pointer, with layered depth.",
-      "registryDependencies": ["utils", "use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
       "files": [
         {
           "path": "registry/ui/tilt-card.tsx",
@@ -721,7 +733,7 @@
       "type": "registry:ui",
       "title": "Marquee",
       "description": "Content that scrolls forever, sideways or up, pausing on hover.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "css": {
         "@keyframes marquee": {
           "from": {
@@ -753,7 +765,7 @@
       "title": "Moving Border",
       "description": "A border with a light running around it.",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "css": {
         "@keyframes moving-border": {
           "to": {
@@ -773,7 +785,7 @@
       "type": "registry:ui",
       "title": "Animated Tooltip",
       "description": "Overlapping avatars with a springy name card on hover.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/animated-tooltip.tsx",
@@ -786,7 +798,7 @@
       "type": "registry:ui",
       "title": "Hover Highlight",
       "description": "One highlight that slides between items as you hover them.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/hover-highlight.tsx",
@@ -799,7 +811,7 @@
       "type": "registry:ui",
       "title": "Compare",
       "description": "Two layers with a divider you drag, keyboard accessible.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/compare.tsx",
@@ -812,7 +824,7 @@
       "type": "registry:ui",
       "title": "Tracing Beam",
       "description": "A line beside long content that lights up as you scroll.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/tracing-beam.tsx",
@@ -826,7 +838,7 @@
       "title": "Parallax Grid",
       "description": "Columns that scroll at different speeds. Installs @uiness/scroll.",
       "dependencies": ["@uiness/scroll"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/parallax-grid.tsx",
@@ -840,7 +852,7 @@
       "title": "Sticky Scroll",
       "description": "Text sections beside a sticky panel that swaps as you read. Installs @uiness/scroll.",
       "dependencies": ["@uiness/scroll"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/sticky-scroll.tsx",
@@ -854,7 +866,7 @@
       "title": "Timeline",
       "description": "Entries down a line that lights up as you scroll. Installs @uiness/scroll.",
       "dependencies": ["@uiness/scroll"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/timeline.tsx",
@@ -867,7 +879,7 @@
       "type": "registry:ui",
       "title": "Path Morph",
       "description": "Morphs between any SVG paths.",
-      "registryDependencies": ["utils", "use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
       "files": [
         {
           "path": "registry/ui/path-morph.tsx",
@@ -881,7 +893,7 @@
       "title": "Link Preview",
       "description": "A link that shows a picture of its destination on hover.",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/link-preview.tsx",
@@ -894,7 +906,7 @@
       "type": "registry:ui",
       "title": "Bento Grid",
       "description": "A grid of cards with spans, headers and a hover lift.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/bento-grid.tsx",
@@ -908,7 +920,7 @@
       "title": "Sidebar",
       "description": "A collapsible sidebar that becomes a drawer on phones.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["utils", "drawer"],
+      "registryDependencies": ["@uiness/utils", "@uiness/drawer"],
       "files": [
         {
           "path": "registry/ui/sidebar.tsx",
@@ -922,7 +934,7 @@
       "title": "Calendar",
       "description": "A month grid to pick a day, several days or a range. No date library.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/calendar.tsx",
@@ -936,7 +948,12 @@
       "title": "Date Picker",
       "description": "A button that opens a calendar, for a day or a range.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["utils", "button", "popover", "calendar"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/popover",
+        "@uiness/calendar"
+      ],
       "files": [
         {
           "path": "registry/ui/date-picker.tsx",
@@ -950,7 +967,7 @@
       "title": "Form",
       "description": "Fields that wire label, description and error to a control with the right ARIA. Works with any form library or none.",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils", "label"],
+      "registryDependencies": ["@uiness/utils", "@uiness/label"],
       "files": [
         {
           "path": "registry/ui/form.tsx",
@@ -964,7 +981,7 @@
       "title": "Radio Group",
       "description": "Pick one of several options.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/radio-group.tsx",
@@ -978,7 +995,7 @@
       "title": "Slider",
       "description": "Pick a number, or a range with two thumbs.",
       "dependencies": ["radix-ui"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/slider.tsx",
@@ -992,7 +1009,7 @@
       "title": "Toggle",
       "description": "A button that stays pressed.",
       "dependencies": ["radix-ui", "class-variance-authority"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
           "path": "registry/ui/toggle.tsx",
@@ -1006,7 +1023,7 @@
       "title": "Toggle Group",
       "description": "A row of toggles, one or several pressed at a time.",
       "dependencies": ["radix-ui", "class-variance-authority"],
-      "registryDependencies": ["utils", "toggle"],
+      "registryDependencies": ["@uiness/utils", "@uiness/toggle"],
       "files": [
         {
           "path": "registry/ui/toggle-group.tsx",
@@ -1020,7 +1037,7 @@
       "title": "Input OTP",
       "description": "A one time code field over a single real input, so paste and SMS autofill work.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["@uiness/utils"],
       "css": {
         "@keyframes blink": {
           "50%": {
