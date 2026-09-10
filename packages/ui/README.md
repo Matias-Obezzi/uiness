@@ -4,13 +4,13 @@
 
 *A component registry you actually own.*
 
-![66 Items](https://img.shields.io/badge/registry-66_items-09090b?style=flat-square)
+![71 Items](https://img.shields.io/badge/registry-71_items-09090b?style=flat-square)
 ![React 19](https://img.shields.io/badge/React-19-09090b?style=flat-square&logo=react)
 ![Tailwind v4](https://img.shields.io/badge/Tailwind-v4-09090b?style=flat-square&logo=tailwindcss)
 ![Radix](https://img.shields.io/badge/primitives-Radix-09090b?style=flat-square)
 ![shadcn CLI](https://img.shields.io/badge/CLI-shadcn-09090b?style=flat-square)
 
-**62 components · you own the code · mixes with shadcn/ui · no animation or date library**
+**67 components · you own the code · mixes with shadcn/ui · no animation, date or drag library**
 
 Radix primitives styled with Tailwind v4, installed with the shadcn CLI. The code lands in your repo, so you own it and can change it. The theme uses the same CSS variable names as shadcn/ui, so uiness and shadcn components live together in one project without extra work. The motion pieces run on CSS and the Web Animations API, and the calendar does its own date math, so neither one pulls in a library.
 
@@ -64,6 +64,8 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `parallax-grid`, `sticky-scroll`, `timeline` | Scroll-linked pieces on `@uiness/scroll`. |
 | `path-morph`, `link-preview` | SVG morphing and hover previews. |
 | `bento-grid`, `sidebar`, `calendar`, `date-picker` | Layout and date picking, no date library. |
+| `sortable`, `kanban`, `reorderable-grid`, `draggable` | Drag and drop on `@uiness/dnd`, every one of them also operable from the keyboard. |
+| `dropzone` | Files dropped in from the desktop, checked by type, size and count. Native HTML drag and drop, no package behind it. |
 | `use-in-view`, `use-reduced-motion` | Hooks the motion pieces share, installed into `hooks/`. |
 | `alert`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
