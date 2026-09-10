@@ -1,0 +1,138 @@
+Headless drag and drop for React. Sortable lists, boards with several columns, grids you rearrange in two directions, and elements you move anywhere. Pointer Events, so mouse, touch and pen all work, and every drag can be driven from the keyboard alone. Zero dependencies.
+
+Nothing here renders anything. Each hook hands back prop getters you spread on your own markup, plus the state you need to style it.
+
+<ComponentPreview name="dnd-demo" align="start" />
+
+## Installation
+
+<InstallPackage name="@uiness/dnd" />
+
+The [Sortable](/docs/dnd/sortable), [Kanban](/docs/dnd/kanban), [Reorderable Grid](/docs/dnd/reorderable-grid) and [Draggable](/docs/dnd/draggable) registry items install it for you.
+
+## The four hooks
+
+| Hook | For |
+| --- | --- |
+| `useSortable` | one list, reordered along an axis or across a grid |
+| `useSortableGroups` | several containers, items moving within and between them |
+| `useDraggable` | one element, moved anywhere |
+| `useDragGesture` | raw pointer and keyboard deltas, when none of the above fit |
+
+## Sortable list
+
+`useSortable` owns one list. You pass the order in and render the order it gives back: `items` is your list with the in-flight move already applied, so it reorders under the pointer. `onReorder` fires once, on drop, and only when the item landed somewhere new.
+
+```tsx
+import { useSortable } from '@uiness/dnd'
+
+const [ids, setIds] = useState(['write', 'review', 'ship'])
+const sortable = useSortable({ items: ids, onReorder: setIds })
+
+<ul {...sortable.getListProps()}>
+  {sortable.items.map((id) => (
+    <li key={id} {...sortable.getItemProps(id)} {...sortable.getHandleProps(id)}>
+      {id}
+    </li>
+  ))}
+</ul>
+<div {...sortable.getLiveRegionProps()}>{sortable.announcement}</div>
+```
+
+Spreading `getItemProps` and `getHandleProps` on the same element makes the whole row draggable. Put `getHandleProps` on a child instead and only that child starts a drag, which is what you want on touch: the handle is the part that stops the browser scrolling the page.
+
+Pass `axis: 'x'` for a horizontal list, or `axis: 'both'` with `columns` for a grid. The arrow keys follow the axis.
+
+## Several containers
+
+`useSortableGroups` is the same thing keyed by container. `groups` maps a container id to the ids it holds, and an empty array is a valid, droppable container. `onChange` gives the whole map back, with the arrays you did not touch kept by reference.
+
+```tsx
+const board = useSortableGroups({ groups, order: ['todo', 'doing', 'done'], onChange: setGroups })
+```
+
+Up and down move inside a container and left and right cross to the next one, in the `order` you give. The container the drag is over carries `data-over`, so `[data-over] { background: … }` is all the highlight needs. [Kanban](/docs/dnd/kanban) is this hook with the markup already written.
+
+## Free dragging
+
+`useDraggable` moves one element and nothing else: a dialog by its title bar, a floating panel, a pin on a map. The position is an offset from wherever the element already sits, written as a `translate3d`, so it composes with whatever CSS put it there.
+
+<ComponentPreview name="dnd-draggable" align="start" />
+
+```tsx
+const drag = useDraggable({ id: 'dialog', bounds: 'parent' })
+```
+
+Leave `position` out and the hook owns it. Pass it and the hook becomes controlled, and you update it from `onPositionChange`. Either way `setPosition` moves the element without a drag, and a cancelled drag returns it to where it was picked up.
+
+## The raw gesture
+
+`useDragGesture` is what the others are built on: pointer and keyboard handling for one element, no lists, no drop targets, no announcements. It reports deltas and you decide what they mean — a resize handle, a slider, a canvas pan.
+
+<ComponentPreview name="dnd-gesture" align="start" />
+
+```tsx
+const gesture = useDragGesture({
+  axis: 'x',
+  onMove: ({ delta }) => setWidth(startWidth + delta.x),
+})
+
+<div {...gesture.getHandleProps()} />
+```
+
+## The keyboard
+
+Every drag can be driven two ways. With a pointer: press, move past `activationDistance`, release. With the keyboard: `Space` or `Enter` to pick up, the arrow keys to move, `Space` or `Enter` to drop, `Escape` to cancel. `Escape` works during a pointer drag too, wherever the focus happens to be, and always leaves things exactly as they were.
+
+## Screen readers
+
+Every drag is narrated: picked up, moved to position N of M, dropped, cancelled. The messages come out of the hook as `announcement`, and you render them into the element `getLiveRegionProps()` describes. Render that element or none of this is heard.
+
+```tsx
+announcements: {
+  start: ({ id, to, count }) => `${id} levantado, posición ${to.index + 1} de ${count}.`,
+}
+```
+
+Pass `announcements` to replace any of the four — `start`, `move`, `drop` and `cancel`. Anything you leave out keeps the English default, and `defaultAnnouncements` is exported if you would rather wrap one than replace it.
+
+## Auto scroll and reduced motion
+
+While a pointer drag runs, the nearest scrollable ancestor scrolls when the pointer gets near one of its edges, ramping up towards it. On by default; `autoScroll: false` turns it off, or pass `{ threshold, maxSpeed, axis }`.
+
+Every hook returns `reducedMotion`, and the overlay and the free-dragged element already set `transition: none` when it is true. `useReducedMotion()` is exported on its own, and `prefersReducedMotion()` reads it once outside React.
+
+## A drag overlay
+
+`getOverlayProps()` positions a copy of the item under the pointer, at `activeRect + delta`, fixed and click-through. It hides itself while nothing is dragged and during keyboard drags, where there is no pointer to follow.
+
+```tsx
+<div {...sortable.getOverlayProps()}>
+  {sortable.activeId ? <Card id={sortable.activeId} /> : null}
+</div>
+```
+
+It is optional. Without it the list still reorders under the pointer, the dragged item just stays in the flow.
+
+## Without React
+
+The maths lives in `core.ts` and all of it is exported: no React, no DOM except where it says so.
+
+```ts
+import { arrayMove, insertionIndex, dragReducer, idleDragState } from '@uiness/dnd'
+```
+
+`rectFrom`, `rectCenter`, `pointInRect`, `distance`, `rectIntersection`, `lockAxis` and `clampToBounds` are the geometry. `pointerWithin`, `closestCenter`, `closestCorners` and `closestContainer` are the collision detectors, and any function of that shape can be passed as `collisionDetection`. `arrayMove`, `arrayInsert`, `arrayRemove`, `moveItem`, `clampIndex`, `insertionIndex`, `gridNeighbor` and `columnsFromRects` are the reordering. `dragReducer` is the whole lifecycle as a pure function, starting from `idleDragState`.
+
+## API
+
+| Export | What it does |
+| --- | --- |
+| `useSortable(options)` | One list. Returns `items`, `activeId`, `overIndex` and the getters. |
+| `useSortableGroups(options)` | Several containers. Returns `groups`, `from`, `over` and the getters. |
+| `useDraggable(options)` | One element. Returns `position`, `setPosition` and the getters. |
+| `useDragGesture(options)` | Deltas from the pointer and the keyboard, nothing else. |
+| `useReducedMotion()`, `prefersReducedMotion()` | Whether to animate at all. |
+| `defaultAnnouncements` | The four English messages, to wrap instead of replace. |
+
+Indices are zero based, and a target index counts against the list with the dragged item already taken out, so the last valid slot in a list of three is 2. Hit testing measures every box once, when the drag starts, and corrects for whatever has been auto scrolled since, so boxes shifting under the drag can never make the target flicker.

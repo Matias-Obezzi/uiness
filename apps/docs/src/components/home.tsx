@@ -39,6 +39,12 @@ const features = [
       'Progress of any element through the viewport, parallax that writes straight to the DOM, and the section being read.',
   },
   {
+    title: 'Drag and drop',
+    href: '/docs/dnd',
+    description:
+      'Sortable lists, boards, grids and free dragging. Headless hooks, and every drag also works from the keyboard.',
+  },
+  {
     title: 'Motion',
     href: '/docs/motion/spotlight',
     description:

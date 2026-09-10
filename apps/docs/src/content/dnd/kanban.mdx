@@ -1,0 +1,49 @@
+Columns of cards that move inside a column and across to the next one. The column under a drag highlights itself, and every move is read out.
+
+<ComponentPreview name="kanban-demo" align="start" />
+
+## Installation
+
+<Install name="kanban" extra="Installs @uiness/dnd, which does the dragging." />
+
+## Usage
+
+```tsx
+import { Kanban, KanbanCard, KanbanColumn, KanbanHandle } from '@/components/ui/kanban'
+
+const [groups, setGroups] = useState({ todo: ['a', 'b'], doing: ['c'], done: [] })
+
+<Kanban groups={groups} onChange={setGroups} order={['todo', 'doing', 'done']} withHandle>
+  {(columnId, cards) => (
+    <KanbanColumn key={columnId} id={columnId} title={titles[columnId]}>
+      {cards.map((id) => (
+        <KanbanCard key={id} id={id}>
+          <KanbanHandle />
+          {cards[id]}
+        </KanbanCard>
+      ))}
+    </KanbanColumn>
+  )}
+</Kanban>
+```
+
+`children` is called once per column with the cards that column holds right now, which is the in-flight order while a drag runs. An empty column is still a drop target. `onChange` hands back the whole map, with the arrays you did not touch kept by reference, once, on a drop that moved something.
+
+Focus stays on the card rather than on its handle, which is what lets a keyboard drag survive the card being re-rendered into another column halfway across the board.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `groups` | | Column id to the card ids it holds, in order. |
+| `onChange` | | `(groups, change) => void`, once, on a drop that moved something. |
+| `order` | keys of `groups` | Column order, which is what left and right walk. |
+| `withHandle` | `false` | Pointer drags start from a `<KanbanHandle>` instead of the card. |
+| `disabled` | | Turns dragging off and dims the board. |
+| `activationDistance` | `4` | Pixels the pointer must travel before the drag starts. |
+| `announcements` | | Override any of the four screen reader messages. |
+| `roleDescription` | `'sortable item'` | What a screen reader calls a card. |
+| `children` | | `(columnId, cards) => ReactNode`. One column per id. |
+| `overlay` | | `(id) => ReactNode`. A copy that follows the pointer. |
+
+`<KanbanColumn>` takes an `id` and an optional `title`, which also names the column for screen readers, and highlights itself at `[data-over]`. `<KanbanCard>` takes the `id` it renders. `<KanbanHandle>` draws a grip unless you give it children.

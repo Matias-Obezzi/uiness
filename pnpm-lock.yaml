@@ -26,6 +26,9 @@ importers:
       '@mdx-js/react':
         specifier: ^3.1.1
         version: 3.1.1(@types/react@19.2.18)(react@19.2.8)
+      '@uiness/dnd':
+        specifier: workspace:*
+        version: link:../../packages/dnd
       '@uiness/fx':
         specifier: workspace:*
         version: link:../../packages/fx

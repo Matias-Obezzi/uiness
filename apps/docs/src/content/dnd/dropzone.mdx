@@ -1,0 +1,40 @@
+A box that takes files dropped from the desktop, or opens the file picker when it is pressed. This one talks to the operating system through the native HTML drag and drop events, so it has nothing to do with the pointer dragging the rest of these components do, and it needs no package.
+
+<ComponentPreview name="dropzone-demo" align="start" />
+
+## Installation
+
+<Install name="dropzone" />
+
+## Usage
+
+```tsx
+import { Dropzone, type DropzoneRejection } from '@/components/ui/dropzone'
+
+<Dropzone
+  accept="image/png,image/jpeg,.webp"
+  multiple
+  maxFiles={3}
+  maxSize={2 * 1024 * 1024}
+  onFiles={setFiles}
+  onRejected={setRejected}
+/>
+```
+
+Files that break `accept`, `maxSize` or `maxFiles` go to `onRejected` with a `reason` of `'type'`, `'size'` or `'count'` and a `message` ready to show, rather than being thrown away quietly. Whatever the outcome, it is read out.
+
+`accept` works like the attribute of the same name: `image/*`, `image/png` and `.png` all match, comma separated. The box highlights itself at `[data-over]` while a file is held over it, and children replace the default prompt in the middle.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `onFiles` | | `(files) => void` with the files that made it through. |
+| `onRejected` | | `(rejections) => void` with the ones that did not, each with a reason. |
+| `accept` | | Comma separated types or extensions. |
+| `multiple` | `false` | Take more than one file. |
+| `maxSize` | | Largest file, in bytes. |
+| `maxFiles` | | How many files at once. Only meaningful with `multiple`. |
+| `disabled` | | Stops the drop and the picker, and dims the box. |
+| `preview` | `true` | Show thumbnails of the images that were accepted. |
+| `children` | | Shown in the middle instead of the default prompt. |
