@@ -399,7 +399,7 @@ The press is the only thing handled on the element itself. Everything after it i
 </div>
 ```
 
-It is optional. Without it the list still reorders under the pointer, the dragged item just stays in the flow.
+It is optional at this level. Without it the list still reorders under the pointer, the dragged item just stays in the flow. The registry components built on these hooks render one for you out of their own item render function, so `Sortable`, `Kanban` and `ReorderableGrid` float a copy with no wiring at all.
 
 ## Screen readers
 

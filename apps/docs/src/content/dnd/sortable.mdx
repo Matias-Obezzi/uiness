@@ -29,6 +29,8 @@ Without `withHandle` the whole row starts a pointer drag. With it, only the `<So
 
 Pass `axis="x"` for a horizontal list; the arrow keys follow.
 
+A pointer drag floats a copy of the row under the pointer while the row itself stays in the flow, marked at `[data-dragging]`. That happens on its own, out of the same `children` you already wrote. Pass `overlay` only to float something other than the row: a smaller card, a label, a count of what is being moved. A keyboard drag floats nothing, since there is no pointer to follow.
+
 ## Props
 
 | Prop | Default | Description |
@@ -42,6 +44,6 @@ Pass `axis="x"` for a horizontal list; the arrow keys follow.
 | `announcements` | | Override any of the four screen reader messages. |
 | `roleDescription` | `'sortable item'` | What a screen reader calls a row. |
 | `children` | | `(id, index) => ReactNode`. One item per id. |
-| `overlay` | | `(id) => ReactNode`. A copy that follows the pointer. |
+| `overlay` | `children` | `(id) => ReactNode`. What the copy that follows the pointer looks like. By default the row itself. |
 
 `<SortableItem>` takes the `id` it renders. `<SortableHandle>` takes nothing and draws a grip unless you give it children.

@@ -1,27 +1,76 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import type { ReactNode } from 'react'
 import { useState } from 'react'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Sortable, type SortableChange, SortableHandle, SortableItem } from './sortable'
 
 const ITEMS = ['write', 'review', 'ship']
 
+afterEach(() => {
+  vi.restoreAllMocks()
+})
+
 /** The rendered order, read off the ids the package stamps on every item. */
 const order = () =>
-  Array.from(document.querySelectorAll('[data-slot=sortable-item]')).map((node) =>
+  Array.from(document.querySelectorAll('[data-slot=sortable-item][data-dnd-id]')).map((node) =>
     node.getAttribute('data-dnd-id'),
   )
+
+/**
+ * jsdom lays nothing out, so every box a pointer drag needs is measured from this table instead.
+ * Keys are the `data-dnd-id` / `data-dnd-container` the package stamps on the elements; anything
+ * it does not know about — the floating copy, for one — keeps the 0x0 box jsdom would give it.
+ */
+const LAYOUT: Record<string, { x: number; y: number; width: number; height: number }> = {
+  list: { x: 0, y: 0, width: 100, height: 300 },
+  write: { x: 0, y: 0, width: 100, height: 100 },
+  review: { x: 0, y: 100, width: 100, height: 100 },
+  ship: { x: 0, y: 200, width: 100, height: 100 },
+}
+
+const layout = () =>
+  vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+    this: HTMLElement,
+  ) {
+    const box = LAYOUT[this.dataset.dndId ?? this.dataset.dndContainer ?? ''] ?? {
+      x: 0,
+      y: 0,
+      width: 0,
+      height: 0,
+    }
+    return {
+      x: box.x,
+      y: box.y,
+      left: box.x,
+      top: box.y,
+      right: box.x + box.width,
+      bottom: box.y + box.height,
+      width: box.width,
+      height: box.height,
+    } as DOMRect
+  })
+
+/** The press lands on the row; the rest of the drag is followed on the window. */
+const dragTo = (el: HTMLElement, from: number, to: number) => {
+  fireEvent.pointerDown(el, { button: 0, pointerId: 1, clientX: 50, clientY: from })
+  fireEvent.pointerMove(window, { pointerId: 1, clientX: 50, clientY: to })
+}
+
+const overlayNode = () => document.querySelector('[data-slot=sortable-overlay]') as HTMLElement
 
 function List({
   axis,
   withHandle,
   disabled,
   onReorder,
+  overlay,
 }: {
   axis?: 'x' | 'y'
   withHandle?: boolean
   disabled?: boolean
   onReorder?: (items: string[], change: SortableChange) => void
+  overlay?: (id: string) => ReactNode
 }) {
   const [items, setItems] = useState(ITEMS)
   return (
@@ -30,6 +79,7 @@ function List({
       axis={axis}
       withHandle={withHandle}
       disabled={disabled}
+      overlay={overlay}
       onReorder={(next, change) => {
         setItems(next)
         onReorder?.(next, change)
@@ -237,5 +287,86 @@ describe('Sortable', () => {
     const list = document.querySelector('[data-slot=sortable]')
     expect(list?.getAttribute('data-axis')).toBe('x')
     expect(list?.className).toContain('flex-row')
+  })
+
+  it('reorders with the pointer once it passes the next row', () => {
+    layout()
+    const onReorder = vi.fn()
+    render(<List onReorder={onReorder} />)
+
+    dragTo(screen.getByRole('button', { name: 'write' }), 50, 160)
+    expect(order()).toEqual(['review', 'write', 'ship'])
+
+    fireEvent.pointerUp(window, { pointerId: 1, clientX: 50, clientY: 160 })
+    expect(onReorder).toHaveBeenCalledWith(['review', 'write', 'ship'], {
+      id: 'write',
+      from: 0,
+      to: 1,
+    })
+  })
+
+  it('floats a copy of the dragged row without being asked to', () => {
+    layout()
+    render(<List />)
+
+    expect(overlayNode().textContent).toBe('')
+    dragTo(screen.getByRole('button', { name: 'write' }), 50, 60)
+
+    // The whole point of the drag: something the size of the row follows the pointer.
+    const overlay = overlayNode()
+    expect(overlay.textContent).toBe('write')
+    expect(overlay.style.display).not.toBe('none')
+    expect(overlay.style.transform).toContain('translate3d')
+    expect(overlay.style.height).toBe('100px')
+
+    fireEvent.pointerUp(window, { pointerId: 1, clientX: 50, clientY: 60 })
+    expect(overlayNode().textContent).toBe('')
+  })
+
+  it('leaves the registration to the real row and never to the copy', () => {
+    layout()
+    render(<List />)
+
+    const row = screen.getByRole('button', { name: 'write' })
+    dragTo(row, 50, 60)
+
+    const copy = overlayNode().querySelector('[data-slot=sortable-item]') as HTMLElement
+    expect(copy).toBeTruthy()
+    // A second `data-dnd-id=write` would hand the copy's box to the hit testing.
+    expect(copy.hasAttribute('data-dnd-id')).toBe(false)
+    expect(document.querySelectorAll('[data-dnd-id=write]')).toHaveLength(1)
+    expect(row.getAttribute('data-dnd-id')).toBe('write')
+    expect(order()).toEqual(ITEMS)
+
+    // Inert, and drawn as a plain row rather than as the marked one it was copied from.
+    expect(copy.hasAttribute('tabindex')).toBe(false)
+    expect(copy.getAttribute('role')).toBe(null)
+    expect(copy.hasAttribute('data-dragging')).toBe(false)
+    expect(row.hasAttribute('data-dragging')).toBe(true)
+  })
+
+  it('shows the overlay it is given instead of the default copy', () => {
+    layout()
+    render(<List overlay={(id) => <span>carrying {id}</span>} />)
+
+    dragTo(screen.getByRole('button', { name: 'write' }), 50, 60)
+
+    const overlay = overlayNode()
+    expect(overlay.textContent).toBe('carrying write')
+    expect(overlay.querySelector('[data-slot=sortable-item]')).toBe(null)
+  })
+
+  it('floats nothing during a keyboard drag, where there is no pointer to follow', async () => {
+    const user = userEvent.setup()
+    layout()
+    render(<List />)
+
+    const row = screen.getByRole('button', { name: 'write' })
+    row.focus()
+    await user.keyboard(' ')
+    expect(row.getAttribute('aria-pressed')).toBe('true')
+
+    expect(overlayNode().textContent).toBe('')
+    expect(overlayNode().style.display).toBe('none')
   })
 })

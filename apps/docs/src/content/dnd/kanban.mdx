@@ -31,6 +31,8 @@ const [groups, setGroups] = useState({ todo: ['a', 'b'], doing: ['c'], done: [] 
 
 Focus stays on the card rather than on its handle, which is what lets a keyboard drag survive the card being re-rendered into another column halfway across the board.
 
+A pointer drag floats a copy of the card under the pointer while the card itself stays in its column, marked at `[data-dragging]`. That happens on its own: the copy is drawn by calling your `children` with the column the card is over and only that card in it, so it looks like the card does. Pass `overlay` only to float something else instead. A keyboard drag floats nothing, since there is no pointer to follow.
+
 ## Props
 
 | Prop | Default | Description |
@@ -44,6 +46,6 @@ Focus stays on the card rather than on its handle, which is what lets a keyboard
 | `announcements` | | Override any of the four screen reader messages. |
 | `roleDescription` | `'sortable item'` | What a screen reader calls a card. |
 | `children` | | `(columnId, cards) => ReactNode`. One column per id. |
-| `overlay` | | `(id) => ReactNode`. A copy that follows the pointer. |
+| `overlay` | `children` | `(id) => ReactNode`. What the copy that follows the pointer looks like. By default the card itself. |
 
 `<KanbanColumn>` takes an `id` and an optional `title`, which also names the column for screen readers, and highlights itself at `[data-over]`. `<KanbanCard>` takes the `id` it renders. `<KanbanHandle>` draws a grip unless you give it children.

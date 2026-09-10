@@ -20,6 +20,16 @@ interface SortableContextValue {
 
 const SortableContext = React.createContext<SortableContextValue | null>(null)
 const SortableItemContext = React.createContext<string | null>(null)
+/**
+ * True inside the floating copy of the dragged row. The copy runs the same render function as
+ * the list, so without this every part would register a second time under the id of the row it
+ * is a copy of, and the real row would lose its box to the copy.
+ */
+const SortableOverlayContext = React.createContext(false)
+
+/** Classes the row wears while it is the one being dragged. The floating copy never wears them. */
+const DRAGGING_ITEM =
+  'data-[dragging]:z-10 data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground data-[dragging]:shadow-sm'
 
 function useSortableRoot() {
   const context = React.useContext(SortableContext)
@@ -56,9 +66,10 @@ export interface SortableProps extends Omit<React.ComponentProps<'ul'>, 'childre
   /** One item per id, in the order the drag is currently leaving them. Keyed by you. */
   children: (id: string, index: number) => React.ReactNode
   /**
-   * A copy of the dragged row that follows the pointer, so the row itself can be styled as an
-   * empty slot at `[data-dragging]`. Optional, and never shown during a keyboard drag, where
-   * there is no pointer to follow.
+   * What the copy that follows the pointer looks like. By default it is the row itself, run
+   * through `children` again, which is what makes a drag visible without any wiring. Pass this
+   * to show something else instead. Never shown during a keyboard drag, where there is no
+   * pointer to follow.
    */
   overlay?: (id: string) => React.ReactNode
 }
@@ -112,15 +123,19 @@ function Sortable({
       >
         {sortable.items.map((id, index) => children(id, index))}
       </ul>
-      {overlay ? (
-        <div
-          data-slot="sortable-overlay"
-          className="rounded-md shadow-lg"
-          {...sortable.getOverlayProps()}
-        >
-          {sortable.activeId ? overlay(sortable.activeId) : null}
-        </div>
-      ) : null}
+      <div
+        data-slot="sortable-overlay"
+        className="rounded-md shadow-lg"
+        {...sortable.getOverlayProps()}
+      >
+        {sortable.activeId && sortable.mode === 'pointer' ? (
+          <SortableOverlayContext.Provider value={true}>
+            {overlay
+              ? overlay(sortable.activeId)
+              : children(sortable.activeId, sortable.items.indexOf(sortable.activeId))}
+          </SortableOverlayContext.Provider>
+        ) : null}
+      </div>
       <div {...sortable.getLiveRegionProps()}>{sortable.announcement}</div>
     </SortableContext.Provider>
   )
@@ -138,24 +153,29 @@ export interface SortableItemProps extends React.ComponentProps<'li'> {
  */
 function SortableItem({ id, className, style, children, ...props }: SortableItemProps) {
   const { sortable, withHandle } = useSortableRoot()
-  const { onPointerDown, ...handle } = sortable.getHandleProps(id)
+  const inOverlay = React.useContext(SortableOverlayContext)
+  const { onPointerDown, style: handleStyle, ...handle } = sortable.getHandleProps(id)
 
   return (
     <SortableItemContext.Provider value={id}>
       <li
         data-slot="sortable-item"
         {...props}
-        {...sortable.getItemProps(id)}
-        {...handle}
-        {...(withHandle ? null : { onPointerDown })}
+        {...(inOverlay
+          ? null
+          : {
+              ...sortable.getItemProps(id),
+              ...handle,
+              ...(withHandle ? null : { onPointerDown }),
+            })}
         className={cn(
           'flex items-center gap-2 rounded-md border border-input bg-background px-3 py-2 text-sm outline-none transition-colors',
           'focus-visible:ring-[3px] focus-visible:ring-ring/50',
-          'data-[dragging]:z-10 data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground data-[dragging]:shadow-sm',
+          inOverlay ? null : DRAGGING_ITEM,
           withHandle ? null : 'cursor-grab data-[dragging]:cursor-grabbing',
           className,
         )}
-        style={{ ...handle.style, ...style }}
+        style={inOverlay ? style : { ...handleStyle, ...style }}
       >
         {children}
       </li>
@@ -173,8 +193,9 @@ export type SortableHandleProps = React.ComponentProps<'span'>
 function SortableHandle({ className, style, children, ...props }: SortableHandleProps) {
   const { sortable } = useSortableRoot()
   const id = useSortableItem()
+  const inOverlay = React.useContext(SortableOverlayContext)
   const { onPointerDown, style: handleStyle } = sortable.getHandleProps(id)
-  const active = sortable.isDragging && sortable.activeId === id
+  const active = !inOverlay && sortable.isDragging && sortable.activeId === id
 
   return (
     <span
@@ -182,7 +203,7 @@ function SortableHandle({ className, style, children, ...props }: SortableHandle
       aria-hidden="true"
       data-dragging={active ? '' : undefined}
       {...props}
-      onPointerDown={onPointerDown}
+      {...(inOverlay ? null : { onPointerDown })}
       className={cn(
         'inline-flex shrink-0 cursor-grab items-center justify-center rounded-sm text-muted-foreground transition-colors',
         'data-[dragging]:cursor-grabbing data-[dragging]:text-foreground',

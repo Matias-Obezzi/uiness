@@ -12,6 +12,16 @@ import { cn } from '@/lib/utils'
 export type { SortableChange } from '@uiness/dnd'
 
 const ReorderableGridContext = React.createContext<SortableResult | null>(null)
+/**
+ * True inside the floating copy of the dragged tile. The copy runs the same render function as
+ * the grid, so without this it would register a second time under the id of the tile it is a
+ * copy of, and the real tile would lose its box to the copy.
+ */
+const ReorderableGridOverlayContext = React.createContext(false)
+
+/** Classes the tile wears while it is the one being dragged. The floating copy never wears them. */
+const DRAGGING_ITEM =
+  'data-[dragging]:z-10 data-[dragging]:cursor-grabbing data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground'
 
 function useReorderableGrid() {
   const context = React.useContext(ReorderableGridContext)
@@ -37,7 +47,11 @@ export interface ReorderableGridProps extends Omit<React.ComponentProps<'div'>, 
   roleDescription?: string
   /** One tile per id, in the order the drag is currently leaving them. Keyed by you. */
   children: (id: string, index: number) => React.ReactNode
-  /** A copy of the dragged tile that follows the pointer. Optional. */
+  /**
+   * What the copy that follows the pointer looks like. By default it is the tile itself, run
+   * through `children` again. Pass this to show something else instead. Never shown during a
+   * keyboard drag, where there is no pointer to follow.
+   */
   overlay?: (id: string) => React.ReactNode
 }
 
@@ -83,15 +97,19 @@ function ReorderableGrid({
       >
         {grid.items.map((id, index) => children(id, index))}
       </div>
-      {overlay ? (
-        <div
-          data-slot="reorderable-grid-overlay"
-          className="rounded-lg shadow-lg"
-          {...grid.getOverlayProps()}
-        >
-          {grid.activeId ? overlay(grid.activeId) : null}
-        </div>
-      ) : null}
+      <div
+        data-slot="reorderable-grid-overlay"
+        className="rounded-lg shadow-lg"
+        {...grid.getOverlayProps()}
+      >
+        {grid.activeId && grid.mode === 'pointer' ? (
+          <ReorderableGridOverlayContext.Provider value={true}>
+            {overlay
+              ? overlay(grid.activeId)
+              : children(grid.activeId, grid.items.indexOf(grid.activeId))}
+          </ReorderableGridOverlayContext.Provider>
+        ) : null}
+      </div>
       <div {...grid.getLiveRegionProps()}>{grid.announcement}</div>
     </ReorderableGridContext.Provider>
   )
@@ -111,22 +129,22 @@ function ReorderableGridItem({
   ...props
 }: ReorderableGridItemProps) {
   const grid = useReorderableGrid()
-  const handle = grid.getHandleProps(id)
+  const inOverlay = React.useContext(ReorderableGridOverlayContext)
+  const { style: handleStyle, ...handle } = grid.getHandleProps(id)
 
   return (
     <div
       data-slot="reorderable-grid-item"
       {...props}
-      {...grid.getItemProps(id)}
-      {...handle}
+      {...(inOverlay ? null : { ...grid.getItemProps(id), ...handle })}
       className={cn(
         'flex aspect-square cursor-grab select-none flex-col items-center justify-center gap-1 rounded-lg border border-input bg-background p-2 text-center text-sm outline-none transition-colors',
         'focus-visible:ring-[3px] focus-visible:ring-ring/50',
-        'data-[dragging]:z-10 data-[dragging]:cursor-grabbing data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground',
+        inOverlay ? null : DRAGGING_ITEM,
         'aria-disabled:pointer-events-none aria-disabled:opacity-50',
         className,
       )}
-      style={{ ...handle.style, ...style }}
+      style={inOverlay ? style : { ...handleStyle, ...style }}
     >
       {children}
     </div>

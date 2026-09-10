@@ -24,6 +24,8 @@ const [ids, setIds] = useState(['mail', 'calendar', 'notes', 'camera'])
 
 `columns` sets the template and is also what the up and down arrow keys step by, so a press moves a whole row while left and right move a single cell. Tiles are square and dragged from anywhere on them: one this small has no room for a handle.
 
+A pointer drag floats a copy of the tile under the pointer while the tile itself stays in the grid, marked at `[data-dragging]`. That happens on its own, out of the same `children` you already wrote; pass `overlay` only to float something other than the tile. A keyboard drag floats nothing, since there is no pointer to follow.
+
 ## Props
 
 | Prop | Default | Description |
@@ -36,6 +38,6 @@ const [ids, setIds] = useState(['mail', 'calendar', 'notes', 'camera'])
 | `announcements` | | Override any of the four screen reader messages. |
 | `roleDescription` | `'grid item'` | What a screen reader calls a tile. |
 | `children` | | `(id, index) => ReactNode`. One tile per id. |
-| `overlay` | | `(id) => ReactNode`. A copy that follows the pointer. |
+| `overlay` | `children` | `(id) => ReactNode`. What the copy that follows the pointer looks like. By default the tile itself. |
 
 `<ReorderableGridItem>` takes the `id` it renders.

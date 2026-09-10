@@ -20,6 +20,16 @@ interface KanbanContextValue {
 
 const KanbanContext = React.createContext<KanbanContextValue | null>(null)
 const KanbanCardContext = React.createContext<string | null>(null)
+/**
+ * True inside the floating copy of the dragged card. The copy runs the same render function as
+ * the board, so without this the card would register a second time under the id it is a copy of,
+ * and the real card would lose its box to the copy.
+ */
+const KanbanOverlayContext = React.createContext(false)
+
+/** Classes the card wears while it is the one being dragged. The floating copy never wears them. */
+const DRAGGING_CARD =
+  'data-[dragging]:z-10 data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground'
 
 function useKanban() {
   const context = React.useContext(KanbanContext)
@@ -55,7 +65,11 @@ export interface KanbanProps extends Omit<React.ComponentProps<'div'>, 'children
   roleDescription?: string
   /** One column per id, with the cards it holds right now. Keyed by you. */
   children: (columnId: string, cards: string[]) => React.ReactNode
-  /** A copy of the dragged card that follows the pointer. Optional. */
+  /**
+   * What the copy that follows the pointer looks like. By default it is the card itself, run
+   * through `children` again with only the dragged card in the column. Pass this to show
+   * something else instead. Never shown during a keyboard drag, where there is no pointer.
+   */
   overlay?: (id: string) => React.ReactNode
 }
 
@@ -93,6 +107,11 @@ function Kanban({
     () => ({ board, withHandle }),
     [board, withHandle],
   )
+  // The column the dragged card sits in right now, which is the one whose render function knows
+  // how to draw it. `board.groups` is the in-flight order, so this follows the card across.
+  const activeColumn = board.activeId
+    ? columns.find((columnId) => board.groups[columnId]?.includes(board.activeId as string))
+    : undefined
 
   return (
     <KanbanContext.Provider value={context}>
@@ -107,15 +126,17 @@ function Kanban({
       >
         {columns.map((columnId) => children(columnId, board.groups[columnId] ?? []))}
       </div>
-      {overlay ? (
-        <div
-          data-slot="kanban-overlay"
-          className="rounded-lg shadow-lg"
-          {...board.getOverlayProps()}
-        >
-          {board.activeId ? overlay(board.activeId) : null}
-        </div>
-      ) : null}
+      <div data-slot="kanban-overlay" className="rounded-lg shadow-lg" {...board.getOverlayProps()}>
+        {board.activeId && board.mode === 'pointer' ? (
+          <KanbanOverlayContext.Provider value={true}>
+            {overlay
+              ? overlay(board.activeId)
+              : activeColumn
+                ? children(activeColumn, [board.activeId])
+                : null}
+          </KanbanOverlayContext.Provider>
+        ) : null}
+      </div>
       <div {...board.getLiveRegionProps()}>{board.announcement}</div>
     </KanbanContext.Provider>
   )
@@ -131,7 +152,12 @@ export interface KanbanColumnProps extends Omit<React.ComponentProps<'div'>, 'ti
 /** One column. Highlights itself at `[data-over]` while a card is held over it. */
 function KanbanColumn({ id, title, className, children, ...props }: KanbanColumnProps) {
   const { board } = useKanban()
+  const inOverlay = React.useContext(KanbanOverlayContext)
   const titleId = React.useId()
+
+  // Inside the floating copy there is one card and no column: the chrome would register a
+  // second drop target under this id, and a whole column following the pointer is not the point.
+  if (inOverlay) return <>{children}</>
 
   return (
     // biome-ignore lint/a11y/useSemanticElements: a fieldset would bring its own box model
@@ -175,24 +201,25 @@ export interface KanbanCardProps extends React.ComponentProps<'div'> {
  */
 function KanbanCard({ id, className, style, children, ...props }: KanbanCardProps) {
   const { board, withHandle } = useKanban()
-  const { onPointerDown, ...handle } = board.getHandleProps(id)
+  const inOverlay = React.useContext(KanbanOverlayContext)
+  const { onPointerDown, style: handleStyle, ...handle } = board.getHandleProps(id)
 
   return (
     <KanbanCardContext.Provider value={id}>
       <div
         data-slot="kanban-card"
         {...props}
-        {...board.getItemProps(id)}
-        {...handle}
-        {...(withHandle ? null : { onPointerDown })}
+        {...(inOverlay
+          ? null
+          : { ...board.getItemProps(id), ...handle, ...(withHandle ? null : { onPointerDown }) })}
         className={cn(
           'flex items-start gap-2 rounded-md border border-input bg-background p-3 text-sm shadow-xs outline-none transition-colors',
           'focus-visible:ring-[3px] focus-visible:ring-ring/50',
-          'data-[dragging]:z-10 data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground',
+          inOverlay ? null : DRAGGING_CARD,
           withHandle ? null : 'cursor-grab data-[dragging]:cursor-grabbing',
           className,
         )}
-        style={{ ...handle.style, ...style }}
+        style={inOverlay ? style : { ...handleStyle, ...style }}
       >
         {children}
       </div>
@@ -210,8 +237,9 @@ export type KanbanHandleProps = React.ComponentProps<'span'>
 function KanbanHandle({ className, style, children, ...props }: KanbanHandleProps) {
   const { board } = useKanban()
   const id = useKanbanCard()
+  const inOverlay = React.useContext(KanbanOverlayContext)
   const { onPointerDown, style: handleStyle } = board.getHandleProps(id)
-  const active = board.isDragging && board.activeId === id
+  const active = !inOverlay && board.isDragging && board.activeId === id
 
   return (
     <span
@@ -219,7 +247,7 @@ function KanbanHandle({ className, style, children, ...props }: KanbanHandleProp
       aria-hidden="true"
       data-dragging={active ? '' : undefined}
       {...props}
-      onPointerDown={onPointerDown}
+      {...(inOverlay ? null : { onPointerDown })}
       className={cn(
         'inline-flex shrink-0 cursor-grab items-center justify-center rounded-sm text-muted-foreground transition-colors',
         'data-[dragging]:cursor-grabbing data-[dragging]:text-foreground',
