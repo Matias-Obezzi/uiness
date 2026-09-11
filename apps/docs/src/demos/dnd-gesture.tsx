@@ -27,7 +27,9 @@ export default function DndGesture() {
         </div>
         <div
           {...gesture.getHandleProps()}
-          className="w-1.5 shrink-0 cursor-col-resize bg-border outline-none transition-colors hover:bg-ring focus-visible:bg-ring data-[dragging]:bg-ring"
+          // The bar reads as 6px but is grabbed from 26: a divider you have to aim at is a
+          // divider that feels broken. The pseudo element widens the target, not the look.
+          className='relative w-1.5 shrink-0 cursor-col-resize bg-border outline-none transition-colors after:absolute after:-inset-x-2.5 after:inset-y-0 after:content-[""] hover:bg-ring focus-visible:bg-ring data-[dragging]:bg-ring'
         >
           <span className="sr-only">Resize the panel</span>
         </div>
