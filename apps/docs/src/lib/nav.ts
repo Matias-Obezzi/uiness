@@ -90,6 +90,11 @@ export const nav: NavSection[] = [
       ),
       page('components/dropdown-menu', 'Dropdown Menu', 'A menu of actions opened from a trigger.'),
       page('components/form', 'Form', 'Fields that wire label, description and error together.'),
+      page(
+        'components/carousel',
+        'Carousel',
+        'A horizontal run of items of any width and any content.',
+      ),
       page('components/gallery', 'Gallery', 'An image grid with a full screen lightbox.'),
       page('components/input', 'Input', 'A text field.'),
       page('components/input-otp', 'Input OTP', 'A one time code field.'),

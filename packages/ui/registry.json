@@ -1063,6 +1063,20 @@
       ]
     },
     {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "description": "A horizontal run of items of any width and any content, snapped as you scroll.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/carousel.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "sortable",
       "type": "registry:ui",
       "title": "Sortable",
