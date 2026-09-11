@@ -1,6 +1,6 @@
 {
   "name": "@uiness/dnd",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Headless drag and drop primitives for React: sortable lists, boards, grids and free dragging, with keyboard support. Zero dependencies.",
   "keywords": [
     "react",
