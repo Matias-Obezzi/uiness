@@ -29,7 +29,7 @@ export default function KanbanDemo() {
 
   return (
     <div className="w-full space-y-3">
-      <Kanban groups={groups} onChange={setGroups} order={Object.keys(COLUMNS)} withHandle>
+      <Kanban groups={groups} onChange={setGroups} order={Object.keys(COLUMNS)}>
         {(columnId, cards) => (
           <KanbanColumn key={columnId} id={columnId} title={COLUMNS[columnId]}>
             {cards.map((id) => (
@@ -45,9 +45,9 @@ export default function KanbanDemo() {
         )}
       </Kanban>
       <p className="text-muted-foreground text-sm">
-        Drag a card by its grip, or use the keyboard: Tab to a card, Space to pick it up, up and
-        down to move it inside the column and left and right to cross to another one, Space to drop
-        it, Escape to put it back.
+        Drag a card from anywhere on it, or use the keyboard: Tab to a card, Space to pick it up, up
+        and down to move it inside the column and left and right to cross to another one, Space to
+        drop it, Escape to put it back.
       </p>
     </div>
   )

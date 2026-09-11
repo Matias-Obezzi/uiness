@@ -235,7 +235,7 @@ export type KanbanHandleProps = React.ComponentProps<'span'>
  * carries the button role, the name and the keys.
  */
 function KanbanHandle({ className, style, children, ...props }: KanbanHandleProps) {
-  const { board } = useKanban()
+  const { board, withHandle } = useKanban()
   const id = useKanbanCard()
   const inOverlay = React.useContext(KanbanOverlayContext)
   const { onPointerDown, style: handleStyle } = board.getHandleProps(id)
@@ -247,9 +247,9 @@ function KanbanHandle({ className, style, children, ...props }: KanbanHandleProp
       aria-hidden="true"
       data-dragging={active ? '' : undefined}
       {...props}
-      {...(inOverlay ? null : { onPointerDown })}
+      {...(inOverlay || !withHandle ? null : { onPointerDown })}
       className={cn(
-        'inline-flex shrink-0 cursor-grab items-center justify-center rounded-sm text-muted-foreground transition-colors',
+        'inline-flex size-6 shrink-0 cursor-grab items-center justify-center rounded-sm text-muted-foreground transition-colors',
         'data-[dragging]:cursor-grabbing data-[dragging]:text-foreground',
         className,
       )}

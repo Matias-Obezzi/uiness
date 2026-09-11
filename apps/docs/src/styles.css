@@ -18,60 +18,65 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Documentation prose */
+/* Documentation prose.
+ *
+ * Every element rule here excludes anything under .not-prose, which is what wraps a component
+ * preview. Without that guard a demo containing a list, a table or a quote is restyled by the
+ * page around it: a `.prose ul` descendant selector outranks the `list-none` the component asked
+ * for, and the component shows up wearing bullets it never had. */
 .prose {
   @apply text-base leading-7;
 }
 .prose > * + * {
   @apply mt-5;
 }
-.prose h1 {
+.prose h1:not(.not-prose h1) {
   @apply font-bold text-3xl tracking-tight scroll-mt-24;
 }
-.prose h2 {
+.prose h2:not(.not-prose h2) {
   @apply mt-12 border-b pb-2 font-semibold text-2xl tracking-tight scroll-mt-24 first:mt-0;
 }
-.prose h3 {
+.prose h3:not(.not-prose h3) {
   @apply mt-8 font-semibold text-xl tracking-tight scroll-mt-24;
 }
-.prose h4 {
+.prose h4:not(.not-prose h4) {
   @apply mt-6 font-semibold text-lg scroll-mt-24;
 }
-.prose p {
+.prose p:not(.not-prose p) {
   @apply text-foreground/90;
 }
 .prose a:not(.not-prose a) {
   @apply font-medium underline underline-offset-4 decoration-muted-foreground/60 hover:decoration-foreground;
 }
-.prose ul {
+.prose ul:not(.not-prose ul) {
   @apply my-5 ml-6 list-disc [&>li]:mt-2;
 }
-.prose ol {
+.prose ol:not(.not-prose ol) {
   @apply my-5 ml-6 list-decimal [&>li]:mt-2;
 }
-.prose blockquote {
+.prose blockquote:not(.not-prose blockquote) {
   @apply mt-6 border-l-2 pl-6 italic text-muted-foreground;
 }
-.prose :not(pre) > code {
+.prose :not(pre) > code:not(.not-prose code) {
   @apply relative rounded-md bg-muted px-[0.35rem] py-[0.2rem] font-mono text-[0.85em];
 }
-.prose table {
+.prose table:not(.not-prose table) {
   @apply my-6 w-full overflow-hidden text-sm;
 }
-.prose thead th {
+.prose thead th:not(.not-prose th) {
   @apply border-b px-3 py-2 text-left font-semibold;
 }
-.prose tbody td {
+.prose tbody td:not(.not-prose td) {
   @apply border-b px-3 py-2 align-top;
 }
 .prose tbody td:first-child code,
 .prose tbody td:first-child {
   @apply whitespace-nowrap;
 }
-.prose hr {
+.prose hr:not(.not-prose hr) {
   @apply my-8;
 }
-.prose img {
+.prose img:not(.not-prose img) {
   @apply rounded-lg border;
 }
 

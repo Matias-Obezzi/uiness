@@ -191,7 +191,7 @@ export type SortableHandleProps = React.ComponentProps<'span'>
  * carries the button role, the name and the keys, and two stops per row would be one too many.
  */
 function SortableHandle({ className, style, children, ...props }: SortableHandleProps) {
-  const { sortable } = useSortableRoot()
+  const { sortable, withHandle } = useSortableRoot()
   const id = useSortableItem()
   const inOverlay = React.useContext(SortableOverlayContext)
   const { onPointerDown, style: handleStyle } = sortable.getHandleProps(id)
@@ -203,9 +203,9 @@ function SortableHandle({ className, style, children, ...props }: SortableHandle
       aria-hidden="true"
       data-dragging={active ? '' : undefined}
       {...props}
-      {...(inOverlay ? null : { onPointerDown })}
+      {...(inOverlay || !withHandle ? null : { onPointerDown })}
       className={cn(
-        'inline-flex shrink-0 cursor-grab items-center justify-center rounded-sm text-muted-foreground transition-colors',
+        'inline-flex size-6 shrink-0 cursor-grab items-center justify-center rounded-sm text-muted-foreground transition-colors',
         'data-[dragging]:cursor-grabbing data-[dragging]:text-foreground',
         className,
       )}

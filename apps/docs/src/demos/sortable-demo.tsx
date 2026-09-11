@@ -16,7 +16,7 @@ export default function SortableDemo() {
 
   return (
     <div className="w-full max-w-sm space-y-3">
-      <Sortable items={order} onReorder={setOrder} withHandle>
+      <Sortable items={order} onReorder={setOrder}>
         {(id) => (
           <SortableItem key={id} id={id} className="py-2.5">
             <SortableHandle />
@@ -28,8 +28,8 @@ export default function SortableDemo() {
         )}
       </Sortable>
       <p className="text-muted-foreground text-sm">
-        Drag a row by its grip, or use the keyboard: Tab to a row, Space to pick it up, the up and
-        down arrows to move it, Space to drop it, Escape to put it back.
+        Drag a row from anywhere on it, or use the keyboard: Tab to a row, Space to pick it up, the
+        up and down arrows to move it, Space to drop it, Escape to put it back.
       </p>
     </div>
   )
