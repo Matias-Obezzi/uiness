@@ -4,6 +4,7 @@ import {
   mapRange,
   observeScrollProgress,
   progressFrom,
+  scrollParent,
   scrollProgress,
 } from './core'
 
@@ -107,5 +108,76 @@ describe('mapRange', () => {
     expect(mapRange(2, [0, 1], [0, 100])).toBe(100)
     expect(mapRange(2, [0, 1], [0, 100], false)).toBe(200)
     expect(mapRange(0.25, [0, 1], [100, 0])).toBe(75)
+  })
+})
+
+describe('scrollParent', () => {
+  /** jsdom lays nothing out, so a box is only a scrolling box once it is told it has room. */
+  const box = (overflowY: string, scrollHeight: number, clientHeight: number) => {
+    const el = document.createElement('div')
+    el.style.overflowY = overflowY
+    Object.defineProperty(el, 'scrollHeight', { value: scrollHeight, configurable: true })
+    Object.defineProperty(el, 'clientHeight', { value: clientHeight, configurable: true })
+    return el
+  }
+
+  it('finds the panel an element is scrolling inside', () => {
+    const panel = box('auto', 1200, 400)
+    const child = document.createElement('div')
+    panel.append(child)
+    document.body.append(panel)
+    expect(scrollParent(child)).toBe(panel)
+    panel.remove()
+  })
+
+  // Declaring `overflow: auto` is not the same as having somewhere to go. Picking a box that
+  // fits its content would freeze the element against a container that never moves.
+  it('passes over a box that has nothing to scroll', () => {
+    const snug = box('auto', 400, 400)
+    const child = document.createElement('div')
+    snug.append(child)
+    document.body.append(snug)
+    expect(scrollParent(child)).toBeNull()
+    snug.remove()
+  })
+
+  it('passes over a box that does not scroll at all', () => {
+    const clipped = box('hidden', 1200, 400)
+    const child = document.createElement('div')
+    clipped.append(child)
+    document.body.append(clipped)
+    expect(scrollParent(child)).toBeNull()
+    clipped.remove()
+  })
+
+  it('takes the nearest one when panels are nested', () => {
+    const outer = box('auto', 2000, 500)
+    const inner = box('scroll', 1200, 300)
+    const child = document.createElement('div')
+    inner.append(child)
+    outer.append(inner)
+    document.body.append(outer)
+    expect(scrollParent(child)).toBe(inner)
+    outer.remove()
+  })
+
+  it('reads the other axis when asked', () => {
+    const el = document.createElement('div')
+    el.style.overflowX = 'auto'
+    Object.defineProperty(el, 'scrollWidth', { value: 1200, configurable: true })
+    Object.defineProperty(el, 'clientWidth', { value: 400, configurable: true })
+    const child = document.createElement('div')
+    el.append(child)
+    document.body.append(el)
+    expect(scrollParent(child, 'x')).toBe(el)
+    expect(scrollParent(child, 'y')).toBeNull()
+    el.remove()
+  })
+
+  it('answers null when the page itself is the scroller', () => {
+    const loose = document.createElement('div')
+    document.body.append(loose)
+    expect(scrollParent(loose)).toBeNull()
+    loose.remove()
   })
 })

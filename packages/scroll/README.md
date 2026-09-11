@@ -33,4 +33,4 @@ const stop = observeScrollProgress(element, { offset: ['start end', 'end start']
 
 ## Notes
 
-Reads use `getBoundingClientRect`, batched to one per frame with `requestAnimationFrame`, and a `ResizeObserver` keeps the numbers right when the element changes size. Pass `container` to follow an element inside a scrolling box instead of the window.
+Reads use `getBoundingClientRect`, batched to one per frame with `requestAnimationFrame`, and a `ResizeObserver` keeps the numbers right when the element changes size. An element inside a scrolling box is measured against that box: the nearest ancestor that actually scrolls is found for you, so a panel does not have to be declared. Pass `container` to name one yourself, or `null` to measure against the window wherever the element sits.

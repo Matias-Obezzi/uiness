@@ -6,6 +6,7 @@ import {
   observeScrollProgress,
   type ProgressInfo,
   type ProgressOptions,
+  scrollParent,
 } from './core'
 
 type Ref<T> = React.RefObject<T | null>
@@ -71,7 +72,10 @@ export interface ActiveSectionOptions {
   anchor?: number
   /** Which descendants count as sections. Default the direct children. */
   selector?: string
-  /** Scrolling ancestor. Default the window. */
+  /**
+   * Scrolling ancestor. Left out, the nearest one that actually scrolls is found for you.
+   * Pass `null` to measure against the window whatever the list sits inside.
+   */
   container?: HTMLElement | null
 }
 
@@ -87,12 +91,15 @@ export function useActiveSection(
   useIsoLayoutEffect(() => {
     const root = ref.current
     if (!root) return
-    const scroller: EventTarget = container ?? window
+    // Same rule as the progress hooks: a list inside a scrolling panel is read against that
+    // panel unless the caller says otherwise.
+    const resolved = container === undefined ? scrollParent(root, 'y') : container
+    const scroller: EventTarget = resolved ?? window
     let frame = 0
     const update = () => {
       frame = 0
       const sections = selector ? root.querySelectorAll(selector) : root.children
-      const next = activeIndexAt(sections, anchor, container)
+      const next = activeIndexAt(sections, anchor, resolved)
       setActive((prev) => (next === -1 || next === prev ? prev : next))
     }
     const schedule = () => {

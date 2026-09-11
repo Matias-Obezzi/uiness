@@ -1,4 +1,5 @@
 export {
+  type Axis,
   activeIndexAt,
   clamp,
   clamp01,
@@ -11,6 +12,7 @@ export {
   type ProgressInfo,
   type ProgressOptions,
   progressFrom,
+  scrollParent,
   scrollProgress,
 } from './core'
 export {
