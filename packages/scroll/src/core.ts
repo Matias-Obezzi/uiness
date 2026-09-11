@@ -11,12 +11,18 @@ export type Edge = 'start' | 'center' | 'end' | number | `${number}px`
 export type OffsetEntry = `${Edge} ${Edge}` | [Edge, Edge]
 export type Offset = [OffsetEntry, OffsetEntry]
 
+/** Which way the scrolling runs. */
+export type Axis = 'x' | 'y'
+
 export interface ProgressOptions {
   /** When progress is 0 and when it is 1. Default `['start end', 'end start']`. */
   offset?: Offset
   /** Scroll axis. Default `y`. */
-  axis?: 'x' | 'y'
-  /** Scrolling ancestor. Default the window. */
+  axis?: Axis
+  /**
+   * Scrolling ancestor. Left out, the nearest one that actually scrolls is found for you.
+   * Pass `null` to measure against the window whatever the element sits inside.
+   */
   container?: HTMLElement | null
   /** Keep the value between 0 and 1. Default true. */
   clamp?: boolean
@@ -84,7 +90,7 @@ interface Geometry {
   viewport: number
 }
 
-function measure(target: Element, axis: 'x' | 'y', container?: HTMLElement | null): Geometry {
+function measure(target: Element, axis: Axis, container?: HTMLElement | null): Geometry {
   const rect = target.getBoundingClientRect()
   if (container) {
     const c = container.getBoundingClientRect()
@@ -115,10 +121,43 @@ export function progressFrom(
   return shouldClamp ? clamp01(p) : p === 0 ? 0 : p
 }
 
+/**
+ * The nearest ancestor that actually scrolls on `axis`, or `null` when that is the page itself.
+ *
+ * Anything put inside a scrolling panel is measured against that panel, not against the window.
+ * Without this the caller has to know to say so, and forgetting is silent: the element simply
+ * answers to a scroll nobody is performing, which reads as the effect being dead.
+ */
+export function scrollParent(target: Element, axis: Axis = 'y'): HTMLElement | null {
+  if (typeof getComputedStyle !== 'function') return null
+  for (let el = target.parentElement; el; el = el.parentElement) {
+    const style = getComputedStyle(el)
+    const overflow = axis === 'y' ? style.overflowY : style.overflowX
+    if (overflow !== 'auto' && overflow !== 'scroll' && overflow !== 'overlay') continue
+    // Declaring `overflow: auto` is not the same as having somewhere to go: a box that fits its
+    // content never scrolls, and picking it would freeze the element against a still container.
+    const room = axis === 'y' ? el.scrollHeight > el.clientHeight : el.scrollWidth > el.clientWidth
+    if (room) return el
+  }
+  return null
+}
+
+/**
+ * `container` as given, or the nearest scrolling ancestor when it was left out. Passing `null`
+ * asks for the window on purpose and is honoured.
+ */
+function resolveContainer(
+  target: Element,
+  axis: Axis,
+  container: HTMLElement | null | undefined,
+): HTMLElement | null {
+  return container === undefined ? scrollParent(target, axis) : container
+}
+
 /** Read the progress once. */
 export function scrollProgress(target: Element, options: ProgressOptions = {}): ProgressInfo {
   const { offset, axis = 'y', container, clamp: shouldClamp = true } = options
-  const geometry = measure(target, axis, container)
+  const geometry = measure(target, axis, resolveContainer(target, axis, container))
   return { progress: progressFrom(geometry, offset, shouldClamp), ...geometry }
 }
 
@@ -131,13 +170,17 @@ export function observeScrollProgress(
   options: ProgressOptions,
   callback: (info: ProgressInfo) => void,
 ): () => void {
-  const scroller: EventTarget = options.container ?? window
+  const axis = options.axis ?? 'y'
   let frame = 0
   let last: number | null = null
+  // Resolved once and reused, not read per frame: finding it walks the ancestors asking the
+  // computed style of each, which is not something to do sixty times a second per element.
+  let container = resolveContainer(target, axis, options.container)
+  let scroller: EventTarget = container ?? window
 
   const update = () => {
     frame = 0
-    const info = scrollProgress(target, options)
+    const info = scrollProgress(target, { ...options, container })
     if (info.progress === last && last !== null) return
     last = info.progress
     callback(info)
@@ -147,21 +190,42 @@ export function observeScrollProgress(
     frame = requestAnimationFrame(update)
   }
 
+  const listen = () => scroller.addEventListener('scroll', schedule, { passive: true })
+  const stopListening = () => scroller.removeEventListener('scroll', schedule)
+
+  /**
+   * A box only becomes a scrolling box once it has more in it than it can show, which for a
+   * panel full of pictures happens after they load. Resolving once and never again would leave
+   * the element answering to the window for the rest of its life.
+   */
+  const recheck = () => {
+    if (options.container !== undefined) return
+    const next = resolveContainer(target, axis, undefined)
+    if (next === container) return
+    stopListening()
+    container = next
+    scroller = container ?? window
+    listen()
+    last = null
+  }
+
   update()
-  scroller.addEventListener('scroll', schedule, { passive: true })
+  listen()
   window.addEventListener('resize', schedule)
   const ro =
     typeof ResizeObserver !== 'undefined'
       ? new ResizeObserver(() => {
+          recheck()
           last = null
           schedule()
         })
       : null
   ro?.observe(target)
+  if (target.parentElement) ro?.observe(target.parentElement)
 
   return () => {
     if (frame) cancelAnimationFrame(frame)
-    scroller.removeEventListener('scroll', schedule)
+    stopListening()
     window.removeEventListener('resize', schedule)
     ro?.disconnect()
   }

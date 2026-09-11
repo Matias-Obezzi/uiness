@@ -53,6 +53,11 @@ export const nav: NavSection[] = [
         'Scroll',
         'Scroll progress, parallax and the active section, for any element.',
       ),
+      page(
+        'dnd',
+        'Dnd',
+        'Headless drag and drop: sortable lists, boards, grids and free dragging, with the keyboard.',
+      ),
     ],
   },
   {
@@ -85,6 +90,11 @@ export const nav: NavSection[] = [
       ),
       page('components/dropdown-menu', 'Dropdown Menu', 'A menu of actions opened from a trigger.'),
       page('components/form', 'Form', 'Fields that wire label, description and error together.'),
+      page(
+        'components/carousel',
+        'Carousel',
+        'A horizontal run of items of any width and any content.',
+      ),
       page('components/gallery', 'Gallery', 'An image grid with a full screen lightbox.'),
       page('components/input', 'Input', 'A text field.'),
       page('components/input-otp', 'Input OTP', 'A one time code field.'),
@@ -112,6 +122,28 @@ export const nav: NavSection[] = [
       page('components/textarea', 'Textarea', 'A multi line text field.'),
       page('components/toggle', 'Toggle', 'A button that stays pressed, alone or in a group.'),
       page('components/tooltip', 'Tooltip', 'A short hint on hover or focus.'),
+    ],
+  },
+  {
+    title: 'Drag and drop',
+    pages: [
+      page('dnd/sortable', 'Sortable', 'A list you reorder by dragging, or with the keyboard.'),
+      page('dnd/kanban', 'Kanban', 'Columns of cards, moved inside a column or across them.'),
+      page(
+        'dnd/reorderable-grid',
+        'Reorderable Grid',
+        'Tiles rearranged in two directions, the way app icons move.',
+      ),
+      page(
+        'dnd/draggable',
+        'Draggable',
+        'Anything you can pick up and move, optionally kept inside its parent.',
+      ),
+      page(
+        'dnd/dropzone',
+        'Dropzone',
+        'Files dropped in from the desktop, checked by type, size and count.',
+      ),
     ],
   },
   {

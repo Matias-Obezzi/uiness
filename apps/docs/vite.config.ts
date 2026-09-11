@@ -81,6 +81,7 @@ export default defineConfig({
       '@uiness/fx': `${root}../../packages/fx/src/index.ts`,
       '@uiness/toast': `${root}../../packages/toast/src/index.ts`,
       '@uiness/scroll': `${root}../../packages/scroll/src/index.ts`,
+      '@uiness/dnd': `${root}../../packages/dnd/src/index.ts`,
       '@': `${root}../../packages/ui/registry`,
       '~': `${root}src`,
     },

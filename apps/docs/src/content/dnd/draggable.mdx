@@ -1,0 +1,42 @@
+Anything you can pick up and move: a floating panel, a dialog dragged by its title bar, a pin on a map. The offset is written as a transform, so it composes with whatever CSS put the element there.
+
+<ComponentPreview name="draggable-demo" align="start" />
+
+## Installation
+
+<Install name="draggable" extra="Installs @uiness/dnd, which does the dragging." />
+
+## Usage
+
+```tsx
+import { Draggable, DraggableHandle } from '@/components/ui/draggable'
+
+<Draggable id="player" bounds="parent" withHandle defaultPosition={{ x: 24, y: 24 }}>
+  <DraggableHandle>Now playing</DraggableHandle>
+  <div className="p-3">Sunlit</div>
+</Draggable>
+```
+
+Leave `position` out and the component owns it, starting from `defaultPosition`. Pass `position` and it becomes controlled, and you update it from `onPositionChange`, which fires on every change during a drag; `onDragEnd` fires once, on the drop.
+
+`bounds="parent"` keeps the element inside its offset parent, so give that parent `position: relative`. A rect in viewport pixels works too, and `null` lets it go anywhere. A cancelled drag always returns it to where it was picked up.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `id` | `'panel'` | Name read out in the announcements. |
+| `position` | | Controlled offset from where the element sits in the layout. |
+| `defaultPosition` | `{ x: 0, y: 0 }` | Offset to start from when the component owns the position. |
+| `onPositionChange` | | `(position) => void` on every change, including during a drag. |
+| `onDragEnd` | | `(position) => void` once, when the drag is dropped. |
+| `bounds` | | `'parent'`, a rect in viewport pixels, or `null`. |
+| `axis` | `'both'` | Which way it may move. |
+| `withHandle` | `false` | It only moves when dragged from a `<DraggableHandle>`. |
+| `disabled` | | Turns dragging off and dims it. |
+| `activationDistance` | `4` | Pixels the pointer must travel before the drag starts. |
+| `keyboardStep` | `20` | Pixels one arrow key press moves it. |
+| `announcements` | | Override any of the four screen reader messages. |
+| `roleDescription` | `'draggable'` | What a screen reader calls it. |
+
+`<DraggableHandle>` draws a grip and a `label`, `'Move panel'` by default, read out as its name. Give it children and they are shown instead of the hidden label.

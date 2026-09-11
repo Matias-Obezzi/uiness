@@ -9,6 +9,16 @@
       "title": "uiness theme",
       "description": "Neutral theme with the same variable names as shadcn/ui, so both registries mix freely.",
       "dependencies": ["tw-animate-css"],
+      "css": {
+        "@media (prefers-reduced-motion: reduce)": {
+          "*, ::before, ::after": {
+            "animation-duration": "0.01ms !important",
+            "animation-iteration-count": "1 !important",
+            "transition-duration": "0.01ms !important",
+            "scroll-behavior": "auto !important"
+          }
+        }
+      },
       "cssVars": {
         "theme": {
           "radius": "0.75rem"
@@ -1048,6 +1058,90 @@
       "files": [
         {
           "path": "registry/ui/input-otp.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "carousel",
+      "type": "registry:ui",
+      "title": "Carousel",
+      "description": "A horizontal run of items of any width and any content, snapped as you scroll.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/carousel.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sortable",
+      "type": "registry:ui",
+      "title": "Sortable",
+      "description": "A list you reorder by dragging or with the keyboard. Installs @uiness/dnd.",
+      "dependencies": ["@uiness/dnd", "lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/sortable.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "kanban",
+      "type": "registry:ui",
+      "title": "Kanban",
+      "description": "Columns of cards, moved inside a column or across them. Installs @uiness/dnd.",
+      "dependencies": ["@uiness/dnd", "lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/kanban.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "reorderable-grid",
+      "type": "registry:ui",
+      "title": "Reorderable Grid",
+      "description": "A grid rearranged in two directions, the way app icons move. Installs @uiness/dnd.",
+      "dependencies": ["@uiness/dnd"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/reorderable-grid.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "draggable",
+      "type": "registry:ui",
+      "title": "Draggable",
+      "description": "Anything you can pick up and move, optionally kept inside its parent. Installs @uiness/dnd.",
+      "dependencies": ["@uiness/dnd", "lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/draggable.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dropzone",
+      "type": "registry:ui",
+      "title": "Dropzone",
+      "description": "Files dropped in from the desktop, checked by type, size and count.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/dropzone.tsx",
           "type": "registry:ui"
         }
       ]

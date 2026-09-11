@@ -1,0 +1,49 @@
+A list you reorder by dragging a row, or without touching the pointer at all. The live region that reads every move out is rendered for you.
+
+<ComponentPreview name="sortable-demo" align="start" />
+
+## Installation
+
+<Install name="sortable" extra="Installs @uiness/dnd, which does the dragging." />
+
+## Usage
+
+```tsx
+import { Sortable, SortableHandle, SortableItem } from '@/components/ui/sortable'
+
+const [ids, setIds] = useState(['write', 'review', 'ship'])
+
+<Sortable items={ids} onReorder={setIds} withHandle>
+  {(id) => (
+    <SortableItem key={id} id={id}>
+      <SortableHandle />
+      {labels[id]}
+    </SortableItem>
+  )}
+</Sortable>
+```
+
+`children` is a function, not nodes: it is called once per id in the order the drag is currently leaving them, so the list reorders under the pointer and `onReorder` only fires on drop, once, and only when the row landed somewhere new.
+
+Without `withHandle` the whole row starts a pointer drag. With it, only the `<SortableHandle>` does, which is what keeps a touch drag from taking the page scroll with it. Either way the row itself is the single focus stop, so the keyboard path does not change.
+
+Pass `axis="x"` for a horizontal list; the arrow keys follow.
+
+A pointer drag floats a copy of the row under the pointer while the row itself stays in the flow, marked at `[data-dragging]`. That happens on its own, out of the same `children` you already wrote. Pass `overlay` only to float something other than the row: a smaller card, a label, a count of what is being moved. A keyboard drag floats nothing, since there is no pointer to follow.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `items` | | Item ids, in their current order. Unique and stable. |
+| `onReorder` | | `(items, change) => void`, once, on a drop that moved something. |
+| `axis` | `'y'` | `'y'` for a vertical list, `'x'` for a horizontal one. |
+| `withHandle` | `false` | Pointer drags start from a `<SortableHandle>` instead of the row. |
+| `disabled` | | Turns dragging off and dims the list. |
+| `activationDistance` | `4` | Pixels the pointer must travel before the drag starts. |
+| `announcements` | | Override any of the four screen reader messages. |
+| `roleDescription` | `'sortable item'` | What a screen reader calls a row. |
+| `children` | | `(id, index) => ReactNode`. One item per id. |
+| `overlay` | `children` | `(id) => ReactNode`. What the copy that follows the pointer looks like. By default the row itself. |
+
+`<SortableItem>` takes the `id` it renders. `<SortableHandle>` takes nothing and draws a grip unless you give it children.

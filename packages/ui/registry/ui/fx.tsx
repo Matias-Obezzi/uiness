@@ -37,6 +37,7 @@ export {
 function Fx({ className, ...props }: FxProps) {
   return (
     <FxRoot
+      data-slot="fx"
       className={cn('rounded-lg bg-muted data-[status=ready]:bg-transparent', className)}
       {...props}
     />

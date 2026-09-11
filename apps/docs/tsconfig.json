@@ -10,7 +10,8 @@
       "@/*": ["../../packages/ui/registry/*"],
       "~/*": ["./src/*"],
       "@uiness/toast": ["../../packages/toast/src/index.ts"],
-      "@uiness/scroll": ["../../packages/scroll/src/index.ts"]
+      "@uiness/scroll": ["../../packages/scroll/src/index.ts"],
+      "@uiness/dnd": ["../../packages/dnd/src/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts"]

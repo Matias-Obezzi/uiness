@@ -1,0 +1,83 @@
+A horizontal run of items you scroll sideways, the way a product page shows off its features. Items keep whatever width you give them and hold whatever you put in them: a picture, a clip, a paragraph, a whole card.
+
+<ComponentPreview name="carousel-demo" align="start" />
+
+## Installation
+
+<Install name="carousel" />
+
+## Usage
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselDots,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
+
+<Carousel label="Highlights">
+  <CarouselPrevious />
+  <CarouselNext />
+  <CarouselContent>
+    <CarouselItem className="w-[30rem]"><img src="/wide.png" alt="" /></CarouselItem>
+    <CarouselItem className="w-[16rem]"><p>Just words, and narrower.</p></CarouselItem>
+  </CarouselContent>
+  <CarouselDots />
+</Carousel>
+```
+
+Width lives on the item, not on the carousel, so a run can mix a wide picture with a narrow note without either one being padded to match.
+
+## How it scrolls
+
+It is a scroll container with CSS snapping, not a track moved by script. That is the whole point: momentum on a touch screen, the wheel and the trackpad, the arrow keys, Home and End, and the scrollbar all come from the browser already knowing how to scroll a box. The script only reads the position to light up the arrows and the dots, and writes it when one is pressed.
+
+Dragging with a mouse is added on top, since desktop pointers do not scroll by dragging on their own. Touch and pen are left alone — taking those over would throw away the momentum the platform gives for free.
+
+## Video
+
+`CarouselVideo` is a clip that plays only while it is on screen, muted and looping.
+
+```tsx
+import { CarouselItem, CarouselVideo } from '@/components/ui/carousel'
+
+<CarouselItem className="w-[28rem]">
+  <CarouselVideo src="/clip.mp4" poster="/clip.png" className="h-72 rounded-2xl" />
+</CarouselItem>
+```
+
+Off screen it pauses rather than merely going out of view, so a run of clips is not a battery and bandwidth bill nobody agreed to. Under `prefers-reduced-motion` it never starts on its own: it shows its poster and its own controls instead, so the clip is still there for anyone who wants it. The demo above has no video in it because this repository ships no video file, not because the part is missing.
+
+## Accessibility
+
+The scrolling run is a list, and it is focusable. Both matter: a screen reader announces how many items there are and reads them in order, and a keyboard can enter the run at all — a scrolling box that no key can reach hides everything past its first screenful.
+
+Give the carousel a `label` whenever a page has more than one, so the two are told apart. The dots are real buttons that name where they go, and the arrows disable themselves at each end rather than going quiet.
+
+## Props
+
+### Carousel
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` | | Names the carousel for assistive tech. |
+
+### CarouselContent
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `gap` | `'1rem'` | Space between items. Any CSS length. |
+| `draggable` | `true` | Let a mouse drag the run sideways. |
+
+### CarouselItem
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `align` | `'start'` | Where the item lines up when it snaps: `start` or `center`. |
+
+### CarouselVideo
+
+Takes everything a `<video>` takes. `src` is required, and `poster` is worth giving: it is what shows under a reduced motion preference.

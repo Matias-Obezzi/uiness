@@ -23,6 +23,7 @@ export {
 function Image({ className, wrapperProps, color, ...props }: ImageProps) {
   return (
     <ImageRoot
+      data-slot="image"
       color={color ?? 'var(--muted)'}
       className={cn('block h-auto max-w-full', className)}
       wrapperProps={{

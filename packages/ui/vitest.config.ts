@@ -10,6 +10,7 @@ export default defineConfig({
       '@uiness/island': `${root}../island/src/index.ts`,
       '@uiness/image': `${root}../image/src/index.ts`,
       '@uiness/fx': `${root}../fx/src/index.ts`,
+      '@uiness/dnd': `${root}../dnd/src/index.ts`,
       '@uiness/toast': `${root}../toast/src/index.ts`,
       '@uiness/scroll': `${root}../scroll/src/index.ts`,
     },
