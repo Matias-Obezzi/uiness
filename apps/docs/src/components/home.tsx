@@ -6,6 +6,7 @@ import { Button } from '@/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/card'
 import { site } from '~/lib/site'
 import { CodeBlock } from './code-block'
+import { Logo } from './logo'
 
 const features = [
   {
@@ -66,6 +67,7 @@ export function Home() {
     <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
       <section className="grid items-center gap-10 lg:grid-cols-2">
         <div className="space-y-6">
+          <Logo className="size-14 text-foreground" />
           <h1 className="font-bold text-4xl tracking-tight sm:text-5xl">
             React UI primitives with a bit of magic.
           </h1>

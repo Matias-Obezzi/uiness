@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Matias-Obezzi/uiness/main/assets/logo.png" alt="" width="72" height="72" />
+
+</div>
+
 # @uiness/fx
 
 Canvas image effects for React. Chain pixel effects and canvas effects, render at a low working resolution for that crisp pixel look, animate the ones that depend on time. Zero dependencies.

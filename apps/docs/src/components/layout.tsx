@@ -16,6 +16,7 @@ import { Drawer, DrawerBody, DrawerContent, DrawerDescription, DrawerTitle } fro
 import { nav, pageHref } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { useTheme } from '~/lib/theme'
+import { Logo } from './logo'
 
 function GithubIcon() {
   return (
@@ -25,10 +26,10 @@ function GithubIcon() {
   )
 }
 
-function Logo() {
+function Wordmark() {
   return (
     <Link to="/" className="flex items-center gap-2 font-semibold">
-      <span className="inline-block size-5 rounded-full bg-foreground" aria-hidden />
+      <Logo className="size-5 shrink-0" />
       {site.name}
     </Link>
   )
@@ -127,7 +128,7 @@ export function Layout() {
           >
             <MenuIcon />
           </Button>
-          <Logo />
+          <Wordmark />
           <nav className="hidden items-center gap-5 text-sm md:flex">
             <NavLink
               to="/docs"

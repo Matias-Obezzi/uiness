@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Matias-Obezzi/uiness/main/assets/logo.png" alt="" width="72" height="72" />
+
+</div>
+
 # @uiness/island
 
 A Dynamic Island for the web. A pill fixed to the top of the page that morphs with a spring to show statuses, live activities, alerts and confirms. React, zero dependencies, driven by an imperative API like a toast library.

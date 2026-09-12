@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="../../assets/logo.png" alt="" width="80" height="80" />
+
 # @uiness/ui
 
 *A component registry you actually own.*
