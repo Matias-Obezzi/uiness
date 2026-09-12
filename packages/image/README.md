@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Matias-Obezzi/uiness/main/assets/logo.png" alt="" width="72" height="72" />
+
+</div>
+
 # @uiness/image
 
 Drop-in `<img>` replacement for React with loading transitions. Zero runtime dependencies.

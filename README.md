@@ -1,4 +1,14 @@
+<div align="center">
+
+<img src="assets/logo.png" alt="" width="88" height="88" />
+
 # uiness
+
+*React UI primitives with a bit of magic.*
+
+[Documentation](https://matias-obezzi.github.io/uiness) · [Components](https://matias-obezzi.github.io/uiness/docs/components/button) · [Issues](https://github.com/Matias-Obezzi/uiness/issues)
+
+</div>
 
 UI primitives for React, published under the `@uiness` scope.
 

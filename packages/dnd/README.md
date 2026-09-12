@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Matias-Obezzi/uiness/main/assets/logo.png" alt="" width="72" height="72" />
+
+</div>
+
 # @uiness/dnd
 
 Headless drag and drop primitives for React. Sortable lists, boards with several containers, grids you can reorder in two dimensions, and elements you can drop anywhere. Pointer Events, so mouse, touch and pen all work; full keyboard support, so it works without a pointer at all. Zero dependencies, ESM and CommonJS, typed.

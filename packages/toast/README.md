@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Matias-Obezzi/uiness/main/assets/logo.png" alt="" width="72" height="72" />
+
+</div>
+
 # @uiness/toast
 
 Toasts and notifications for React. Stacked with the newest in front, expand on hover, swipe to dismiss, promise tracking, actions, six positions. Zero dependencies.

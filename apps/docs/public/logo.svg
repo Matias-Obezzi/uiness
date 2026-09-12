@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img" aria-label="uiness">
+  <style>
+    /* The tab bar is dark or light depending on the system, and the mark has to be readable
+       against both. A favicon gets no page to inherit a colour from. */
+    path { fill: #09090b }
+    @media (prefers-color-scheme: dark) { path { fill: #fafafa } }
+  </style>
+  <path fill-rule="evenodd" d="M6 1h12a5 5 0 0 1 5 5v12a5 5 0 0 1-5 5H6a5 5 0 0 1-5-5V6a5 5 0 0 1 5-5ZM7 7v6a5 5 0 0 0 10 0V7h-3v6a2 2 0 0 1-4 0V7H7Z"/>
+</svg>

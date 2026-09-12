@@ -6,7 +6,27 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#09090b" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
     <meta name="description" content="uiness: React UI primitives with a bit of magic. Images that load beautifully, a Dynamic Island for the web, canvas effects, and a component registry." />
+
+    <!-- Absolute on purpose: a scraper has no page to resolve a relative one against, and Vite
+         rewrites href attributes for the base path but not the contents of a meta tag. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="uiness" />
+    <meta property="og:title" content="uiness" />
+    <meta property="og:description" content="React UI primitives with a bit of magic. Images that load beautifully, a Dynamic Island for the web, canvas effects, drag and drop, and a component registry." />
+    <meta property="og:url" content="https://matias-obezzi.github.io/uiness/" />
+    <meta property="og:image" content="https://matias-obezzi.github.io/uiness/og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="uiness" />
+    <meta name="twitter:description" content="React UI primitives with a bit of magic." />
+    <meta name="twitter:image" content="https://matias-obezzi.github.io/uiness/og.png" />
     <title>uiness</title>
     <script>
       try {

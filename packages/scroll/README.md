@@ -1,3 +1,9 @@
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/Matias-Obezzi/uiness/main/assets/logo.png" alt="" width="72" height="72" />
+
+</div>
+
 # @uiness/scroll
 
 Scroll-linked motion primitives for React. Progress of an element through the viewport, parallax that writes straight to the DOM, and the active section for sticky panels. Zero dependencies, ESM and CommonJS, typed.
