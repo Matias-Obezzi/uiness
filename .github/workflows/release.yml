@@ -17,6 +17,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # `changeset publish` tags each package it publishes, and the action turns those tags
+          # into GitHub releases. A shallow clone has no tags to work from, so the publish went
+          # through while the tags and the releases quietly did not: npm had the package and the
+          # releases page never heard about it.
+          fetch-depth: 0
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
