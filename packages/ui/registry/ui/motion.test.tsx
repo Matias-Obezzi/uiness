@@ -165,9 +165,23 @@ describe('Marquee', () => {
       </Marquee>,
     )
     const group = document.querySelector<HTMLElement>('[data-slot=marquee-group]')
-    expect(group?.style.animation).toContain('marquee-vertical')
-    expect(group?.style.animation).toContain('reverse')
+    const animation = group?.style.getPropertyValue('--marquee-animation')
+    expect(animation).toContain('marquee-vertical')
+    expect(animation).toContain('reverse')
     expect(document.querySelectorAll('[data-slot=marquee-group]')).toHaveLength(3)
+  })
+
+  it('leaves the animation to a class so reduced motion can switch it off', () => {
+    render(
+      <Marquee>
+        <span>x</span>
+      </Marquee>,
+    )
+    const group = document.querySelector<HTMLElement>('[data-slot=marquee-group]')
+    // An inline `animation` would outrank `motion-reduce:animate-none`.
+    expect(group?.style.animation).toBe('')
+    expect(group?.className).toContain('[animation:var(--marquee-animation)]')
+    expect(group?.className).toContain('motion-reduce:animate-none')
   })
 })
 
