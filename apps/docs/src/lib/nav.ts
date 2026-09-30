@@ -143,6 +143,9 @@ const sections: NavSection[] = [
     title: 'Blocks',
     pages: [
       page('blocks/hero', 'Hero', 'The first thing a page says: headline, lead and actions.'),
+      page('blocks/features', 'Features', 'What the product does: feature grids and live bentos.'),
+      page('blocks/logos', 'Logos', 'Customer wordmarks in an endless, fading row.'),
+      page('blocks/stats', 'Stats', 'Big figures that count up, with labels and captions.'),
       page('blocks/navbar', 'Navbar', 'The bar across the top: wordmark, links and the way in.'),
       page('blocks/footer', 'Footer', 'Links, a newsletter signup and the small print.'),
       page('blocks/cta', 'Call to Action', 'A closing section that asks for the next step.'),
@@ -231,6 +234,9 @@ const sections: NavSection[] = [
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
   '2026-09-30': [
+    'blocks/features',
+    'blocks/logos',
+    'blocks/stats',
     'blocks/navbar',
     'blocks/footer',
     'blocks/cta',

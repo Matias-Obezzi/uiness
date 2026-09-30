@@ -1,0 +1,30 @@
+The companies that already use the product, shown where a visitor starts to wonder. Every block takes its logos through props and lays itself out by the width of its container.
+
+## Logos 01
+
+A "trusted by" line over an endless row of wordmarks that fades out at both edges, stops while the pointer is over it and stands still with reduced motion. The default logos are made of text and an icon, so there is nothing to download.
+
+<BlockPreview name="logos-01" />
+
+<Install name="logos-01" />
+
+```tsx
+import { HexagonIcon, LeafIcon } from 'lucide-react'
+import { Logos01 } from '@/components/logos-01'
+
+<Logos01
+  title="Trusted by teams at"
+  logos={[
+    { name: 'Hexa', icon: <HexagonIcon />, className: 'font-black tracking-widest' },
+    { name: 'Fieldwork', icon: <LeafIcon />, className: 'font-serif italic' },
+    { name: 'Northwind' },
+  ]}
+  duration={30}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `title` | The line above the logos. |
+| `logos` | `{ name, icon?, className? }[]`. `className` styles the wordmark, to give each one its own type. |
+| `duration` | Seconds for one full loop. Default 40. |

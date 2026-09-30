@@ -1693,6 +1693,95 @@
           "type": "registry:block"
         }
       ]
+    },
+    {
+      "name": "hero-02",
+      "type": "registry:block",
+      "title": "Hero 02",
+      "description": "A split hero: headline, lead, actions and small stats beside a product shot on a tilting card, with a drawn mockup when there is no image.",
+      "categories": ["hero"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/pattern",
+        "@uiness/tilt-card"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/hero-02.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "features-01",
+      "type": "registry:block",
+      "title": "Features 01",
+      "description": "A heading over a grid of six features with icons, in one to three columns, cascading in on scroll.",
+      "categories": ["features"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/reveal"],
+      "files": [
+        {
+          "path": "registry/blocks/features-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "features-02",
+      "type": "registry:block",
+      "title": "Features 02",
+      "description": "A bento of features with small live previews: a rolling counter, growing bars, drifting tags and working switches.",
+      "categories": ["features"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion",
+        "@uiness/bento-grid",
+        "@uiness/label",
+        "@uiness/marquee",
+        "@uiness/number-ticker",
+        "@uiness/odometer",
+        "@uiness/switch"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/features-02.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "logos-01",
+      "type": "registry:block",
+      "title": "Logos 01",
+      "description": "A trusted-by line over an endless row of text and icon wordmarks that fades at the edges and pauses on hover.",
+      "categories": ["logos"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/marquee"],
+      "files": [
+        {
+          "path": "registry/blocks/logos-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "stats-01",
+      "type": "registry:block",
+      "title": "Stats 01",
+      "description": "A heading over four big figures that count up on scroll, with labels, captions and hairline dividers.",
+      "categories": ["stats"],
+      "registryDependencies": ["@uiness/utils", "@uiness/number-ticker"],
+      "files": [
+        {
+          "path": "registry/blocks/stats-01.tsx",
+          "type": "registry:block"
+        }
+      ]
     }
   ]
 }

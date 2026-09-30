@@ -29,3 +29,39 @@ import { Hero01 } from '@/components/hero-01'
 | `description` | The lead paragraph. |
 | `primaryAction`, `secondaryAction` | `{ label, href }` for the two buttons. `null` hides one. |
 | `note` | A short line under the buttons. |
+
+## Hero 02
+
+A split hero: eyebrow, headline, lead, two actions and a row of small figures on one side, and the product on a card that tilts towards the pointer on the other. The columns stack when the container is narrow.
+
+<BlockPreview name="hero-02" />
+
+<Install name="hero-02" />
+
+```tsx
+import { Hero02 } from '@/components/hero-02'
+
+<Hero02
+  eyebrow="Planning for small teams"
+  title="Plan the week in five minutes"
+  description="One calendar for the team, the tasks and the time in between."
+  primaryAction={{ label: 'Start free', href: '/signup' }}
+  secondaryAction={{ label: 'See a demo', href: '/demo' }}
+  stats={[
+    { value: '3x', label: 'faster planning' },
+    { value: '8k', label: 'teams' },
+    { value: '4.8/5', label: 'rating' },
+  ]}
+  image={{ src: '/screenshot.png', alt: 'The week view with tasks and meetings' }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow` | The small line above the headline. `null` hides it. |
+| `title` | The headline. |
+| `description` | The lead paragraph. |
+| `primaryAction`, `secondaryAction` | `{ label, href }` for the two buttons. `null` hides one. |
+| `stats` | `{ value, label }[]` shown in a row under the buttons. `null` hides it. |
+| `image` | `{ src, alt }` for a screenshot on the tilting card. Without it, a drawn product mockup takes its place. |
+| `badge` | `{ value, label }` for the small card floating over the corner of the picture. `null` hides it. |
