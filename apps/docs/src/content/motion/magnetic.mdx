@@ -11,7 +11,7 @@ Pulls its content towards the pointer once it comes near, and springs back when 
 ```tsx
 import { Magnetic, MagneticInner } from '@/components/ui/magnetic'
 
-<Magnetic strength={0.4} radius={80}>
+<Magnetic strength={0.3} radius={80}>
   <Button className="rounded-full">
     <MagneticInner>Get started</MagneticInner>
   </Button>
@@ -25,7 +25,8 @@ import { Magnetic, MagneticInner } from '@/components/ui/magnetic'
 | Prop | Default | Description |
 | --- | --- | --- |
 | `strength` | `0.35` | How far it follows the pointer, as a fraction of the distance to its center. |
-| `radius` | `60` | Pixels around the element where the pull starts. |
+| `radius` | `60` | Pixels around the element where the pull starts. It fades in from nothing at the edge of this zone. |
+| `max` | `24` | The furthest it moves from its place, in pixels. Keep it below the gap to its neighbours. |
 | `duration` | `600` | Milliseconds to spring back. |
 | `disabled` | `false` | Stop pulling. |
 | `asChild` | `false` | Move the child element instead of a wrapper. |

@@ -12,24 +12,24 @@ const actions = [
 export default function MagneticDemo() {
   return (
     <div className="flex flex-col items-center gap-12 py-6">
-      <Magnetic strength={0.4} radius={80}>
+      <Magnetic strength={0.3} radius={80}>
         <Button size="lg" className="h-14 rounded-full px-8 text-base shadow-lg">
-          <MagneticInner factor={0.6}>
+          <MagneticInner factor={0.4}>
             Get started
             <ArrowRight />
           </MagneticInner>
         </Button>
       </Magnetic>
-      <div className="flex items-center gap-5">
+      <div className="flex items-center gap-6">
         {actions.map(({ label, icon: Icon }) => (
-          <Magnetic key={label} strength={0.5} radius={36}>
+          <Magnetic key={label} strength={0.35} radius={28} max={10}>
             <Button
               variant="outline"
               size="icon"
               aria-label={label}
               className="size-12 rounded-full"
             >
-              <MagneticInner factor={0.8}>
+              <MagneticInner factor={0.6}>
                 <Icon className="size-5" />
               </MagneticInner>
             </Button>

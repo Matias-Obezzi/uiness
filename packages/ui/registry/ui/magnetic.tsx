@@ -12,6 +12,8 @@ export interface MagneticProps extends React.ComponentProps<'div'> {
   strength?: number
   /** Pixels around the element where the pull starts. Default 60. */
   radius?: number
+  /** The furthest it moves from its place, in pixels. Default 24. */
+  max?: number
   /** Milliseconds to spring back when the pointer moves away. Default 600. */
   duration?: number
   /** Stop pulling and settle in place. */
@@ -30,6 +32,7 @@ function Magnetic({
   asChild,
   strength = 0.35,
   radius = 60,
+  max = 24,
   duration = 600,
   disabled = false,
   className,
@@ -65,10 +68,28 @@ function Magnetic({
       const rect = el.getBoundingClientRect()
       const dx = last.x - (rect.left - x + rect.width / 2)
       const dy = last.y - (rect.top - y + rect.height / 2)
-      const near =
-        Math.abs(dx) <= rect.width / 2 + radius && Math.abs(dy) <= rect.height / 2 + radius
+      // How far outside the element the pointer is, 0 while it is over it.
+      const outside = Math.hypot(
+        Math.max(0, Math.abs(dx) - rect.width / 2),
+        Math.max(0, Math.abs(dy) - rect.height / 2),
+      )
+      const near = outside < radius || outside === 0
       setActive(near)
-      set(near ? dx * strength : 0, near ? dy * strength : 0)
+      if (!near) {
+        set(0, 0)
+        return
+      }
+      // The pull fades out towards the edge of the zone, so leaving it never snaps, and it
+      // is capped, so a wide element does not wander off or into its neighbours.
+      const falloff = radius > 0 ? 1 - outside / radius : 1
+      let px = dx * strength * falloff
+      let py = dy * strength * falloff
+      const length = Math.hypot(px, py)
+      if (length > max) {
+        px *= max / length
+        py *= max / length
+      }
+      set(px, py)
     }
 
     const onMove = (e: PointerEvent) => {
@@ -99,7 +120,7 @@ function Magnetic({
       window.removeEventListener('blur', reset)
       reset()
     }
-  }, [off, strength, radius])
+  }, [off, strength, radius, max])
 
   const Comp = asChild ? Slot.Root : 'div'
   return (
