@@ -1,0 +1,37 @@
+A pile of cards that goes round. The front card is tossed aside and slips under the pile on a timer, on click, or when you swipe it.
+
+<ComponentPreview name="card-stack-demo" />
+
+## Installation
+
+<Install name="card-stack" />
+
+## Usage
+
+```tsx
+import { CardStack } from '@/components/ui/card-stack'
+
+<CardStack aria-label="Testimonials" interval={5000}>
+  {testimonials.map((t) => (
+    <Testimonial key={t.name} {...t} />
+  ))}
+</CardStack>
+```
+
+Each child is one card, so give them the same height. The stack takes focus: arrow keys go forwards and back, and keyboard focus pauses autoplay. Only the front card is exposed to assistive tech.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `autoplay` | `true` | Move on by itself. |
+| `interval` | `4000` | Milliseconds between cards. |
+| `pauseOnHover` | `true` | Hold still while the pointer is over it. |
+| `visible` | `2` | Cards showing behind the front one. |
+| `offset` | `12` | Pixels each card behind peeks out. |
+| `scaleStep` | `0.06` | How much smaller each card behind gets. |
+| `duration` | `600` | Milliseconds a card takes to go round. |
+| `threshold` | `80` | Pixels of drag that count as a swipe. |
+| `onIndexChange` | | Called with the index of the new front card. |
+
+With `prefers-reduced-motion` autoplay is off and cards swap in place.

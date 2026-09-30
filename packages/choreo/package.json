@@ -1,0 +1,88 @@
+{
+  "name": "@uiness/choreo",
+  "version": "0.0.0",
+  "description": "Animates a whole site from what is already on the page: inspects the DOM, works out what each element is, and choreographs entrances, staggers, counters and hover touches. Zero dependencies.",
+  "keywords": [
+    "react",
+    "animation",
+    "scroll-animation",
+    "reveal",
+    "web-animations",
+    "intersection-observer",
+    "uiness"
+  ],
+  "author": "Matías Obezzi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matias-Obezzi/uiness.git",
+    "directory": "packages/choreo"
+  },
+  "homepage": "https://matias-obezzi.github.io/uiness/docs/choreo",
+  "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "./dist/auto.iife.js"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "unpkg": "./dist/auto.iife.js",
+  "jsdelivr": "./dist/auto.iife.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./core": {
+      "import": {
+        "types": "./dist/core.d.mts",
+        "default": "./dist/core.mjs"
+      },
+      "require": {
+        "types": "./dist/core.d.cts",
+        "default": "./dist/core.cjs"
+      }
+    },
+    "./auto": "./dist/auto.iife.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "jsdom": "^30.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tsdown": "^0.23.0",
+    "vitest": "^5.0.0"
+  }
+}

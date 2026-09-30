@@ -147,7 +147,7 @@ function Navbar({
           data-slot="navbar"
           data-hidden={hidden ? '' : undefined}
           className={cn(
-            'z-40 w-full border-b bg-background/80 backdrop-blur transition-transform duration-300 supports-[backdrop-filter]:bg-background/60',
+            'z-(--z-sticky,40) w-full border-b bg-background/80 backdrop-blur transition-transform duration-(--duration-slow,300ms) supports-[backdrop-filter]:bg-background/60',
             sticky && 'sticky top-0',
             hidden && '-translate-y-full',
             className,
@@ -270,7 +270,7 @@ function NavbarLinks({
           data-slot="navbar-tabs"
           aria-label="Primary"
           className={cn(
-            'fixed inset-x-0 bottom-0 z-40 flex h-[calc(3.5rem+env(safe-area-inset-bottom))] items-stretch border-t bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur supports-[backdrop-filter]:bg-background/75',
+            'fixed inset-x-0 bottom-0 z-(--z-sticky,40) flex h-[calc(3.5rem+env(safe-area-inset-bottom))] items-stretch border-t bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur supports-[backdrop-filter]:bg-background/75',
             belowBreakpoint[breakpoint],
             className,
           )}

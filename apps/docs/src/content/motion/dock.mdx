@@ -1,0 +1,42 @@
+A dock like the one in macOS. Items grow as the pointer passes over them and push their neighbours aside. It is all transforms, so nothing around it reflows. Click an icon to see it hop.
+
+<ComponentPreview name="dock-demo" />
+
+## Installation
+
+<Install name="dock" />
+
+## Usage
+
+```tsx
+import { Dock, DockItem, DockSeparator } from '@/components/ui/dock'
+
+<Dock>
+  <DockItem label="Mail" active>
+    <Mail />
+  </DockItem>
+  <DockItem label="Music">
+    <Music />
+  </DockItem>
+  <DockSeparator />
+  <DockItem label="Docs" asChild>
+    <a href="/docs"><Book /></a>
+  </DockItem>
+</Dock>
+```
+
+Items grow out of the dock, up in a row and to the right in a column, so leave room on that side.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `direction` | `'horizontal'` | `horizontal` or `vertical`. |
+| `magnification` | `1.8` | Scale of the item right under the pointer. |
+| `distance` | `140` | Pixels from the pointer at which the magnification fades out. |
+| `size` | `48` | Resting size of each item in pixels. |
+| `panelClassName` | | Classes for the panel behind the items. |
+
+`DockItem` takes a `label`, shown in a tooltip and used as its accessible name, `active` for a dot beside it, `bounce` (default `true`) and `asChild`.
+
+Keyboard focus magnifies the focused item too. With `prefers-reduced-motion` items keep their size and do not hop.

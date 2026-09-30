@@ -1,0 +1,31 @@
+A paragraph whose words light up one after another as it scrolls through the viewport. Good for a manifesto or a mission statement.
+
+<ComponentPreview name="text-reveal-demo" />
+
+## Installation
+
+<Install name="text-reveal" extra="Installs @uiness/scroll, which measures the progress." />
+
+## Usage
+
+```tsx
+import { TextReveal } from '@/components/ui/text-reveal'
+
+<TextReveal
+  text="We believe interfaces should feel like they were made by people who care."
+  className="text-3xl font-semibold"
+/>
+```
+
+The progress follows the window, or the nearest ancestor that scrolls, as in the preview above. Pass `container` to name the scroller yourself. The scroll progress is written to one CSS variable, so nothing re-renders while you scroll.
+
+The words are always in the document, so screen readers read the whole paragraph. With reduced motion it is fully visible.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `text` | | The paragraph. |
+| `from` | `0.15` | Opacity of a word not reached yet. |
+| `offset` | `['start 0.85', 'end 0.45']` | When the reveal starts and ends, as [scroll offsets](/docs/scroll). |
+| `container` | nearest scroller | Scrolling ancestor. `null` follows the window. |

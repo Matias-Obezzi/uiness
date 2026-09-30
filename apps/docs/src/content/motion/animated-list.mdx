@@ -1,0 +1,32 @@
+A feed that adds its children one at a time, newest on top. Each new item springs in and pushes the others down, which suits notifications and activity logs.
+
+<ComponentPreview name="animated-list-demo" />
+
+## Installation
+
+<Install name="animated-list" />
+
+## Usage
+
+```tsx
+import { AnimatedList } from '@/components/ui/animated-list'
+
+<AnimatedList delay={1500} loop max={4}>
+  {notifications.map((n) => (
+    <Notification key={n.id} {...n} />
+  ))}
+</AnimatedList>
+```
+
+It starts when it scrolls into view. With `loop` the first child comes back after the last one, and `max` keeps the feed from growing: the oldest item fades out at the bottom. Give the parent a height and `overflow-hidden` for a fixed window.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `delay` | `1000` | Milliseconds between items. |
+| `loop` | `false` | Start over after the last child, forever. |
+| `max` | all | Most items on screen at once. |
+| `duration` | `600` | Milliseconds the spring of each item takes. |
+
+With `prefers-reduced-motion` every item is there from the start.

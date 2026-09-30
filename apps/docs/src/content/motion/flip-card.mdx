@@ -1,0 +1,35 @@
+A card with two faces that turns over in 3D, on hover, on click, or when you tell it to.
+
+<ComponentPreview name="flip-card-demo" />
+
+## Installation
+
+<Install name="flip-card" />
+
+## Usage
+
+```tsx
+import { FlipCard, FlipCardBack, FlipCardFront } from '@/components/ui/flip-card'
+
+<FlipCard trigger="click" aria-label="Pro plan" className="h-72 w-52">
+  <FlipCardFront className="p-6">Pro, $12 a month</FlipCardFront>
+  <FlipCardBack className="p-6">Everything that is in it</FlipCardBack>
+</FlipCard>
+```
+
+The card takes the size of the larger face. The face out of view is hidden from screen readers and cannot take focus.
+
+With `hover` or `click` the card is a toggle button with `aria-pressed`, so it turns over with Enter, Space or a tap as well. Keep links and buttons off its faces then. For faces with their own controls, use `manual` and drive `flipped` from a button next to it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `trigger` | `'hover'` | `hover`, `click` or `manual`. |
+| `direction` | `'horizontal'` | Turn around the vertical axis, or tip over with `vertical`. |
+| `flipped`, `onFlippedChange` | | Controlled state. |
+| `defaultFlipped` | `false` | Start on the back. |
+| `duration` | `700` | Milliseconds for the turn. |
+| `perspective` | `1200` | Perspective in pixels. Lower looks more dramatic. |
+
+With `prefers-reduced-motion` the faces cross-fade instead of turning.

@@ -11,6 +11,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@uiness/choreo": "workspace:*",
     "@uiness/dnd": "workspace:*",
     "@uiness/fx": "workspace:*",
     "@uiness/image": "workspace:*",

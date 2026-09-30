@@ -13,8 +13,6 @@ html {
 
 body {
   min-height: 100dvh;
-  font-family:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -31,10 +29,10 @@ body {
   @apply mt-5;
 }
 .prose h1:not(.not-prose h1) {
-  @apply font-bold text-3xl tracking-tight scroll-mt-24;
+  @apply text-title scroll-mt-24;
 }
 .prose h2:not(.not-prose h2) {
-  @apply mt-12 border-b pb-2 font-semibold text-2xl tracking-tight scroll-mt-24 first:mt-0;
+  @apply mt-12 border-b pb-2 text-heading scroll-mt-24 first:mt-0;
 }
 .prose h3:not(.not-prose h3) {
   @apply mt-8 font-semibold text-xl tracking-tight scroll-mt-24;

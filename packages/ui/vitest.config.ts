@@ -13,6 +13,7 @@ export default defineConfig({
       '@uiness/dnd': `${root}../dnd/src/index.ts`,
       '@uiness/toast': `${root}../toast/src/index.ts`,
       '@uiness/scroll': `${root}../scroll/src/index.ts`,
+      '@uiness/choreo': `${root}../choreo/src/index.ts`,
     },
   },
   test: {

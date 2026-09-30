@@ -10,7 +10,8 @@
       "@uiness/fx": ["../fx/src/index.ts"],
       "@uiness/dnd": ["../dnd/src/index.ts"],
       "@uiness/toast": ["../toast/src/index.ts"],
-      "@uiness/scroll": ["../scroll/src/index.ts"]
+      "@uiness/scroll": ["../scroll/src/index.ts"],
+      "@uiness/choreo": ["../choreo/src/index.ts"]
     }
   },
   "include": ["registry", "vitest.config.ts", "vitest.setup.ts"]

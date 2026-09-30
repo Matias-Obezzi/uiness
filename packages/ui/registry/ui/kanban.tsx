@@ -29,7 +29,7 @@ const KanbanOverlayContext = React.createContext(false)
 
 /** Classes the card wears while it is the one being dragged. The floating copy never wears them. */
 const DRAGGING_CARD =
-  'data-[dragging]:z-10 data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground'
+  'data-[dragging]:z-(--z-raised,10) data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground'
 
 function useKanban() {
   const context = React.useContext(KanbanContext)

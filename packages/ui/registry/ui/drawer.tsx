@@ -79,7 +79,7 @@ function DrawerOverlay({
     <DialogPrimitive.Overlay
       data-slot="drawer-overlay"
       className={cn(
-        'fixed inset-0 z-50 bg-black/50 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+        'fixed inset-0 z-(--z-overlay,50) bg-black/50 data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
         className,
       )}
       {...props}
@@ -426,7 +426,7 @@ function DrawerContent({
           data-slot="drawer-content"
           data-side={side}
           className={cn(
-            'fixed z-50 flex touch-none flex-col bg-background shadow-lg outline-none duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] data-[state=closed]:animate-out data-[state=open]:animate-in motion-reduce:animate-none',
+            'fixed z-(--z-overlay,50) flex touch-none flex-col bg-background shadow-lg outline-none duration-(--duration-slow,300ms) ease-(--easing-sheet,cubic-bezier(0.32,0.72,0,1)) data-[state=closed]:animate-out data-[state=open]:animate-in motion-reduce:animate-none',
             sideClasses[side],
             !hasSnaps && loose[side],
             className,

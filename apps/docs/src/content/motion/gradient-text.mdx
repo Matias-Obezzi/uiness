@@ -1,0 +1,39 @@
+Text filled with a gradient that flows through it. It inherits the font, so it fits in any headline, and holds still with reduced motion.
+
+<ComponentPreview name="gradient-text-demo" />
+
+## Installation
+
+<Install name="gradient-text" />
+
+## Usage
+
+```tsx
+import { GradientBorder, GradientText } from '@/components/ui/gradient-text'
+
+<h1 className="text-display">
+  Interfaces that feel <GradientText>alive</GradientText>
+</h1>
+
+<GradientText colors={['#22d3ee', '#818cf8']} speed={0.5}>Slower, in blue</GradientText>
+<GradientText asChild animate={false}><h2>A still gradient heading</h2></GradientText>
+```
+
+## Border
+
+`GradientBorder` draws the same flowing gradient as a thin ring around a box. It follows the box's `rounded-*` class, so a pill or a card both work.
+
+```tsx
+<GradientBorder className="rounded-full bg-background px-3 py-1">New</GradientBorder>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `colors` | violet, pink, amber, cyan | Colors of the gradient. The first one comes back at the end, so the loop has no seam. |
+| `speed` | `1` | How fast it flows. `1` is one loop every 8 seconds. |
+| `animate` | `true` | Let the gradient flow. |
+| `angle` | `90` | Direction of the gradient in degrees. |
+| `asChild` | `false` | Style your own element instead of a span. `GradientText` only. |
+| `width` | `'1px'` | Width of the ring. `GradientBorder` only. |

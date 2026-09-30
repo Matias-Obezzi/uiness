@@ -7,9 +7,31 @@
       "name": "theme",
       "type": "registry:theme",
       "title": "uiness theme",
-      "description": "Neutral theme with the same variable names as shadcn/ui, so both registries mix freely.",
+      "description": "Neutral theme with the same variable names as shadcn/ui, so both registries mix freely. Adds a layer scale, motion durations and easings, and a type scale.",
       "dependencies": ["tw-animate-css"],
       "css": {
+        "@layer base": {
+          ":root": {
+            "--z-raised": "10",
+            "--z-sticky": "40",
+            "--z-overlay": "50",
+            "--z-popover": "60",
+            "--z-toast": "70",
+            "--z-tooltip": "80",
+            "--z-drag": "90",
+            "--z-island": "100",
+            "--duration-instant": "100ms",
+            "--duration-fast": "150ms",
+            "--duration-normal": "200ms",
+            "--duration-slow": "300ms",
+            "--duration-slower": "500ms",
+            "--easing-standard": "cubic-bezier(0.2, 0, 0, 1)",
+            "--easing-emphasized": "cubic-bezier(0.16, 1, 0.3, 1)",
+            "--easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
+            "--easing-sheet": "cubic-bezier(0.32, 0.72, 0, 1)",
+            "--easing-spring": "linear(0, 0.4 20%, 1.1 50%, 0.96 70%, 1)"
+          }
+        },
         "@media (prefers-reduced-motion: reduce)": {
           "*, ::before, ::after": {
             "animation-duration": "0.01ms !important",
@@ -21,7 +43,41 @@
       },
       "cssVars": {
         "theme": {
-          "radius": "0.75rem"
+          "radius": "0.75rem",
+          "ease-standard": "var(--easing-standard)",
+          "ease-emphasized": "var(--easing-emphasized)",
+          "ease-exit": "var(--easing-exit)",
+          "ease-sheet": "var(--easing-sheet)",
+          "ease-spring": "var(--easing-spring)",
+          "font-sans": "ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", sans-serif",
+          "font-mono": "ui-monospace, SFMono-Regular, \"SF Mono\", Menlo, Consolas, \"Liberation Mono\", monospace",
+          "text-display": "clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem)",
+          "text-display--line-height": "1.05",
+          "text-display--letter-spacing": "-0.035em",
+          "text-display--font-weight": "700",
+          "text-title": "clamp(1.875rem, 1.5rem + 1.5vw, 2.5rem)",
+          "text-title--line-height": "1.15",
+          "text-title--letter-spacing": "-0.025em",
+          "text-title--font-weight": "700",
+          "text-heading": "1.5rem",
+          "text-heading--line-height": "1.25",
+          "text-heading--letter-spacing": "-0.02em",
+          "text-heading--font-weight": "600",
+          "text-subheading": "1.125rem",
+          "text-subheading--line-height": "1.4",
+          "text-subheading--letter-spacing": "-0.01em",
+          "text-subheading--font-weight": "600",
+          "text-lead": "1.25rem",
+          "text-lead--line-height": "1.6",
+          "text-body": "1rem",
+          "text-body--line-height": "1.7",
+          "text-caption": "0.8125rem",
+          "text-caption--line-height": "1.4",
+          "text-caption--letter-spacing": "0.01em",
+          "text-eyebrow": "0.75rem",
+          "text-eyebrow--line-height": "1rem",
+          "text-eyebrow--letter-spacing": "0.08em",
+          "text-eyebrow--font-weight": "600"
         },
         "light": {
           "background": "oklch(1 0 0)",
@@ -362,6 +418,19 @@
       "files": [
         {
           "path": "registry/ui/toast.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "choreo",
+      "type": "registry:ui",
+      "title": "Choreo",
+      "description": "Animates a whole site from what is already on the page, skipping the components here that animate themselves. Installs @uiness/choreo.",
+      "dependencies": ["@uiness/choreo"],
+      "files": [
+        {
+          "path": "registry/ui/choreo.tsx",
           "type": "registry:ui"
         }
       ]
@@ -1142,6 +1211,325 @@
       "files": [
         {
           "path": "registry/ui/dropzone.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "gradient-text",
+      "type": "registry:ui",
+      "title": "Gradient Text",
+      "description": "Text filled with a flowing gradient, plus a matching gradient border.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "css": {
+        "@keyframes gradient-text": {
+          "from": {
+            "background-position": "0% 50%"
+          },
+          "to": {
+            "background-position": "200% 50%"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/gradient-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scramble-text",
+      "type": "registry:ui",
+      "title": "Scramble Text",
+      "description": "Text that decodes itself from random glyphs, on mount, in view or on hover.",
+      "registryDependencies": ["@uiness/use-in-view", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/scramble-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "odometer",
+      "type": "registry:ui",
+      "title": "Odometer",
+      "description": "A number whose digits roll to their new value.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/odometer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text-reveal",
+      "type": "registry:ui",
+      "title": "Text Reveal",
+      "description": "A paragraph whose words light up as it scrolls by. Installs @uiness/scroll.",
+      "dependencies": ["@uiness/scroll"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/text-reveal.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "confetti",
+      "type": "registry:ui",
+      "title": "Confetti",
+      "description": "Canvas confetti bursts from a function call or a button, with no dependencies.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/confetti.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "orbit",
+      "type": "registry:ui",
+      "title": "Orbit",
+      "description": "Items circling a center, spread evenly and kept upright.",
+      "registryDependencies": ["@uiness/utils"],
+      "css": {
+        "@keyframes orbit": {
+          "from": {
+            "transform": "rotate(var(--orbit-angle)) translateX(var(--orbit-radius)) rotate(calc(var(--orbit-angle) * -1))"
+          },
+          "to": {
+            "transform": "rotate(calc(var(--orbit-angle) + 360deg)) translateX(var(--orbit-radius)) rotate(calc((var(--orbit-angle) + 360deg) * -1))"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/orbit.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sonar",
+      "type": "registry:ui",
+      "title": "Sonar",
+      "description": "Rings pulsing out from an avatar, a status dot or a point.",
+      "registryDependencies": ["@uiness/utils"],
+      "css": {
+        "@keyframes sonar": {
+          "from": {
+            "transform": "scale(1)",
+            "opacity": "0.7"
+          },
+          "to": {
+            "transform": "scale(var(--sonar-scale))",
+            "opacity": "0"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/sonar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "retro-grid",
+      "type": "registry:ui",
+      "title": "Retro Grid",
+      "description": "A synthwave floor grid rolling towards you, fading at the horizon.",
+      "registryDependencies": ["@uiness/utils"],
+      "css": {
+        "@keyframes retro-grid": {
+          "from": {
+            "transform": "translateY(0)"
+          },
+          "to": {
+            "transform": "translateY(var(--retro-grid-cell))"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/retro-grid.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "animated-list",
+      "type": "registry:ui",
+      "title": "Animated List",
+      "description": "A feed that adds items one at a time, newest on top, with a spring.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "css": {
+        "@keyframes animated-list-in": {
+          "from": {
+            "opacity": "0",
+            "transform": "translateY(-8px) scale(0.85)"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "none"
+          }
+        },
+        "@keyframes animated-list-out": {
+          "to": {
+            "opacity": "0",
+            "transform": "translateY(8px) scale(0.95)"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/animated-list.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "card-stack",
+      "type": "registry:ui",
+      "title": "Card Stack",
+      "description": "A pile of cards that goes round on a timer, click, swipe or arrow keys.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/card-stack.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "velocity-marquee",
+      "type": "registry:ui",
+      "title": "Velocity Marquee",
+      "description": "Rows of text that run sideways and speed up with the scroll. Installs @uiness/scroll.",
+      "dependencies": ["@uiness/scroll"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/velocity-marquee.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "terminal",
+      "type": "registry:ui",
+      "title": "Terminal",
+      "description": "A terminal window that types commands and prints output in order.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "css": {
+        "@keyframes blink": {
+          "50%": {
+            "opacity": "0"
+          }
+        },
+        "@keyframes terminal-line-in": {
+          "from": {
+            "opacity": "0",
+            "transform": "translateY(4px)"
+          },
+          "to": {
+            "opacity": "1",
+            "transform": "none"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/terminal.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "magnetic",
+      "type": "registry:ui",
+      "title": "Magnetic",
+      "description": "Content that pulls towards a nearby pointer and springs back, with an inner layer for parallax.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/magnetic.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ripple",
+      "type": "registry:ui",
+      "title": "Ripple",
+      "description": "An ink ripple that spreads from where you press, for buttons and cards.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "css": {
+        "@keyframes ripple-grow": {
+          "from": {
+            "transform": "scale(0)"
+          },
+          "to": {
+            "transform": "scale(1)"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/ripple.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dock",
+      "type": "registry:ui",
+      "title": "Dock",
+      "description": "A macOS style dock whose items magnify under the pointer, with labels and a hop on click.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/dock.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "flip-card",
+      "type": "registry:ui",
+      "title": "Flip Card",
+      "description": "A card that turns over in 3D on hover, on click or when controlled.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/flip-card.tsx",
           "type": "registry:ui"
         }
       ]

@@ -1,0 +1,58 @@
+A terminal window that plays a session: commands typed one character at a time, then output printed line by line.
+
+<ComponentPreview name="terminal-demo" />
+
+## Installation
+
+<Install name="terminal" />
+
+## Usage
+
+```tsx
+import { Terminal, TerminalLine, TerminalSpinner, TerminalTyping } from '@/components/ui/terminal'
+
+<Terminal title="zsh" loop>
+  <TerminalTyping>pnpm install</TerminalTyping>
+  <TerminalSpinner duration={1000} done="Resolved 214 packages.">Resolving</TerminalSpinner>
+  <TerminalLine>Done in 1.2s</TerminalLine>
+</Terminal>
+```
+
+Direct children play in order, each one after the one before it has finished. It starts when it scrolls into view, and the replay button in the title bar shows up at the end. It follows your theme; for a dark window in light mode, pass `className="bg-foreground text-background"`.
+
+## Props
+
+### Terminal
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `title` | | Text in the title bar. |
+| `loop` | `false` | Start over after the last step. |
+| `loopDelay` | `3000` | Milliseconds before it starts over. |
+| `replay` | `true` | Show a replay button once finished. |
+| `whenVisible` | `true` | Wait until it scrolls into view. |
+
+### TerminalTyping
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `children` | | The command, a string. |
+| `prompt` | `'$'` | What comes before it. |
+| `speed` | `45` | Milliseconds per character. |
+| `delay` | `400` | Milliseconds before typing starts. |
+
+### TerminalLine
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `delay` | `150` | Milliseconds after the previous step. |
+
+### TerminalSpinner
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `duration` | `1200` | Milliseconds it spins. |
+| `done` | `children` | What it says once finished. |
+| `icon` | check mark | Icon once finished. |
+
+With `prefers-reduced-motion` the whole session is shown at once.

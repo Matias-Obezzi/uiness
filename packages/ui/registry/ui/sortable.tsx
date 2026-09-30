@@ -29,7 +29,7 @@ const SortableOverlayContext = React.createContext(false)
 
 /** Classes the row wears while it is the one being dragged. The floating copy never wears them. */
 const DRAGGING_ITEM =
-  'data-[dragging]:z-10 data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground data-[dragging]:shadow-sm'
+  'data-[dragging]:z-(--z-raised,10) data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground data-[dragging]:shadow-sm'
 
 function useSortableRoot() {
   const context = React.useContext(SortableContext)

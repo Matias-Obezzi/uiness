@@ -157,7 +157,7 @@ function Sidebar({
         data-state={open ? 'expanded' : 'collapsed'}
         data-collapsible={collapsible}
         className={cn(
-          'group/sidebar sticky top-0 h-dvh shrink-0 flex-col overflow-hidden border-r bg-background transition-[width] duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] motion-reduce:transition-none',
+          'group/sidebar sticky top-0 h-dvh shrink-0 flex-col overflow-hidden border-r bg-background transition-[width] duration-(--duration-slow,300ms) ease-(--easing-sheet,cubic-bezier(0.32,0.72,0,1)) motion-reduce:transition-none',
           fromBreakpoint[breakpoint],
           className,
         )}

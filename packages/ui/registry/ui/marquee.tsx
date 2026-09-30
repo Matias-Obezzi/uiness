@@ -67,14 +67,18 @@ function Marquee({
           key={i}
           aria-hidden={i > 0 || undefined}
           data-slot="marquee-group"
+          // The animation goes through a class rather than an inline style: an inline one
+          // would outrank `motion-reduce:animate-none` and keep scrolling regardless.
           className={cn(
-            'flex shrink-0 justify-around [gap:var(--gap)] motion-reduce:animate-none',
+            'flex shrink-0 justify-around [animation:var(--marquee-animation)] [gap:var(--gap)] motion-reduce:animate-none',
             vertical ? 'flex-col' : 'flex-row',
             pauseOnHover && 'group-hover/marquee:[animation-play-state:paused]',
           )}
-          style={{
-            animation: `${vertical ? 'marquee-vertical' : 'marquee'} var(--duration) linear infinite${reverse ? ' reverse' : ''}`,
-          }}
+          style={
+            {
+              '--marquee-animation': `${vertical ? 'marquee-vertical' : 'marquee'} var(--duration) linear infinite${reverse ? ' reverse' : ''}`,
+            } as React.CSSProperties
+          }
         >
           {children}
         </div>

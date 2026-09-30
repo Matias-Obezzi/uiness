@@ -1,0 +1,32 @@
+A synthwave floor grid rolling towards you forever, fading out at the horizon. CSS only.
+
+<ComponentPreview name="retro-grid-demo" />
+
+## Installation
+
+<Install name="retro-grid" />
+
+## Usage
+
+```tsx
+import { RetroGrid } from '@/components/ui/retro-grid'
+
+<div className="relative h-80 overflow-hidden">
+  <RetroGrid />
+  <h1 className="relative">Night Drive</h1>
+</div>
+```
+
+The grid is absolutely positioned, so give the parent `relative` and put the content on top of it. The horizon sits `perspective / tan(angle)` pixels above the bottom edge: lower the angle or raise the perspective for a taller floor.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `angle` | `65` | Tilt of the floor in degrees. |
+| `cellSize` | `60` | Size of one square in pixels. |
+| `speed` | `1` | Squares per second rolling towards you. `0` stands still. |
+| `lineColor` | faded foreground | Any CSS color. |
+| `perspective` | `500` | Distance to the eye in pixels. Lower is more dramatic. |
+
+With `prefers-reduced-motion` the grid stands still.

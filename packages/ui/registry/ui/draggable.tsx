@@ -102,7 +102,7 @@ function Draggable({
         className={cn(
           'relative rounded-lg border border-input bg-background text-foreground shadow-sm outline-none',
           'focus-visible:ring-[3px] focus-visible:ring-ring/50',
-          'data-[dragging]:z-50 data-[dragging]:border-ring data-[dragging]:shadow-lg',
+          'data-[dragging]:z-(--z-drag,90) data-[dragging]:border-ring data-[dragging]:shadow-lg',
           'aria-disabled:opacity-50',
           withHandle ? null : 'cursor-grab data-[dragging]:cursor-grabbing',
           className,

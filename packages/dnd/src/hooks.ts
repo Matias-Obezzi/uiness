@@ -1076,7 +1076,7 @@ function useDragCollection(options: CollectionOptions): Collection {
         height: activeRect?.height,
         pointerEvents: 'none',
         touchAction: 'none',
-        zIndex: 1000,
+        zIndex: 'var(--z-drag, 1000)',
         transition: reducedMotion ? 'none' : undefined,
         display: visible ? undefined : 'none',
         transform: activeRect

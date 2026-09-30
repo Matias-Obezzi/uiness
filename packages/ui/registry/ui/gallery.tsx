@@ -171,11 +171,11 @@ function Lightbox({
         <DialogPrimitive.Overlay
           ref={overlayRef}
           data-slot="lightbox-overlay"
-          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm duration-300 data-[state=open]:animate-in data-[state=open]:fade-in-0"
+          className="fixed inset-0 z-(--z-overlay,50) bg-black/90 backdrop-blur-sm duration-(--duration-slow,300ms) data-[state=open]:animate-in data-[state=open]:fade-in-0"
         />
         <DialogPrimitive.Content
           data-slot="lightbox"
-          className="fixed inset-0 z-50 flex flex-col outline-none"
+          className="fixed inset-0 z-(--z-overlay,50) flex flex-col outline-none"
           onKeyDown={onKeyDown}
           onEscapeKeyDown={(event) => {
             event.preventDefault()
@@ -203,7 +203,7 @@ function Lightbox({
           </DialogPrimitive.Description>
 
           <div ref={chromeRef} className="contents">
-            <div className="absolute inset-x-0 top-0 z-10 flex items-center justify-between p-4 text-white/80">
+            <div className="absolute inset-x-0 top-0 z-(--z-raised,10) flex items-center justify-between p-4 text-white/80">
               <span className="font-mono text-sm tabular-nums">
                 {index + 1} / {count}
               </span>
@@ -222,7 +222,7 @@ function Lightbox({
                   type="button"
                   onClick={() => go(-1)}
                   aria-label="Previous image"
-                  className="absolute top-1/2 left-2 z-10 hidden -translate-y-1/2 rounded-full p-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:block"
+                  className="absolute top-1/2 left-2 z-(--z-raised,10) hidden -translate-y-1/2 rounded-full p-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:block"
                 >
                   <ChevronLeftIcon className="size-6" />
                 </button>
@@ -230,7 +230,7 @@ function Lightbox({
                   type="button"
                   onClick={() => go(1)}
                   aria-label="Next image"
-                  className="absolute top-1/2 right-2 z-10 hidden -translate-y-1/2 rounded-full p-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:block"
+                  className="absolute top-1/2 right-2 z-(--z-raised,10) hidden -translate-y-1/2 rounded-full p-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:block"
                 >
                   <ChevronRightIcon className="size-6" />
                 </button>

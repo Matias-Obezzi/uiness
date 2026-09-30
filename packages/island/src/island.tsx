@@ -79,7 +79,8 @@ export interface IslandProps {
   spring?: SpringConfig | SpringPreset
   /** Pause auto dismiss timers while the pointer is over the island. Default true. */
   pauseOnHover?: boolean
-  zIndex?: number
+  /** Stacking order of the island layer. Default `var(--z-island, 9999)`, so it follows the theme's layer scale when there is one. */
+  zIndex?: number | string
   className?: string
   /** Applied to the island box. Use CSS variables here to theme it. */
   style?: CSSProperties
@@ -187,7 +188,7 @@ export function Island({
   expandedRadius = 28,
   spring,
   pauseOnHover = true,
-  zIndex = 9999,
+  zIndex = 'var(--z-island, 9999)',
   className,
   style,
 }: IslandProps) {

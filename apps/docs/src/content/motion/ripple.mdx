@@ -1,0 +1,50 @@
+An ink ripple that spreads from where you press, or from the center when pressed with the keyboard. It takes the text color, so it suits any button without setup.
+
+<ComponentPreview name="ripple-demo" />
+
+## Installation
+
+<Install name="ripple" />
+
+## Usage
+
+```tsx
+import { Ripple } from '@/components/ui/ripple'
+
+<Ripple asChild>
+  <Button>Save</Button>
+</Ripple>
+
+<Ripple asChild color="var(--primary)" opacity={0.1}>
+  <button className="rounded-xl border p-5">A whole card</button>
+</Ripple>
+```
+
+Several ripples can overlap. Each one grows while held and fades once released. Without `asChild` it renders a `div`.
+
+## Your own element
+
+`useRipple` returns the `handlers` to spread on an element and the `ripples` to render inside it. Give the element `relative`.
+
+```tsx
+const { handlers, ripples } = useRipple({ center: true })
+
+<a href="/" className="relative" {...handlers}>
+  Home
+  {ripples}
+</a>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `color` | `'currentColor'` | Any CSS color. |
+| `opacity` | `0.2` | Opacity of the ink at its strongest. |
+| `duration` | `550` | Milliseconds to grow across the element. |
+| `fade` | `450` | Milliseconds to fade once released. |
+| `center` | `false` | Always start from the center, as on an icon button. |
+| `disabled` | `false` | Stop making ripples. |
+| `asChild` | `false` | Put the ink in the child element. |
+
+With `prefers-reduced-motion` the ink fades in place without growing.

@@ -1,0 +1,33 @@
+Pulls its content towards the pointer once it comes near, and springs back when the pointer moves away. Content in `MagneticInner` moves further than its frame, which gives a little parallax.
+
+<ComponentPreview name="magnetic-demo" />
+
+## Installation
+
+<Install name="magnetic" />
+
+## Usage
+
+```tsx
+import { Magnetic, MagneticInner } from '@/components/ui/magnetic'
+
+<Magnetic strength={0.4} radius={80}>
+  <Button className="rounded-full">
+    <MagneticInner>Get started</MagneticInner>
+  </Button>
+</Magnetic>
+```
+
+`Magnetic` renders an inline block around its child. With `asChild` the child moves itself instead, as long as it does not set its own `transform`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `strength` | `0.35` | How far it follows the pointer, as a fraction of the distance to its center. |
+| `radius` | `60` | Pixels around the element where the pull starts. |
+| `duration` | `600` | Milliseconds to spring back. |
+| `disabled` | `false` | Stop pulling. |
+| `asChild` | `false` | Move the child element instead of a wrapper. |
+
+`MagneticInner` takes `factor`, default 0.5: how much further it moves, as a fraction of the pull. It only reacts to a mouse or pen, and stays still with `prefers-reduced-motion`.

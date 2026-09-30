@@ -20,6 +20,7 @@ UI primitives for React, published under the `@uiness` scope.
 | [`@uiness/toast`](packages/toast) | Toasts and notifications: `toast()` function, stacked `<Toaster />`, promises, actions, swipe to dismiss. |
 | [`@uiness/scroll`](packages/scroll) | Scroll-linked motion: progress through the viewport, parallax, active section. Zero dependencies. |
 | [`@uiness/dnd`](packages/dnd) | Drag and drop primitives: sortable lists, cards across columns, grids in two directions, free dragging. Pointer or keyboard, zero dependencies. |
+| [`@uiness/choreo`](packages/choreo) | Animates a whole site from what is already on the page: inspects the DOM, gives every element an entrance, cascades, counters and hover touches. |
 | [`@uiness/ui`](packages/ui) | Radix + Tailwind components distributed through a shadcn registry, includes island, image, fx and toast items, plus motion pieces: spotlights, marquees, typewriters, tilting cards. |
 
 ## Development

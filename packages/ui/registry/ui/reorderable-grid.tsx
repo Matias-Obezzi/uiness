@@ -21,7 +21,7 @@ const ReorderableGridOverlayContext = React.createContext(false)
 
 /** Classes the tile wears while it is the one being dragged. The floating copy never wears them. */
 const DRAGGING_ITEM =
-  'data-[dragging]:z-10 data-[dragging]:cursor-grabbing data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground'
+  'data-[dragging]:z-(--z-raised,10) data-[dragging]:cursor-grabbing data-[dragging]:border-ring data-[dragging]:bg-accent data-[dragging]:text-accent-foreground'
 
 function useReorderableGrid() {
   const context = React.useContext(ReorderableGridContext)

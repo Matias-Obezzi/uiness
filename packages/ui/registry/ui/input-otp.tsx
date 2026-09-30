@@ -180,7 +180,7 @@ function InputOTPSlot({ index, className, ...props }: InputOTPSlotProps) {
       data-active={active ? '' : undefined}
       data-filled={char ? '' : undefined}
       className={cn(
-        'relative flex h-10 w-10 items-center justify-center border-input border-y border-r text-base shadow-xs transition-[color,box-shadow] first:rounded-l-lg first:border-l last:rounded-r-lg data-[active]:z-10 data-[active]:border-ring data-[active]:ring-[3px] data-[active]:ring-ring/50 dark:bg-input/30',
+        'relative flex h-10 w-10 items-center justify-center border-input border-y border-r text-base shadow-xs transition-[color,box-shadow] first:rounded-l-lg first:border-l last:rounded-r-lg data-[active]:z-(--z-raised,10) data-[active]:border-ring data-[active]:ring-[3px] data-[active]:ring-ring/50 dark:bg-input/30',
         className,
       )}
       {...props}
