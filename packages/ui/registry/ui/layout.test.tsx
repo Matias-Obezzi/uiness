@@ -36,6 +36,9 @@ describe('Calendar', () => {
     expect(screen.getByRole('grid', { name: 'March 2026' })).toBeTruthy()
     const ten = screen.getByRole('button', { name: 'Tuesday, March 10, 2026' })
     expect(ten.hasAttribute('data-today')).toBe(true)
+    // Today is marked with a dot, never a background that could fight the selected one.
+    expect(ten.className).not.toMatch(/data-\[today\]:bg-/)
+    expect(ten.className).toContain('data-[today]:not-data-[selected]:after:bg-primary')
     await user.click(screen.getByRole('button', { name: 'Thursday, March 12, 2026' }))
     expect(onSelect).toHaveBeenCalledWith(day(12))
     expect(screen.getByRole('button', { name: /March 12/ }).hasAttribute('data-selected')).toBe(
