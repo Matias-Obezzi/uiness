@@ -1360,17 +1360,11 @@
       "type": "registry:ui",
       "title": "Retro Grid",
       "description": "A synthwave floor grid rolling towards you, fading at the horizon.",
-      "registryDependencies": ["@uiness/utils"],
-      "css": {
-        "@keyframes retro-grid": {
-          "from": {
-            "transform": "translateY(0)"
-          },
-          "to": {
-            "transform": "translateY(var(--retro-grid-cell))"
-          }
-        }
-      },
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
       "files": [
         {
           "path": "registry/ui/retro-grid.tsx",
