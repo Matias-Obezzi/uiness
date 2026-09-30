@@ -13,10 +13,11 @@ import {
   useCommandShortcut,
 } from '@/ui/command'
 import { Drawer, DrawerBody, DrawerContent, DrawerDescription, DrawerTitle } from '@/ui/drawer'
-import { nav, pageHref } from '~/lib/nav'
+import { isNew, nav, pageHref } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { useTheme } from '~/lib/theme'
 import { Logo } from './logo'
+import { NewBadge } from './new-badge'
 
 function GithubIcon() {
   return (
@@ -50,12 +51,13 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                   onClick={onNavigate}
                   className={({ isActive }) =>
                     cn(
-                      '-ml-px block border-l py-1 pl-4 text-muted-foreground transition-colors hover:text-foreground',
+                      '-ml-px flex items-center gap-2 border-l py-1 pl-4 text-muted-foreground transition-colors hover:text-foreground',
                       isActive && 'border-foreground font-medium text-foreground',
                     )
                   }
                 >
                   {p.title}
+                  {isNew(p) && <NewBadge />}
                 </NavLink>
               </li>
             ))}
@@ -92,7 +94,10 @@ function Search({ open, onOpenChange }: { open: boolean; onOpenChange: (open: bo
                 }}
               >
                 <span className="flex min-w-0 flex-col">
-                  <span className="font-medium">{p.title}</span>
+                  <span className="flex items-center gap-2 font-medium">
+                    {p.title}
+                    {isNew(p) && <NewBadge />}
+                  </span>
                   <span className="line-clamp-1 text-muted-foreground text-xs">
                     {p.description}
                   </span>

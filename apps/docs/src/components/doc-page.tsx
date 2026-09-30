@@ -4,9 +4,10 @@ import { type ComponentType, lazy, Suspense, useEffect } from 'react'
 import { Link, useLocation } from 'react-router'
 import { Badge } from '@/ui/badge'
 import { Button } from '@/ui/button'
-import { findPage, pageHref, pages } from '~/lib/nav'
+import { findPage, isNew, pageHref, pages } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { mdxComponents } from './mdx-components'
+import { NewBadge } from './new-badge'
 
 const loaders = import.meta.glob('../content/**/*.mdx') as Record<
   string,
@@ -64,7 +65,10 @@ export function DocPage() {
           <ChevronRightIcon className="size-3.5" />
           <span className="text-foreground">{page.title}</span>
         </div>
-        <h1 className="font-bold text-3xl tracking-tight">{page.title}</h1>
+        <h1 className="flex items-center gap-3 font-bold text-3xl tracking-tight">
+          {page.title}
+          {isNew(page) && <NewBadge className="text-xs" />}
+        </h1>
         <p className="text-lg text-muted-foreground">{page.description}</p>
         {page.slug.startsWith('components/') && (
           <div className="flex gap-2 pt-1">
