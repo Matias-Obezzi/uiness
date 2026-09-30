@@ -278,6 +278,20 @@
       ]
     },
     {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "Context Menu",
+      "description": "Right click menus declared once for the whole app by name, picked per element with a hook, extended or replaced where needed.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils", "@uiness/dropdown-menu"],
+      "files": [
+        {
+          "path": "registry/ui/context-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",
