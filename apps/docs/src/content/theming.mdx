@@ -1,4 +1,4 @@
-Everything is driven by CSS variables. Change them once and every component, the island and the image wrappers follow.
+Everything is driven by CSS variables: colors, layers, motion and type. Change them once and every component, the island and the image wrappers follow.
 
 ## Variables
 
@@ -36,6 +36,80 @@ Colors are written in `oklch`, which keeps contrast even across hues when you sh
   --primary-foreground: oklch(0.205 0 0);
   /* ... */
 }
+```
+
+## Layers
+
+Everything that stacks takes its `z-index` from one scale, so a menu opened inside a dialog lands above it, a toast never hides under a sticky header, and a card being dragged floats over all of them.
+
+| Variable | Value | Used by |
+| --- | --- | --- |
+| `--z-raised` | `10` | A dragged row, a focused segment: above its siblings, nothing more. |
+| `--z-sticky` | `40` | Navbar, bottom tab bar, the docs header. |
+| `--z-overlay` | `50` | Dialog, drawer, gallery lightbox and their backdrops. |
+| `--z-popover` | `60` | Dropdown menu, select, popover, link preview. Above overlays, since they open inside them. |
+| `--z-toast` | `70` | The toaster and confetti. |
+| `--z-tooltip` | `80` | Tooltips. |
+| `--z-drag` | `90` | Whatever is under the pointer mid drag. |
+| `--z-island` | `100` | The Dynamic Island. |
+
+Components read them as `z-(--z-overlay,50)`. The fallback keeps an item working when it is installed without the theme, and the gaps between steps leave room for your own layers:
+
+```css
+:root {
+  --z-cookie-banner: 65; /* above menus, below toasts */
+}
+```
+
+The packages follow the same scale when the variables exist: `@uiness/island` reads `--z-island`, `@uiness/toast` reads `--z-toast` and the `@uiness/dnd` overlay reads `--z-drag`.
+
+## Motion
+
+Durations and easings every component shares, so the interface moves at one pace. Change `--duration-normal` and every dialog follows.
+
+| Variable | Value | Used for |
+| --- | --- | --- |
+| `--duration-instant` | `100ms` | Presses and toggles. |
+| `--duration-fast` | `150ms` | Menus, popovers, tooltips, selects. |
+| `--duration-normal` | `200ms` | Dialogs and their backdrop. |
+| `--duration-slow` | `300ms` | Drawers, sidebars, the navbar hiding on scroll. |
+| `--duration-slower` | `500ms` | Larger moves, like the link preview springing open. |
+
+Easings come as variables and as Tailwind utilities:
+
+| Utility | Variable | Feel |
+| --- | --- | --- |
+| `ease-standard` | `--easing-standard` | Everyday transitions. |
+| `ease-emphasized` | `--easing-emphasized` | Entrances that land softly. [Choreo](/docs/choreo) uses it by default. |
+| `ease-exit` | `--easing-exit` | Things leaving, quick to go. |
+| `ease-sheet` | `--easing-sheet` | Panels sliding from an edge. |
+| `ease-spring` | `--easing-spring` | A small overshoot, built with `linear()`. |
+
+```tsx
+<div className="transition-transform duration-(--duration-slow) ease-emphasized" />
+```
+
+With `prefers-reduced-motion` the theme cuts every animation and transition short.
+
+## Typography
+
+`--font-sans` and `--font-mono` set the families; point them at your fonts. On top of Tailwind's sizes there is a scale of finished text styles, each carrying its line height, tracking and weight. Display and title scale with the viewport.
+
+| Utility | Size | For |
+| --- | --- | --- |
+| `text-display` | `2.5rem` to `4.5rem` | Hero headlines. |
+| `text-title` | `1.875rem` to `2.5rem` | Page titles. |
+| `text-heading` | `1.5rem` | Section headings. |
+| `text-subheading` | `1.125rem` | Card titles and small headings. |
+| `text-lead` | `1.25rem` | The paragraph under a headline. |
+| `text-body` | `1rem` | Long reading, with a relaxed line height. |
+| `text-caption` | `0.8125rem` | Labels and notes. |
+| `text-eyebrow` | `0.75rem` | The small caps line above a heading, with `uppercase`. |
+
+```tsx
+<p className="text-eyebrow text-muted-foreground uppercase">New</p>
+<h1 className="text-display">Pages that move</h1>
+<p className="text-lead text-muted-foreground">One line on what it is.</p>
 ```
 
 ## Dark mode

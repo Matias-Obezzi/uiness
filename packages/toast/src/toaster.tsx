@@ -498,7 +498,7 @@ export function Toaster({
             onPointerLeave={() => setHovered(false)}
             style={{
               position: 'fixed',
-              zIndex: 9999,
+              zIndex: 'var(--z-toast, 9999)',
               margin: 0,
               padding: 0,
               listStyle: 'none',

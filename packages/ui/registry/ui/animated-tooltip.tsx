@@ -53,7 +53,7 @@ function AnimatedTooltip({ items, size = 48, className, ...props }: AnimatedTool
             data-slot="animated-tooltip-item"
             data-state={open ? 'open' : 'closed'}
             aria-label={item.title ? `${item.name}, ${item.title}` : item.name}
-            className="group/avatar relative -mr-3 rounded-full outline-none transition-transform duration-300 hover:z-10 hover:scale-110 focus-visible:z-10 focus-visible:scale-110 focus-visible:ring-[3px] focus-visible:ring-ring/50 last:mr-0"
+            className="group/avatar relative -mr-3 rounded-full outline-none transition-transform duration-300 hover:z-(--z-raised,10) hover:scale-110 focus-visible:z-(--z-raised,10) focus-visible:scale-110 focus-visible:ring-[3px] focus-visible:ring-ring/50 last:mr-0"
             style={{ transitionTimingFunction: springy }}
             onPointerEnter={() => setActive(item.id)}
             onPointerMove={lean}
@@ -73,7 +73,7 @@ function AnimatedTooltip({ items, size = 48, className, ...props }: AnimatedTool
               aria-hidden={!open}
               data-slot="animated-tooltip-content"
               className={cn(
-                'pointer-events-none absolute bottom-full left-1/2 z-20 mb-2 flex -translate-x-1/2 flex-col items-center whitespace-nowrap rounded-lg bg-foreground px-3 py-1.5 text-background text-xs shadow-md transition-[opacity,transform] duration-300 motion-reduce:transition-none',
+                'pointer-events-none absolute bottom-full left-1/2 z-(--z-raised,10) mb-2 flex -translate-x-1/2 flex-col items-center whitespace-nowrap rounded-lg bg-foreground px-3 py-1.5 text-background text-xs shadow-md transition-[opacity,transform] duration-300 motion-reduce:transition-none',
                 open
                   ? 'translate-y-0 scale-100 opacity-100 [transform:translate(calc(-50%+var(--lean-x,0px)),0)_rotate(var(--lean-r,0deg))]'
                   : 'translate-y-2 scale-75 opacity-0',

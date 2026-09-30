@@ -52,7 +52,7 @@ function ToggleGroupItem({
       className={cn(
         toggleVariants({ variant: context.variant ?? variant, size: context.size ?? size }),
         // Items join into one control: square inner corners, one shared border.
-        'min-w-0 flex-1 shrink-0 rounded-none shadow-none first:rounded-l-lg last:rounded-r-lg focus:z-10 focus-visible:z-10 data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l',
+        'min-w-0 flex-1 shrink-0 rounded-none shadow-none first:rounded-l-lg last:rounded-r-lg focus:z-(--z-raised,10) focus-visible:z-(--z-raised,10) data-[variant=outline]:border-l-0 data-[variant=outline]:first:border-l',
         className,
       )}
       {...props}

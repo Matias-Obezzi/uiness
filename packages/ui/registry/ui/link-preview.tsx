@@ -74,7 +74,7 @@ function LinkPreview({
           sideOffset={10}
           data-slot="link-preview-content"
           className={cn(
-            'z-50 origin-(--radix-hover-card-content-transform-origin) rounded-xl border bg-popover p-1 shadow-xl data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-90 data-[state=open]:zoom-in-90 data-[state=open]:ease-[linear(0,0.4_20%,1.1_50%,0.96_70%,1)] data-[state=open]:duration-500',
+            'z-(--z-popover,60) origin-(--radix-hover-card-content-transform-origin) rounded-xl border bg-popover p-1 shadow-xl data-[state=closed]:animate-out data-[state=open]:animate-in data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-90 data-[state=open]:zoom-in-90 data-[state=open]:ease-(--easing-spring,linear(0,0.4_20%,1.1_50%,0.96_70%,1)) data-[state=open]:duration-(--duration-slower,500ms)',
             previewClassName,
           )}
           style={{
