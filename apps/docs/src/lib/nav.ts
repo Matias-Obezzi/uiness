@@ -5,11 +5,15 @@ export interface NavPage {
   description: string
   /** Path of the MDX file under src/content. */
   file: string
+  /** The day it shipped, ISO. Pages are tagged new for a while after it. */
+  added?: string
 }
 
 export interface NavSection {
   title: string
   pages: NavPage[]
+  /** Keep the pages in the order written, for sections meant to be read top to bottom. */
+  ordered?: boolean
 }
 
 const page = (slug: string, title: string, description: string, file = slug): NavPage => ({
@@ -19,9 +23,10 @@ const page = (slug: string, title: string, description: string, file = slug): Na
   file: `${file}.mdx`,
 })
 
-export const nav: NavSection[] = [
+const sections: NavSection[] = [
   {
     title: 'Getting started',
+    ordered: true,
     pages: [
       page(
         '',
@@ -205,7 +210,47 @@ export const nav: NavSection[] = [
   },
 ]
 
+/** Pages that shipped on the same day. Add a batch here when new pages land. */
+const releases: Record<string, string[]> = {
+  '2026-09-30': [
+    'choreo',
+    'motion/gradient-text',
+    'motion/scramble-text',
+    'motion/odometer',
+    'motion/text-reveal',
+    'motion/confetti',
+    'motion/orbit',
+    'motion/sonar',
+    'motion/retro-grid',
+    'motion/animated-list',
+    'motion/card-stack',
+    'motion/velocity-marquee',
+    'motion/terminal',
+    'motion/magnetic',
+    'motion/ripple',
+    'motion/dock',
+    'motion/flip-card',
+  ],
+}
+
+const addedOn = new Map(
+  Object.entries(releases).flatMap(([date, slugs]) => slugs.map((slug) => [slug, date] as const)),
+)
+
+/** Every section alphabetical, apart from the ones meant to be read in order. */
+export const nav: NavSection[] = sections.map((section) => {
+  const pages = section.pages.map((p) => ({ ...p, added: addedOn.get(p.slug) }))
+  if (!section.ordered) pages.sort((a, b) => a.title.localeCompare(b.title))
+  return { ...section, pages }
+})
+
 export const pages: NavPage[] = nav.flatMap((section) => section.pages)
+
+/** How long a page is called new after it ships. */
+const NEW_FOR_DAYS = 30
+
+export const isNew = (p: NavPage, now = Date.now()) =>
+  p.added !== undefined && now - Date.parse(p.added) < NEW_FOR_DAYS * 24 * 60 * 60 * 1000
 
 export const findPage = (slug: string): NavPage | undefined =>
   pages.find((p) => p.slug === slug.replace(/\/$/, ''))
