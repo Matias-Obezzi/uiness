@@ -68,10 +68,11 @@ describe('Magnetic', () => {
     media()
     const el = setup()
     expect(el.dataset.state).toBe('idle')
+    // 20px outside a 40px zone: half the pull.
     fireEvent.pointerMove(window, { clientX: 220, clientY: 105 })
     frame()
-    expect(el.style.getPropertyValue('--magnetic-x')).toBe('35.00px')
-    expect(el.style.getPropertyValue('--magnetic-y')).toBe('-10.00px')
+    expect(el.style.getPropertyValue('--magnetic-x')).toBe('17.50px')
+    expect(el.style.getPropertyValue('--magnetic-y')).toBe('-5.00px')
     expect(el.dataset.state).toBe('active')
     expect(slot('magnetic-inner')?.style.transform).toContain('calc(var(--magnetic-x, 0px) * 0.5)')
     fireEvent.pointerMove(window, { clientX: 600, clientY: 600 })
@@ -79,6 +80,33 @@ describe('Magnetic', () => {
     expect(el.style.getPropertyValue('--magnetic-x')).toBe('0.00px')
     expect(el.dataset.state).toBe('idle')
     expect(el.style.getPropertyValue('--magnetic-duration')).toBe('600ms')
+  })
+
+  it('fades the pull out towards the edge of the zone, so leaving it does not snap', () => {
+    fakeFrames()
+    media()
+    const el = setup()
+    fireEvent.pointerMove(window, { clientX: 239, clientY: 125 })
+    frame()
+    expect(Number.parseFloat(el.style.getPropertyValue('--magnetic-x'))).toBeLessThan(1.5)
+    expect(el.dataset.state).toBe('active')
+  })
+
+  it('never moves further than max', () => {
+    fakeFrames()
+    media()
+    render(
+      <Magnetic strength={1} radius={40} max={10}>
+        wide
+      </Magnetic>,
+    )
+    const el = slot('magnetic')
+    if (!el) throw new Error('no magnetic')
+    rect(el, { left: 0, top: 0, width: 400, height: 50 })
+    fireEvent.pointerMove(window, { clientX: 390, clientY: 25 })
+    frame()
+    expect(el.style.getPropertyValue('--magnetic-x')).toBe('10.00px')
+    expect(el.style.getPropertyValue('--magnetic-y')).toBe('0.00px')
   })
 
   it('stays put with reduced motion and on touch screens', () => {
