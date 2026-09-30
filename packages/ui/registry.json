@@ -423,6 +423,19 @@
       ]
     },
     {
+      "name": "choreo",
+      "type": "registry:ui",
+      "title": "Choreo",
+      "description": "Animates a whole site from what is already on the page, skipping the components here that animate themselves. Installs @uiness/choreo.",
+      "dependencies": ["@uiness/choreo"],
+      "files": [
+        {
+          "path": "registry/ui/choreo.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "gallery",
       "type": "registry:ui",
       "title": "Gallery",

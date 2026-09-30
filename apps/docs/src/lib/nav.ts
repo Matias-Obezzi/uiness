@@ -58,6 +58,11 @@ export const nav: NavSection[] = [
         'Dnd',
         'Headless drag and drop: sortable lists, boards, grids and free dragging, with the keyboard.',
       ),
+      page(
+        'choreo',
+        'Choreo',
+        'Animates a whole site from what is already on the page, no markup changes.',
+      ),
     ],
   },
   {

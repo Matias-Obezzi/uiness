@@ -1,0 +1,123 @@
+Animates a whole site from what is already on the page. It inspects the DOM, works out what each element is, a heading, copy, an image, a card, a grid of items, a button, a big number, and gives each one an entrance that plays as it scrolls into view. Nothing in your markup has to change. Zero dependencies, and the core works without React.
+
+<ComponentPreview name="choreo-demo" align="start" />
+
+Turn on **Show what it found** to see the plan: every element it animates is outlined in the color of its role.
+
+## Installation
+
+<InstallPackage name="@uiness/choreo" />
+
+Or through the registry, which also teaches it to leave alone the components here that already animate themselves, such as [Reveal](/docs/motion/reveal) or [Marquee](/docs/motion/marquee):
+
+<Install name="choreo" />
+
+## The whole site
+
+Mount it once, near the root, and every page the app renders is choreographed, including the ones a router swaps in later.
+
+```tsx
+import { Choreo } from '@/components/ui/choreo'
+
+export function App() {
+  return (
+    <>
+      <Choreo />
+      <Routes>{/* ... */}</Routes>
+    </>
+  )
+}
+```
+
+With children it only animates what it wraps:
+
+```tsx
+<Choreo className="space-y-12">
+  <Hero />
+  <Features />
+</Choreo>
+```
+
+## Without React
+
+```ts
+import { choreograph } from '@uiness/choreo/core'
+
+const choreo = choreograph({ root: document.querySelector('main') })
+
+choreo.replay()  // hide everything and play it again
+choreo.refresh() // look for elements added since
+choreo.stop()    // show everything and remove every trace
+```
+
+For a site without a bundler there is a build that runs on its own. Options go on the script tag:
+
+```html
+<script src="https://unpkg.com/@uiness/choreo/dist/auto.iife.js" data-duration="800" defer></script>
+```
+
+It exposes the running instance as `window.choreo`.
+
+## What it looks for
+
+| Role | Found by | Entrance |
+| --- | --- | --- |
+| `heading` | `h1` to `h6`, `role="heading"` | `blur` |
+| `text` | Paragraphs, quotes, tables, runs of inline text | `up` |
+| `media` | `img`, `video`, `svg`, `canvas`, `figure`, `iframe` | `zoom`, or from its side when it sits beside text in a two column row |
+| `card` | A box with its own background, border or shadow | `up`, and a lift on hover |
+| `item` | Children of a grid, a list or a row of alike siblings | `up`, cascading |
+| `button` | Buttons and links styled as buttons | `up`, and a press on click |
+| `divider` | `hr` | `draw` |
+| `number` | A large figure on its own, like `12,500+` or `4.9` | `up`, counting from zero to the same text |
+
+Headers, sidebars and anything else `fixed` or `sticky` are left in place: they are the frame, not the content. So are hidden and `aria-hidden` elements, and anything that already runs a CSS animation.
+
+Elements that arrive together, like everything above the fold on load or a row of cards, come in one after another in reading order. Movement is added on top of the element's own transform, so a centered `translate(-50%)` survives, and when an entrance ends the animation is dropped so the element answers to its own styles again.
+
+## Steering it
+
+The markup can say what it wants with `data-*` attributes:
+
+```html
+<section data-choreo="off">Left alone, children included.</section>
+<div data-choreo="left">Always slides in to the left.</div>
+<ul data-choreo="group">Children cascade in as a group.</ul>
+<p data-choreo-delay="200">Waits 200ms longer.</p>
+```
+
+Or change the defaults for a role:
+
+```tsx
+<Choreo effects={{ heading: 'up', media: 'clip' }} exclude=".no-motion" />
+```
+
+Effects are `fade`, `up`, `down`, `left`, `right`, `scale`, `blur`, `zoom`, `clip`, `draw` and `none`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `duration` | `700` | Milliseconds each entrance takes. |
+| `stagger` | `70` | Milliseconds between elements that arrive together. |
+| `maxStagger` | `560` | The longest a cascade may make anything wait. |
+| `distance` | `24` | Pixels things travel as they come in. |
+| `easing` | theme | Any CSS easing. Defaults to `--easing-emphasized` from the theme. |
+| `offset` | `0.1` | How far into the viewport an element has to be, 0 to 1. |
+| `once` | `true` | With `false`, elements hide again when they leave and replay when they return. |
+| `intro` | `true` | Animate what is already on screen when it starts. |
+| `observe` | `true` | Pick up elements added later, such as a route change. |
+| `hover` | `true` | Add the lift on cards and the press on buttons. |
+| `counters` | `true` | Count large numbers up. |
+| `effects` | | Entrance per role, merged over the defaults. |
+| `exclude` | | A selector for elements to leave alone. |
+| `max` | `400` | Stop after this many elements. |
+| `reducedMotion` | `'skip'` | With reduced motion asked for, do nothing, or `'fade'` only. |
+| `debug` | `false` | Outline everything found, colored by role, with a legend. |
+| `onPlan` | | Called with the plan each time it changes. |
+
+`useChoreo(options)` does the same from a hook and returns `replay`, `refresh` and the current `plan`. `scan(root)` only inspects: it returns the plan without touching the page.
+
+## Notes
+
+It runs before the first paint, so content is never seen in place and then snapped away to be hidden. Hover touches go through a small stylesheet on `translate` and `scale`, which compose with any `transform` the element has, and are only added to elements that have no transitions of their own. The number counter writes to the existing text node and gives up the moment anything else writes to it, so a re-render always wins.

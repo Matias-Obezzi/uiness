@@ -4,6 +4,7 @@ import { useEffect } from 'react'
 import { Link } from 'react-router'
 import { Button } from '@/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/ui/card'
+import { Choreo } from '@/ui/choreo'
 import { site } from '~/lib/site'
 import { CodeBlock } from './code-block'
 import { Logo } from './logo'
@@ -46,6 +47,12 @@ const features = [
       'Sortable lists, boards, grids and free dragging. Headless hooks, and every drag also works from the keyboard.',
   },
   {
+    title: 'Choreo',
+    href: '/docs/choreo',
+    description:
+      'Animates a whole site from what is already on the page. It reads the DOM and gives every element an entrance.',
+  },
+  {
     title: 'Motion',
     href: '/docs/motion/spotlight',
     description:
@@ -64,7 +71,7 @@ export function Home() {
     document.title = site.name
   }, [])
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
+    <Choreo className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
       <section className="grid items-center gap-10 lg:grid-cols-2">
         <div className="space-y-6">
           <Logo className="size-14 text-foreground" />
@@ -128,6 +135,6 @@ export function Home() {
           </Link>
         ))}
       </section>
-    </div>
+    </Choreo>
   )
 }
