@@ -86,6 +86,11 @@ const sections: NavSection[] = [
       page('components/card', 'Card', 'A surface with header, content and footer.'),
       page('components/checkbox', 'Checkbox', 'A control that can be checked or unchecked.'),
       page('components/combobox', 'Combobox', 'A searchable select, single or multiple.'),
+      page(
+        'components/context-menu',
+        'Context Menu',
+        'Right click menus declared once by name, picked per element with a hook.',
+      ),
       page('components/date-picker', 'Date Picker', 'A button that opens a calendar.'),
       page(
         'components/command',
@@ -214,6 +219,7 @@ const sections: NavSection[] = [
 const releases: Record<string, string[]> = {
   '2026-09-30': [
     'choreo',
+    'components/context-menu',
     'motion/gradient-text',
     'motion/scramble-text',
     'motion/odometer',

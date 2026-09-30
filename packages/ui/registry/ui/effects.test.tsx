@@ -246,25 +246,72 @@ describe('Sonar', () => {
 })
 
 describe('RetroGrid', () => {
-  it('sets the tilt, cell size, speed and color, and fades at the horizon', () => {
-    const { container } = render(
-      <RetroGrid angle={60} cellSize={40} speed={2} lineColor="blue" perspective={300} />,
+  /** Records the canvas calls, and the alpha each stroke was drawn with. */
+  const recordingContext = () => {
+    const strokes: number[] = []
+    let alpha = 1
+    const ctx = new Proxy(
+      {},
+      {
+        get: (_, key) => {
+          if (key === 'globalAlpha') return alpha
+          if (key === 'stroke') return () => strokes.push(alpha)
+          return () => {}
+        },
+        set: (_, key, value) => {
+          if (key === 'globalAlpha') alpha = value
+          return true
+        },
+      },
     )
+    vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(
+      ctx as unknown as CanvasRenderingContext2D,
+    )
+    return strokes
+  }
+
+  const sized = () =>
+    vi.spyOn(HTMLCanvasElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 600,
+      height: 300,
+    } as DOMRect)
+
+  it('takes its color and fades at the horizon', () => {
+    reduceMotion(false)
+    const { container } = render(<RetroGrid lineColor="blue" perspective={300} />)
     const root = container.querySelector<HTMLElement>('[data-slot=retro-grid]')
     expect(root?.getAttribute('aria-hidden')).toBe('true')
-    expect(root?.style.getPropertyValue('--retro-grid-angle')).toBe('60deg')
-    expect(root?.style.getPropertyValue('--retro-grid-cell')).toBe('40px')
-    expect(root?.style.getPropertyValue('--retro-grid-duration')).toBe('0.5s')
     expect(root?.style.getPropertyValue('--retro-grid-line')).toBe('blue')
     expect(root?.style.maskImage).toContain('transparent')
-    const lines = container.querySelector('[data-slot=retro-grid-lines]')
-    expect(lines?.className).toContain('animate-[retro-grid')
-    expect(lines?.className).toContain('motion-reduce:animate-none')
+    expect(container.querySelector('canvas[data-slot=retro-grid-canvas]')).not.toBeNull()
   })
 
-  it('stands still at speed 0', () => {
-    const { container } = render(<RetroGrid speed={0} />)
-    const lines = container.querySelector('[data-slot=retro-grid-lines]')
-    expect(lines?.className).not.toContain('animate-[retro-grid')
+  it('draws far lines fainter rather than thinner, and keeps rolling', () => {
+    reduceMotion(false)
+    const f = frames()
+    sized()
+    const strokes = recordingContext()
+    render(<RetroGrid angle={60} cellSize={40} perspective={300} />)
+    // Every line across, then one stroke for all the lines along.
+    const across = strokes.slice(0, -1)
+    expect(across.length).toBeGreaterThan(10)
+    expect(across.every((a) => a > 0 && a <= 1)).toBe(true)
+    expect(across[across.length - 1]).toBeLessThan((across[0] ?? 0) / 4)
+    expect(f.pending).toBe(1)
+    f.run(1)
+    expect(f.pending).toBe(1)
+  })
+
+  it('draws once and stops at speed 0 or with reduced motion', () => {
+    const f = frames()
+    sized()
+    recordingContext()
+    reduceMotion(false)
+    const { unmount } = render(<RetroGrid speed={0} />)
+    expect(f.pending).toBe(0)
+    unmount()
+    reduceMotion(true)
+    render(<RetroGrid />)
+    expect(f.pending).toBe(0)
   })
 })

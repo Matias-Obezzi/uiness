@@ -1,0 +1,116 @@
+Right click menus you declare once for the whole app, by name, and pick per element. A file says it uses the `file` menu, a row says `row`, and each passes its own data. Any element can adjust the menu it picked, or bring its own actions.
+
+<ComponentPreview name="context-menu-demo" align="start" />
+
+## Installation
+
+<Install name="context-menu" />
+
+## Declare the menus
+
+Mount the provider once near the root, with a function per menu. Each one turns the data of the element that was clicked into its actions. Build the map inside a component when the actions need hooks or state.
+
+```tsx
+import {
+  ContextMenuProvider,
+  type ContextMenuTarget,
+  defineContextMenus,
+} from '@/components/ui/context-menu'
+
+const menus = defineContextMenus({
+  item: ({ data }: ContextMenuTarget<Item>) => [
+    { label: 'Open', shortcut: '⏎', onSelect: () => open(data.id) },
+    { label: 'Duplicate', onSelect: () => duplicate(data) },
+    'separator',
+    { id: 'delete', label: 'Delete', variant: 'destructive', onSelect: () => remove(data.id) },
+  ],
+  link: ({ data }: ContextMenuTarget<{ href: string }>) => [
+    { label: 'Open in new tab', onSelect: () => window.open(data.href) },
+    { label: 'Copy link', onSelect: () => navigator.clipboard.writeText(data.href) },
+  ],
+})
+
+<ContextMenuProvider menus={menus}>
+  <App />
+</ContextMenuProvider>
+```
+
+## Use one on an element
+
+The hook returns props to spread on the element:
+
+```tsx
+import { useContextMenu } from '@/components/ui/context-menu'
+
+function ItemCard({ item }: { item: Item }) {
+  const menu = useContextMenu({ context: 'item', data: item })
+  return <div {...menu}>{item.name}</div>
+}
+```
+
+Or as a component, which also keeps the handlers the element already had:
+
+```tsx
+<ContextMenuArea context="item" data={item} asChild>
+  <li>{item.name}</li>
+</ContextMenuArea>
+```
+
+## Change it for one element
+
+`extend` receives the named menu and returns the one to show, so an element can add, remove or reorder entries without redeclaring it:
+
+```tsx
+useContextMenu({
+  context: 'item',
+  data: item,
+  extend: (actions) => [
+    ...actions.filter((a) => !(a && a !== 'separator' && a.id === 'delete')),
+    'separator',
+    { label: 'Pin', onSelect: () => pin(item) },
+  ],
+})
+```
+
+`actions` skips the named menus and declares the entries right there:
+
+```tsx
+useContextMenu({
+  actions: [
+    { label: 'Copy', shortcut: '⌘C', onSelect: copy },
+    canShare && { label: 'Share', onSelect: share },
+  ],
+})
+```
+
+## Actions
+
+| Entry | Shape |
+| --- | --- |
+| Item | `{ label, onSelect, icon?, shortcut?, variant?: 'destructive', disabled?, id? }` |
+| Checkbox | `{ type: 'checkbox', label, checked, onCheckedChange }` |
+| Submenu | `{ type: 'sub', label, icon?, actions }` |
+| Label | `{ type: 'label', label }` |
+| Separator | `'separator'` |
+
+`false`, `null` and `undefined` are dropped, so `condition && { ... }` works, and separators left at an edge or doubled once entries drop out are removed too. When a menu ends up empty, the browser's own menu shows instead.
+
+## Behaviour
+
+- Opens on right click, on Shift+F10 or the menu key when the element has focus, and on a long press on touch screens.
+- With nested elements the innermost one wins. A handler of yours that calls `preventDefault` on the event keeps the browser's menu.
+- `fallback` on the provider names a menu for a right click anywhere no element claimed. Without it, the browser's menu shows there.
+- `useContextMenuControls()` returns `open(pointOrElement, options)` and `close()`, for a "more" button that opens the same menu.
+- The menu is the [Dropdown Menu](/docs/components/dropdown-menu) panel, so keyboard navigation, submenus and typeahead come with it. It sits on the `--z-popover` layer, closes when the page scrolls, and gives focus back to what had it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `context` | | Name of a menu declared on the provider. |
+| `data` | | Handed to that menu as `data`. |
+| `actions` | | Entries for this element, replacing the named menu. |
+| `extend` | | `(actions, target) => actions` to change the named menu here. |
+| `disabled` | `false` | Leave the browser's menu in place. |
+
+The provider takes `menus`, `fallback` and `className` for the menu panel.

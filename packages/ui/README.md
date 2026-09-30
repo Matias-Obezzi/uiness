@@ -57,6 +57,7 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `form` | Field wiring: ids, `aria-describedby`, `aria-invalid`, error messages. |
 | `radio-group`, `slider`, `toggle`, `toggle-group`, `input-otp` | The rest of the form controls. |
 | `dialog`, `drawer`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
+| `context-menu` | Right click menus declared once by name on a provider, picked per element with `useContextMenu`, extended or replaced where needed. Also opens from the keyboard and on a long press. |
 | `navbar` | Bar that becomes a menu or a bottom tab bar on phones. |
 | `command` | Command palette with fuzzy search, plus `useCommandShortcut`. |
 | `scroll-area` | Scrollable region with themed bars. |

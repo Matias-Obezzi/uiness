@@ -1,4 +1,4 @@
-A synthwave floor grid rolling towards you forever, fading out at the horizon. CSS only.
+A synthwave floor grid rolling towards you forever, fading out at the horizon. Drawn on a canvas with the perspective worked out line by line, so the far lines stay steady instead of flickering as they shrink below a pixel.
 
 <ComponentPreview name="retro-grid-demo" />
 
@@ -29,4 +29,4 @@ The grid is absolutely positioned, so give the parent `relative` and put the con
 | `lineColor` | faded foreground | Any CSS color. |
 | `perspective` | `500` | Distance to the eye in pixels. Lower is more dramatic. |
 
-With `prefers-reduced-motion` the grid stands still.
+With `prefers-reduced-motion` the grid stands still, and it stops drawing while it is off screen.

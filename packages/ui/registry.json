@@ -278,6 +278,20 @@
       ]
     },
     {
+      "name": "context-menu",
+      "type": "registry:ui",
+      "title": "Context Menu",
+      "description": "Right click menus declared once for the whole app by name, picked per element with a hook, extended or replaced where needed.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils", "@uiness/dropdown-menu"],
+      "files": [
+        {
+          "path": "registry/ui/context-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",
@@ -1346,17 +1360,11 @@
       "type": "registry:ui",
       "title": "Retro Grid",
       "description": "A synthwave floor grid rolling towards you, fading at the horizon.",
-      "registryDependencies": ["@uiness/utils"],
-      "css": {
-        "@keyframes retro-grid": {
-          "from": {
-            "transform": "translateY(0)"
-          },
-          "to": {
-            "transform": "translateY(var(--retro-grid-cell))"
-          }
-        }
-      },
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
       "files": [
         {
           "path": "registry/ui/retro-grid.tsx",
