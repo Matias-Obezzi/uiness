@@ -50,7 +50,7 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 
 | Item | Notes |
 | --- | --- |
-| `theme` | CSS variables for light and dark, radius 0.75rem. Expects `tw-animate-css` imported in your globals. |
+| `theme` | CSS variables for light and dark, radius 0.75rem, a layer scale (`--z-*`), motion durations and easings (`--duration-*`, `ease-*`) and a type scale (`text-display` to `text-eyebrow`). Expects `tw-animate-css` imported in your globals. |
 | `utils` | `cn()` on top of clsx and tailwind-merge. |
 | `button`, `badge`, `card`, `input`, `textarea`, `label`, `checkbox`, `switch`, `separator` | Form and layout basics. |
 | `select`, `combobox` | Pick from a list; the combobox searches. |
@@ -60,9 +60,11 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `navbar` | Bar that becomes a menu or a bottom tab bar on phones. |
 | `command` | Command palette with fuzzy search, plus `useCommandShortcut`. |
 | `scroll-area` | Scrollable region with themed bars. |
-| `spotlight`, `aurora`, `meteors`, `pattern`, `sparkles` | Animated backgrounds. |
-| `text-generate`, `typewriter`, `flip-words`, `shimmer`, `number-ticker` | Animated text. |
+| `spotlight`, `aurora`, `meteors`, `pattern`, `sparkles`, `sonar`, `retro-grid`, `orbit` | Animated backgrounds. |
+| `text-generate`, `typewriter`, `flip-words`, `shimmer`, `number-ticker`, `gradient-text`, `scramble-text`, `odometer`, `text-reveal` | Animated text. |
 | `reveal`, `tilt-card`, `marquee`, `moving-border`, `animated-tooltip`, `hover-highlight`, `compare`, `tracing-beam` | Motion pieces on CSS and the Web Animations API, no animation library. |
+| `magnetic`, `ripple`, `dock`, `flip-card`, `confetti` | Things that answer the pointer: pulled towards it, inked on press, magnified, flipped, celebrated. |
+| `animated-list`, `card-stack`, `velocity-marquee`, `terminal` | Sequences: a feed that fills itself, a stack that cycles, rows that follow the scroll speed, a terminal that types. |
 | `parallax-grid`, `sticky-scroll`, `timeline` | Scroll-linked pieces on `@uiness/scroll`. |
 | `path-morph`, `link-preview` | SVG morphing and hover previews. |
 | `bento-grid`, `sidebar`, `calendar`, `date-picker` | Layout and date picking, no date library. |

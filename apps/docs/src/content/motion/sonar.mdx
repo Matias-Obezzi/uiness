@@ -1,0 +1,36 @@
+Rings pulsing out from whatever it wraps: an avatar, a status dot, a button. With no children and a size, it works as a background.
+
+<ComponentPreview name="sonar-demo" />
+
+## Installation
+
+<Install name="sonar" />
+
+## Usage
+
+```tsx
+import { Sonar } from '@/components/ui/sonar'
+
+<Sonar scale={4} className="text-sky-500">
+  <Avatar />
+</Sonar>
+
+<Sonar variant="pulse" rings={1} className="text-red-500">
+  <span className="size-2 rounded-full bg-red-500" />
+</Sonar>
+```
+
+The rings start at the size of the child and grow out from there, taking the current text color unless you pass `color`. For a square avatar, match its corners with `ringClassName="rounded-xl"`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `rings` | `3` | Rings out at once. |
+| `duration` | `3` | Seconds for one ring to travel out and fade. |
+| `scale` | `2.5` | How big a ring gets, as a multiple of the child. |
+| `color` | current color | Any CSS color. |
+| `variant` | `'ring'` | `ring` for outlines, `pulse` for filled circles. |
+| `ringClassName` | | Classes for every ring. |
+
+With `prefers-reduced-motion` the rings stand still, spread out around the child.

@@ -1,0 +1,30 @@
+A number whose digits roll to their new value like an odometer. Separators, signs and currency symbols stay put; only the digits move.
+
+<ComponentPreview name="odometer-demo" />
+
+## Installation
+
+<Install name="odometer" />
+
+## Usage
+
+```tsx
+import { Odometer } from '@/components/ui/odometer'
+
+<Odometer value={followers} />
+<Odometer value={12.5} decimals={2} format={{ style: 'currency', currency: 'USD' }} />
+```
+
+Every change of `value` rolls the digits, starting from the right. When the number grows a digit, the new column rolls up from zero and the others keep their place. Formatting comes from `Intl.NumberFormat`, so any locale works.
+
+Screen readers get the plain value. With reduced motion the digits change without rolling.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` | | The number to show. |
+| `decimals` | `0` | Digits after the decimal point. |
+| `locale`, `format` | browser | Passed to `Intl.NumberFormat`. |
+| `duration` | `900` | Milliseconds a digit takes to roll. |
+| `stagger` | `60` | Milliseconds between neighbouring digits. |

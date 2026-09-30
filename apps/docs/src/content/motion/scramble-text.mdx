@@ -1,0 +1,36 @@
+Text that decodes itself: characters cycle through random glyphs and settle, left to right, into the real text. Each character keeps the width of its final glyph, so the line never jumps.
+
+<ComponentPreview name="scramble-text-demo" />
+
+## Installation
+
+<Install name="scramble-text" />
+
+## Usage
+
+```tsx
+import { ScrambleText } from '@/components/ui/scramble-text'
+
+<ScrambleText text="ACCESS GRANTED" />
+<ScrambleText text="Loading" trigger="mount" characters="01" />
+
+<a href="/work">
+  <ScrambleText text="Work" trigger="hover" duration={500} />
+</a>
+```
+
+With `trigger="hover"` it plays each time the pointer enters, or focus lands on, the nearest link or button around it. Characters that are still scrambling carry `data-scrambled`, so you can color them: `className="[&_[data-scrambled]]:text-primary"` on a parent.
+
+Screen readers get the real text and never the glyphs. With reduced motion the text shows straight away.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `text` | | The text it resolves into. |
+| `trigger` | `'view'` | `mount`, `view` or `hover`. |
+| `duration` | `900` | Milliseconds until the text has resolved. |
+| `speed` | `40` | Milliseconds between glyph changes. |
+| `characters` | letters, digits, symbols | Glyphs to pick from. |
+| `delay` | `0` | Milliseconds before it starts. |
+| `onComplete` | | Called when the text has resolved. |

@@ -1,0 +1,45 @@
+Bursts of confetti on a canvas over the page, with no dependencies. Call `confetti()` from anywhere, or wrap a button in `ConfettiButton`.
+
+<ComponentPreview name="confetti-demo" />
+
+## Installation
+
+<Install name="confetti" />
+
+## Usage
+
+```tsx
+import { ConfettiButton, confetti } from '@/components/ui/confetti'
+
+<ConfettiButton asChild>
+  <Button>Celebrate</Button>
+</ConfettiButton>
+
+confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } })
+confetti({ angle: 60, origin: { x: 0 } })
+confetti({ element: ref.current, shapes: ['star'] })
+```
+
+The first burst adds one fixed canvas above the page, at the `--z-toast` layer, and it is removed again once the last piece has fallen. Bursts share that canvas, so firing many in a row is cheap. `confetti.reset()` clears everything at once, which is handy when a component that fires a long volley unmounts.
+
+## Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `particleCount` | `60` | Pieces in the burst. |
+| `origin` | `{ x: 0.5, y: 0.6 }` | Start point as fractions of the viewport. |
+| `element` | | Start from the center of this element instead. |
+| `angle` | `90` | Direction in degrees, 90 is straight up. |
+| `spread` | `60` | How wide the burst fans out, in degrees. |
+| `velocity` | `45` | Starting speed. |
+| `gravity` | `1` | How hard pieces fall. |
+| `decay` | `0.9` | Speed kept each frame, 0 to 1. |
+| `drift` | `0` | Sideways push, for wind. |
+| `ticks` | `200` | Frames a piece lives for. |
+| `colors` | bright mix | Any CSS colors, theme variables included. |
+| `shapes` | `['square', 'circle', 'strip']` | Any of `square`, `circle`, `strip` and `star`. |
+| `scalar` | `1` | Size multiplier. |
+
+`ConfettiButton` takes the same object as `options`. Without an `origin` it bursts from the button itself. Calling `preventDefault()` in its `onClick` skips the burst.
+
+With `prefers-reduced-motion`, on the server, or without canvas support, `confetti()` does nothing.

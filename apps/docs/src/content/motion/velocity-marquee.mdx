@@ -1,0 +1,31 @@
+Rows of text that run sideways forever and speed up while the page scrolls. Scroll back up and they turn around.
+
+<ComponentPreview name="velocity-marquee-demo" />
+
+## Installation
+
+<Install name="velocity-marquee" />
+
+## Usage
+
+```tsx
+import { VelocityMarquee } from '@/components/ui/velocity-marquee'
+
+<VelocityMarquee baseVelocity={60} className="font-black text-6xl uppercase">
+  <span>Design · Build · Ship ·</span>
+  <span>Scroll faster ·</span>
+</VelocityMarquee>
+```
+
+Each direct child is one row, and each row runs the other way from the one above it. The content is repeated to fill the width and the copies are hidden from assistive tech. It reads the scroll of the nearest scrolling ancestor, or the window.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `baseVelocity` | `50` | Pixels per second while the page is still. |
+| `direction` | `'left'` | Which way the first row runs. |
+| `sensitivity` | `1` | How strongly scrolling speeds it up. `0` ignores the scroll. |
+| `gap` | `'2rem'` | Space between copies of a row. |
+
+It stops while off screen and stands still with `prefers-reduced-motion`.

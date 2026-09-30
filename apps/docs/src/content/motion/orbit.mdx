@@ -1,0 +1,42 @@
+Items circling a center, spread evenly around a ring and kept upright as they go. Stack a few for concentric orbits.
+
+<ComponentPreview name="orbit-demo" />
+
+## Installation
+
+<Install name="orbit" />
+
+## Usage
+
+```tsx
+import { Orbit, OrbitItem } from '@/components/ui/orbit'
+
+<div className="relative flex size-80 items-center justify-center">
+  <Logo />
+  <Orbit radius={72}>
+    <OrbitItem><Code /></OrbitItem>
+    <OrbitItem><Lock /></OrbitItem>
+  </Orbit>
+  <Orbit radius={136} duration={26} reverse>
+    <OrbitItem><Globe /></OrbitItem>
+    <OrbitItem><Mail /></OrbitItem>
+    <OrbitItem><Cloud /></OrbitItem>
+  </Orbit>
+</div>
+```
+
+An `Orbit` is centered in its parent, so give the parent `relative` and room for the ring. Only the items take the pointer, so links and buttons in them stay clickable.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `radius` | `100` | Distance from the center to the items, in pixels. |
+| `duration` | `20` | Seconds per lap. |
+| `reverse` | `false` | Go counterclockwise. |
+| `path` | `true` | Draw the ring the items travel along. |
+| `pauseOnHover` | `false` | Stop while the pointer is over an item. |
+
+`OrbitItem` takes an `angle` in degrees to place it by hand. Without one, items are spread evenly.
+
+With `prefers-reduced-motion` the items stay put on the ring.
