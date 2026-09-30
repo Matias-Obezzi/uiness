@@ -67,6 +67,25 @@ describe('ContextMenu', () => {
     expect(screen.queryByRole('menu')).toBeNull()
   })
 
+  it('moves to the next element right clicked while one is open, and stays open', async () => {
+    setup(
+      <>
+        <ContextMenuArea context="file" data={{ id: 'a', name: 'a.md' }} asChild>
+          <button type="button">a</button>
+        </ContextMenuArea>
+        <ContextMenuArea context="file" data={{ id: 'b', name: 'b.md' }} asChild>
+          <button type="button">b</button>
+        </ContextMenuArea>
+      </>,
+    )
+    await userEvent.pointer({ keys: '[MouseRight]', target: screen.getByText('a') })
+    expect(items()).toEqual(['Open a.md', 'Delete'])
+    await userEvent.pointer({ keys: '[MouseRight]', target: screen.getByText('b') })
+    await act(() => new Promise((r) => setTimeout(r, 50)))
+    expect(items()).toEqual(['Open b.md', 'Delete'])
+    expect(screen.getByRole('menu').contains(document.activeElement)).toBe(true)
+  })
+
   it('lets an element extend the named menu', () => {
     setup(
       <ContextMenuArea
