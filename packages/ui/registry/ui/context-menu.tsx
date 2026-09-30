@@ -218,6 +218,8 @@ function ContextMenuProvider({ menus, fallback, className, children }: ContextMe
   const menusRef = React.useRef(menus)
   menusRef.current = menus
   const returnFocus = React.useRef<HTMLElement | null>(null)
+  // Set as it happens, not on render: a menu closing late must know a new one is open.
+  const isOpen = React.useRef(false)
 
   const resolve = React.useCallback(
     (options: UseContextMenuOptions<unknown>, element: HTMLElement) => {
@@ -237,10 +239,14 @@ function ContextMenuProvider({ menus, fallback, className, children }: ContextMe
   const show = React.useCallback((point: Point, actions: ContextMenuAction[]) => {
     const active = document.activeElement
     returnFocus.current = active instanceof HTMLElement ? active : null
+    isOpen.current = true
     setState((s) => ({ open: true, point, actions, key: s.key + 1 }))
   }, [])
 
-  const close = React.useCallback(() => setState((s) => ({ ...s, open: false })), [])
+  const close = React.useCallback(() => {
+    isOpen.current = false
+    setState((s) => ({ ...s, open: false }))
+  }, [])
 
   // A right click nobody claimed opens the fallback menu, when there is one.
   React.useEffect(() => {
@@ -301,8 +307,12 @@ function ContextMenuProvider({ menus, fallback, className, children }: ContextMe
           collisionPadding={8}
           className={cn('min-w-44', className)}
           onCloseAutoFocus={(event) => {
-            // Back to whatever had focus before, not to the invisible anchor.
             event.preventDefault()
+            // A right click elsewhere closes this menu and opens the next one before this
+            // one is gone. Handing focus back now would pull it out of the new menu, which
+            // would take that as a click outside and close too.
+            if (isOpen.current) return
+            // Back to whatever had focus before, not to the invisible anchor.
             returnFocus.current?.focus({ preventScroll: true })
           }}
         >
