@@ -3,14 +3,16 @@ import { type ComponentType, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { CodeBlock } from './code-block'
 
-const modules = import.meta.glob('../../../../packages/ui/registry/blocks/*.tsx', {
-  eager: true,
-}) as Record<string, Record<string, unknown>>
-const sources = import.meta.glob('../../../../packages/ui/registry/blocks/*.tsx', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-}) as Record<string, string>
+// The tests sit next to the blocks; importing them would pull vitest into the page. Vite
+// only takes literal patterns here, hence the repetition.
+const modules = import.meta.glob(
+  ['../../../../packages/ui/registry/blocks/*.tsx', '!**/*.test.tsx'],
+  { eager: true },
+) as Record<string, Record<string, unknown>>
+const sources = import.meta.glob(
+  ['../../../../packages/ui/registry/blocks/*.tsx', '!**/*.test.tsx'],
+  { query: '?raw', import: 'default', eager: true },
+) as Record<string, string>
 
 /** hero-01 → Hero01, the name each block file exports. */
 const exportName = (name: string) =>
