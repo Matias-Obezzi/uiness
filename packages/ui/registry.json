@@ -1561,6 +1561,58 @@
           "type": "registry:block"
         }
       ]
+    },
+    {
+      "name": "pricing-01",
+      "type": "registry:block",
+      "title": "Pricing 01",
+      "description": "Three plan cards with a monthly/yearly switch that rolls the prices, and a flowing ring around the recommended plan.",
+      "categories": ["pricing"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/badge",
+        "@uiness/button",
+        "@uiness/gradient-text",
+        "@uiness/odometer",
+        "@uiness/toggle-group"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/pricing-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-01",
+      "type": "registry:block",
+      "title": "Testimonials 01",
+      "description": "Two rows of quote cards drifting in opposite directions, with ratings and initials avatars.",
+      "categories": ["testimonials"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/avatar", "@uiness/marquee"],
+      "files": [
+        {
+          "path": "registry/blocks/testimonials-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "faq-01",
+      "type": "registry:block",
+      "title": "FAQ 01",
+      "description": "A heading and contact link beside a list of questions that slide open, one column when narrow.",
+      "categories": ["faq"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/blocks/faq-01.tsx",
+          "type": "registry:block"
+        }
+      ]
     }
   ]
 }
