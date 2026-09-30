@@ -205,7 +205,13 @@ export function Layout() {
           <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto py-8 md:block">
             <SidebarNav />
           </aside>
-          <main className="w-full min-w-0 max-w-3xl flex-1 py-8 lg:py-10">
+          <main
+            className={cn(
+              'w-full min-w-0 flex-1 py-8 lg:py-10',
+              // Blocks are whole page sections: they get the full width to show it.
+              pathname.startsWith('/docs/blocks/') ? 'max-w-none' : 'max-w-3xl',
+            )}
+          >
             <Outlet />
           </main>
         </div>

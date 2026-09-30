@@ -2,6 +2,7 @@ import type { MDXComponents } from 'mdx/types'
 import type { ComponentProps, ReactElement, ReactNode } from 'react'
 import { Link } from 'react-router'
 import { cn } from '@/lib/utils'
+import { BlockPreview } from './block-preview'
 import { CodeBlock } from './code-block'
 import { ComponentPreview } from './component-preview'
 import { Install, InstallPackage, RegistryConfig, RegistryLink } from './install'
@@ -92,6 +93,7 @@ export const mdxComponents: MDXComponents = {
       <table className={cn('my-0', className)} {...props} />
     </div>
   ),
+  BlockPreview,
   ComponentPreview,
   Install,
   InstallPackage,

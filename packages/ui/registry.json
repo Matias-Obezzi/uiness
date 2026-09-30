@@ -1541,6 +1541,26 @@
           "type": "registry:ui"
         }
       ]
+    },
+    {
+      "name": "hero-01",
+      "type": "registry:block",
+      "title": "Hero 01",
+      "description": "A centered hero with an announcement pill, a headline ending in a gradient, a lead and two actions over a fading grid.",
+      "categories": ["hero"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/gradient-text",
+        "@uiness/pattern"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/hero-01.tsx",
+          "type": "registry:block"
+        }
+      ]
     }
   ]
 }

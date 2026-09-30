@@ -1,0 +1,31 @@
+The first section of a page: what it is, why it matters, and what to do next. Every block takes its words through props and lays itself out by the width of its container, so it works in a full page, a sidebar layout or a panel.
+
+## Hero 01
+
+A centered hero with an announcement pill, a headline that ends in a flowing gradient, a lead paragraph and two actions, over a grid that fades out.
+
+<BlockPreview name="hero-01" />
+
+<Install name="hero-01" />
+
+```tsx
+import { Hero01 } from '@/components/hero-01'
+
+<Hero01
+  announcement={{ label: 'Version 2 is out', href: '/changelog' }}
+  title="Plan the week in"
+  highlight="five minutes"
+  description="One calendar for the team, the tasks and the time in between."
+  primaryAction={{ label: 'Start free', href: '/signup' }}
+  secondaryAction={{ label: 'See a demo', href: '/demo' }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `announcement` | `{ label, href }` for the pill above the headline. `null` hides it. |
+| `title` | The headline before the highlighted words. |
+| `highlight` | The words at the end, filled with a flowing gradient. |
+| `description` | The lead paragraph. |
+| `primaryAction`, `secondaryAction` | `{ label, href }` for the two buttons. `null` hides one. |
+| `note` | A short line under the buttons. |

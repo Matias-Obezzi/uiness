@@ -140,6 +140,12 @@ const sections: NavSection[] = [
     ],
   },
   {
+    title: 'Blocks',
+    pages: [
+      page('blocks/hero', 'Hero', 'The first thing a page says: headline, lead and actions.'),
+    ],
+  },
+  {
     title: 'Drag and drop',
     pages: [
       page('dnd/sortable', 'Sortable', 'A list you reorder by dragging, or with the keyboard.'),
