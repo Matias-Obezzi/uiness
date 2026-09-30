@@ -1,0 +1,35 @@
+The bar across the top of a site: the wordmark, the main links and the way in. Every block takes its words through props and lays itself out by the width of its container, so it works in a full page, a sidebar layout or a panel.
+
+## Navbar 01
+
+A header with a wordmark, links under a sliding hover highlight, a sign in link and a button. When its container gets narrow the links fold into a menu button that opens a panel.
+
+<BlockPreview name="navbar-01" />
+
+<Install name="navbar-01" />
+
+```tsx
+import { MountainIcon } from 'lucide-react'
+import { Navbar01 } from '@/components/navbar-01'
+
+<Navbar01
+  sticky
+  brand={{ name: 'Summit', href: '/', icon: MountainIcon }}
+  links={[
+    { label: 'Features', href: '/features', current: true },
+    { label: 'Pricing', href: '/pricing' },
+    { label: 'Docs', href: '/docs' },
+  ]}
+  secondaryAction={{ label: 'Log in', href: '/login' }}
+  primaryAction={{ label: 'Get started', href: '/signup' }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `brand` | `{ name, href, icon? }` for the wordmark. `icon` is a lucide icon; without one the mark shows the first letter. |
+| `links` | `{ label, href, current? }` for the main links. `current` marks the page you are on. |
+| `secondaryAction` | `{ label, href }` for the text link before the button. `null` hides it. |
+| `primaryAction` | `{ label, href }` for the button. `null` hides it. |
+| `sticky` | Stick to the top of the page while it scrolls. Default `false`. |
+| `menuLabel` | Accessible name of the menu button. Default `Menu`. |

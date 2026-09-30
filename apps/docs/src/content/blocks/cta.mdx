@@ -1,0 +1,31 @@
+A section that asks for the next step, usually near the end of a page. Every block takes its words through props and lays itself out by the width of its container, so it works in a full page, a sidebar layout or a panel.
+
+## Call to Action 01
+
+A card with a slow aurora behind it and a light that follows the pointer, a pulsing badge, a headline, one line and two actions.
+
+<BlockPreview name="cta-01" />
+
+<Install name="cta-01" />
+
+```tsx
+import { CalendarIcon } from 'lucide-react'
+import { Cta01 } from '@/components/cta-01'
+
+<Cta01
+  icon={CalendarIcon}
+  title="Plan next week in five minutes"
+  description="Start with your calendar, add the team when you are ready."
+  primaryAction={{ label: 'Start free', href: '/signup' }}
+  secondaryAction={{ label: 'Book a demo', href: '/demo' }}
+  note={null}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `icon` | A lucide icon for the pulsing badge. `null` hides the badge. |
+| `title` | The headline. |
+| `description` | The line under the headline. |
+| `primaryAction`, `secondaryAction` | `{ label, href }` for the two buttons. `null` hides one. |
+| `note` | A short line under the buttons. `null` hides it. |

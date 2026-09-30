@@ -1,0 +1,37 @@
+The last thing on every page: where to go next, how to keep in touch, and the small print. Every block takes its words through props and lays itself out by the width of its container, so it works in a full page, a sidebar layout or a panel.
+
+## Footer 01
+
+A footer with the wordmark, a short blurb and social links, columns of links, a newsletter signup that thanks people in place, the brand name set large, and a bottom bar with the copyright and legal links.
+
+<BlockPreview name="footer-01" />
+
+<Install name="footer-01" />
+
+```tsx
+import { Footer01 } from '@/components/footer-01'
+
+<Footer01
+  brand={{ name: 'Summit', href: '/' }}
+  description="Trail maps for teams."
+  columns={[
+    { title: 'Product', links: [{ label: 'Pricing', href: '/pricing' }] },
+    { title: 'Company', links: [{ label: 'About', href: '/about' }] },
+  ]}
+  onSubscribe={async (email) => {
+    await fetch('/api/subscribe', { method: 'POST', body: JSON.stringify({ email }) })
+  }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `brand` | `{ name, href, icon? }` for the wordmark. |
+| `description` | A line or two under the wordmark. |
+| `socials` | `{ label, href, icon }` for the icon links. `label` is the accessible name. |
+| `columns` | `{ title, links }` for each column of links. Three or four read best. |
+| `newsletter` | `{ title, description?, label?, placeholder?, button?, success?, error? }` for the signup. `null` hides it. |
+| `onSubscribe` | Called with the email. Return a promise to show a pending state, throw to show the error. |
+| `watermark` | The brand name set huge and faded above the bottom bar. Default `true`. |
+| `copyright` | The line in the bottom bar. |
+| `legal` | `{ label, href }` for the links in the bottom bar. |

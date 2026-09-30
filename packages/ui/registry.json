@@ -1613,6 +1613,86 @@
           "type": "registry:block"
         }
       ]
+    },
+    {
+      "name": "navbar-01",
+      "type": "registry:block",
+      "title": "Navbar 01",
+      "description": "A site header with a wordmark, links under a sliding highlight, sign in and a button, folding into a menu panel when narrow.",
+      "categories": ["navbar"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/hover-highlight",
+        "@uiness/popover"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/navbar-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "footer-01",
+      "type": "registry:block",
+      "title": "Footer 01",
+      "description": "A footer with brand, social links, link columns, a newsletter signup that thanks in place and a bottom bar with legal links.",
+      "categories": ["footer"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/input", "@uiness/label"],
+      "files": [
+        {
+          "path": "registry/blocks/footer-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "cta-01",
+      "type": "registry:block",
+      "title": "Call to Action 01",
+      "description": "A closing call to action card with an aurora, a pointer spotlight, a pulsing badge, a headline and two actions.",
+      "categories": ["cta"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/aurora",
+        "@uiness/button",
+        "@uiness/pattern",
+        "@uiness/sonar",
+        "@uiness/spotlight"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/cta-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "auth-01",
+      "type": "registry:block",
+      "title": "Auth 01",
+      "description": "A sign in form with password reveal, a pending submit, provider buttons and a customer quote panel on wide containers.",
+      "categories": ["auth"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/aurora",
+        "@uiness/avatar",
+        "@uiness/button",
+        "@uiness/input",
+        "@uiness/label",
+        "@uiness/pattern"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/auth-01.tsx",
+          "type": "registry:block"
+        }
+      ]
     }
   ]
 }
