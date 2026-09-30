@@ -134,15 +134,6 @@
   }
 }
 
-@keyframes retro-grid {
-  from {
-    transform: translateY(0);
-  }
-  to {
-    transform: translateY(var(--retro-grid-cell));
-  }
-}
-
 @keyframes animated-list-in {
   from {
     opacity: 0;
