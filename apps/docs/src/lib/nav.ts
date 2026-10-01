@@ -80,6 +80,11 @@ const sections: NavSection[] = [
       ),
       page('components/avatar', 'Avatar', 'A picture of a user with a fallback.'),
       page('components/badge', 'Badge', 'A small label for statuses and counts.'),
+      page(
+        'components/bar-chart',
+        'Bar Chart',
+        'Grouped or stacked bars in SVG, no chart library.',
+      ),
       page('components/bento-grid', 'Bento Grid', 'A grid of cards with spans and a hover lift.'),
       page('components/button', 'Button', 'Triggers an action, with variants and sizes.'),
       page('components/calendar', 'Calendar', 'Pick a day, several days or a range.'),
@@ -114,6 +119,11 @@ const sections: NavSection[] = [
       page('components/input', 'Input', 'A text field.'),
       page('components/input-otp', 'Input OTP', 'A one time code field.'),
       page('components/label', 'Label', 'An accessible caption for a control.'),
+      page(
+        'components/line-chart',
+        'Line Chart',
+        'Lines and areas over time in SVG, no chart library.',
+      ),
       page(
         'components/navbar',
         'Navbar',
@@ -233,6 +243,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-01': ['components/bar-chart', 'components/line-chart'],
   '2026-09-30': [
     'blocks/features',
     'blocks/logos',

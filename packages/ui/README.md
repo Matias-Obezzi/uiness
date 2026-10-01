@@ -73,6 +73,7 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `dropzone` | Files dropped in from the desktop, checked by type, size and count. Native HTML drag and drop, no package behind it. |
 | `use-in-view`, `use-reduced-motion` | Hooks the motion pieces share, installed into `hooks/`. |
 | `alert`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
+| `bar-chart`, `line-chart` | SVG charts with no chart library: grouped or stacked bars, straight or smooth lines with area and gaps. Tooltip, legend, keyboard reading and a data table for screen readers. Share `chart-core`, which later chart types build on. |
 | `carousel` | Horizontal run of items of any width and any content, on CSS scroll snapping. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
 | `island` | `<Island />` wired to the theme tokens, re-exports the `@uiness/island` API. |
