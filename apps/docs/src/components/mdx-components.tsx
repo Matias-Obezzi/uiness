@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 import { BlockPreview } from './block-preview'
 import { CodeBlock } from './code-block'
 import { ComponentPreview } from './component-preview'
-import { Install, InstallPackage, RegistryConfig, RegistryLink } from './install'
+import { Install, InstallPackage, RegistryConfig, RegistryLink, ShadcnCommand } from './install'
 
 const slug = (children: ReactNode) =>
   String(childrenText(children))
@@ -99,6 +99,7 @@ export const mdxComponents: MDXComponents = {
   InstallPackage,
   RegistryConfig,
   RegistryLink,
+  ShadcnCommand,
   Steps,
   Callout,
 }
