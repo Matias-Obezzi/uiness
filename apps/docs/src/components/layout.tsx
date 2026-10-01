@@ -1,4 +1,11 @@
-import { ChevronRightIcon, MenuIcon, MoonIcon, SearchIcon, SunIcon } from 'lucide-react'
+import {
+  ChevronRightIcon,
+  MenuIcon,
+  MoonIcon,
+  PaletteIcon,
+  SearchIcon,
+  SunIcon,
+} from 'lucide-react'
 import { useEffect, useId, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { cn } from '@/lib/utils'
@@ -269,6 +276,17 @@ export function Layout() {
             >
               Components
             </NavLink>
+            <NavLink
+              to="/themes"
+              className={({ isActive }) =>
+                cn(
+                  'text-muted-foreground transition-colors hover:text-foreground',
+                  isActive && 'text-foreground',
+                )
+              }
+            >
+              Themes
+            </NavLink>
           </nav>
           <div className="ml-auto flex items-center gap-1">
             <Button
@@ -309,6 +327,13 @@ export function Layout() {
           <DrawerTitle className="sr-only">Menu</DrawerTitle>
           <DrawerDescription className="sr-only">Documentation navigation</DrawerDescription>
           <DrawerBody className="py-6" data-sidebar-scroll>
+            <NavLink
+              to="/themes"
+              onClick={() => setMenuOpen(false)}
+              className="mb-4 flex items-center gap-2 font-medium text-sm"
+            >
+              <PaletteIcon className="size-4" /> Themes
+            </NavLink>
             <SidebarNav onNavigate={() => setMenuOpen(false)} />
           </DrawerBody>
         </DrawerContent>
