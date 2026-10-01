@@ -93,11 +93,12 @@ const sections: NavSection[] = [
       page(
         'components/bar-chart',
         'Bar Chart',
-        'Grouped or stacked bars in SVG, no chart library.',
+        'Grouped or stacked bars from a list of series, on recharts.',
       ),
       page('components/bento-grid', 'Bento Grid', 'A grid of cards with spans and a hover lift.'),
       page('components/button', 'Button', 'Triggers an action, with variants and sizes.'),
       page('components/calendar', 'Calendar', 'Pick a day, several days or a range.'),
+      page('components/chart', 'Chart', 'The shadcn chart API on recharts, styled with the theme.'),
       page('components/card', 'Card', 'A surface with header, content and footer.'),
       page('components/checkbox', 'Checkbox', 'A control that can be checked or unchecked.'),
       page(
@@ -137,7 +138,7 @@ const sections: NavSection[] = [
       page(
         'components/line-chart',
         'Line Chart',
-        'Lines and areas over time in SVG, no chart library.',
+        'Lines and areas over time from a list of series, on recharts.',
       ),
       page(
         'components/navbar',
@@ -273,6 +274,7 @@ const releases: Record<string, string[]> = {
     'components/accordion',
     'components/alert-dialog',
     'components/bar-chart',
+    'components/chart',
     'components/collapsible',
     'components/line-chart',
     'components/spinner',

@@ -1,0 +1,78 @@
+Charts on [recharts](https://recharts.org), with the same API as the shadcn/ui chart: you write the recharts chart, `ChartContainer` sizes it, turns a config into color variables and styles it with the theme, and the tooltip and legend contents read their labels from the same config.
+
+<ComponentPreview name="chart-demo" align="start" />
+
+For the common cases there are ready-made components on top of it, which take a list of series and handle dates, formats, the legend toggles and the empty state: the [Bar Chart](/docs/components/bar-chart) and the [Line Chart](/docs/components/line-chart).
+
+## Installation
+
+<Install name="chart" extra="Adds recharts to your dependencies. Colors come from the --chart-1 to --chart-5 variables of the theme." />
+
+## Coming from shadcn/ui
+
+The exports and props match the shadcn chart, so an app already on it can install `@uiness/chart` over its `components/ui/chart.tsx` and keep every screen as it is. The difference is the styling: the tooltip uses the popover colors and the uiness radius, gridlines take `--border`, the hover cursor is a soft wash, and the focused chart gets the same focus ring as every other control.
+
+## Usage
+
+```tsx
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import {
+  type ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from '@/components/ui/chart'
+
+const config = {
+  desktop: { label: 'Desktop', color: 'var(--chart-1)' },
+  mobile: { label: 'Mobile', color: 'var(--chart-2)' },
+} satisfies ChartConfig
+
+<ChartContainer config={config} className="min-h-[240px] w-full">
+  <BarChart accessibilityLayer data={data}>
+    <CartesianGrid vertical={false} />
+    <XAxis dataKey="month" tickLine={false} axisLine={false} />
+    <ChartTooltip content={<ChartTooltipContent />} />
+    <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+    <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
+  </BarChart>
+</ChartContainer>
+```
+
+`ChartContainer` needs a height, from a `min-h-*`, a fixed `h-*` or its default `aspect-video`. Each key of the config becomes a `--color-<key>` variable on the container, which the marks use as `var(--color-desktop)`. Keys end up in CSS, so keep them to letters, digits, `-` and `_`.
+
+## Config
+
+Give a key a `color` for both themes, or a `theme` with one per mode:
+
+```tsx
+const config = {
+  revenue: {
+    label: 'Revenue',
+    theme: { light: 'oklch(0.55 0.2 260)', dark: 'oklch(0.75 0.15 260)' },
+  },
+  costs: { label: 'Costs', color: 'var(--chart-2)', icon: TrendingDown },
+} satisfies ChartConfig
+```
+
+`label` names the key in the tooltip and the legend, and `icon` replaces its color swatch.
+
+## Tooltip
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `indicator` | `'dot'` | Color key shape: `'dot'`, `'line'` or `'dashed'`. |
+| `hideLabel` | `false` | Hide the heading. |
+| `hideIndicator` | `false` | Hide the color keys. |
+| `labelFormatter` | | `(label, payload) => ReactNode` for the heading. |
+| `formatter` | | `(value, name, item, index, row) => ReactNode` replacing a whole row. |
+| `valueFormatter` | `toLocaleString()` | `(value, name) => ReactNode` for the value only, keeping the key and name. Not in shadcn. |
+| `nameKey`, `labelKey` | | Look up the config by another field of the row. |
+
+## Legend
+
+`<ChartLegend content={<ChartLegendContent />} />` lists the config labels with their swatches or icons. `nameKey` and `hideIcon` work as in the tooltip.
+
+## Accessibility
+
+Pass `accessibilityLayer` to the recharts chart. The chart then takes focus, and the left and right arrow keys move the tooltip from point to point.

@@ -15,7 +15,7 @@ The theme item defines these on `:root` and again on `.dark`:
 | `--accent`, `--accent-foreground` | Hover and focus surfaces. |
 | `--destructive` | Danger buttons and destructive menu items. |
 | `--border`, `--input`, `--ring` | Borders, field borders, focus rings. |
-| `--chart-1` to `--chart-5` | Series colors of the [bar](/docs/components/bar-chart) and [line](/docs/components/line-chart) charts, in order. |
+| `--chart-1` to `--chart-5` | Series colors of the [charts](/docs/components/chart), in order. |
 | `--radius` | Base corner radius. Sizes derive from it. |
 
 Colors are written in `oklch`, which keeps contrast even across hues when you shift a value.
@@ -57,7 +57,7 @@ The charts color their series with `--chart-1` to `--chart-5`, in order, with di
 }
 ```
 
-A color follows its series, not its position among the visible ones, so hiding a series from the legend never repaints the rest. Past five series, the charts read `--chart-6` and on if you define them, and repeat the five otherwise. With many series, `--chart-4` and `--chart-5` are close to each other: give one of them its own `color`, or keep to three or four series per chart.
+In a [`ChartContainer`](/docs/components/chart) config, point a key at one with `color: 'var(--chart-1)'`. The [bar](/docs/components/bar-chart) and [line](/docs/components/line-chart) charts do it for you, and a color follows its series, not its position among the visible ones, so hiding a series from the legend never repaints the rest. Past five series, the charts read `--chart-6` and on if you define them, and repeat the five otherwise. With many series, `--chart-4` and `--chart-5` are close to each other: give one of them its own `color`, or keep to three or four series per chart.
 
 ## Layers
 
