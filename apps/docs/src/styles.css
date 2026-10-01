@@ -11,6 +11,42 @@ html {
   scroll-padding-top: 5rem;
 }
 
+/* Scrollbars, thin and in the theme's colors on every scrolling box, like the Scroll Area
+ * component. The thumb is a faded foreground, so it reads on light and dark alike. */
+:root {
+  --scrollbar-thumb: color-mix(in oklab, var(--muted-foreground) 45%, transparent);
+  --scrollbar-thumb-hover: color-mix(in oklab, var(--muted-foreground) 75%, transparent);
+}
+
+@supports (scrollbar-color: auto) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+}
+
+/* Engines without `scrollbar-color`, Safari before 18.2 among them. */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 9999px;
+    background: var(--scrollbar-thumb) padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover) padding-box;
+  }
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
+
 body {
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;

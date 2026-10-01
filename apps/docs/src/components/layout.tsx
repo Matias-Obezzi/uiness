@@ -1,5 +1,5 @@
-import { MenuIcon, MoonIcon, SearchIcon, SunIcon } from 'lucide-react'
-import { useState } from 'react'
+import { ChevronRightIcon, MenuIcon, MoonIcon, SearchIcon, SunIcon } from 'lucide-react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
@@ -36,33 +36,147 @@ function Wordmark() {
   )
 }
 
-function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+const OPEN_KEY = 'uiness-sidebar-open'
+
+function readOpen(): Record<string, boolean> {
+  try {
+    return JSON.parse(localStorage.getItem(OPEN_KEY) ?? '{}')
+  } catch {
+    return {}
+  }
+}
+
+/** The section holding the page being read, if any. */
+const sectionOf = (pathname: string) =>
+  nav.find((s) =>
+    s.pages.some((p) => pageHref(p) === pathname.replace(/\/$/, '') || pageHref(p) === pathname),
+  )?.title
+
+function SidebarSection({
+  section,
+  open,
+  onToggle,
+  onNavigate,
+}: {
+  section: (typeof nav)[number]
+  open: boolean
+  onToggle: () => void
+  onNavigate?: () => void
+}) {
+  const listId = useId()
+  const fresh = section.pages.filter((p) => isNew(p)).length
   return (
-    <nav className="flex flex-col gap-6 text-sm">
+    <div>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={listId}
+        onClick={onToggle}
+        className="group flex w-full items-center gap-2 rounded-md py-1 text-left font-medium outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      >
+        <ChevronRightIcon
+          className={cn(
+            'size-3.5 shrink-0 text-muted-foreground transition-transform duration-(--duration-fast,150ms)',
+            open && 'rotate-90',
+          )}
+        />
+        <span className="flex-1">{section.title}</span>
+        {!open && (
+          <span className="flex items-center gap-1.5 text-muted-foreground text-xs tabular-nums">
+            {fresh > 0 && <span className="size-1.5 rounded-full bg-primary" aria-hidden />}
+            {section.pages.length}
+          </span>
+        )}
+      </button>
+      {/* Rows from 0fr to 1fr animate the height to whatever the list needs. */}
+      <div
+        id={listId}
+        className={cn(
+          'grid transition-[grid-template-rows] duration-(--duration-normal,200ms) ease-(--easing-standard,ease-out) motion-reduce:transition-none',
+          open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+        )}
+        inert={!open}
+      >
+        <ul className="ml-[0.4375rem] flex min-h-0 flex-col gap-0.5 overflow-hidden border-l">
+          {section.pages.map((p, i) => (
+            <li
+              key={p.slug}
+              className={cn(i === 0 && 'mt-1.5', i === section.pages.length - 1 && 'mb-1')}
+            >
+              <NavLink
+                to={pageHref(p)}
+                end
+                onClick={onNavigate}
+                className={({ isActive }) =>
+                  cn(
+                    '-ml-px flex items-center gap-2 border-l py-1 pl-4 text-muted-foreground transition-colors hover:text-foreground',
+                    isActive && 'border-foreground font-medium text-foreground',
+                  )
+                }
+              >
+                {p.title}
+                {isNew(p) && <NewBadge />}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Sections fold so the list stays short: the one holding the current page opens, the rest
+ * stay as the reader left them. The page being read is scrolled into view in the sidebar,
+ * which matters when arriving from a link straight to a page far down the list.
+ */
+function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+  const { pathname } = useLocation()
+  const ref = useRef<HTMLElement>(null)
+  const [open, setOpen] = useState<Record<string, boolean>>(readOpen)
+  const current = sectionOf(pathname)
+
+  const save = (next: Record<string, boolean>) => {
+    setOpen(next)
+    try {
+      localStorage.setItem(OPEN_KEY, JSON.stringify(next))
+    } catch {}
+  }
+
+  // Arriving at a page opens its section, wherever the reader came from.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only a change of page should open it
+  useEffect(() => {
+    if (current && !open[current]) save({ ...open, [current]: true })
+  }, [current])
+
+  // Bring the current link into view inside the sidebar, without moving the page itself.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: each new page is the trigger
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      const nav = ref.current
+      const link = nav?.querySelector<HTMLElement>('[aria-current="page"]')
+      const scroller = nav?.closest<HTMLElement>('[data-sidebar-scroll]')
+      if (!link || !scroller) return
+      const box = scroller.getBoundingClientRect()
+      const at = link.getBoundingClientRect()
+      if (at.top >= box.top + 24 && at.bottom <= box.bottom - 24) return
+      scroller.scrollTop += at.top - box.top - box.height / 2 + at.height / 2
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [pathname])
+
+  return (
+    <nav ref={ref} aria-label="Documentation" className="flex flex-col gap-3 text-sm">
       {nav.map((section) => (
-        <div key={section.title}>
-          <p className="mb-2 font-medium">{section.title}</p>
-          <ul className="flex flex-col gap-0.5 border-l">
-            {section.pages.map((p) => (
-              <li key={p.slug}>
-                <NavLink
-                  to={pageHref(p)}
-                  end
-                  onClick={onNavigate}
-                  className={({ isActive }) =>
-                    cn(
-                      '-ml-px flex items-center gap-2 border-l py-1 pl-4 text-muted-foreground transition-colors hover:text-foreground',
-                      isActive && 'border-foreground font-medium text-foreground',
-                    )
-                  }
-                >
-                  {p.title}
-                  {isNew(p) && <NewBadge />}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <SidebarSection
+          key={section.title}
+          section={section}
+          open={open[section.title] ?? section.title === current}
+          onToggle={() =>
+            save({ ...open, [section.title]: !(open[section.title] ?? section.title === current) })
+          }
+          onNavigate={onNavigate}
+        />
       ))}
     </nav>
   )
@@ -194,7 +308,7 @@ export function Layout() {
         <DrawerContent side="left" showCloseButton={false} className="w-72">
           <DrawerTitle className="sr-only">Menu</DrawerTitle>
           <DrawerDescription className="sr-only">Documentation navigation</DrawerDescription>
-          <DrawerBody className="py-6">
+          <DrawerBody className="py-6" data-sidebar-scroll>
             <SidebarNav onNavigate={() => setMenuOpen(false)} />
           </DrawerBody>
         </DrawerContent>
@@ -202,7 +316,10 @@ export function Layout() {
 
       {inDocs ? (
         <div className="mx-auto flex w-full max-w-7xl flex-1 gap-10 px-4 sm:px-6">
-          <aside className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto py-8 md:block">
+          <aside
+            data-sidebar-scroll
+            className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto overscroll-contain py-8 md:block"
+          >
             <SidebarNav />
           </aside>
           <main
