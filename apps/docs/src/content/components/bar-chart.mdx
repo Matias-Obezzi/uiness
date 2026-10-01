@@ -1,0 +1,99 @@
+Bars per day or per category, side by side or stacked. Plain SVG with no chart library behind it: the scales, ticks, tooltip and legend come in a small shared file, `chart-core`, that the [Line Chart](/docs/components/line-chart) uses too.
+
+<ComponentPreview name="bar-chart-demo" align="start" />
+
+## Installation
+
+<Install name="bar-chart" extra="Brings chart-core along. Colors come from the --chart-1 to --chart-5 variables of the theme." />
+
+## Usage
+
+```tsx
+import { BarChart } from '@/components/ui/bar-chart'
+
+const data = [
+  { date: new Date(2026, 8, 1), desktop: 720, mobile: 360 },
+  { date: new Date(2026, 8, 2), desktop: 804, mobile: 341 },
+  // ...
+]
+
+<BarChart
+  data={data}
+  x="date"
+  series={[
+    { key: 'desktop', label: 'Desktop' },
+    { key: 'mobile', label: 'Mobile', color: 'var(--primary)' },
+  ]}
+/>
+```
+
+Each row holds the x value and one number per series. Dates can be `Date` objects or ISO strings like `2026-09-01`; anything else is shown as it is. A missing value, `null` or not a number, leaves that bar out.
+
+The width follows the container and the x labels thin out until they fit, always keeping the latest one. The y axis picks round steps of 1, 2 or 5 and always starts at zero, since a bar's length is the value.
+
+## Stacked
+
+`stacked` piles the series into one bar per row, positives up from zero and negatives down.
+
+<ComponentPreview name="bar-chart-stacked" align="start" />
+
+## Empty state
+
+When there are no rows, or every value is missing, the chart shows `empty` at the same height, so the page does not jump when data arrives.
+
+<ComponentPreview name="bar-chart-empty" align="start" />
+
+## Formatting
+
+Dates show as a short day and month in the reader's locale, with the weekday added in the tooltip. Numbers on the axis are compact (`1.2K`), and exact in the tooltip. Pass `locale` to pin the language, or your own functions:
+
+```tsx
+<BarChart
+  xFormat={(date) => new Date(date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
+  yFormat={(n) => `$${n.toLocaleString()}`}
+  {...props}
+/>
+```
+
+## Accessibility
+
+The plot takes focus. The left and right arrow keys move through the rows and show the tooltip, Home and End jump to the ends and Escape closes it; each row is also announced. Screen readers get a summary of the chart and a hidden table with every value, so the tooltip is never the only way to read a number. Clicking a legend entry hides or shows its series without repainting the others.
+
+With reduced motion the bars appear in place instead of growing.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `data` | | Rows to plot, in order. |
+| `x` | | Key of the x value in each row. |
+| `series` | | `{ key, label?, color? }` per series. Colors default to `--chart-1` to `--chart-5` in order. |
+| `stacked` | `false` | One bar per row with the series stacked. |
+| `height` | `240` | Height of the plot and its axes, legend excluded. |
+| `xFormat` | short date | Formats x values on the axis and in the tooltip. |
+| `yFormat` | compact number | Formats values on the axis and in the tooltip. |
+| `locale` | browser | Locale of the default formats. |
+| `showGrid` | `true` | Horizontal gridlines at each tick. |
+| `showLegend` | two series or more | Legend above the plot, click to toggle a series. |
+| `empty` | `"No data"` | Shown when there is nothing to plot. |
+| `aria-label` | generated | Replaces the generated summary. |
+
+## Coming from shadcn charts
+
+The shadcn chart wraps recharts; these do not, so recharts can leave your bundle once the last chart moves over. The `chartConfig` keys become `series`, and `dataKey` on the axis becomes `x`:
+
+```tsx
+// Before
+<ChartContainer config={{ desktop: { label: 'Desktop', color: 'var(--chart-1)' } }}>
+  <BarChart data={data}>
+    <XAxis dataKey="date" />
+    <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
+    <ChartTooltip content={<ChartTooltipContent />} />
+  </BarChart>
+</ChartContainer>
+
+// After
+<BarChart data={data} x="date" series={[{ key: 'desktop', label: 'Desktop' }]} />
+```
+
+The shared file is called `chart-core`, not `chart`, so it installs next to the shadcn `chart.tsx` and both work while you migrate screen by screen.

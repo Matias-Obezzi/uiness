@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { cn } from '@/lib/utils'
 import { Badge } from './badge'
 import { Button, buttonVariants } from './button'
@@ -44,6 +44,47 @@ describe('Button', () => {
     const link = screen.getByRole('link', { name: 'Docs' })
     expect(link.className).toContain(buttonVariants({ variant: 'default' }).split(' ')[0])
     expect(screen.queryByRole('button')).toBeNull()
+  })
+
+  it('shows a spinner and stops presses while loading', async () => {
+    const user = userEvent.setup()
+    const onClick = vi.fn()
+    render(
+      <Button loading onClick={onClick}>
+        Save
+      </Button>,
+    )
+    // The spinner stays out of the name: the button is still called Save, and busy.
+    const button = screen.getByRole('button', { name: 'Save' })
+    expect(button.getAttribute('aria-busy')).toBe('true')
+    expect((button as HTMLButtonElement).disabled).toBe(true)
+    expect(button.querySelector('[data-slot=spinner]')).toBeTruthy()
+    await user.click(button)
+    expect(onClick).not.toHaveBeenCalled()
+  })
+
+  it('puts the spinner inside the child and cancels clicks with asChild', () => {
+    render(
+      <Button asChild loading>
+        <a href="/docs">Docs</a>
+      </Button>,
+    )
+    const link = screen.getByRole('link', { name: 'Docs' })
+    expect(link.getAttribute('aria-disabled')).toBe('true')
+    expect(link.getAttribute('aria-busy')).toBe('true')
+    expect(link.hasAttribute('data-loading')).toBe(true)
+    expect(link.firstElementChild?.getAttribute('data-slot')).toBe('spinner')
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true })
+    link.dispatchEvent(click)
+    expect(click.defaultPrevented).toBe(true)
+  })
+
+  it('leaves no trace when not loading', () => {
+    render(<Button>Save</Button>)
+    const button = screen.getByRole('button', { name: 'Save' })
+    expect(button.hasAttribute('aria-busy')).toBe(false)
+    expect(button.hasAttribute('data-loading')).toBe(false)
+    expect(button.querySelector('[data-slot=spinner]')).toBeNull()
   })
 })
 

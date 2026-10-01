@@ -1,0 +1,67 @@
+Lines over days or categories, straight or smooth, with an optional area fill. Plain SVG with no chart library behind it, sharing its scales, tooltip and legend with the [Bar Chart](/docs/components/bar-chart) through `chart-core`.
+
+<ComponentPreview name="line-chart-demo" align="start" />
+
+## Installation
+
+<Install name="line-chart" extra="Brings chart-core along. Colors come from the --chart-1 to --chart-5 variables of the theme." />
+
+## Usage
+
+```tsx
+import { LineChart } from '@/components/ui/line-chart'
+
+<LineChart
+  area
+  curve="monotone"
+  data={data}
+  x="date"
+  series={[
+    { key: 'visitors', label: 'Visitors' },
+    { key: 'returning', label: 'Returning' },
+  ]}
+/>
+```
+
+`curve="monotone"` draws a smooth curve that never overshoots the points, so a peak in the line is always a peak in the data. `area` adds a fading wash of each series color under its line.
+
+The y axis keeps zero by default. Set `includeZero={false}` to zoom into the range of the data, for values that never get near zero.
+
+## Missing values
+
+A row whose value is `null`, missing or not a number breaks the line, instead of drawing a straight bridge across days with no data. A lone value between two gaps shows as a dot.
+
+<ComponentPreview name="line-chart-gaps" align="start" />
+
+## Reading values
+
+Hover anywhere over the plot for the nearest row: a vertical line marks it and the tooltip lists every series. The plot takes focus too, with the left and right arrow keys moving through the rows, Home and End jumping to the ends and Escape closing it. Screen readers get a summary and a hidden table with every value.
+
+The dots on the active row have a ring in the page color, so they stay readable where lines cross. Inside a card, point it at the card color:
+
+```tsx
+<LineChart style={{ '--chart-surface': 'var(--card)' } as React.CSSProperties} {...props} />
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `data` | | Rows to plot, in order. |
+| `x` | | Key of the x value in each row. Dates, ISO date strings, strings or numbers. |
+| `series` | | `{ key, label?, color? }` per series. Colors default to `--chart-1` to `--chart-5` in order. |
+| `curve` | `'linear'` | `'linear'` or `'monotone'`. |
+| `area` | `false` | Fill under each line. |
+| `includeZero` | `true` | Keep zero on the y axis. |
+| `height` | `240` | Height of the plot and its axes, legend excluded. |
+| `xFormat` | short date | Formats x values on the axis and in the tooltip. |
+| `yFormat` | compact number | Formats values on the axis and in the tooltip. |
+| `locale` | browser | Locale of the default formats. |
+| `showGrid` | `true` | Horizontal gridlines at each tick. |
+| `showLegend` | two series or more | Legend above the plot, click to toggle a series. |
+| `empty` | `"No data"` | Shown when there is nothing to plot. |
+| `aria-label` | generated | Replaces the generated summary. |
+
+## Building another chart
+
+`chart-core` exports `ChartFrame`, which does the sizing, scales, axes, legend, tooltip, keyboard and empty state, and hands a render function the scales to draw marks with. It also exports `niceTicks`, `monotonePath`, `linearPath`, `barPath` and `useChartIntro`. The bar and line charts are each one small component on top of it.

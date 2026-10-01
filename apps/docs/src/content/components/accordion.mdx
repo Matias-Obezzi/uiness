@@ -1,0 +1,50 @@
+<ComponentPreview name="accordion-demo" />
+
+## Installation
+
+<Install name="accordion" />
+
+## Usage
+
+```tsx
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+
+<Accordion type="single" collapsible>
+  <AccordionItem value="refunds">
+    <AccordionTrigger>Can I get a refund?</AccordionTrigger>
+    <AccordionContent>Within 30 days, no questions asked.</AccordionContent>
+  </AccordionItem>
+</Accordion>
+```
+
+Same API as the shadcn/ui accordion. `type="single"` opens one item at a time, and `collapsible` lets it close again. `type="multiple"` opens any number. Control it with `value` and `onValueChange`. Each trigger sits in an `h3`, and the arrow keys, Home and End move between triggers.
+
+## Closed answers stay in the page
+
+Most accordions remove a closed item's content from the page. That hides FAQ answers from search engines, which only index what is in the HTML, and from the browser's find in page: Ctrl+F says there is no match for text that is right there.
+
+Here closed content is rendered with `hidden="until-found"`. It is in the HTML the server sends, and when find in page, or a link to a text fragment, matches text inside, the browser fires `beforematch` and the item opens through its normal state. `onValueChange` fires as for a click, so a controlled accordion follows.
+
+`until-found` works in browsers that support it, Chromium-based ones at the time of writing. Elsewhere it acts as plain `hidden`: the answer is still in the HTML, find in page just skips it. React writes `hidden` as a boolean, so server HTML carries a plain `hidden` that turns into `until-found` once the page hydrates.
+
+The content of a disabled item is plainly hidden: find in page does not open what a click cannot.
+
+## Props
+
+| Component | Prop | Type | Default |
+| --- | --- | --- | --- |
+| `Accordion` | `type` | `single \| multiple` | |
+| | `collapsible` | `boolean` | `false` |
+| | `value` | `string \| string[]` | |
+| | `defaultValue` | `string \| string[]` | |
+| | `onValueChange` | `(value) => void` | |
+| | `disabled` | `boolean` | `false` |
+| `AccordionItem` | `value` | `string` | |
+| | `disabled` | `boolean` | `false` |
+
+`className` on `AccordionContent` styles the box around the children, inside the part that animates its height.

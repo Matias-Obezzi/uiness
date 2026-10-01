@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { TerminalIcon } from 'lucide-react'
 import { describe, expect, it } from 'vitest'
 import { Alert, AlertDescription, AlertTitle } from './alert'
 import { Avatar, AvatarFallback } from './avatar'
@@ -7,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './car
 import { Progress } from './progress'
 import { Separator } from './separator'
 import { Skeleton } from './skeleton'
+import { Spinner } from './spinner'
 import { Textarea } from './textarea'
 
 describe('Alert', () => {
@@ -27,6 +29,66 @@ describe('Alert', () => {
   it('carries its variant into the classes', () => {
     render(<Alert variant="destructive">Broken</Alert>)
     expect(screen.getByRole('alert').className).toContain('destructive')
+  })
+
+  it('brings the icon of its variant, none for default', () => {
+    render(
+      <>
+        <Alert variant="success">Saved</Alert>
+        <Alert>Plain</Alert>
+      </>,
+    )
+    const [success, plain] = screen.getAllByRole('alert')
+    expect(success?.firstElementChild?.getAttribute('data-slot')).toBe('alert-icon')
+    expect(success?.firstElementChild?.classList.contains('lucide-circle-check')).toBe(true)
+    expect(plain?.querySelector('svg')).toBeNull()
+  })
+
+  it('takes null for no icon and a node for a different one', () => {
+    render(
+      <>
+        <Alert variant="warning" icon={null}>
+          Bare
+        </Alert>
+        <Alert variant="warning" icon={<TerminalIcon />}>
+          Custom
+        </Alert>
+      </>,
+    )
+    const [bare, custom] = screen.getAllByRole('alert')
+    expect(bare?.querySelector('svg')).toBeNull()
+    expect(custom?.querySelectorAll('svg')).toHaveLength(1)
+    expect(custom?.querySelector('svg')?.classList.contains('lucide-terminal')).toBe(true)
+  })
+
+  // An icon written as a child, the way alerts were written before, wins. jsdom does not apply
+  // the stylesheet, so this checks the class that hides the automatic one is there.
+  it('hides the automatic icon when an svg child is given', () => {
+    render(
+      <Alert variant="info">
+        <TerminalIcon />
+        Heads up
+      </Alert>,
+    )
+    expect(screen.getByRole('alert').className).toContain(
+      'has-[>svg:not([data-slot=alert-icon])]:*:data-[slot=alert-icon]:hidden',
+    )
+  })
+})
+
+describe('Spinner', () => {
+  it('announces itself as loading, or with the label it is given', () => {
+    render(
+      <>
+        <Spinner />
+        <Spinner aria-label="Saving" className="size-6" />
+      </>,
+    )
+    const [plain, labelled] = screen.getAllByRole('status')
+    expect(plain?.getAttribute('aria-label')).toBe('Loading')
+    expect(labelled?.getAttribute('aria-label')).toBe('Saving')
+    expect(labelled?.getAttribute('class')).toContain('size-6')
+    expect(labelled?.getAttribute('class')).not.toContain('size-4')
   })
 })
 

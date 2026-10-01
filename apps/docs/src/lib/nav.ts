@@ -74,17 +74,37 @@ const sections: NavSection[] = [
     title: 'Components',
     pages: [
       page(
+        'components/accordion',
+        'Accordion',
+        'Sections that open in place, with closed answers still findable.',
+      ),
+      page(
         'components/alert',
         'Alert',
         'An inline callout for information, success, warnings and errors.',
       ),
+      page(
+        'components/alert-dialog',
+        'Alert Dialog',
+        'Asks for a decision before going on, declared or awaited with confirm().',
+      ),
       page('components/avatar', 'Avatar', 'A picture of a user with a fallback.'),
       page('components/badge', 'Badge', 'A small label for statuses and counts.'),
+      page(
+        'components/bar-chart',
+        'Bar Chart',
+        'Grouped or stacked bars in SVG, no chart library.',
+      ),
       page('components/bento-grid', 'Bento Grid', 'A grid of cards with spans and a hover lift.'),
       page('components/button', 'Button', 'Triggers an action, with variants and sizes.'),
       page('components/calendar', 'Calendar', 'Pick a day, several days or a range.'),
       page('components/card', 'Card', 'A surface with header, content and footer.'),
       page('components/checkbox', 'Checkbox', 'A control that can be checked or unchecked.'),
+      page(
+        'components/collapsible',
+        'Collapsible',
+        'A section that opens and closes, findable while closed.',
+      ),
       page('components/combobox', 'Combobox', 'A searchable select, single or multiple.'),
       page(
         'components/context-menu',
@@ -115,6 +135,11 @@ const sections: NavSection[] = [
       page('components/input-otp', 'Input OTP', 'A one time code field.'),
       page('components/label', 'Label', 'An accessible caption for a control.'),
       page(
+        'components/line-chart',
+        'Line Chart',
+        'Lines and areas over time in SVG, no chart library.',
+      ),
+      page(
         'components/navbar',
         'Navbar',
         'Site navigation that becomes a menu or a bottom bar on phones.',
@@ -132,11 +157,22 @@ const sections: NavSection[] = [
       ),
       page('components/skeleton', 'Skeleton', 'A placeholder while content loads.'),
       page('components/slider', 'Slider', 'Pick a number, or a range.'),
+      page('components/spinner', 'Spinner', 'Shows that something is loading.'),
       page('components/switch', 'Switch', 'An on and off toggle.'),
+      page(
+        'components/table',
+        'Table',
+        'Rows and columns with a border, sideways scroll and a sticky header.',
+      ),
       page('components/tabs', 'Tabs', 'Switch between views in the same space.'),
       page('components/textarea', 'Textarea', 'A multi line text field.'),
       page('components/toggle', 'Toggle', 'A button that stays pressed, alone or in a group.'),
       page('components/tooltip', 'Tooltip', 'A short hint on hover or focus.'),
+      page(
+        'components/tour',
+        'Tour',
+        'Guided tours declared once by name, with a spotlight around each step.',
+      ),
     ],
   },
   {
@@ -233,7 +269,17 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
-  '2026-10-01': ['components/sidebar'],
+  '2026-10-01': [
+    'components/accordion',
+    'components/alert-dialog',
+    'components/bar-chart',
+    'components/collapsible',
+    'components/line-chart',
+    'components/sidebar',
+    'components/spinner',
+    'components/table',
+    'components/tour',
+  ],
   '2026-09-30': [
     'blocks/features',
     'blocks/logos',
