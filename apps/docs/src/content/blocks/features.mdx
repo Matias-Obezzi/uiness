@@ -1,0 +1,66 @@
+What the product does, in pieces small enough to scan. Every block takes its features through props and lays itself out by the width of its container.
+
+## Features 01
+
+A heading over a grid of features, each with an icon, a title and a sentence. One, two or three columns by the width of the container, and the cells cascade in as they scroll into view.
+
+<BlockPreview name="features-01" />
+
+<Install name="features-01" />
+
+```tsx
+import { GaugeIcon, LockKeyholeIcon, UsersIcon } from 'lucide-react'
+import { Features01 } from '@/components/features-01'
+
+<Features01
+  eyebrow="Features"
+  title="Everything the team needs"
+  description="The parts every planner needs, done properly once."
+  features={[
+    { icon: <GaugeIcon />, title: 'Fast', description: 'Loads in under a second.' },
+    { icon: <UsersIcon />, title: 'Shared', description: 'One calendar for everybody.' },
+    { icon: <LockKeyholeIcon />, title: 'Private', description: 'Encrypted end to end.' },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow` | The small line above the heading. `null` hides it. |
+| `title` | The heading. |
+| `description` | The paragraph under the heading. |
+| `features` | `{ icon?, title, description }[]`, one cell each. `icon` is an element like `<GaugeIcon />`. |
+
+## Features 02
+
+A bento of features where every cell carries a small live preview: a counter whose digits roll, bars that grow in, tags that drift past and switches that work. One column when narrow, two on a tablet, three when there is room.
+
+<BlockPreview name="features-02" />
+
+<Install name="features-02" />
+
+```tsx
+import { CalendarIcon, ZapIcon } from 'lucide-react'
+import { Features02 } from '@/components/features-02'
+
+<Features02
+  title="Small details, all of them working"
+  features={[
+    {
+      icon: <ZapIcon />,
+      title: 'Instant sync',
+      description: 'Changes show up everywhere at once.',
+      visual: <YourPreview />,
+      wide: true,
+    },
+    { icon: <CalendarIcon />, title: 'Any calendar', description: 'Google, Outlook and iCal.' },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow` | The small line above the heading. `null` hides it. |
+| `title` | The heading. |
+| `description` | The paragraph under the heading. |
+| `features` | `{ icon?, title, description, visual?, wide? }[]`. `visual` is the preview at the top of the cell; `wide` takes two columns when there is room. Leave it out to get the built-in previews. |

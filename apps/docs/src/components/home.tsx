@@ -59,6 +59,12 @@ const features = [
       'Spotlights, auroras, marquees, typewriters, tilting cards and more, on CSS and the Web Animations API, no animation library.',
   },
   {
+    title: 'Blocks',
+    href: '/docs/blocks/hero',
+    description:
+      'Whole page sections, heroes, pricing, testimonials, footers, made from the components and ready to edit.',
+  },
+  {
     title: 'Components',
     href: '/docs/components/button',
     description:

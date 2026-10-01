@@ -81,6 +81,10 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `toast` | `<Toaster />` wired to the theme tokens, re-exports `toast()` from `@uiness/toast`. |
 | `choreo` | `<Choreo />` that animates a whole site from its DOM, skipping the registry components that animate themselves. Re-exports `@uiness/choreo`. |
 
+### Blocks
+
+Whole page sections built from the items above, installed into `components/` to be edited: `navbar-01`, `hero-01`, `hero-02`, `logos-01`, `features-01`, `features-02`, `stats-01`, `pricing-01`, `testimonials-01`, `faq-01`, `cta-01`, `footer-01` and `auth-01`. Each takes its copy through props and lays itself out with container queries, by the width of its container.
+
 Components import the unified `radix-ui` package and mark themselves `'use client'` where they hold state, so they work in Next.js App Router out of the box.
 
 ## Development

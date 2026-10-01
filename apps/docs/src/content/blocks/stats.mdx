@@ -1,0 +1,31 @@
+Proof in figures: how many, how fast, how reliable. Every block takes its numbers through props and lays itself out by the width of its container.
+
+## Stats 01
+
+A heading over four big figures that count up as they scroll into view, each with a label and a short caption, separated by hairlines. Two columns when narrow, four when there is room.
+
+<BlockPreview name="stats-01" />
+
+<Install name="stats-01" />
+
+```tsx
+import { Stats01 } from '@/components/stats-01'
+
+<Stats01
+  eyebrow="By the numbers"
+  title="A year of planning"
+  stats={[
+    { value: 8, suffix: 'k', label: 'Teams', caption: 'in 40 countries' },
+    { value: 2.4, suffix: 'M', decimals: 1, label: 'Meetings planned' },
+    { value: 99.9, suffix: '%', decimals: 1, label: 'Uptime' },
+    { value: 5, prefix: '<', suffix: ' min', label: 'Weekly planning' },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow` | The small line above the heading. `null` hides it. |
+| `title` | The heading. |
+| `description` | An optional paragraph under the heading. |
+| `stats` | `{ value, prefix?, suffix?, decimals?, label, caption? }[]`. `value` is the number the figure counts up to. |

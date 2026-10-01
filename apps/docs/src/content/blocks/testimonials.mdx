@@ -1,0 +1,39 @@
+What customers say, in their own words. Every block takes its quotes through props and lays itself out by the width of its container.
+
+## Testimonials 01
+
+Two rows of quote cards drifting in opposite directions, each pausing under the pointer, with initials standing in for missing photos.
+
+<BlockPreview name="testimonials-01" />
+
+<Install name="testimonials-01" />
+
+```tsx
+import { Testimonials01 } from '@/components/testimonials-01'
+
+<Testimonials01
+  title="What our customers say"
+  testimonials={[
+    {
+      quote: 'It paid for itself in the first week.',
+      name: 'Maya Lindqvist',
+      role: 'Head of Product, Northwind',
+      rating: 5,
+    },
+    {
+      quote: 'Our designers use it without asking an engineer.',
+      name: 'Priya Raman',
+      role: 'Design Lead, Fieldnote',
+      image: { src: '/people/priya.jpg', alt: 'Priya Raman' },
+    },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow` | The small line above the heading. `null` hides it. |
+| `title` | The heading. |
+| `description` | The lead under the heading. `null` hides it. |
+| `testimonials` | `{ quote, name, role?, image?: { src, alt? }, rating? }[]`, split between the two rows alternately. Without `image` the avatar shows initials; without `rating` no stars. |
+| `duration` | Seconds for one loop of a row. Default `60`. |

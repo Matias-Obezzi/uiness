@@ -55,7 +55,11 @@ export function DocPage() {
   const index = pages.indexOf(page)
   const prev = pages[index - 1]
   const next = pages[index + 1]
-  const section = page.slug.startsWith('components/') ? 'Components' : page.slug ? 'Docs' : 'Docs'
+  const section = page.slug.startsWith('components/')
+    ? 'Components'
+    : page.slug.startsWith('blocks/')
+      ? 'Blocks'
+      : 'Docs'
 
   return (
     <article>

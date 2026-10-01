@@ -1,0 +1,34 @@
+The questions people ask before they commit, answered where they look for them. Every block takes its questions through props and lays itself out by the width of its container.
+
+## FAQ 01
+
+A heading and a contact link beside a list of questions, one column when narrow. Each question is a native disclosure that opens with a click, Enter or Space, and slides open where the browser can animate to `auto` height.
+
+<BlockPreview name="faq-01" />
+
+<Install name="faq-01" />
+
+```tsx
+import { Faq01 } from '@/components/faq-01'
+
+<Faq01
+  title="Frequently asked"
+  defaultOpen={null}
+  exclusive
+  contact={{ text: 'Something else?', label: 'Email us', href: 'mailto:hello@example.com' }}
+  items={[
+    { question: 'Is there a free plan?', answer: 'Yes, for up to three projects.' },
+    { question: 'Can I cancel any time?', answer: 'Yes, from the billing page.' },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow` | The small line above the heading. `null` hides it. |
+| `title` | The heading. |
+| `description` | The lead under the heading. `null` hides it. |
+| `items` | `{ question, answer }[]`. The answer can be any React node. |
+| `defaultOpen` | Index of the question that starts open. Default `0`, `null` starts with all closed. |
+| `exclusive` | Close the open question when another opens. Default `false`. |
+| `contact` | `{ text?, label, href }` for the "still have questions" link. `null` hides it. |

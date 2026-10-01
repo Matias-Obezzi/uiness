@@ -1,0 +1,49 @@
+Plans and prices, laid out so the right one is easy to pick. Every block takes its plans and words through props and lays itself out by the width of its container.
+
+## Pricing 01
+
+Three plan cards with a monthly/yearly switch that rolls every price to its new value, and a flowing ring around the recommended plan.
+
+<BlockPreview name="pricing-01" />
+
+<Install name="pricing-01" />
+
+```tsx
+import { Pricing01 } from '@/components/pricing-01'
+
+<Pricing01
+  title="Pick a plan"
+  currency="EUR"
+  labels={{ save: '2 months free' }}
+  plans={[
+    {
+      name: 'Solo',
+      description: 'For one person.',
+      price: { monthly: 12, yearly: 10 },
+      features: ['One seat', 'Unlimited projects'],
+      cta: { label: 'Start free trial', href: '/signup?plan=solo' },
+    },
+    {
+      name: 'Team',
+      description: 'For the whole crew.',
+      price: { monthly: 40, yearly: 33 },
+      features: ['Ten seats', 'Shared workspaces', 'Priority support'],
+      cta: { label: 'Start free trial', href: '/signup?plan=team' },
+      highlighted: true,
+    },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow` | The small line above the heading. `null` hides it. |
+| `title` | The heading. |
+| `description` | The lead under the heading. `null` hides it. |
+| `plans` | `{ name, description?, price: { monthly, yearly }, features, cta: { label, href }, highlighted? }[]`. `yearly` is the price per month when paid for a year. |
+| `currency` | ISO 4217 code for the prices. Default `USD`. |
+| `locale` | Locale for the numbers. Default `en-US`. |
+| `decimals` | Digits after the decimal point. Default `0`. |
+| `defaultBilling` | `monthly` or `yearly`, the period shown first. |
+| `labels` | The words around the prices: `monthly`, `yearly`, `save`, `period`, `billedMonthly`, `billedYearly` (with `{total}`), `free`, `popular`. Give only the ones you change. |
+| `note` | A line under the plans. `null` hides it. |
