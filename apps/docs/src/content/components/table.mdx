@@ -1,0 +1,68 @@
+<ComponentPreview name="table-demo" />
+
+## Installation
+
+<Install name="table" />
+
+## Usage
+
+```tsx
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+
+<Table>
+  <TableCaption>A list of your recent invoices.</TableCaption>
+  <TableHeader>
+    <TableRow>
+      <TableHead>Invoice</TableHead>
+      <TableHead className="text-right">Amount</TableHead>
+    </TableRow>
+  </TableHeader>
+  <TableBody>
+    <TableRow>
+      <TableCell>INV001</TableCell>
+      <TableCell className="text-right">$250.00</TableCell>
+    </TableRow>
+  </TableBody>
+  <TableFooter>
+    <TableRow>
+      <TableCell>Total</TableCell>
+      <TableCell className="text-right">$250.00</TableCell>
+    </TableRow>
+  </TableFooter>
+</Table>
+```
+
+Same pieces and names as the shadcn/ui table, so switching is replacing the file. The difference is that `Table` brings its own rounded border, and its wrapper scrolls sideways when the columns do not fit.
+
+## Sticky header and selected rows
+
+<ComponentPreview name="table-sticky" />
+
+`sticky` on `TableHeader` keeps the header cells in view while the rows scroll. A sticky element sticks to its nearest scrolling box, and here that is the table's own wrapper, not the page. So give the wrapper a max height with `containerClassName`: it then scrolls down as well as sideways, and the header stays at its top.
+
+```tsx
+<Table containerClassName="max-h-96">
+  <TableHeader sticky>…</TableHeader>
+  <TableBody>…</TableBody>
+</Table>
+```
+
+Mark a row with `data-state="selected"` to highlight it. A cell holding a checkbox loses its right padding, so a selection column stays narrow.
+
+## Props
+
+| Component | Prop | Type | Default |
+| --- | --- | --- | --- |
+| `Table` | `containerClassName` | `string` | |
+| `TableHeader` | `sticky` | `boolean` | `false` |
+
+Every piece also takes the props of the element it renders: `table`, `thead`, `tbody`, `tfoot`, `tr`, `th`, `td` and `caption`.

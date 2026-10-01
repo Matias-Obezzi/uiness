@@ -1,0 +1,25 @@
+A small turning circle that says something is on its way. It takes the color of the text around it and announces itself to screen readers as loading.
+
+<ComponentPreview name="spinner-demo" />
+
+## Installation
+
+<Install name="spinner" />
+
+## Usage
+
+```tsx
+import { Spinner } from '@/components/ui/spinner'
+
+<Spinner />
+<Spinner className="size-6 text-muted-foreground" />
+<Spinner aria-label="Uploading photos" />
+```
+
+It is `size-4` unless a class says otherwise, and `currentColor`, so it matches the text next to it. The default label is "Loading"; give it a better one when you know what is loading. When text beside it already says so, pass `aria-hidden="true"` so it is not read twice.
+
+For buttons, use the `loading` prop of [Button](/docs/components/button#loading) instead of placing one by hand.
+
+## Details
+
+It is a lucide icon with `role="status"`, so any `svg` prop works. With `prefers-reduced-motion` it turns more slowly rather than stopping, since a still spinner reads as a stuck one.

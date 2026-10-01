@@ -53,6 +53,22 @@ Put long content in `DrawerBody`. It scrolls on its own, and a drag that starts 
 
 Control it with `activeSnapPoint` and `onActiveSnapPointChange`, or read it from inside with the `useDrawerSnap` hook.
 
+## Before it closes
+
+`onDismissAttempt` is asked every time the user tries to close the drawer: a swipe, Escape, a click on the overlay, or a `DrawerClose`. Return `false` to keep it open, and a swipe slides back to where it was. It can also return a promise, so a settings panel can ask whether to throw away unsaved changes with [`confirm()`](/docs/components/alert-dialog#confirm) and swiping it away does not skip the question.
+
+<ComponentPreview name="drawer-guard" />
+
+```tsx
+<DrawerContent
+  onDismissAttempt={() =>
+    !dirty || confirm({ title: 'Discard your changes?', variant: 'destructive' })
+  }
+>
+```
+
+While a promise is pending, more attempts are ignored, and a promise that rejects keeps the drawer open. It is not asked when you close the drawer yourself through `open`, which is how a Save button should close it. With `dismissible={false}` swipes, Escape and the overlay never get as far as asking.
+
 ## Props
 
 | Prop | Default | Description |
@@ -61,6 +77,7 @@ Control it with `activeSnapPoint` and `onActiveSnapPointChange`, or read it from
 | `snapPoints` | | Sizes the drawer can rest at. |
 | `defaultSnapPoint` | `0` | Index it opens at. |
 | `dismissible` | `true` | Drag, Escape and the overlay close it. |
+| `onDismissAttempt` | | Asked before the user closes it. Return `false`, or a promise of it, to stay open. |
 | `handle` | bottom only | The bar you drag. |
 | `showCloseButton` | not bottom | Close button in the corner. |
 | `overlay` | `true` | Dim the page behind. |

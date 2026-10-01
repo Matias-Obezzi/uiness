@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router'
+import { Confirmer } from '@/ui/alert-dialog'
 import { Island } from '@/ui/island'
 import { Toaster } from '@/ui/toast'
 import { DocPage } from './components/doc-page'
@@ -10,6 +11,7 @@ export function App() {
     <>
       <Island idle={false} />
       <Toaster closeButton />
+      <Confirmer />
       <Routes>
         <Route element={<Layout />}>
           <Route index element={<Home />} />
