@@ -1,10 +1,10 @@
-Lines over days or categories, straight or smooth, with an optional area fill. Plain SVG with no chart library behind it, sharing its scales, tooltip and legend with the [Bar Chart](/docs/components/bar-chart) through `chart-core`.
+Lines over days or categories, straight or smooth, with an optional area fill, from a list of series. It is a ready-made [Chart](/docs/components/chart): recharts underneath, with the dates, formats, legend and empty state already handled.
 
 <ComponentPreview name="line-chart-demo" align="start" />
 
 ## Installation
 
-<Install name="line-chart" extra="Brings chart-core along. Colors come from the --chart-1 to --chart-5 variables of the theme." />
+<Install name="line-chart" extra="Brings the chart item and recharts along. Colors come from the --chart-1 to --chart-5 variables of the theme." />
 
 ## Usage
 
@@ -35,7 +35,7 @@ A row whose value is `null`, missing or not a number breaks the line, instead of
 
 ## Reading values
 
-Hover anywhere over the plot for the nearest row: a vertical line marks it and the tooltip lists every series. The plot takes focus too, with the left and right arrow keys moving through the rows, Home and End jumping to the ends and Escape closing it. Screen readers get a summary and a hidden table with every value.
+Hover anywhere over the chart for the nearest row: a vertical line marks it and the tooltip lists every series. The chart takes focus too, and the left and right arrow keys move through the rows. Screen readers get a summary of the series and the date range.
 
 The dots on the active row have a ring in the page color, so they stay readable where lines cross. Inside a card, point it at the card color:
 
@@ -53,15 +53,13 @@ The dots on the active row have a ring in the page color, so they stay readable 
 | `curve` | `'linear'` | `'linear'` or `'monotone'`. |
 | `area` | `false` | Fill under each line. |
 | `includeZero` | `true` | Keep zero on the y axis. |
-| `height` | `240` | Height of the plot and its axes, legend excluded. |
+| `height` | `240` | Height of the chart, legend excluded. |
 | `xFormat` | short date | Formats x values on the axis and in the tooltip. |
 | `yFormat` | compact number | Formats values on the axis and in the tooltip. |
 | `locale` | browser | Locale of the default formats. |
-| `showGrid` | `true` | Horizontal gridlines at each tick. |
-| `showLegend` | two series or more | Legend above the plot, click to toggle a series. |
+| `showGrid` | `true` | Horizontal gridlines. |
+| `showLegend` | two series or more | Legend above the chart, click to toggle a series. |
 | `empty` | `"No data"` | Shown when there is nothing to plot. |
 | `aria-label` | generated | Replaces the generated summary. |
 
-## Building another chart
-
-`chart-core` exports `ChartFrame`, which does the sizing, scales, axes, legend, tooltip, keyboard and empty state, and hands a render function the scales to draw marks with. It also exports `niceTicks`, `monotonePath`, `linearPath`, `barPath` and `useChartIntro`. The bar and line charts are each one small component on top of it.
+For anything these props do not cover, write the recharts chart yourself inside a [`ChartContainer`](/docs/components/chart).

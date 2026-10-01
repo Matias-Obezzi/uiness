@@ -531,14 +531,15 @@
       ]
     },
     {
-      "name": "chart-core",
+      "name": "chart",
       "type": "registry:ui",
-      "title": "Chart core",
-      "description": "The frame the uiness charts share: scales, nice ticks, axes, grid, legend, tooltip, keyboard reading, resizing and the empty state.",
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "title": "Chart",
+      "description": "The shadcn/ui chart API on recharts: ChartContainer with a config of labels and colors, tooltip and legend contents in the theme. Installs over an existing shadcn chart.tsx.",
+      "dependencies": ["recharts"],
+      "registryDependencies": ["@uiness/utils"],
       "files": [
         {
-          "path": "registry/ui/chart-core.tsx",
+          "path": "registry/ui/chart.tsx",
           "type": "registry:ui"
         }
       ]
@@ -547,8 +548,9 @@
       "name": "bar-chart",
       "type": "registry:ui",
       "title": "Bar Chart",
-      "description": "Grouped or stacked bars in SVG, with tooltip, legend and keyboard reading. No chart library.",
-      "registryDependencies": ["@uiness/chart-core"],
+      "description": "Grouped or stacked bars from a list of series, with dates, tooltip, legend toggles and an empty state. Built on recharts through chart.",
+      "dependencies": ["recharts"],
+      "registryDependencies": ["@uiness/chart", "@uiness/utils", "@uiness/use-reduced-motion"],
       "files": [
         {
           "path": "registry/ui/bar-chart.tsx",
@@ -560,8 +562,9 @@
       "name": "line-chart",
       "type": "registry:ui",
       "title": "Line Chart",
-      "description": "Straight or smooth lines in SVG, with area fill, gaps for missing values, tooltip, legend and keyboard reading. No chart library.",
-      "registryDependencies": ["@uiness/chart-core"],
+      "description": "Straight or smooth lines from a list of series, with area fill, gaps for missing values, tooltip, legend toggles and an empty state. Built on recharts through chart.",
+      "dependencies": ["recharts"],
+      "registryDependencies": ["@uiness/chart", "@uiness/utils", "@uiness/use-reduced-motion"],
       "files": [
         {
           "path": "registry/ui/line-chart.tsx",

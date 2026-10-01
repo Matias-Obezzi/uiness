@@ -77,7 +77,8 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `accordion`, `collapsible` | Same API as shadcn/ui, but closed content stays in the page with `hidden="until-found"`: search engines index it and find in page opens it. Built on `use-until-found`. |
 | `table` | Same pieces as shadcn/ui, with its own border, sideways scroll, selected rows and an optional sticky header. |
 | `alert`, `spinner`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
-| `bar-chart`, `line-chart` | SVG charts with no chart library: grouped or stacked bars, straight or smooth lines with area and gaps. Tooltip, legend, keyboard reading and a data table for screen readers. Share `chart-core`, which later chart types build on. |
+| `chart` | The shadcn/ui chart API on recharts (`ChartContainer`, `ChartTooltipContent`, `ChartLegendContent`, `ChartConfig`), styled with the theme. Installs over an existing shadcn `chart.tsx` without changing a screen. |
+| `bar-chart`, `line-chart` | Ready-made charts on `chart`, from a list of series: grouped or stacked bars, straight or smooth lines with area and gaps. Dates in the reader's locale, legend toggles, keyboard reading and an empty state. |
 | `carousel` | Horizontal run of items of any width and any content, on CSS scroll snapping. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
 | `island` | `<Island />` wired to the theme tokens, re-exports the `@uiness/island` API. |
