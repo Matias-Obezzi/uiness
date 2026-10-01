@@ -1,46 +1,208 @@
-A sidebar that collapses to icons and expands when you hover it, or on a click, and becomes a drawer on phones. You write the links once.
+A sidebar for an app shell. It collapses to icons and opens on hover or on a click, groups its links into named navigation lists, stacks sub menus that slide in and out, remembers whether it was open, and becomes a drawer on phones. You write the links once.
 
 <ComponentPreview name="sidebar-demo" align="start" />
 
 ## Installation
 
-<Install name="sidebar" extra="Installs the Drawer as well, which holds the sidebar on small screens." />
+<Install name="sidebar" extra="Installs the Drawer, which holds the sidebar on small screens, and the Tooltip, which names the icons when it is collapsed." />
 
 ## Usage
 
 ```tsx
 import {
-  Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarInset,
-  SidebarLink, SidebarProvider, SidebarTrigger,
+  Sidebar, SidebarButton, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupLabel,
+  SidebarHeader, SidebarInset, SidebarLink, SidebarMenu, SidebarMenuItem, SidebarProvider,
+  SidebarTrigger,
 } from '@/components/ui/sidebar'
 
-<SidebarProvider collapsible="hover">
+<SidebarProvider collapsible="click" defaultOpen={defaultOpen}>
   <div className="flex">
     <Sidebar>
-      <SidebarHeader>Acme</SidebarHeader>
+      <SidebarHeader>
+        <GroupSelector />
+      </SidebarHeader>
       <SidebarContent>
-        <SidebarLink href="/" icon={<HomeIcon />} active>Home</SidebarLink>
-        <SidebarLink href="/inbox" icon={<InboxIcon />} badge={12}>Inbox</SidebarLink>
+        <SidebarGroup>
+          <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarLink href="/" icon={<HomeIcon />} active>Home</SidebarLink>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarLink href="/inbox" icon={<InboxIcon />} badge={12}>Inbox</SidebarLink>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>...</SidebarFooter>
+      <SidebarFooter>
+        <UserMenu />
+      </SidebarFooter>
     </Sidebar>
     <SidebarInset>
-      <SidebarTrigger className="md:hidden" />
+      <SidebarTrigger />
       ...
     </SidebarInset>
   </div>
 </SidebarProvider>
 ```
 
-`SidebarTrigger` opens the drawer on phones. On desktop it toggles the sidebar when `collapsible` is `click`. Use `asChild` on `SidebarLink` for your router's link.
+`SidebarTrigger` opens the drawer on phones. On desktop it toggles the sidebar when `collapsible` is `click`; hide it there in the other modes with a class like `md:hidden`. Use `asChild` on `SidebarLink` for your router's link:
+
+```tsx
+<SidebarLink asChild icon={<InboxIcon />} active={pathname === '/inbox'}>
+  <Link href="/inbox">Inbox</Link>
+</SidebarLink>
+```
+
+## Collapsing
+
+`collapsible` picks how it behaves on wide screens.
+
+- `hover` keeps a rail of icons and opens while the pointer is over it, or while keyboard focus is inside. It opens **over** the page with a shadow: the column in the layout keeps its collapsed width, so the page next to it never reflows, which matters when it holds an editor or a canvas. It stays open while a menu opened from it is open. Touch is ignored, use `click` for touch first layouts.
+- `click` toggles from `SidebarTrigger` or <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>B</kbd> and **pushes** the page. Collapsed, each icon shows its label in a tooltip.
+- `none` is always open.
+
+Which of the column or the drawer shows is decided by CSS at the `breakpoint`, so the first paint is right before any script runs. Labels stay in the DOM while collapsed, folded away visually, so links keep their names for assistive tech.
+
+## Groups and menus
+
+`SidebarGroup` renders a `<nav>` named by its `SidebarGroupLabel`, so a screen reader lists "Workspace navigation" and "Insights navigation". Inside, `SidebarMenu` is a `<ul>` and `SidebarMenuItem` an `<li>` holding one link or button. `SidebarGroupLabel` still works on its own outside a group, as before.
+
+## Buttons and menus
+
+`SidebarButton` looks like a link but is a `<button>`, for things that are not pages: a group selector, the user menu. Put it in `DropdownMenuTrigger asChild`. It stays highlighted while its menu is open, and unlike a link it never closes the phone drawer.
+
+```tsx
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <SidebarButton size="lg" icon={<Avatar />} tooltip="Acme Inc">
+      <span className="grid flex-1 text-left leading-tight">
+        <span className="truncate font-semibold">Acme Inc</span>
+        <span className="truncate text-xs">Pro plan</span>
+      </span>
+      <ChevronsUpDownIcon className="ml-auto size-4" />
+    </SidebarButton>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent side="right" align="start">...</DropdownMenuContent>
+</DropdownMenu>
+```
+
+`size="lg"` is 48px tall for an avatar and two lines. Keep the avatar at `size-7` so it stays centered on the collapsed rail. When the children are not plain text, pass `tooltip` for the collapsed label.
+
+## Disabled links
+
+```tsx
+<SidebarLink href="/analytics" icon={<LineChartIcon />} disabled disabledReason="Requires a paid plan">
+  Analytics
+</SidebarLink>
+```
+
+A disabled link gets `aria-disabled="true"` and a click does nothing, router links included. It does **not** get `pointer-events: none`: the element has to receive hover and focus for the tooltip with `disabledReason` to show, and it stays in the tab order so keyboard users can read it too. On touch, tapping it shows the reason. `SidebarButton` takes the same two props.
+
+## Stacked views
+
+A section with its own sub menu, like settings, slides in over the main menu instead of being squeezed under it. Name each view and give the deeper one a `back`:
+
+```tsx
+import { SidebarView, SidebarViews } from '@/components/ui/sidebar'
+
+<SidebarViews
+  value={pathname.startsWith('/settings') ? 'settings' : 'main'}
+  onValueChange={(view) => router.push(view === 'main' ? '/' : '/settings')}
+>
+  <SidebarView name="main">…</SidebarView>
+  <SidebarView name="settings" back={{ to: 'main', label: 'All' }}>…</SidebarView>
+</SidebarViews>
+```
+
+The back row at the top of a view is rendered for you and switches to `to`. Driven by the route, `value` follows the page and `onValueChange` is where the back row asks you to navigate. Without a route, use `defaultValue` and switch from inside with `useSidebarViews().setValue`. Going to a view whose `back` leads to the current one slides left, going back slides right, and with reduced motion it switches without a slide. Any section can get its own view later, nested as deep as you like.
+
+The view that left is `inert` and `aria-hidden` while it slides out, then unmounted, so its links and `data-tour` anchors never exist twice. If focus was inside it, it moves to the new view.
+
+This replaces the pattern of a `showAll` flag plus `key={pathname}` to remount the menu.
+
+## Remembering the state
+
+In `click` mode every toggle writes a `sidebar_state` cookie, `true` or `false`, for 7 days. Change the name with `cookieName`, or pass `false` to turn it off. Read it on the server and pass it as `defaultOpen`, so the page renders in the right state on the first paint. Without this it always starts open.
+
+```tsx
+// app/layout.tsx, Next.js App Router
+import { cookies } from 'next/headers'
+
+export default async function Layout({ children }: { children: React.ReactNode }) {
+  const defaultOpen = (await cookies()).get('sidebar_state')?.value !== 'false'
+  return (
+    <SidebarProvider collapsible="click" defaultOpen={defaultOpen}>
+      …
+    </SidebarProvider>
+  )
+}
+```
+
+In a single page app with no server, read `document.cookie` before the first render. Controlled with `open` and `onOpenChange`, the cookie is still written, so you can keep reading it the same way.
+
+## Phones
+
+Below the breakpoint the sidebar becomes a drawer from the left. The drawer renders the children only while it is open, and while it does the desktop column (already hidden by CSS) renders nothing, so there is one copy of your children at a time: a group selector with a wizard, the user menu or the anchors of a guided tour are never duplicated. The trade-off is that state kept inside the sidebar's children resets when the drawer opens and when it closes; keep anything that must survive in your app state or the URL.
+
+Links close the drawer when clicked, on phones only. Give `closeDrawer={false}` to a link that should keep it open, like one that opens a stacked view. Buttons never close it.
+
+## Theming
+
+The sidebar uses shadcn's sidebar variables, so a shadcn theme styles it as is. The uiness theme defines them for light and dark. Each one falls back to the general color when missing, so the component also works without the theme.
+
+| Variable | Falls back to | Used for |
+| --- | --- | --- |
+| `--sidebar` | `--background` | Panel and drawer surface. |
+| `--sidebar-foreground` | `--foreground` | Labels and icons. |
+| `--sidebar-accent`, `--sidebar-accent-foreground` | `--accent`, `--accent-foreground` | Hover, active, and an open menu's button. |
+| `--sidebar-border` | `--border` | The edge next to the page. |
+| `--sidebar-ring` | `--ring` | Focus rings. |
+| `--sidebar-primary`, `--sidebar-primary-foreground` | | Not used by the component, for your logo or avatars: `bg-sidebar-primary`. |
 
 ## Props
 
+### SidebarProvider
+
 | Prop | Default | Description |
 | --- | --- | --- |
-| `collapsible` | `'hover'` | `hover`, `click` or `none`. |
-| `open`, `defaultOpen`, `onOpenChange` | | Expanded or collapsed. |
-| `breakpoint` | `'md'` | Below it the sidebar becomes a drawer. |
+| `collapsible` | `'hover'` | `hover` opens over the page, `click` pushes it, `none` is always open. |
+| `open`, `defaultOpen`, `onOpenChange` | | Expanded or collapsed. `defaultOpen` defaults to open in `click`, collapsed in `hover`. |
+| `cookieName` | `'sidebar_state'` | Cookie written on every toggle in `click` mode. `false` turns it off. |
+| `keyboardShortcut` | `'b'` | Toggles with <kbd>Ctrl</kbd>/<kbd>⌘</kbd>, or the drawer on phones. Ignored while typing. `false` turns it off. |
+| `breakpoint` | `'md'` | `sm`, `md` or `lg`. Below it the sidebar becomes a drawer. |
 | `width`, `collapsedWidth` | `240`, `60` | Pixels. |
 
-`useSidebar()` exposes `open`, `toggle`, `isMobile` and `expanded` to anything inside the provider. Labels stay in the DOM while collapsed, folded away visually, so links keep their names for assistive tech.
+### Sidebar
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` | `'Menu'` | Accessible name of the phone drawer. |
+
+`className` goes on the column, the `<aside>` with `data-slot="sidebar"` that reserves the space; give it `h-full` inside a fixed height layout. The panel inside it has `data-slot="sidebar-panel"`.
+
+### SidebarLink and SidebarButton
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `icon` | | Shown on the collapsed rail too. |
+| `active` | | Highlights it. On a link it also sets `aria-current="page"`. |
+| `badge` | | Small text on the right, a count or a shortcut. Hidden while collapsed. |
+| `tooltip` | the text children | Label in the tooltip on the collapsed rail. |
+| `disabled` | | `aria-disabled`, focusable, a click does nothing. |
+| `disabledReason` | | Tooltip on hover, focus and tap while disabled. |
+| `size` | `'default'` | `lg` for an avatar and two lines. |
+| `asChild` | | Render your own element, a router link for instance. |
+| `closeDrawer` | `true` | Link only. Close the phone drawer when clicked. |
+
+### SidebarViews and SidebarView
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onValueChange` | | `SidebarViews`. The view to show, by name. |
+| `name` | | `SidebarView`. Its name. |
+| `back` | | `SidebarView`. `{ to, label, icon? }`: the back row, and the view it goes back to. |
+
+### Hooks
+
+`useSidebar()` exposes `open`, `setOpen`, `toggle`, `mobileOpen`, `setMobileOpen`, `isMobile`, `expanded` and `inDrawer` to anything inside the provider. `expanded` is true when labels show, always inside the drawer; `inDrawer` tells the drawer's copy apart, handy to open a menu downwards there and to the right on desktop. `isMobile` is only known after mount, so do not use it to choose what to render. `useSidebarViews()` returns `value` and `setValue` inside `SidebarViews`.

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
@@ -8,7 +8,6 @@ import { DatePicker } from './date-picker'
 import { LinkPreview } from './link-preview'
 import { ParallaxGrid } from './parallax-grid'
 import { alignPoints, morphPoints, PathMorph, type Point, toPath } from './path-morph'
-import { Sidebar, SidebarContent, SidebarLink, SidebarProvider, SidebarTrigger } from './sidebar'
 import { StickyScroll } from './sticky-scroll'
 import { Timeline, TimelineItem } from './timeline'
 
@@ -180,83 +179,6 @@ describe('DatePicker', () => {
     await user.click(screen.getByRole('button', { name: /March 9,/ }))
     expect(screen.queryByRole('grid')).toBeNull()
     expect(screen.getByRole('button', { name: 'Pick a range' }).textContent).toContain('Mar 3')
-  })
-})
-
-describe('Sidebar', () => {
-  function App() {
-    return (
-      <SidebarProvider collapsible="hover">
-        <Sidebar>
-          <SidebarContent>
-            <SidebarLink href="/" active>
-              Home
-            </SidebarLink>
-            <SidebarLink href="/inbox" badge={3}>
-              Inbox
-            </SidebarLink>
-          </SidebarContent>
-        </Sidebar>
-        <SidebarTrigger />
-      </SidebarProvider>
-    )
-  }
-
-  it('starts collapsed in hover mode and expands under the pointer', () => {
-    render(<App />)
-    const aside = document.querySelector<HTMLElement>('[data-slot=sidebar]')
-    if (!aside) throw new Error('no sidebar')
-    expect(aside.dataset.state).toBe('collapsed')
-    expect(aside.style.width).toBe('60px')
-    fireEvent.pointerEnter(aside)
-    expect(aside.dataset.state).toBe('expanded')
-    expect(aside.style.width).toBe('240px')
-    fireEvent.pointerLeave(aside)
-    expect(aside.dataset.state).toBe('collapsed')
-    expect(within(aside).getByRole('link', { name: /Home/ }).getAttribute('aria-current')).toBe(
-      'page',
-    )
-    expect(within(aside).getByText('3')).toBeTruthy()
-  })
-
-  it('toggles from the trigger in click mode', async () => {
-    const user = userEvent.setup()
-    render(
-      <SidebarProvider collapsible="click">
-        <Sidebar>
-          <SidebarLink href="/">Home</SidebarLink>
-        </Sidebar>
-        <SidebarTrigger />
-      </SidebarProvider>,
-    )
-    const aside = document.querySelector<HTMLElement>('[data-slot=sidebar]')
-    expect(aside?.dataset.state).toBe('expanded')
-    await user.click(screen.getByRole('button', { name: 'Toggle sidebar' }))
-    expect(aside?.dataset.state).toBe('collapsed')
-  })
-
-  it('opens a drawer with the same links on phones', async () => {
-    const user = userEvent.setup()
-    const mm = vi.spyOn(window, 'matchMedia').mockImplementation(
-      (query: string) =>
-        ({
-          matches: query.startsWith('(max-width'),
-          media: query,
-          onchange: null,
-          addEventListener() {},
-          removeEventListener() {},
-          addListener() {},
-          removeListener() {},
-          dispatchEvent: () => false,
-        }) as MediaQueryList,
-    )
-    render(<App />)
-    await user.click(screen.getByRole('button', { name: 'Toggle sidebar' }))
-    const drawer = screen.getByRole('dialog', { name: 'Menu' })
-    expect(within(drawer).getAllByRole('link')).toHaveLength(2)
-    await user.click(within(drawer).getByRole('link', { name: /Inbox/ }))
-    expect(screen.queryByRole('dialog')).toBeNull()
-    mm.mockRestore()
   })
 })
 

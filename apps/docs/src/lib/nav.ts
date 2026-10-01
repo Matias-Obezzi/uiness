@@ -128,7 +128,7 @@ const sections: NavSection[] = [
       page(
         'components/sidebar',
         'Sidebar',
-        'A collapsible sidebar that becomes a drawer on phones.',
+        'An app sidebar with groups, stacked menus and a remembered state. A drawer on phones.',
       ),
       page('components/skeleton', 'Skeleton', 'A placeholder while content loads.'),
       page('components/slider', 'Slider', 'Pick a number, or a range.'),
@@ -233,6 +233,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-01': ['components/sidebar'],
   '2026-09-30': [
     'blocks/features',
     'blocks/logos',
