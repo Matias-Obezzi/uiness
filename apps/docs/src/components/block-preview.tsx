@@ -3,14 +3,22 @@ import { type ComponentType, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { CodeBlock } from './code-block'
 
-// The tests sit next to the blocks; importing them would pull vitest into the page. Vite
+// The tests sit next to the blocks; importing them would pull vitest into the page, which
+// throws as the bundle starts. The exclusion needs the full path: a negative pattern resolves
+// from this file like the positive one, so `!**/*.test.tsx` matched nothing over there. Vite
 // only takes literal patterns here, hence the repetition.
 const modules = import.meta.glob(
-  ['../../../../packages/ui/registry/blocks/*.tsx', '!**/*.test.tsx'],
+  [
+    '../../../../packages/ui/registry/blocks/*.tsx',
+    '!../../../../packages/ui/registry/blocks/*.test.tsx',
+  ],
   { eager: true },
 ) as Record<string, Record<string, unknown>>
 const sources = import.meta.glob(
-  ['../../../../packages/ui/registry/blocks/*.tsx', '!**/*.test.tsx'],
+  [
+    '../../../../packages/ui/registry/blocks/*.tsx',
+    '!../../../../packages/ui/registry/blocks/*.test.tsx',
+  ],
   { query: '?raw', import: 'default', eager: true },
 ) as Record<string, string>
 
