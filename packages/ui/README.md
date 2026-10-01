@@ -57,7 +57,9 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `form` | Field wiring: ids, `aria-describedby`, `aria-invalid`, error messages. |
 | `radio-group`, `slider`, `toggle`, `toggle-group`, `input-otp` | The rest of the form controls. |
 | `dialog`, `drawer`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
+| `alert-dialog` | A dialog that asks for a decision, plus `confirm()`, an awaitable version of it rendered by one `<Confirmer />`. |
 | `context-menu` | Right click menus declared once by name on a provider, picked per element with `useContextMenu`, extended or replaced where needed. Also opens from the keyboard and on a long press. |
+| `tour` | Guided tours declared once by name on a provider and started from anywhere with `useTour`: a spotlight around each target, a card that flips to fit, steps filtered with `when`. |
 | `navbar` | Bar that becomes a menu or a bottom tab bar on phones. |
 | `command` | Command palette with fuzzy search, plus `useCommandShortcut`. |
 | `scroll-area` | Scrollable region with themed bars. |
@@ -72,7 +74,9 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `sortable`, `kanban`, `reorderable-grid`, `draggable` | Drag and drop on `@uiness/dnd`, every one of them also operable from the keyboard. |
 | `dropzone` | Files dropped in from the desktop, checked by type, size and count. Native HTML drag and drop, no package behind it. |
 | `use-in-view`, `use-reduced-motion` | Hooks the motion pieces share, installed into `hooks/`. |
-| `alert`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
+| `accordion`, `collapsible` | Same API as shadcn/ui, but closed content stays in the page with `hidden="until-found"`: search engines index it and find in page opens it. Built on `use-until-found`. |
+| `table` | Same pieces as shadcn/ui, with its own border, sideways scroll, selected rows and an optional sticky header. |
+| `alert`, `spinner`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
 | `bar-chart`, `line-chart` | SVG charts with no chart library: grouped or stacked bars, straight or smooth lines with area and gaps. Tooltip, legend, keyboard reading and a data table for screen readers. Share `chart-core`, which later chart types build on. |
 | `carousel` | Horizontal run of items of any width and any content, on CSS scroll snapping. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |

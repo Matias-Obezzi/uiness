@@ -1,0 +1,102 @@
+A dialog that stops the user until they decide: delete or keep, leave or stay. Unlike a [Dialog](/docs/components/dialog) it does not close from a click outside, and focus starts on Cancel, the safe choice.
+
+<ComponentPreview name="alert-dialog-demo" />
+
+## Installation
+
+<Install name="alert-dialog" />
+
+## Usage
+
+```tsx
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+
+<AlertDialog>
+  <AlertDialogTrigger>Delete account</AlertDialogTrigger>
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+      <AlertDialogDescription>This cannot be undone.</AlertDialogDescription>
+    </AlertDialogHeader>
+    <AlertDialogFooter>
+      <AlertDialogCancel>Cancel</AlertDialogCancel>
+      <AlertDialogAction variant="destructive" onClick={deleteAccount}>
+        Delete account
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
+```
+
+`AlertDialogAction` and `AlertDialogCancel` are styled as buttons and take the Button `variant` and `size`. Both close the dialog. Control it with `open` and `onOpenChange` on the root.
+
+## confirm()
+
+Most confirmations are a question in the middle of a handler. `confirm()` asks it and waits for the answer, with no state or markup at the call site. Mount `<Confirmer />` once, near the root, the way you mount the Toaster:
+
+```tsx
+import { Confirmer } from '@/components/ui/alert-dialog'
+
+function App() {
+  return (
+    <>
+      <Confirmer />
+      <Page />
+    </>
+  )
+}
+```
+
+Then await it anywhere:
+
+```tsx
+import { confirm } from '@/components/ui/alert-dialog'
+
+async function remove() {
+  if (!(await confirm({ title: 'Delete 3 files?', variant: 'destructive' }))) return
+  await deleteFiles()
+}
+```
+
+<ComponentPreview name="alert-dialog-confirm" />
+
+It resolves `true` when the action is pressed and `false` for Cancel or Escape. Focus goes back to where it was. Calls made while a dialog is open wait their turn and open one after another.
+
+### Waiting for the action
+
+Pass `onConfirm` and the dialog runs it before answering: the action shows a spinner, Cancel and Escape do nothing, and the dialog closes with `true` once it settles. If it throws, the dialog stays open so the user can try again or cancel, so report the error from inside it, with a [toast](/docs/toast) for example.
+
+<ComponentPreview name="alert-dialog-async" />
+
+```tsx
+await confirm({
+  title: 'Archive the project?',
+  confirmText: 'Archive',
+  onConfirm: () => api.archive(project.id),
+})
+```
+
+### Options
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `title` | | The question. |
+| `description` | | What happens if they say yes. |
+| `confirmText` | `'Continue'` | Label of the action. |
+| `cancelText` | `'Cancel'` | Label of the cancel button. |
+| `variant` | `'default'` | `destructive` paints the action red. |
+| `onConfirm` | | Runs before resolving `true`; the dialog waits for its promise. |
+
+## Details
+
+Built on the Radix alert dialog: `role="alertdialog"`, focus trapped, the page behind does not scroll. Same overlay, motion and layer as Dialog, so an alert dialog opened from a drawer or a dialog lands on top of it. For a confirmation that should not cover the page, see [Island](/docs/island#confirm).

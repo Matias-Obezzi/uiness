@@ -28,11 +28,25 @@ Icons inside a button are sized and spaced automatically.
 
 <ComponentPreview name="button-icon" />
 
+### Loading
+
+`loading` puts a [spinner](/docs/components/spinner) before the label, disables the button and marks it `aria-busy`. When the button starts with an icon, the spinner takes its place, so the width does not change; icon buttons keep their size the same way.
+
+<ComponentPreview name="button-loading" />
+
+```tsx
+<Button loading={saving} onClick={save}>
+  Save changes
+</Button>
+```
+
 ### As a link
 
 `asChild` renders the child element with the button styles, so a link or a router `Link` gets the same look.
 
 <ComponentPreview name="button-link" />
+
+With `asChild`, `loading` puts the spinner inside the child. A link has no disabled state, so it gets `aria-disabled` and `aria-busy` instead, stops taking pointer events, and has its clicks cancelled.
 
 ## Props
 
@@ -41,5 +55,6 @@ Icons inside a button are sized and spaced automatically.
 | `variant` | `default \| secondary \| outline \| ghost \| link \| destructive` | `default` |
 | `size` | `default \| sm \| lg \| icon` | `default` |
 | `asChild` | `boolean` | `false` |
+| `loading` | `boolean` | `false` |
 
 Every other prop goes to the underlying `<button>`. `buttonVariants` is exported for styling other elements the same way.

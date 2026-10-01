@@ -155,12 +155,26 @@
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
-      "description": "Button with variants, sizes and asChild.",
+      "description": "Button with variants, sizes, a loading state and asChild.",
       "dependencies": ["radix-ui", "class-variance-authority"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
       "files": [
         {
           "path": "registry/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "description": "An accessible loading indicator in the current text color.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/spinner.tsx",
           "type": "registry:ui"
         }
       ]
@@ -280,6 +294,20 @@
       ]
     },
     {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "Alert Dialog",
+      "description": "A dialog that asks for a decision, plus a confirm() you can await from anywhere.",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button"],
+      "files": [
+        {
+          "path": "registry/ui/alert-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "dropdown-menu",
       "type": "registry:ui",
       "title": "Dropdown Menu",
@@ -302,6 +330,25 @@
       "files": [
         {
           "path": "registry/ui/context-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tour",
+      "type": "registry:ui",
+      "title": "Tour",
+      "description": "Guided tours declared once by name and started from anywhere: a spotlight around each target and a card that walks through the steps.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/popover",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/tour.tsx",
           "type": "registry:ui"
         }
       ]
@@ -377,8 +424,8 @@
       "name": "alert",
       "type": "registry:ui",
       "title": "Alert",
-      "description": "Inline callout with info, success, warning and destructive variants.",
-      "dependencies": ["class-variance-authority"],
+      "description": "Inline callout with info, success, warning and destructive variants, each with its icon.",
+      "dependencies": ["class-variance-authority", "lucide-react"],
       "registryDependencies": ["@uiness/utils"],
       "files": [
         {
@@ -396,6 +443,47 @@
       "files": [
         {
           "path": "registry/ui/tabs.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "A bordered table that scrolls sideways, with selected rows and an optional sticky header.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "description": "Shows and hides a section. Closed content stays in the page, findable with Ctrl+F.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-until-found"],
+      "files": [
+        {
+          "path": "registry/ui/collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "Stacked sections that open in place. Closed answers stay in the page for search engines and Ctrl+F.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-until-found"],
+      "files": [
+        {
+          "path": "registry/ui/accordion.tsx",
           "type": "registry:ui"
         }
       ]
@@ -549,7 +637,7 @@
       "name": "drawer",
       "type": "registry:ui",
       "title": "Drawer",
-      "description": "Panel from any edge with drag to close and snap points. Bottom sheet by default.",
+      "description": "Panel from any edge with drag to close, snap points and a check before it closes. Bottom sheet by default.",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["@uiness/utils"],
       "files": [
@@ -614,6 +702,18 @@
       "files": [
         {
           "path": "registry/hooks/use-in-view.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "use-until-found",
+      "type": "registry:hook",
+      "title": "useUntilFound",
+      "description": "Keeps a collapsed panel in the page with hidden=\"until-found\" and opens it on a find in page match.",
+      "files": [
+        {
+          "path": "registry/hooks/use-until-found.ts",
           "type": "registry:hook"
         }
       ]

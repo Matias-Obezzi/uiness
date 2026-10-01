@@ -1,9 +1,10 @@
 import { cva, type VariantProps } from 'class-variance-authority'
+import { CircleAlertIcon, CircleCheckIcon, InfoIcon, TriangleAlertIcon } from 'lucide-react'
 import type * as React from 'react'
 import { cn } from '@/lib/utils'
 
 const alertVariants = cva(
-  'relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current',
+  'relative grid w-full grid-cols-[0_1fr] items-start gap-y-0.5 rounded-lg border px-4 py-3 text-sm has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] has-[>svg]:gap-x-3 [&>svg]:size-4 [&>svg]:translate-y-0.5 [&>svg]:text-current has-[>svg:not([data-slot=alert-icon])]:*:data-[slot=alert-icon]:hidden',
   {
     variants: {
       variant: {
@@ -21,18 +22,37 @@ const alertVariants = cva(
   },
 )
 
-function Alert({
-  className,
-  variant,
-  ...props
-}: React.ComponentProps<'div'> & VariantProps<typeof alertVariants>) {
+const variantIcons = {
+  default: null,
+  info: InfoIcon,
+  success: CircleCheckIcon,
+  warning: TriangleAlertIcon,
+  destructive: CircleAlertIcon,
+}
+
+export interface AlertProps
+  extends React.ComponentProps<'div'>,
+    VariantProps<typeof alertVariants> {
+  /**
+   * Icon in the first column. Left out, each variant shows its own (none for `default`);
+   * `null` shows none; anything else replaces it. An `<svg>` passed as a direct child also
+   * replaces the automatic one, so alerts written with the icon inside keep a single icon.
+   */
+  icon?: React.ReactNode
+}
+
+function Alert({ className, variant, icon, children, ...props }: AlertProps) {
+  const Auto = variantIcons[variant ?? 'default']
   return (
     <div
       data-slot="alert"
       role="alert"
       className={cn(alertVariants({ variant }), className)}
       {...props}
-    />
+    >
+      {icon === undefined ? Auto && <Auto data-slot="alert-icon" /> : icon}
+      {children}
+    </div>
   )
 }
 
