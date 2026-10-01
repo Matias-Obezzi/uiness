@@ -74,6 +74,11 @@ const sections: NavSection[] = [
     title: 'Components',
     pages: [
       page(
+        'components/accordion',
+        'Accordion',
+        'Sections that open in place, with closed answers still findable.',
+      ),
+      page(
         'components/alert',
         'Alert',
         'An inline callout for information, success, warnings and errors.',
@@ -85,6 +90,11 @@ const sections: NavSection[] = [
       page('components/calendar', 'Calendar', 'Pick a day, several days or a range.'),
       page('components/card', 'Card', 'A surface with header, content and footer.'),
       page('components/checkbox', 'Checkbox', 'A control that can be checked or unchecked.'),
+      page(
+        'components/collapsible',
+        'Collapsible',
+        'A section that opens and closes, findable while closed.',
+      ),
       page('components/combobox', 'Combobox', 'A searchable select, single or multiple.'),
       page(
         'components/context-menu',
@@ -133,6 +143,11 @@ const sections: NavSection[] = [
       page('components/skeleton', 'Skeleton', 'A placeholder while content loads.'),
       page('components/slider', 'Slider', 'Pick a number, or a range.'),
       page('components/switch', 'Switch', 'An on and off toggle.'),
+      page(
+        'components/table',
+        'Table',
+        'Rows and columns with a border, sideways scroll and a sticky header.',
+      ),
       page('components/tabs', 'Tabs', 'Switch between views in the same space.'),
       page('components/textarea', 'Textarea', 'A multi line text field.'),
       page('components/toggle', 'Toggle', 'A button that stays pressed, alone or in a group.'),
@@ -233,6 +248,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-01': ['components/accordion', 'components/collapsible', 'components/table'],
   '2026-09-30': [
     'blocks/features',
     'blocks/logos',
