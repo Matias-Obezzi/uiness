@@ -140,12 +140,26 @@
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
-      "description": "Button with variants, sizes and asChild.",
+      "description": "Button with variants, sizes, a loading state and asChild.",
       "dependencies": ["radix-ui", "class-variance-authority"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
       "files": [
         {
           "path": "registry/ui/button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spinner",
+      "type": "registry:ui",
+      "title": "Spinner",
+      "description": "An accessible loading indicator in the current text color.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/spinner.tsx",
           "type": "registry:ui"
         }
       ]
@@ -265,6 +279,20 @@
       ]
     },
     {
+      "name": "alert-dialog",
+      "type": "registry:ui",
+      "title": "Alert Dialog",
+      "description": "A dialog that asks for a decision, plus a confirm() you can await from anywhere.",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button"],
+      "files": [
+        {
+          "path": "registry/ui/alert-dialog.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "dropdown-menu",
       "type": "registry:ui",
       "title": "Dropdown Menu",
@@ -362,8 +390,8 @@
       "name": "alert",
       "type": "registry:ui",
       "title": "Alert",
-      "description": "Inline callout with info, success, warning and destructive variants.",
-      "dependencies": ["class-variance-authority"],
+      "description": "Inline callout with info, success, warning and destructive variants, each with its icon.",
+      "dependencies": ["class-variance-authority", "lucide-react"],
       "registryDependencies": ["@uiness/utils"],
       "files": [
         {
@@ -495,7 +523,7 @@
       "name": "drawer",
       "type": "registry:ui",
       "title": "Drawer",
-      "description": "Panel from any edge with drag to close and snap points. Bottom sheet by default.",
+      "description": "Panel from any edge with drag to close, snap points and a check before it closes. Bottom sheet by default.",
       "dependencies": ["radix-ui", "lucide-react"],
       "registryDependencies": ["@uiness/utils"],
       "files": [

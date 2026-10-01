@@ -57,6 +57,7 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `form` | Field wiring: ids, `aria-describedby`, `aria-invalid`, error messages. |
 | `radio-group`, `slider`, `toggle`, `toggle-group`, `input-otp` | The rest of the form controls. |
 | `dialog`, `drawer`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
+| `alert-dialog` | A dialog that asks for a decision, plus `confirm()`, an awaitable version of it rendered by one `<Confirmer />`. |
 | `context-menu` | Right click menus declared once by name on a provider, picked per element with `useContextMenu`, extended or replaced where needed. Also opens from the keyboard and on a long press. |
 | `navbar` | Bar that becomes a menu or a bottom tab bar on phones. |
 | `command` | Command palette with fuzzy search, plus `useCommandShortcut`. |
@@ -72,7 +73,7 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `sortable`, `kanban`, `reorderable-grid`, `draggable` | Drag and drop on `@uiness/dnd`, every one of them also operable from the keyboard. |
 | `dropzone` | Files dropped in from the desktop, checked by type, size and count. Native HTML drag and drop, no package behind it. |
 | `use-in-view`, `use-reduced-motion` | Hooks the motion pieces share, installed into `hooks/`. |
-| `alert`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
+| `alert`, `spinner`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
 | `carousel` | Horizontal run of items of any width and any content, on CSS scroll snapping. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
 | `island` | `<Island />` wired to the theme tokens, re-exports the `@uiness/island` API. |

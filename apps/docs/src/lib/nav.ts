@@ -78,6 +78,11 @@ const sections: NavSection[] = [
         'Alert',
         'An inline callout for information, success, warnings and errors.',
       ),
+      page(
+        'components/alert-dialog',
+        'Alert Dialog',
+        'Asks for a decision before going on, declared or awaited with confirm().',
+      ),
       page('components/avatar', 'Avatar', 'A picture of a user with a fallback.'),
       page('components/badge', 'Badge', 'A small label for statuses and counts.'),
       page('components/bento-grid', 'Bento Grid', 'A grid of cards with spans and a hover lift.'),
@@ -132,6 +137,7 @@ const sections: NavSection[] = [
       ),
       page('components/skeleton', 'Skeleton', 'A placeholder while content loads.'),
       page('components/slider', 'Slider', 'Pick a number, or a range.'),
+      page('components/spinner', 'Spinner', 'Shows that something is loading.'),
       page('components/switch', 'Switch', 'An on and off toggle.'),
       page('components/tabs', 'Tabs', 'Switch between views in the same space.'),
       page('components/textarea', 'Textarea', 'A multi line text field.'),
@@ -233,6 +239,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-01': ['components/alert-dialog', 'components/spinner'],
   '2026-09-30': [
     'blocks/features',
     'blocks/logos',

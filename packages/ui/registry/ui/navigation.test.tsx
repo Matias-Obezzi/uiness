@@ -14,7 +14,14 @@ import {
   commandScore,
   useCommandShortcut,
 } from './command'
-import { Drawer, DrawerContent, DrawerDescription, DrawerTitle, DrawerTrigger } from './drawer'
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+  DrawerTrigger,
+} from './drawer'
 import { Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarLinks } from './navbar'
 import { ScrollArea } from './scroll-area'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
@@ -116,6 +123,151 @@ describe('Drawer', () => {
     expect(dialog.style.transform).toBe('translate3d(0, 280px, 0)')
     fireEvent.pointerUp(dialog, { pointerId: 1, clientX: 100, clientY: 400 })
     return vi.waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false))
+  })
+  describe('onDismissAttempt', () => {
+    function Guarded({ guard }: { guard: () => boolean | Promise<boolean> }) {
+      return (
+        <Drawer defaultOpen>
+          <DrawerContent onDismissAttempt={guard}>
+            <DrawerTitle>Settings</DrawerTitle>
+            <DrawerClose>Done</DrawerClose>
+          </DrawerContent>
+        </Drawer>
+      )
+    }
+
+    const sheet = () => screen.queryByRole('dialog', { name: 'Settings' })
+    const overlay = () => document.querySelector('[data-slot=drawer-overlay]') as HTMLElement
+
+    it('keeps it open when the answer is false, from Escape, the overlay and DrawerClose', async () => {
+      const user = userEvent.setup()
+      const guard = vi.fn(() => false)
+      render(<Guarded guard={guard} />)
+      await user.keyboard('{Escape}')
+      await user.click(overlay())
+      await user.click(screen.getByText('Done'))
+      expect(guard).toHaveBeenCalledTimes(3)
+      expect(sheet()).toBeTruthy()
+    })
+
+    it('closes when the answer is true', async () => {
+      const user = userEvent.setup()
+      render(<Guarded guard={() => true} />)
+      await user.keyboard('{Escape}')
+      expect(sheet()).toBeNull()
+    })
+
+    it('closes from the overlay and DrawerClose when the answer is true', async () => {
+      const user = userEvent.setup()
+      const { unmount } = render(<Guarded guard={() => true} />)
+      await user.click(overlay())
+      expect(sheet()).toBeNull()
+      unmount()
+      render(<Guarded guard={() => true} />)
+      await user.click(screen.getByText('Done'))
+      expect(sheet()).toBeNull()
+    })
+
+    it('waits for a promise and ignores attempts while it is pending', async () => {
+      const user = userEvent.setup()
+      let answer: (ok: boolean) => void = () => {}
+      const guard = vi.fn(
+        () =>
+          new Promise<boolean>((resolve) => {
+            answer = resolve
+          }),
+      )
+      render(<Guarded guard={guard} />)
+      await user.keyboard('{Escape}')
+      await user.click(screen.getByText('Done'))
+      expect(guard).toHaveBeenCalledTimes(1)
+      expect(sheet()).toBeTruthy()
+      await act(async () => answer(false))
+      expect(sheet()).toBeTruthy()
+
+      await user.click(screen.getByText('Done'))
+      expect(guard).toHaveBeenCalledTimes(2)
+      await act(async () => answer(true))
+      expect(sheet()).toBeNull()
+    })
+
+    it('treats a rejected promise as a no', async () => {
+      const user = userEvent.setup()
+      render(<Guarded guard={() => Promise.reject(new Error('nope'))} />)
+      await user.keyboard('{Escape}')
+      await act(async () => {})
+      expect(sheet()).toBeTruthy()
+    })
+
+    it('is not asked when the parent closes it', () => {
+      const guard = vi.fn(() => false)
+      const { rerender } = render(
+        <Drawer open>
+          <DrawerContent onDismissAttempt={guard}>
+            <DrawerTitle>Settings</DrawerTitle>
+          </DrawerContent>
+        </Drawer>,
+      )
+      rerender(
+        <Drawer open={false}>
+          <DrawerContent onDismissAttempt={guard}>
+            <DrawerTitle>Settings</DrawerTitle>
+          </DrawerContent>
+        </Drawer>,
+      )
+      expect(guard).not.toHaveBeenCalled()
+      expect(sheet()).toBeNull()
+    })
+
+    function swipeDown(dialog: HTMLElement) {
+      vi.spyOn(dialog, 'getBoundingClientRect').mockReturnValue({
+        height: 400,
+        width: 800,
+        top: 0,
+        left: 0,
+        right: 800,
+        bottom: 400,
+        x: 0,
+        y: 0,
+        toJSON() {},
+      } as DOMRect)
+      fireEvent.pointerDown(dialog, { pointerId: 1, clientX: 100, clientY: 100, button: 0 })
+      fireEvent.pointerMove(dialog, { pointerId: 1, clientX: 100, clientY: 120 })
+      fireEvent.pointerMove(dialog, { pointerId: 1, clientX: 100, clientY: 400 })
+      fireEvent.pointerUp(dialog, { pointerId: 1, clientX: 100, clientY: 400 })
+    }
+
+    it('sends a refused swipe back into place', async () => {
+      const onOpenChange = vi.fn()
+      const guard = vi.fn(async () => false)
+      render(
+        <Drawer defaultOpen onOpenChange={onOpenChange}>
+          <DrawerContent onDismissAttempt={guard}>
+            <DrawerTitle>Sheet</DrawerTitle>
+          </DrawerContent>
+        </Drawer>,
+      )
+      const dialog = screen.getByRole('dialog')
+      swipeDown(dialog)
+      await vi.waitFor(() => expect(guard).toHaveBeenCalledTimes(1))
+      await act(async () => {})
+      expect(dialog.style.transform).toBe('')
+      expect(onOpenChange).not.toHaveBeenCalled()
+      expect(screen.getByRole('dialog')).toBeTruthy()
+    })
+
+    it('lets an accepted swipe close it', async () => {
+      const onOpenChange = vi.fn()
+      render(
+        <Drawer defaultOpen onOpenChange={onOpenChange}>
+          <DrawerContent onDismissAttempt={() => true}>
+            <DrawerTitle>Sheet</DrawerTitle>
+          </DrawerContent>
+        </Drawer>,
+      )
+      swipeDown(screen.getByRole('dialog'))
+      await vi.waitFor(() => expect(onOpenChange).toHaveBeenCalledWith(false))
+    })
   })
 })
 

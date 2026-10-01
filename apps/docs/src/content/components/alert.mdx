@@ -9,23 +9,38 @@
 ```tsx
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
-<Alert>
-  <TerminalIcon />
-  <AlertTitle>Heads up!</AlertTitle>
-  <AlertDescription>You can add components to your app using the CLI.</AlertDescription>
+<Alert variant="warning">
+  <AlertTitle>Storage almost full</AlertTitle>
+  <AlertDescription>You have used 95% of your plan.</AlertDescription>
 </Alert>
 ```
 
-An icon as the first child gets its own column. Without one, the text starts at the edge.
-
 ## Variants
 
+Each variant brings its icon: info, a check for success, a triangle for warning and a circle with an exclamation mark for destructive. The default variant has none.
+
 <ComponentPreview name="alert-variants" />
+
+## Icons
+
+The icon gets its own column. Without one, the text starts at the edge. Which icon shows, in order:
+
+1. `icon` when you pass it. A node replaces the variant's icon, `null` removes it.
+2. An `<svg>` written as a direct child, the way the demo at the top does it. It takes the place of the variant's icon, so alerts written before icons came automatically still show one.
+3. The variant's icon.
+
+<ComponentPreview name="alert-icon" />
+
+```tsx
+<Alert variant="info" icon={<RocketIcon />}>...</Alert>
+<Alert variant="warning" icon={null}>...</Alert>
+```
 
 ## Props
 
 | Prop | Type | Default |
 | --- | --- | --- |
 | `variant` | `default \| info \| success \| warning \| destructive` | `default` |
+| `icon` | `ReactNode \| null` | the variant's |
 
 Alerts are static and stay where they are. For messages that come and go, use [Toast](/docs/toast).

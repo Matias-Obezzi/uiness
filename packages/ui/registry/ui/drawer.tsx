@@ -15,9 +15,16 @@ const CLOSE_VELOCITY = 0.6 // px per ms
 const reducedMotion = () =>
   typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches
 
+/** Answers whether the user may close the drawer. */
+export type DismissGuard = () => boolean | Promise<boolean>
+
 interface DrawerContextValue {
   open: boolean
   setOpen: (open: boolean) => void
+  /** Where DrawerContent puts its onDismissAttempt, so the root can ask it. */
+  guard: React.RefObject<DismissGuard | undefined>
+  /** True to close now, false to stay, or a promise for a guard that has to ask first. */
+  mayDismiss: () => boolean | Promise<boolean>
 }
 
 const DrawerContext = React.createContext<DrawerContextValue | null>(null)
@@ -51,10 +58,54 @@ function Drawer({ open: openProp, defaultOpen, onOpenChange, ...props }: DrawerP
     },
     [controlled, onOpenChange],
   )
-  const value = React.useMemo(() => ({ open, setOpen }), [open, setOpen])
+  const openRef = React.useRef(open)
+  openRef.current = open
+
+  const guard = React.useRef<DismissGuard | undefined>(undefined)
+  const asking = React.useRef(false)
+  const mayDismiss = React.useCallback((): boolean | Promise<boolean> => {
+    const ask = guard.current
+    if (!ask) return true
+    // One question at a time: a second Escape or swipe while it is asking changes nothing.
+    if (asking.current) return false
+    const answer = ask()
+    if (typeof answer === 'boolean') return answer
+    asking.current = true
+    return Promise.resolve(answer)
+      .then(Boolean, () => false)
+      .finally(() => {
+        asking.current = false
+      })
+  }, [])
+
+  // Escape, the overlay and DrawerClose all land here. Opening, and a parent changing `open`,
+  // never ask.
+  const handleOpenChange = React.useCallback(
+    (next: boolean) => {
+      if (next) return setOpen(true)
+      const answer = mayDismiss()
+      if (answer === true) setOpen(false)
+      else if (answer !== false) {
+        void answer.then((ok) => {
+          if (ok && openRef.current) setOpen(false)
+        })
+      }
+    },
+    [setOpen, mayDismiss],
+  )
+
+  const value = React.useMemo(
+    () => ({ open, setOpen, guard, mayDismiss }),
+    [open, setOpen, mayDismiss],
+  )
   return (
     <DrawerContext.Provider value={value}>
-      <DialogPrimitive.Root data-slot="drawer" open={open} onOpenChange={setOpen} {...props} />
+      <DialogPrimitive.Root
+        data-slot="drawer"
+        open={open}
+        onOpenChange={handleOpenChange}
+        {...props}
+      />
     </DrawerContext.Provider>
   )
 }
@@ -180,6 +231,13 @@ export interface DrawerContentProps extends React.ComponentProps<typeof DialogPr
   onActiveSnapPointChange?: (index: number) => void
   /** Let the user drag or swipe it closed, and close from the overlay and Escape. Default true. */
   dismissible?: boolean
+  /**
+   * Asked before the user closes the drawer: a swipe, Escape, the overlay or a `DrawerClose`.
+   * Return false, or a promise of false, to keep it open; a swipe then slides back into place.
+   * Further attempts are ignored while a promise is pending. A parent setting `open` is not
+   * asked.
+   */
+  onDismissAttempt?: DismissGuard
   /** Show the drag handle. Default true for bottom drawers. */
   handle?: boolean
   /** Show the close button in the corner. Default true for side and top drawers. */
@@ -195,6 +253,7 @@ function DrawerContent({
   activeSnapPoint,
   onActiveSnapPointChange,
   dismissible = true,
+  onDismissAttempt,
   handle = side === 'bottom',
   showCloseButton = side !== 'bottom',
   overlay = true,
@@ -213,7 +272,13 @@ function DrawerContent({
 }: DrawerContentProps) {
   const drawer = React.useContext(DrawerContext)
   if (!drawer) throw new Error('<DrawerContent> must be rendered inside <Drawer>')
-  const { setOpen } = drawer
+  const { setOpen, guard, mayDismiss } = drawer
+  React.useLayoutEffect(() => {
+    guard.current = onDismissAttempt
+    return () => {
+      guard.current = undefined
+    }
+  }, [guard, onDismissAttempt])
 
   // A state backed ref: the content mounts in a portal a commit later, and the snap placement
   // effect has to run once the element is really there.
@@ -364,6 +429,24 @@ function DrawerContent({
     }
   }
 
+  /** Finish a swipe that wants to close, unless onDismissAttempt says no. */
+  const swipeClosed = async (el: HTMLElement, size: number, rest: number) => {
+    let answer = mayDismiss()
+    if (answer !== true && answer !== false) {
+      // Go back while the guard asks, so whatever it shows is not on top of a half closed sheet.
+      void animateTo(el, translate(side, rest), 300)
+      answer = await answer
+      if (!el.isConnected) return
+    }
+    if (!answer) {
+      await animateTo(el, translate(side, rest), 300)
+      return
+    }
+    await animateTo(el, translate(side, size), 250)
+    el.style.animation = 'none'
+    setOpen(false)
+  }
+
   const settle = async (e: React.PointerEvent<HTMLDivElement>) => {
     const d = drag.current
     const el = ref.current
@@ -383,9 +466,7 @@ function DrawerContent({
         if (Math.abs(c.at - projected) < Math.abs(best.at - projected)) best = c
       }
       if (best.index === -1) {
-        await animateTo(el, translate(side, size), 250)
-        el.style.animation = 'none'
-        setOpen(false)
+        await swipeClosed(el, size, restOffset(activeSnap))
         return
       }
       if (best.index === activeSnap) await animateTo(el, translate(side, best.at), 300)
@@ -397,9 +478,7 @@ function DrawerContent({
       dismissible &&
       (projected > size * CLOSE_RATIO || (d.velocity > CLOSE_VELOCITY && offset > DRAG_THRESHOLD))
     if (shouldClose) {
-      await animateTo(el, translate(side, size), 250)
-      el.style.animation = 'none'
-      setOpen(false)
+      await swipeClosed(el, size, 0)
     } else {
       await animateTo(el, '', 350)
     }
