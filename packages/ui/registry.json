@@ -292,6 +292,25 @@
       ]
     },
     {
+      "name": "tour",
+      "type": "registry:ui",
+      "title": "Tour",
+      "description": "Guided tours declared once by name and started from anywhere: a spotlight around each target and a card that walks through the steps.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/popover",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/tour.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",

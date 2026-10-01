@@ -137,6 +137,11 @@ const sections: NavSection[] = [
       page('components/textarea', 'Textarea', 'A multi line text field.'),
       page('components/toggle', 'Toggle', 'A button that stays pressed, alone or in a group.'),
       page('components/tooltip', 'Tooltip', 'A short hint on hover or focus.'),
+      page(
+        'components/tour',
+        'Tour',
+        'Guided tours declared once by name, with a spotlight around each step.',
+      ),
     ],
   },
   {
@@ -233,6 +238,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-01': ['components/tour'],
   '2026-09-30': [
     'blocks/features',
     'blocks/logos',

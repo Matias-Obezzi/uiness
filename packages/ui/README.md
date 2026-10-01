@@ -58,6 +58,7 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `radio-group`, `slider`, `toggle`, `toggle-group`, `input-otp` | The rest of the form controls. |
 | `dialog`, `drawer`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
 | `context-menu` | Right click menus declared once by name on a provider, picked per element with `useContextMenu`, extended or replaced where needed. Also opens from the keyboard and on a long press. |
+| `tour` | Guided tours declared once by name on a provider and started from anywhere with `useTour`: a spotlight around each target, a card that flips to fit, steps filtered with `when`. |
 | `navbar` | Bar that becomes a menu or a bottom tab bar on phones. |
 | `command` | Command palette with fuzzy search, plus `useCommandShortcut`. |
 | `scroll-area` | Scrollable region with themed bars. |

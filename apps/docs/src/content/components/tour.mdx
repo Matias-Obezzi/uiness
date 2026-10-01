@@ -1,0 +1,125 @@
+A guided tour of your interface. Each step dims the page, cuts a highlight around one element and shows a card next to it. Tours are declared once by name and started from anywhere, so the button that starts one does not need to know its steps.
+
+<ComponentPreview name="tour-demo" align="start" />
+
+## Installation
+
+<Install name="tour" />
+
+## Usage
+
+Mark the elements a tour points at, usually with a `data-tour` attribute:
+
+```tsx
+<Input data-tour="search" placeholder="Search" />
+<Button data-tour="create">New project</Button>
+```
+
+Mount the provider once near the root with the tours the app knows about:
+
+```tsx
+import { defineTours, TourProvider } from '@/components/ui/tour'
+
+const tours = defineTours({
+  onboarding: [
+    { id: 'hello', title: 'Welcome', content: 'A quick look around.' },
+    {
+      id: 'search',
+      target: '[data-tour="search"]',
+      title: 'Search everything',
+      content: 'Projects, people and files.',
+      side: 'bottom',
+    },
+    {
+      id: 'billing',
+      target: '[data-tour="billing"]',
+      title: 'Billing',
+      when: () => user.role === 'admin',
+    },
+  ],
+})
+
+<TourProvider tours={tours} onComplete={({ tour }) => markSeen(tour)}>
+  <App />
+</TourProvider>
+```
+
+Then start it by name from any component below:
+
+```tsx
+import { useTour } from '@/components/ui/tour'
+
+function HelpMenu() {
+  const tour = useTour()
+  return <Button onClick={() => tour.start('onboarding')}>Take the tour</Button>
+}
+```
+
+`start` also takes the steps themselves, for a tour that only one screen needs, and options for that run: `tour.start(steps, { startAt: 'billing', allowInteraction: true })`.
+
+## Steps
+
+| Field | Description |
+| --- | --- |
+| `id` | Stable key. `startAt` accepts it. |
+| `target` | A selector, or a function that returns the element. Leave it out to center the card, for a welcome or a goodbye. |
+| `title`, `content` | What the card says. Both take any React node. |
+| `side`, `align` | Where the card goes. It flips and shifts when there is no room. |
+| `when` | Return `false` to leave the step out, for instance for users who are not admins. |
+| `padding`, `allowInteraction` | Override the tour's settings for this step. |
+
+Steps whose target is not in the page, or is hidden with `display: none`, are left out and the counter only counts the steps shown. Both `when` and the targets are checked again on every move, so a step whose element appears halfway through is picked up. Set `skipMissing={false}` to show those steps centered instead.
+
+## A single tour
+
+Without a provider, `Tour` runs one list of steps while `open` is true:
+
+```tsx
+import { Tour } from '@/components/ui/tour'
+
+const [open, setOpen] = useState(false)
+
+<Tour steps={steps} open={open} onOpenChange={setOpen} onComplete={markSeen} />
+```
+
+## Behaviour
+
+- The target is scrolled to the middle of the screen when it is not fully visible, and the card waits until it stops moving. The highlight then follows the target through scrolling and resizing.
+- The highlight glides from one target to the next. With reduced motion it jumps, and the page scrolls instantly.
+- Clicks on the dimmed page do nothing, the highlighted element included. With `allowInteraction` the highlighted element can be clicked and typed in.
+- The card is a `role="dialog"` named by its title and described by its content. Focus moves to Next when it shows, and goes back to where it was when the tour ends.
+- Right and Left arrows move between steps while focus is in the card. Escape and the close button skip the tour.
+- The dimmed page sits on the `--z-overlay` layer and the card on `--z-popover`, so menus opened from a highlighted element still land on top.
+
+## useTour
+
+| Value | Description |
+| --- | --- |
+| `start(tour, options?)` | Starts a tour by name, or from a list of steps. Replaces the one running. |
+| `next()`, `prev()` | Moves to the next or the previous step shown. `next` on the last one completes the tour. |
+| `skip()` | Ends the tour as the close button does, firing `onSkip`. |
+| `stop()` | Ends the tour without firing any event, for instance on a route change. |
+| `active` | Whether a tour is running. |
+| `tour` | Name of the running tour, when it was started by name. |
+| `step`, `index`, `total` | The current step, its position among the shown steps from 0, and how many are shown. |
+
+## Props
+
+`TourProvider` takes these. `Tour` takes the same, with `steps`, `open`, `onOpenChange` and `startAt` instead of `tours`.
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `tours` | | The tours, by name. |
+| `skipMissing` | `true` | Leave out steps whose target is not in the page. Off, they show centered. |
+| `allowInteraction` | `false` | Let clicks reach the highlighted element. |
+| `padding` | `8` | Space around the target inside the highlight, in pixels. |
+| `radius` | `10` | Corner radius of the highlight, in pixels. |
+| `arrow` | `true` | Draw an arrow from the card to the target. |
+| `labels` | | `{ next, back, done, skip, progress: (n, total) => string }` to translate the card. |
+| `onStepChange` | | Called with `{ tour, step, index, total }` whenever a step shows, the first included. |
+| `onComplete` | | Called when Done is pressed on the last step. |
+| `onSkip` | | Called when the tour is closed before the end, with the step it was on. |
+| `className` | | Class for the card. |
+| `spotlightClassName` | | Class for the highlight. Its shadow is the dimmed page, so change the color there. |
+
+The options of `start` are `startAt`, `skipMissing`, `allowInteraction`, `padding` and the three events, which fire for that run alongside the provider's.
