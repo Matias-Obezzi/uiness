@@ -189,10 +189,18 @@ function Command({
     setActive(visibleElements()[0]?.id ?? null)
   }, [search, visibleElements])
 
+  // Keep the active item in view inside the list only. scrollIntoView would also scroll the
+  // page, which jumps to a command menu further down as soon as it mounts.
   React.useEffect(() => {
-    if (!active) return
-    const el = listRef.current?.querySelector<HTMLElement>(`[id="${active}"]`)
-    el?.scrollIntoView({ block: 'nearest' })
+    const list = listRef.current
+    if (!active || !list) return
+    const el = list.querySelector<HTMLElement>(`[id="${active}"]`)
+    if (!el) return
+    const pad = Number.parseFloat(getComputedStyle(list).scrollPaddingTop) || 0
+    const box = list.getBoundingClientRect()
+    const item = el.getBoundingClientRect()
+    if (item.top < box.top + pad) list.scrollTop -= box.top + pad - item.top
+    else if (item.bottom > box.bottom - pad) list.scrollTop += item.bottom - (box.bottom - pad)
   }, [active])
 
   const select = React.useCallback((id: string) => {

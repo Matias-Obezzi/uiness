@@ -194,14 +194,124 @@ export type AccentColorName = keyof typeof accentColors | 'none'
 
 export const radii = [0, 0.3, 0.5, 0.625, 0.75, 1] as const
 
+export type ThemeVars = Record<string, string>
+export type ThemeMode = 'light' | 'dark'
+
 export interface ThemeChoice {
   base: BaseColorName
   accent: AccentColorName
   radius: number
+  /** Colors edited by hand, per mode. They win over what base and accent give. */
+  custom: Record<ThemeMode, ThemeVars>
 }
 
+const noCustom = () => ({ light: {}, dark: {} })
+
 /** What the site ships with: neutral, no accent, 0.75rem. */
-export const defaultTheme: ThemeChoice = { base: 'neutral', accent: 'none', radius: 0.75 }
+export const defaultTheme: ThemeChoice = {
+  base: 'neutral',
+  accent: 'none',
+  radius: 0.75,
+  custom: noCustom(),
+}
+
+export interface ThemePreset {
+  name: string
+  theme: ThemeChoice
+}
+
+/** Ready made starting points. Each one is a base, a color, a radius and a few hand tuned surfaces. */
+export const presets: ThemePreset[] = [
+  { name: 'Default', theme: defaultTheme },
+  {
+    name: 'Ocean',
+    theme: {
+      base: 'slate',
+      accent: 'blue',
+      radius: 0.5,
+      custom: {
+        light: { background: 'oklch(0.99 0.004 240)', muted: 'oklch(0.96 0.012 240)' },
+        dark: { background: 'oklch(0.15 0.035 255)', card: 'oklch(0.2 0.04 255)' },
+      },
+    },
+  },
+  {
+    name: 'Forest',
+    theme: {
+      base: 'stone',
+      accent: 'green',
+      radius: 0.625,
+      custom: {
+        light: { background: 'oklch(0.99 0.006 130)', secondary: 'oklch(0.95 0.025 145)' },
+        dark: { background: 'oklch(0.16 0.015 150)', card: 'oklch(0.21 0.02 150)' },
+      },
+    },
+  },
+  {
+    name: 'Sunset',
+    theme: {
+      base: 'stone',
+      accent: 'orange',
+      radius: 1,
+      custom: {
+        light: { background: 'oklch(0.99 0.008 70)', secondary: 'oklch(0.95 0.03 60)' },
+        dark: { background: 'oklch(0.16 0.012 50)', card: 'oklch(0.21 0.016 50)' },
+      },
+    },
+  },
+  {
+    name: 'Grape',
+    theme: {
+      base: 'zinc',
+      accent: 'violet',
+      radius: 0.75,
+      custom: {
+        light: { secondary: 'oklch(0.95 0.025 295)', accent: 'oklch(0.95 0.025 295)' },
+        dark: { background: 'oklch(0.15 0.03 295)', card: 'oklch(0.2 0.035 295)' },
+      },
+    },
+  },
+  { name: 'Rosé', theme: { base: 'zinc', accent: 'rose', radius: 1, custom: noCustom() } },
+  { name: 'Lemon', theme: { base: 'gray', accent: 'yellow', radius: 0.3, custom: noCustom() } },
+  { name: 'Mono', theme: { base: 'neutral', accent: 'none', radius: 0, custom: noCustom() } },
+]
+
+export const sameTheme = (a: ThemeChoice, b: ThemeChoice) => JSON.stringify(a) === JSON.stringify(b)
+
+/** The variables people can edit by hand, grouped the way the editor shows them. */
+export const editableGroups: { label: string; vars: string[] }[] = [
+  {
+    label: 'Surfaces',
+    vars: ['background', 'foreground', 'card', 'card-foreground', 'popover', 'popover-foreground'],
+  },
+  {
+    label: 'Actions',
+    vars: [
+      'primary',
+      'primary-foreground',
+      'secondary',
+      'secondary-foreground',
+      'accent',
+      'accent-foreground',
+      'destructive',
+    ],
+  },
+  { label: 'Text and lines', vars: ['muted', 'muted-foreground', 'border', 'input', 'ring'] },
+  { label: 'Charts', vars: ['chart-1', 'chart-2', 'chart-3', 'chart-4', 'chart-5'] },
+  {
+    label: 'Sidebar',
+    vars: [
+      'sidebar',
+      'sidebar-foreground',
+      'sidebar-primary',
+      'sidebar-primary-foreground',
+      'sidebar-accent',
+      'sidebar-accent-foreground',
+      'sidebar-border',
+      'sidebar-ring',
+    ],
+  },
+]
 
 // The theme's own chart colors, used while no accent is picked.
 const defaultCharts = {
@@ -227,9 +337,7 @@ const accentCharts = ({ hue, chroma }: AccentColor) =>
     (l, i) => `oklch(${l} ${(chroma * ([0.6, 0.85, 1, 1, 0.9][i] ?? 1)).toFixed(3)} ${hue})`,
   )
 
-export type ThemeVars = Record<string, string>
-
-export function themeVars({ base, accent, radius }: ThemeChoice): {
+export function themeVars({ base, accent, radius, custom }: ThemeChoice): {
   light: ThemeVars
   dark: ThemeVars
 } {
@@ -302,7 +410,7 @@ export function themeVars({ base, accent, radius }: ThemeChoice): {
     'sidebar-ring': a ? darkPrimary : b.dark.ring,
   }
 
-  return { light, dark }
+  return { light: { ...light, ...custom.light }, dark: { ...dark, ...custom.dark } }
 }
 
 const block = (selector: string, vars: ThemeVars, indent = '  ') =>
