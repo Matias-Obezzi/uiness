@@ -5,6 +5,7 @@ import { Toaster } from '@/ui/toast'
 import { DocPage } from './components/doc-page'
 import { Home } from './components/home'
 import { Layout } from './components/layout'
+import { Themes } from './components/themes'
 
 export function App() {
   return (
@@ -16,6 +17,7 @@ export function App() {
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="docs/*" element={<DocPage />} />
+          <Route path="themes" element={<Themes />} />
         </Route>
       </Routes>
     </>
