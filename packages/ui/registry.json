@@ -414,6 +414,47 @@
       ]
     },
     {
+      "name": "table",
+      "type": "registry:ui",
+      "title": "Table",
+      "description": "A bordered table that scrolls sideways, with selected rows and an optional sticky header.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "collapsible",
+      "type": "registry:ui",
+      "title": "Collapsible",
+      "description": "Shows and hides a section. Closed content stays in the page, findable with Ctrl+F.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-until-found"],
+      "files": [
+        {
+          "path": "registry/ui/collapsible.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "accordion",
+      "type": "registry:ui",
+      "title": "Accordion",
+      "description": "Stacked sections that open in place. Closed answers stay in the page for search engines and Ctrl+F.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-until-found"],
+      "files": [
+        {
+          "path": "registry/ui/accordion.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "avatar",
       "type": "registry:ui",
       "title": "Avatar",
@@ -588,6 +629,18 @@
       "files": [
         {
           "path": "registry/hooks/use-in-view.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "use-until-found",
+      "type": "registry:hook",
+      "title": "useUntilFound",
+      "description": "Keeps a collapsed panel in the page with hidden=\"until-found\" and opens it on a find in page match.",
+      "files": [
+        {
+          "path": "registry/hooks/use-until-found.ts",
           "type": "registry:hook"
         }
       ]

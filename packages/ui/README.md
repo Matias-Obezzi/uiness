@@ -73,6 +73,8 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `sortable`, `kanban`, `reorderable-grid`, `draggable` | Drag and drop on `@uiness/dnd`, every one of them also operable from the keyboard. |
 | `dropzone` | Files dropped in from the desktop, checked by type, size and count. Native HTML drag and drop, no package behind it. |
 | `use-in-view`, `use-reduced-motion` | Hooks the motion pieces share, installed into `hooks/`. |
+| `accordion`, `collapsible` | Same API as shadcn/ui, but closed content stays in the page with `hidden="until-found"`: search engines index it and find in page opens it. Built on `use-until-found`. |
+| `table` | Same pieces as shadcn/ui, with its own border, sideways scroll, selected rows and an optional sticky header. |
 | `alert`, `spinner`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
 | `carousel` | Horizontal run of items of any width and any content, on CSS scroll snapping. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
