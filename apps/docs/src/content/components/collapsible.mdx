@@ -1,0 +1,37 @@
+<ComponentPreview name="collapsible-demo" />
+
+## Installation
+
+<Install name="collapsible" />
+
+## Usage
+
+```tsx
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+
+<Collapsible>
+  <CollapsibleTrigger>Email notifications</CollapsibleTrigger>
+  <CollapsibleContent>Choose which emails you get.</CollapsibleContent>
+</Collapsible>
+```
+
+Same API as the shadcn/ui collapsible. Control it with `open` and `onOpenChange`. `CollapsibleTrigger` takes `asChild` to use your own button, so the header row can hold anything else, like a title and a badge.
+
+## Closed content stays in the page
+
+Closed content is not removed: it is rendered with `hidden="until-found"`, so search engines read it in the HTML and the browser's find in page can reach it. When Ctrl+F, or a link to a text fragment, matches text inside, the browser fires `beforematch` and the section opens through its normal state, calling `onOpenChange(true)`.
+
+`until-found` works in browsers that support it, Chromium-based ones at the time of writing. Elsewhere it acts as plain `hidden`, and the text is still in the HTML. React writes `hidden` as a boolean, so server HTML carries a plain `hidden` that turns into `until-found` once the page hydrates. A `disabled` collapsible keeps its content plainly hidden.
+
+The height animates open and closed with no measuring, through a grid row going from `0fr` to `1fr`. `className` on `CollapsibleContent` styles the box around the children, inside the part that animates, so padding and layout go there.
+
+## Props
+
+| Prop | Type | Default |
+| --- | --- | --- |
+| `open` | `boolean` | |
+| `defaultOpen` | `boolean` | `false` |
+| `onOpenChange` | `(open: boolean) => void` | |
+| `disabled` | `boolean` | `false` |
+
+The [Accordion](/docs/components/accordion) works the same way for a stack of sections.
