@@ -37,17 +37,13 @@ export function Page() {
 
 Several items at once:
 
-```bash
-npx shadcn@latest add @uiness/dialog @uiness/dropdown-menu @uiness/island
-```
+<ShadcnCommand args="add @uiness/dialog @uiness/dropdown-menu @uiness/island" />
 
 ## Add blocks
 
 Blocks are whole page sections, a hero, a pricing table, a footer, made from the components here. They install the same way, bring the components they use with them, and land in `components/` rather than `components/ui`, since they are meant to be edited:
 
-```bash
-npx shadcn@latest add @uiness/hero-01
-```
+<ShadcnCommand args="add @uiness/hero-01" />
 
 ```tsx
 import { Hero01 } from '@/components/hero-01'
@@ -59,13 +55,11 @@ Every block takes its copy through props and lays itself out with container quer
 
 `island`, `image`, `fx` and `toast` are registry items too. They install the npm package and drop a thin wrapper in `components/ui` that connects the package to your theme tokens. You can also use the packages directly without the registry:
 
-```bash
-pnpm add @uiness/image @uiness/island @uiness/fx @uiness/toast @uiness/scroll
-```
+<InstallPackage name="@uiness/image @uiness/island @uiness/fx @uiness/toast @uiness/scroll" />
 
 ## Manual installation
 
-Every registry item is a JSON file with the source inline, so you can copy files by hand: open <RegistryLink name="button" />, paste the content of each file into your project, and install the dependencies it lists.
+Every install block has a **Manual** tab with the dependencies to install, the items it builds on and each file to copy, already pointing at `@/components/ui`. Each registry item is also a JSON file with the source inline, like <RegistryLink name="button" />.
 
 ## Next.js
 

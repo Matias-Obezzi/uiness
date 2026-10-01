@@ -1,6 +1,7 @@
 import { MonitorIcon, SmartphoneIcon, TabletIcon } from 'lucide-react'
 import { type ComponentType, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { toProjectImports } from '~/lib/registry'
 import { CodeBlock } from './code-block'
 
 // The tests sit next to the blocks; importing them would pull vitest into the page, which
@@ -25,9 +26,6 @@ const sources = import.meta.glob(
 /** hero-01 → Hero01, the name each block file exports. */
 const exportName = (name: string) =>
   name.replace(/(^|-)([a-z0-9])/g, (_, __, c: string) => c.toUpperCase())
-
-/** Turn the registry import paths into the ones a project gets after installing. */
-const forDisplay = (source: string) => source.replace(/from '@\/ui\//g, "from '@/components/ui/")
 
 const widths = [
   { id: 'desktop', label: 'Desktop', icon: MonitorIcon, width: '100%' },
@@ -114,7 +112,7 @@ export function BlockPreview({ name }: BlockPreviewProps) {
           </div>
         </div>
       ) : (
-        <CodeBlock code={forDisplay(source)} className="mt-3" />
+        <CodeBlock code={toProjectImports(source)} className="mt-3" />
       )}
     </div>
   )

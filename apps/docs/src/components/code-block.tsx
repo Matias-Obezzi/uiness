@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { CopyButton } from './copy-button'
 
@@ -36,12 +36,21 @@ export interface CodeBlockProps {
   lang?: string
   /** Shown above the code. */
   title?: string
+  /** Controls in the bar above the code, like the package manager picker. Puts the copy button there. */
+  toolbar?: ReactNode
   className?: string
   /** Collapse tall blocks behind an expand button. Default true above 24 lines. */
   collapsible?: boolean
 }
 
-export function CodeBlock({ code, lang = 'tsx', title, className, collapsible }: CodeBlockProps) {
+export function CodeBlock({
+  code,
+  lang = 'tsx',
+  title,
+  toolbar,
+  className,
+  collapsible,
+}: CodeBlockProps) {
   const [html, setHtml] = useState<string | null>(null)
   const [expanded, setExpanded] = useState(false)
   const trimmed = code.replace(/\n+$/, '')
@@ -73,15 +82,24 @@ export function CodeBlock({ code, lang = 'tsx', title, className, collapsible }:
         className,
       )}
     >
-      {title && (
-        <div className="flex items-center justify-between border-b px-4 py-2 font-mono text-muted-foreground text-xs">
-          {title}
+      {toolbar ? (
+        <div className="flex items-center justify-between gap-2 border-b py-1.5 pr-2 pl-3">
+          {toolbar}
+          <CopyButton value={trimmed} />
         </div>
+      ) : (
+        <>
+          {title && (
+            <div className="flex items-center justify-between border-b px-4 py-2 font-mono text-muted-foreground text-xs">
+              {title}
+            </div>
+          )}
+          <CopyButton
+            value={trimmed}
+            className="absolute top-2 right-2 z-(--z-raised,10) opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
+          />
+        </>
       )}
-      <CopyButton
-        value={trimmed}
-        className="absolute top-2 right-2 z-(--z-raised,10) opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
-      />
       <div className={cn('overflow-x-auto', collapse && 'max-h-80 overflow-y-hidden')}>
         {html ? (
           <div
