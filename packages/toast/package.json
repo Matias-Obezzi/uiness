@@ -16,7 +16,7 @@
     "url": "git+https://github.com/Matias-Obezzi/uiness.git",
     "directory": "packages/toast"
   },
-  "homepage": "https://matias-obezzi.github.io/uiness/docs/toast",
+  "homepage": "https://uiness.vercel.app/docs/toast",
   "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
   "license": "MIT",
   "type": "module",

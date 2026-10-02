@@ -19,7 +19,7 @@
     "url": "git+https://github.com/Matias-Obezzi/uiness.git",
     "directory": "packages/dnd"
   },
-  "homepage": "https://matias-obezzi.github.io/uiness/docs/dnd",
+  "homepage": "https://uiness.vercel.app/docs/dnd",
   "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
   "license": "MIT",
   "type": "module",

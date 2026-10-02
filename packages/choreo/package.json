@@ -17,7 +17,7 @@
     "url": "git+https://github.com/Matias-Obezzi/uiness.git",
     "directory": "packages/choreo"
   },
-  "homepage": "https://matias-obezzi.github.io/uiness/docs/choreo",
+  "homepage": "https://uiness.vercel.app/docs/choreo",
   "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
   "license": "MIT",
   "type": "module",

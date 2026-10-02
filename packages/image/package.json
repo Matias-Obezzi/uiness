@@ -18,7 +18,7 @@
     "url": "git+https://github.com/Matias-Obezzi/uiness.git",
     "directory": "packages/image"
   },
-  "homepage": "https://matias-obezzi.github.io/uiness/docs/image",
+  "homepage": "https://uiness.vercel.app/docs/image",
   "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
   "license": "MIT",
   "type": "module",

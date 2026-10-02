@@ -3,6 +3,8 @@ export const site = {
   description: 'React UI primitives with a bit of magic.',
   /** Replace with your GitHub handle and repo if they differ. */
   github: 'https://github.com/Matias-Obezzi/uiness',
+  /** Where the docs live. Pages point search engines here, wherever they are served from. */
+  url: 'https://uiness.vercel.app',
   registryNamespace: '@uiness',
 }
 

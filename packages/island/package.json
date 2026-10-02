@@ -17,7 +17,7 @@
     "url": "git+https://github.com/Matias-Obezzi/uiness.git",
     "directory": "packages/island"
   },
-  "homepage": "https://matias-obezzi.github.io/uiness/docs/island",
+  "homepage": "https://uiness.vercel.app/docs/island",
   "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
   "license": "MIT",
   "type": "module",
