@@ -53,6 +53,21 @@ function readOpen(): Record<string, boolean> {
   }
 }
 
+/** The sections the header links to, by their sidebar title, with a shorter label where needed. */
+const headerSections = [
+  { label: 'Packages', section: 'Packages' },
+  { label: 'Components', section: 'Components' },
+  { label: 'Blocks', section: 'Blocks' },
+  { label: 'D&D', section: 'Drag and drop' },
+  { label: 'Motion', section: 'Motion' },
+]
+
+/** A section's first page, in the order the sidebar shows it. */
+const sectionHref = (title: string) => {
+  const first = nav.find((s) => s.title === title)?.pages[0]
+  return first ? pageHref(first) : '/docs'
+}
+
 /** The section holding the page being read, if any. */
 const sectionOf = (pathname: string) =>
   nav.find((s) =>
@@ -238,6 +253,7 @@ export function Layout() {
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname } = useLocation()
   const inDocs = pathname.startsWith('/docs')
+  const currentSection = sectionOf(pathname)
 
   useCommandShortcut(() => setSearchOpen((o) => !o))
 
@@ -260,34 +276,26 @@ export function Layout() {
           <Button
             variant="ghost"
             size="icon"
-            className="md:hidden"
+            className="lg:hidden"
             aria-label="Open menu"
             onClick={() => setMenuOpen(true)}
           >
             <MenuIcon />
           </Button>
           <Wordmark />
-          <nav className="hidden items-center gap-5 text-sm md:flex">
-            <NavLink
-              to="/docs"
-              className={({ isActive }) =>
-                cn(
+          <nav aria-label="Sections" className="hidden items-center gap-5 text-sm lg:flex">
+            {headerSections.map(({ label, section }) => (
+              <NavLink
+                key={section}
+                to={sectionHref(section)}
+                className={cn(
                   'text-muted-foreground transition-colors hover:text-foreground',
-                  isActive && 'text-foreground',
-                )
-              }
-            >
-              Docs
-            </NavLink>
-            <NavLink
-              to="/docs/components/button"
-              className={cn(
-                'text-muted-foreground transition-colors hover:text-foreground',
-                pathname.startsWith('/docs/components') && 'text-foreground',
-              )}
-            >
-              Components
-            </NavLink>
+                  currentSection === section && 'text-foreground',
+                )}
+              >
+                {label}
+              </NavLink>
+            ))}
             <NavLink
               to="/themes"
               className={({ isActive }) =>
