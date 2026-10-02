@@ -16,7 +16,7 @@
 
 Radix primitives styled with Tailwind v4, installed with the shadcn CLI. The code lands in your repo, so you own it and can change it. The theme uses the same CSS variable names as shadcn/ui, so uiness and shadcn components live together in one project without extra work. The motion pieces run on CSS and the Web Animations API, and the calendar does its own date math, so neither one pulls in a library.
 
-[Documentation](https://matias-obezzi.github.io/uiness) · [Repository](https://github.com/Matias-Obezzi/uiness) · [Issues](https://github.com/Matias-Obezzi/uiness/issues)
+[Documentation](https://uiness.vercel.app) · [Repository](https://github.com/Matias-Obezzi/uiness) · [Issues](https://github.com/Matias-Obezzi/uiness/issues)
 
 </div>
 
@@ -27,7 +27,7 @@ Point the shadcn CLI at the registry once, in `components.json`:
 ```json
 {
   "registries": {
-    "@uiness": "https://matias-obezzi.github.io/uiness/r/{name}.json"
+    "@uiness": "https://uiness.vercel.app/r/{name}.json"
   }
 }
 ```

@@ -6,7 +6,7 @@
 
 *React UI primitives with a bit of magic.*
 
-[Documentation](https://matias-obezzi.github.io/uiness) · [Components](https://matias-obezzi.github.io/uiness/docs/components/button) · [Issues](https://github.com/Matias-Obezzi/uiness/issues)
+[Documentation](https://uiness.vercel.app) · [Components](https://uiness.vercel.app/docs/components/button) · [Issues](https://github.com/Matias-Obezzi/uiness/issues)
 
 </div>
 
@@ -47,4 +47,8 @@ Releases use [Changesets](https://github.com/changesets/changesets): run `pnpm c
 
 To publish by hand instead: `pnpm changeset:version` then `pnpm changeset:publish`.
 
-**Docs to GitHub Pages.** The `Docs` workflow builds `apps/docs` and deploys it. In the repository settings, under Pages, set the source to GitHub Actions. The site lands on `https://<user>.github.io/<repo>/`, and the registry with it at `/r/<name>.json`, which is the URL the install pages show. If the GitHub handle or repo name differ from `Matias-Obezzi/uiness`, update `apps/docs/src/lib/site.ts`, `packages/ui/registry.json` and the `repository` fields of the packages.
+**Docs on Vercel.** The site and the registry live at `https://uiness.vercel.app`, with the registry at `/r/<name>.json`, which is the URL the install pages show. Import the repository in Vercel with the root directory left at the repository root: `vercel.json` sets the install and build commands, the output folder and the rewrite that sends every route to the single page app (registry JSON and assets are left out of it, so a missing item is a real 404). Each pull request gets a preview deployment.
+
+**Docs on GitHub Pages, for old installs.** The `Docs` workflow still publishes the same site to `https://matias-obezzi.github.io/uiness/`, so projects whose `components.json` points at that registry keep installing. Each page there declares the Vercel URL as canonical. Once nobody uses the old URL, delete `.github/workflows/pages.yml` and turn Pages off.
+
+If the GitHub handle or repo name differ from `Matias-Obezzi/uiness`, update `apps/docs/src/lib/site.ts`, `packages/ui/registry.json` and the `repository` fields of the packages.

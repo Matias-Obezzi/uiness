@@ -241,6 +241,18 @@ export function Layout() {
 
   useCommandShortcut(() => setSearchOpen((o) => !o))
 
+  // The same pages are served from more than one place (GitHub Pages keeps the old registry
+  // URL alive), so every page names its address on the main site as the one to index.
+  useEffect(() => {
+    let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (!link) {
+      link = document.createElement('link')
+      link.rel = 'canonical'
+      document.head.append(link)
+    }
+    link.href = `${site.url}${pathname === '/' ? '/' : pathname.replace(/\/$/, '')}`
+  }, [pathname])
+
   return (
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-(--z-sticky,40) border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60">

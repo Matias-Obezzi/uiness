@@ -59,4 +59,4 @@ Steer it from the markup with `data-choreo="off"`, `data-choreo="left"` (any eff
 
 `scan(root)` only inspects and returns the plan without touching the page.
 
-Full documentation at [matias-obezzi.github.io/uiness/docs/choreo](https://matias-obezzi.github.io/uiness/docs/choreo).
+Full documentation at [uiness.vercel.app/docs/choreo](https://uiness.vercel.app/docs/choreo).
