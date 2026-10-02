@@ -30,6 +30,9 @@
             "--easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
             "--easing-sheet": "cubic-bezier(0.32, 0.72, 0, 1)",
             "--easing-spring": "linear(0, 0.4 20%, 1.1 50%, 0.96 70%, 1)"
+          },
+          "button:not(:disabled):not([aria-disabled='true']), [role='button']:not([aria-disabled='true']), summary, select:not(:disabled), input:is([type='checkbox'], [type='radio'], [type='color'], [type='file'], [type='range'], [type='submit'], [type='button'], [type='reset']):not(:disabled)": {
+            "cursor": "pointer"
           }
         },
         "@media (prefers-reduced-motion: reduce)": {

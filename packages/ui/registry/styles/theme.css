@@ -191,4 +191,22 @@
   body {
     @apply bg-background font-sans text-foreground;
   }
+  /* Tailwind v4 leaves buttons on the default cursor. Anything that acts on a click gets the
+   * pointer back, unless it is disabled. */
+  button:not(:disabled):not([aria-disabled="true"]),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  select:not(:disabled),
+  input:is(
+    [type="checkbox"],
+    [type="radio"],
+    [type="color"],
+    [type="file"],
+    [type="range"],
+    [type="submit"],
+    [type="button"],
+    [type="reset"]
+  ):not(:disabled) {
+    cursor: pointer;
+  }
 }
