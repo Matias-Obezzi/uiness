@@ -47,7 +47,7 @@ Releases use [Changesets](https://github.com/changesets/changesets): run `pnpm c
 
 To publish by hand instead: `pnpm changeset:version` then `pnpm changeset:publish`.
 
-**Docs on Vercel.** The site and the registry live at `https://uiness.vercel.app`, with the registry at `/r/<name>.json`, which is the URL the install pages show. Import the repository in Vercel with the root directory left at the repository root: `vercel.json` sets the install and build commands, the output folder and the rewrite that sends every route to the single page app (registry JSON and assets are left out of it, so a missing item is a real 404). Each pull request gets a preview deployment.
+**Docs on Vercel.** The site and the registry live at `https://uiness.vercel.app`, with the registry at `/r/<name>.json`, which is the URL the install pages show. The Vercel project uses `apps/docs` as its root directory: Vercel installs the workspace and runs the docs' own `build` script, which builds the registry too, and `apps/docs/vercel.json` adds the rewrite that sends every route to the single page app (registry JSON and assets are left out of it, so a missing item is a real 404) and the cache headers. Each pull request gets a preview deployment.
 
 **GitHub Pages, for old links and installs.** The `Docs` workflow no longer publishes the docs to `https://matias-obezzi.github.io/uiness/`. It publishes a small site built by `pnpm --filter docs pages:redirect`: the registry JSON, so projects whose `components.json` points at the old registry keep installing, and a page that sends every other path to the same page on uiness.vercel.app. Once nobody uses the old registry URL, delete `.github/workflows/pages.yml` and turn Pages off.
 
