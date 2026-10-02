@@ -8,6 +8,8 @@
 
 Canvas image effects for React. Chain pixel effects and canvas effects, render at a low working resolution for that crisp pixel look, animate the ones that depend on time. Zero dependencies.
 
+[Documentation](https://uiness.vercel.app/docs/fx) · [Registry](https://uiness.vercel.app/docs/installation) · [GitHub](https://github.com/Matias-Obezzi/uiness)
+
 ```bash
 pnpm add @uiness/fx
 ```
@@ -99,3 +101,23 @@ const canvas = renderEffects(imageElement, [pixelate(4)], { width: 320, height: 
 ## License
 
 MIT
+
+## With the uiness registry
+
+Prefer components that already follow your theme? uiness is also a registry for the shadcn CLI. Register it once in `components.json`:
+
+```json
+{
+  "registries": {
+    "@uiness": "https://uiness.vercel.app/r/{name}.json"
+  }
+}
+```
+
+Then add the item:
+
+```bash
+npx shadcn@latest add @uiness/fx
+```
+
+The `fx` item installs this package and a thin wrapper in `components/ui` that connects it to your theme tokens.

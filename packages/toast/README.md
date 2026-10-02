@@ -8,6 +8,8 @@
 
 Toasts and notifications for React. Stacked with the newest in front, expand on hover, swipe to dismiss, promise tracking, actions, six positions. Zero dependencies.
 
+[Documentation](https://uiness.vercel.app/docs/toast) · [Registry](https://uiness.vercel.app/docs/installation) · [GitHub](https://github.com/Matias-Obezzi/uiness)
+
 ```bash
 pnpm add @uiness/toast
 ```
@@ -82,3 +84,23 @@ The region is labelled "Notifications". Each toast is a polite live region, or a
 ## License
 
 MIT
+
+## With the uiness registry
+
+Prefer components that already follow your theme? uiness is also a registry for the shadcn CLI. Register it once in `components.json`:
+
+```json
+{
+  "registries": {
+    "@uiness": "https://uiness.vercel.app/r/{name}.json"
+  }
+}
+```
+
+Then add the item:
+
+```bash
+npx shadcn@latest add @uiness/toast
+```
+
+The `toast` item installs this package and a `<Toaster />` in `components/ui` wired to your theme tokens.
