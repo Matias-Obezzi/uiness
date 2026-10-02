@@ -6,3 +6,4 @@ coverage
 .DS_Store
 packages/ui/public
 apps/docs/public/r
+apps/docs/dist-pages
