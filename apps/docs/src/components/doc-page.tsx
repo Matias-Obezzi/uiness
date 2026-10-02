@@ -1,10 +1,10 @@
 import { MDXProvider } from '@mdx-js/react'
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { type ComponentType, lazy, Suspense, useEffect } from 'react'
-import { Link, useLocation } from 'react-router'
+import { Link, Navigate, useLocation } from 'react-router'
 import { Badge } from '@/ui/badge'
 import { Button } from '@/ui/button'
-import { findPage, isNew, pageHref, pages } from '~/lib/nav'
+import { findPage, isNew, nav, pageHref, pages } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { mdxComponents } from './mdx-components'
 import { NewBadge } from './new-badge'
@@ -22,7 +22,7 @@ const content = Object.fromEntries(
 
 export function DocPage() {
   const { pathname, hash } = useLocation()
-  const slug = pathname.replace(/^\/docs\/?/, '')
+  const slug = pathname.replace(/^\/docs\/?/, '').replace(/\/$/, '')
   const page = findPage(slug)
 
   const Content = page ? content[`../content/${page.file}`] : null
@@ -40,6 +40,12 @@ export function DocPage() {
     target?.scrollIntoView()
   }, [hash])
 
+  // A section's own address, like /docs/blocks, opens its first page, alphabetically, the
+  // same one the header links to.
+  const firstInSection =
+    !page && slug ? pages.find((p) => p.slug.startsWith(`${slug}/`)) : undefined
+  if (firstInSection) return <Navigate replace to={`${pageHref(firstInSection)}${hash}`} />
+
   if (!page || !Content) {
     return (
       <div className="prose">
@@ -55,17 +61,20 @@ export function DocPage() {
   const index = pages.indexOf(page)
   const prev = pages[index - 1]
   const next = pages[index + 1]
-  const section = page.slug.startsWith('components/')
-    ? 'Components'
-    : page.slug.startsWith('blocks/')
-      ? 'Blocks'
-      : 'Docs'
+  const section = nav.find((s) => s.pages.some((p) => p.slug === page.slug))
+  const sectionStart = section?.pages[0]
 
   return (
     <article>
       <div className="mb-8 space-y-2">
         <div className="flex items-center gap-2 text-muted-foreground text-sm">
-          <span>{section}</span>
+          {sectionStart && sectionStart !== page ? (
+            <Link to={pageHref(sectionStart)} className="transition-colors hover:text-foreground">
+              {section?.title}
+            </Link>
+          ) : (
+            <span>{section?.title ?? 'Docs'}</span>
+          )}
           <ChevronRightIcon className="size-3.5" />
           <span className="text-foreground">{page.title}</span>
         </div>

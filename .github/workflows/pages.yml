@@ -29,14 +29,16 @@ jobs:
         with:
           enablement: true
       - run: pnpm install --frozen-lockfile
-      - name: Build docs
-        run: pnpm --filter docs build
+      # The docs live on Vercel. Pages keeps the registry JSON for old installs and sends
+      # every other path to the same page there.
+      - name: Build the redirect site
+        run: pnpm --filter docs pages:redirect
         env:
           # "/<repo>/" for a project site, "/" for a user site or a custom domain.
           DOCS_BASE_PATH: ${{ steps.pages.outputs.base_path }}/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: apps/docs/dist
+          path: apps/docs/dist-pages
 
   deploy:
     needs: build
