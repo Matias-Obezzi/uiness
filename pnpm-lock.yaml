@@ -96,6 +96,9 @@ importers:
       '@types/react-dom':
         specifier: ^19.2.7
         version: 19.2.7(@types/react@19.2.18)
+      '@uiness/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
       '@vitejs/plugin-react':
         specifier: ^6.1.1
         version: 6.1.1(vite@8.2.2(@types/node@26.4.1)(jiti@2.7.0)(yaml@2.9.0))
