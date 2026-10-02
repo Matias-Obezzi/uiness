@@ -1,5 +1,11 @@
 # @uiness/scroll
 
+## 0.2.1
+
+### Patch Changes
+
+- 551698b: The documentation moved to uiness.vercel.app: the package homepage points there, and the README links to the docs and the registry and shows how to add the registry items built on this package with the shadcn CLI.
+
 ## 0.2.0
 
 ### Minor Changes
