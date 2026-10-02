@@ -8,6 +8,8 @@
 
 Scroll-linked motion primitives for React. Progress of an element through the viewport, parallax that writes straight to the DOM, and the active section for sticky panels. Zero dependencies, ESM and CommonJS, typed.
 
+[Documentation](https://uiness.vercel.app/docs/scroll) · [Registry](https://uiness.vercel.app/docs/installation) · [GitHub](https://github.com/Matias-Obezzi/uiness)
+
 ```bash
 pnpm add @uiness/scroll
 ```
@@ -40,3 +42,23 @@ const stop = observeScrollProgress(element, { offset: ['start end', 'end start']
 ## Notes
 
 Reads use `getBoundingClientRect`, batched to one per frame with `requestAnimationFrame`, and a `ResizeObserver` keeps the numbers right when the element changes size. An element inside a scrolling box is measured against that box: the nearest ancestor that actually scrolls is found for you, so a panel does not have to be declared. Pass `container` to name one yourself, or `null` to measure against the window wherever the element sits.
+
+## With the uiness registry
+
+Prefer components that already follow your theme? uiness is also a registry for the shadcn CLI. Register it once in `components.json`:
+
+```json
+{
+  "registries": {
+    "@uiness": "https://uiness.vercel.app/r/{name}.json"
+  }
+}
+```
+
+Then add any of `parallax-grid`, `sticky-scroll`, `timeline`, `text-reveal`, `velocity-marquee`:
+
+```bash
+npx shadcn@latest add @uiness/parallax-grid
+```
+
+These motion components are built on this package and come styled with your theme tokens.

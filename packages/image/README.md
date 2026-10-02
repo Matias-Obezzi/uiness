@@ -8,6 +8,8 @@
 
 Drop-in `<img>` replacement for React with loading transitions. Zero runtime dependencies.
 
+[Documentation](https://uiness.vercel.app/docs/image) · [Registry](https://uiness.vercel.app/docs/installation) · [GitHub](https://github.com/Matias-Obezzi/uiness)
+
 - **fade**: cross fade from the placeholder or a solid color.
 - **blur**: blurred placeholder that sharpens as the image arrives.
 - **pixelate**: low resolution mosaic that refines into the final image, canvas based, works with or without a placeholder.
@@ -127,3 +129,23 @@ The package ships with the `'use client'` directive, so it can be imported direc
 ## License
 
 MIT
+
+## With the uiness registry
+
+Prefer components that already follow your theme? uiness is also a registry for the shadcn CLI. Register it once in `components.json`:
+
+```json
+{
+  "registries": {
+    "@uiness": "https://uiness.vercel.app/r/{name}.json"
+  }
+}
+```
+
+Then add the item:
+
+```bash
+npx shadcn@latest add @uiness/image
+```
+
+The `image` item installs this package and a thin wrapper in `components/ui` that connects it to your theme tokens.

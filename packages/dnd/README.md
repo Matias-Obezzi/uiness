@@ -8,6 +8,8 @@
 
 Headless drag and drop primitives for React. Sortable lists, boards with several containers, grids you can reorder in two dimensions, and elements you can drop anywhere. Pointer Events, so mouse, touch and pen all work; full keyboard support, so it works without a pointer at all. Zero dependencies, ESM and CommonJS, typed.
 
+[Documentation](https://uiness.vercel.app/docs/dnd) · [Registry](https://uiness.vercel.app/docs/installation) · [GitHub](https://github.com/Matias-Obezzi/uiness)
+
 ```bash
 pnpm add @uiness/dnd
 ```
@@ -532,3 +534,23 @@ interface Rect {
 ## Notes
 
 Indices are always zero based, and a target index counts against the list with the dragged item already taken out — so the last valid slot in a list of three is 2. Hit testing measures every box once, when the drag starts, and corrects the pointer by however much has been auto scrolled since, so the boxes shifting around under the drag can never make the target flicker.
+
+## With the uiness registry
+
+Prefer components that already follow your theme? uiness is also a registry for the shadcn CLI. Register it once in `components.json`:
+
+```json
+{
+  "registries": {
+    "@uiness": "https://uiness.vercel.app/r/{name}.json"
+  }
+}
+```
+
+Then add any of `sortable`, `kanban`, `reorderable-grid`, `draggable`:
+
+```bash
+npx shadcn@latest add @uiness/sortable
+```
+
+These items are built on this package, render the dragged copy for you and come styled with your theme tokens.

@@ -8,6 +8,8 @@
 
 Animates a whole site from what is already on the page. It inspects the DOM, works out what each element is, a heading, copy, an image, a card, a grid of items, a button, a big number, and gives each one an entrance that plays as it scrolls into view. Nothing in your markup has to change. Zero dependencies, ESM and CommonJS, typed, and the core works without React.
 
+[Documentation](https://uiness.vercel.app/docs/choreo) · [Registry](https://uiness.vercel.app/docs/installation) · [GitHub](https://github.com/Matias-Obezzi/uiness)
+
 ```bash
 pnpm add @uiness/choreo
 ```
@@ -59,4 +61,22 @@ Steer it from the markup with `data-choreo="off"`, `data-choreo="left"` (any eff
 
 `scan(root)` only inspects and returns the plan without touching the page.
 
-Full documentation at [uiness.vercel.app/docs/choreo](https://uiness.vercel.app/docs/choreo).
+## With the uiness registry
+
+Prefer components that already follow your theme? uiness is also a registry for the shadcn CLI. Register it once in `components.json`:
+
+```json
+{
+  "registries": {
+    "@uiness": "https://uiness.vercel.app/r/{name}.json"
+  }
+}
+```
+
+Then add the item:
+
+```bash
+npx shadcn@latest add @uiness/choreo
+```
+
+The `choreo` item installs this package and a `<Choreo />` wrapper in `components/ui`.

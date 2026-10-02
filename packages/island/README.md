@@ -8,6 +8,8 @@
 
 A Dynamic Island for the web. A pill fixed to the top of the page that morphs with a spring to show statuses, live activities, alerts and confirms. React, zero dependencies, driven by an imperative API like a toast library.
 
+[Documentation](https://uiness.vercel.app/docs/island) · [Registry](https://uiness.vercel.app/docs/installation) · [GitHub](https://github.com/Matias-Obezzi/uiness)
+
 ```bash
 pnpm add @uiness/island
 ```
@@ -146,3 +148,23 @@ notifications.show({ content: 'Hello from the bottom' })
 ## License
 
 MIT
+
+## With the uiness registry
+
+Prefer components that already follow your theme? uiness is also a registry for the shadcn CLI. Register it once in `components.json`:
+
+```json
+{
+  "registries": {
+    "@uiness": "https://uiness.vercel.app/r/{name}.json"
+  }
+}
+```
+
+Then add the item:
+
+```bash
+npx shadcn@latest add @uiness/island
+```
+
+The `island` item installs this package and an `<Island />` in `components/ui` wired to your theme tokens.
