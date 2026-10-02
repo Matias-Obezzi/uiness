@@ -1,6 +1,6 @@
 {
   "name": "@uiness/choreo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Animates a whole site from what is already on the page: inspects the DOM, works out what each element is, and choreographs entrances, staggers, counters and hover touches. Zero dependencies.",
   "keywords": [
     "react",
