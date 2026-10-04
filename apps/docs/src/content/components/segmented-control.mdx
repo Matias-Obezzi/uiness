@@ -1,0 +1,41 @@
+Switches between a few views of the same thing: list or board, monthly or yearly. A thumb slides to the chosen segment.
+
+<ComponentPreview name="segmented-control-demo" />
+
+## Installation
+
+<Install name="segmented-control" />
+
+## Usage
+
+```tsx
+import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmented-control'
+
+<SegmentedControl aria-label="View" defaultValue="list">
+  <SegmentedControlItem value="list">List</SegmentedControlItem>
+  <SegmentedControlItem value="board">Board</SegmentedControlItem>
+</SegmentedControl>
+```
+
+It controls itself with `defaultValue`, or pass `value` and `onValueChange` to control it. Underneath it is a radio group: Tab reaches the selected segment, the arrow keys move and select, and screen readers hear "radio, 1 of 2". Name it with `aria-label`. An icon only segment needs its own `aria-label`.
+
+Use it for two to five short choices that change what is shown. For panels with content of their own, [Tabs](/docs/components/tabs); for actions, a [Button Group](/docs/components/button-group).
+
+## Sizes and full width
+
+<ComponentPreview name="segmented-control-sizes" />
+
+`fullWidth` stretches it across its container, the segments sharing the width.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` | | The selected segment, controlled. |
+| `defaultValue` | | The segment selected at first. |
+| `onValueChange` | | Called with the new value. |
+| `size` | `'default'` | `sm`, `default` or `lg`. |
+| `fullWidth` | `false` | Stretch across the container. |
+| `disabled` | `false` | Disable every segment. |
+
+`SegmentedControlItem` takes a `value` and `disabled`. The thumb moves without sliding under reduced motion.

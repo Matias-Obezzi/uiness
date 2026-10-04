@@ -102,6 +102,42 @@ const sections: NavSection[] = [
       page('components/card', 'Card', 'A surface with header, content and footer.'),
       page('components/checkbox', 'Checkbox', 'A control that can be checked or unchecked.'),
       page(
+        'components/chip-group',
+        'Chip Group',
+        'Filter chips that fill in and slide a check in when picked.',
+      ),
+      page(
+        'components/inline-edit',
+        'Inline Edit',
+        'Text that becomes a field where it stands, with no layout shift.',
+      ),
+      page(
+        'components/multi-select',
+        'Multi Select',
+        'Pick several options from a searchable list, shown as tags.',
+      ),
+      page(
+        'components/number-field',
+        'Number Field',
+        'A bounded number with steppers, held repeat and Intl formatting.',
+      ),
+      page(
+        'components/password-field',
+        'Password Field',
+        'A password input with a reveal toggle, a strength meter and rules.',
+      ),
+      page(
+        'components/radio-cards',
+        'Radio Cards',
+        'Option cards with a selection ring that slides between them.',
+      ),
+      page(
+        'components/search-field',
+        'Search Field',
+        'A search input with clear, loading, a shortcut and an expanding mode.',
+      ),
+      page('components/tag-input', 'Tag Input', 'Typed values that turn into removable tags.'),
+      page(
         'components/collapsible',
         'Collapsible',
         'A section that opens and closes, findable while closed.',
@@ -205,6 +241,39 @@ const sections: NavSection[] = [
       page('components/toggle', 'Toggle', 'A button that stays pressed, alone or in a group.'),
       page('components/tooltip', 'Tooltip', 'A short hint on hover or focus.'),
       page(
+        'components/button-group',
+        'Button Group',
+        'Related buttons in one surface, with a highlight that glides between them.',
+      ),
+      page(
+        'components/confirm-morph',
+        'Confirm Morph',
+        'A button that asks to confirm in place, then shows progress and Undo.',
+      ),
+      page('components/copy-button', 'Copy Button', 'Copies a value and confirms it at once.'),
+      page(
+        'components/expanding-button-group',
+        'Expanding Button Group',
+        'Icon buttons that grow to show their label on hover and focus.',
+      ),
+      page(
+        'components/hold-to-confirm',
+        'Hold to Confirm',
+        'A button that acts only after being pressed and held.',
+      ),
+      page('components/kbd', 'Kbd', 'Key caps and shortcuts, ⌘ on a Mac and Ctrl elsewhere.'),
+      page(
+        'components/segmented-control',
+        'Segmented Control',
+        'Pick one of a few views, with a thumb that slides.',
+      ),
+      page('components/split-button', 'Split Button', 'A main action with a menu of related ones.'),
+      page(
+        'components/theme-switch',
+        'Theme Switch',
+        'A light and dark switch that sweeps the new theme over the page.',
+      ),
+      page(
         'components/tour',
         'Tour',
         'Guided tours declared once by name, with a spotlight around each step.',
@@ -306,12 +375,29 @@ const sections: NavSection[] = [
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
   '2026-10-04': [
+    'components/button-group',
+    'components/chip-group',
     'components/color-picker',
+    'components/confirm-morph',
+    'components/copy-button',
     'components/date-range-picker',
+    'components/expanding-button-group',
+    'components/hold-to-confirm',
+    'components/inline-edit',
+    'components/kbd',
     'components/mention-input',
     'components/money-input',
+    'components/multi-select',
+    'components/number-field',
+    'components/password-field',
     'components/phone-input',
+    'components/radio-cards',
+    'components/search-field',
+    'components/segmented-control',
     'components/signature-pad',
+    'components/split-button',
+    'components/tag-input',
+    'components/theme-switch',
     'components/time-picker',
   ],
   '2026-10-01': [

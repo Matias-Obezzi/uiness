@@ -1,0 +1,49 @@
+A button that asks "Are you sure?" where it stands instead of opening a dialog, then shows a spinner while the action runs and the result, with Undo if you can take it back. The width follows the content, so each step grows or shrinks into the next.
+
+<ComponentPreview name="confirm-morph-demo" />
+
+## Installation
+
+<Install name="confirm-morph" />
+
+## Usage
+
+```tsx
+import { ConfirmMorph } from '@/components/ui/confirm-morph'
+
+<ConfirmMorph
+  question="Delete this project?"
+  confirmLabel="Delete"
+  successLabel="Project deleted"
+  onConfirm={() => api.deleteProject(id)}
+  onUndo={() => api.restoreProject(id)}
+>
+  Delete project
+</ConfirmMorph>
+```
+
+The steps are: rest, the question with Cancel and Confirm, a spinner while the promise from `onConfirm` is pending, then the result. A rejected promise shows `errorLabel` instead. The result goes back to rest after `resetAfter`, a countdown that waits while the pointer is over it. Without `onUndo` there is no Undo button.
+
+## Keyboard and focus
+
+Each step replaces the buttons of the one before, so focus is moved for you rather than lost: to Cancel when the question appears, the safe choice, so pressing Enter twice does not confirm; to the control itself while the spinner runs; to Undo with the result; and back to the button at rest. Escape cancels the question. The pending, done and error labels are announced.
+
+For a decision that deserves the whole screen, use an [Alert Dialog](/docs/components/alert-dialog). For one a stray click should never make, [Hold to Confirm](/docs/components/hold-to-confirm).
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `onConfirm` | | Runs after confirming. A promise shows the spinner; a rejection, the error. |
+| `onUndo` | | Adds Undo to the result. The button returns to rest once it settles. |
+| `variant` | `'destructive'` | `destructive` or `default`. |
+| `size` | `'default'` | `sm` or `default`. |
+| `question` | `'Are you sure?'` | The question asked in place. |
+| `confirmLabel` | `'Confirm'` | |
+| `cancelLabel` | `'Cancel'` | |
+| `pendingLabel` | `'Working…'` | Shown next to the spinner. |
+| `successLabel` | `'Done'` | Shown once it worked. |
+| `errorLabel` | `'Something went wrong'` | Shown when `onConfirm` rejects. |
+| `undoLabel` | `'Undo'` | |
+| `resetAfter` | `4000` | Milliseconds the result stays. |
+| `disabled` | `false` | |
