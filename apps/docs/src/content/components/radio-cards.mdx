@@ -1,0 +1,49 @@
+Option cards for choices that need more than a label: plans, shipping speeds, regions. One selection ring slides from card to card, so the eye follows the change.
+
+<ComponentPreview name="radio-cards-demo" />
+
+## Installation
+
+<Install name="radio-cards" />
+
+## Usage
+
+```tsx
+import {
+  RadioCards,
+  RadioCardsDescription,
+  RadioCardsIcon,
+  RadioCardsItem,
+  RadioCardsPrice,
+  RadioCardsTitle,
+} from '@/components/ui/radio-cards'
+
+<RadioCards aria-label="Plan" defaultValue="pro" name="plan">
+  <RadioCardsItem value="pro">
+    <RadioCardsIcon><RocketIcon /></RadioCardsIcon>
+    <RadioCardsTitle>Pro</RadioCardsTitle>
+    <RadioCardsDescription>Unlimited projects and previews.</RadioCardsDescription>
+    <RadioCardsPrice>$12 / month</RadioCardsPrice>
+  </RadioCardsItem>
+</RadioCards>
+```
+
+Every slot is optional apart from the title. Each card is named by its title alone and described by its description and price, so a screen reader reads "Pro, radio button, checked" first and the details after.
+
+## As a list
+
+<ComponentPreview name="radio-cards-list" />
+
+The cards sit in a grid that fits as many columns as the width allows. Pass `grid-cols-1` for a list, and lay out a card's slots with your own classes, here the price on the right.
+
+## Keyboard
+
+The group is one tab stop, on the picked card. The arrow keys move to the next card and pick it, skipping disabled ones, the way native radio buttons work.
+
+## Props
+
+`RadioCards` takes the props of the [Radio Group](/docs/components/radio-group): `value`, `defaultValue`, `onValueChange`, `name`, `required`, `disabled`, `orientation` and `loop`. `RadioCardsItem` takes `value`, `disabled`, and `indicator={false}` to drop the round mark in the corner.
+
+## Details
+
+The ring is one element measured onto the picked card, moved with a CSS transition on transform and size. It jumps into place on first render, follows the card when the layout changes size, and with reduced motion moves without sliding.

@@ -1322,6 +1322,118 @@
       ]
     },
     {
+      "name": "number-field",
+      "type": "registry:ui",
+      "title": "Number Field",
+      "description": "A bounded number entry with minus and plus buttons, held to repeat, arrow and page keys, and Intl formatting for percent, currency and units.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/number-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "password-field",
+      "type": "registry:ui",
+      "title": "Password Field",
+      "description": "A password input with a reveal toggle, an optional strength meter with a built in scorer, and a checklist of rules.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/password-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "search-field",
+      "type": "registry:ui",
+      "title": "Search Field",
+      "description": "A search input with a clear button, a loading state and a shortcut that focuses it. Can start as an icon button that grows into the field.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
+      "files": [
+        {
+          "path": "registry/ui/search-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tag-input",
+      "type": "registry:ui",
+      "title": "Tag Input",
+      "description": "Typed values become removable tags on Enter, a comma or a pasted list, with a limit, validation and keyboard navigation between tags.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/tag-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "multi-select",
+      "type": "registry:ui",
+      "title": "Multi Select",
+      "description": "Pick several options from a searchable list, shown as tags in the trigger with a +N overflow, select all, clear and groups.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/command", "@uiness/popover"],
+      "files": [
+        {
+          "path": "registry/ui/multi-select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chip-group",
+      "type": "registry:ui",
+      "title": "Chip Group",
+      "description": "Filter chips, one or several at a time, that fill in and slide a check in when picked.",
+      "dependencies": ["lucide-react", "radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/chip-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "inline-edit",
+      "type": "registry:ui",
+      "title": "Inline Edit",
+      "description": "Text that becomes a field where it stands, with no layout shift. Enter or blur saves, Escape cancels, with validation and async saves.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
+      "files": [
+        {
+          "path": "registry/ui/inline-edit.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-cards",
+      "type": "registry:ui",
+      "title": "Radio Cards",
+      "description": "Selectable option cards with a selection ring that slides between them, slots for icon, title, description and price, and radio keyboard behaviour.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/radio-cards.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "carousel",
       "type": "registry:ui",
       "title": "Carousel",
