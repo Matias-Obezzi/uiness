@@ -16,7 +16,7 @@ const sources = import.meta.glob('../demos/*.tsx', {
 function forDisplay(source: string) {
   return source
     .replace(/from '@\/ui\//g, "from '@/components/ui/")
-    .replace(/from '~\/[^']+'\n/g, '')
+    .replace(/^import [^\n]* from '~\/[^']+'\n/gm, '')
 }
 
 export interface ComponentPreviewProps {

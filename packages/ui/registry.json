@@ -1719,6 +1719,140 @@
       ]
     },
     {
+      "name": "split-button",
+      "type": "registry:ui",
+      "title": "Split Button",
+      "description": "A primary action joined to a chevron that opens a menu of related actions.",
+      "dependencies": ["radix-ui", "lucide-react", "class-variance-authority"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/dropdown-menu"],
+      "files": [
+        {
+          "path": "registry/ui/split-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "Button Group",
+      "description": "Related buttons joined in one surface with hairline dividers and a highlight that glides between them.",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/button-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "expanding-button-group",
+      "type": "registry:ui",
+      "title": "Expanding Button Group",
+      "description": "Icon buttons where the one under the pointer or keyboard grows to reveal its label.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/expanding-button-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "copy-button",
+      "type": "registry:ui",
+      "title": "Copy Button",
+      "description": "Copies a value with an icon that turns into a check, an optional tooltip and an announcement.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/tooltip"],
+      "files": [
+        {
+          "path": "registry/ui/copy-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hold-to-confirm",
+      "type": "registry:ui",
+      "title": "Hold to Confirm",
+      "description": "A button that acts only after being held down, with a fill that sweeps across and rewinds on release.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/spinner"],
+      "files": [
+        {
+          "path": "registry/ui/hold-to-confirm.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "confirm-morph",
+      "type": "registry:ui",
+      "title": "Confirm Morph",
+      "description": "A button that asks to confirm in place, shows a spinner while the action runs and offers Undo.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/spinner"],
+      "files": [
+        {
+          "path": "registry/ui/confirm-morph.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "segmented-control",
+      "type": "registry:ui",
+      "title": "Segmented Control",
+      "description": "A few mutually exclusive views with a thumb that slides to the chosen one.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/segmented-control.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "theme-switch",
+      "type": "registry:ui",
+      "title": "Theme Switch",
+      "description": "A light and dark switch that sweeps the new theme over the page with the View Transitions API.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/use-reduced-motion"],
+      "css": {
+        "html[data-theme-transition]::view-transition-old(root), html[data-theme-transition]::view-transition-new(root)": {
+          "animation": "none",
+          "mix-blend-mode": "normal"
+        },
+        "html[data-theme-transition] *:not([data-slot='theme-switch'] *)": {
+          "transition": "none !important"
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/theme-switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "Kbd",
+      "description": "Keyboard key caps and shortcuts, with ⌘ on a Mac and Ctrl elsewhere.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/kbd.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "hero-01",
       "type": "registry:block",
       "title": "Hero 01",

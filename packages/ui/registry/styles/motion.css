@@ -171,3 +171,16 @@
     transform: scale(1);
   }
 }
+
+/* Theme Switch draws its own reveal over the page, so the browser's cross fade is switched off
+ * while one of its view transitions runs, and only then. Color transitions are held too: the
+ * new theme is a live picture, and buttons still fading from the old colors would show in it. */
+html[data-theme-transition]::view-transition-old(root),
+html[data-theme-transition]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+html[data-theme-transition] *:not([data-slot="theme-switch"] *) {
+  /* biome-ignore lint/complexity/noImportantStyles: has to beat transitions set inline */
+  transition: none !important;
+}
