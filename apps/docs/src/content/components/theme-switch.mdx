@@ -1,0 +1,65 @@
+A light and dark switch that moves the whole page into the new theme, with the View Transitions API. Try each one: the switches below change this site's theme.
+
+<ComponentPreview name="theme-switch-demo" />
+
+## Installation
+
+<Install name="theme-switch" />
+
+## Usage
+
+```tsx
+import { ThemeSwitch } from '@/components/ui/theme-switch'
+
+<ThemeSwitch theme={theme} onThemeChange={setTheme} variant="eclipse" />
+```
+
+It does not assume a theme library. Pass the current `theme`, `'light'` or `'dark'`, and set the new one in `onThemeChange`. With next-themes, for example:
+
+```tsx
+const { resolvedTheme, setTheme } = useTheme()
+
+<ThemeSwitch theme={resolvedTheme === 'dark' ? 'dark' : 'light'} onThemeChange={setTheme} />
+```
+
+The change has to reach the page while the browser holds its snapshot, so `onThemeChange` runs inside the transition, with React state flushed at once. A theme stored in a class or an attribute on `<html>` works without anything else.
+
+## Variants
+
+| Variant | |
+| --- | --- |
+| `eclipse` | The new theme grows as a circle from the switch. |
+| `split` | It opens from a seam down the middle. |
+| `rise` | It rises from the bottom. |
+| `fade` | It fades in over the old one. |
+
+Without the View Transitions API, or with reduced motion, the theme changes at once. It is a `switch` to assistive technology, on in dark mode, and named "Dark mode" unless it has children or a `label`.
+
+The item adds a CSS rule that turns off the browser's own cross fade, only while one of these transitions runs, so other view transitions on the page are left alone.
+
+## useThemeTransition
+
+The animation without the button, for a theme menu or a keyboard shortcut:
+
+```tsx
+import { useThemeTransition } from '@/components/ui/theme-switch'
+
+const transition = useThemeTransition()
+
+<button onClick={(e) => transition(() => setTheme('dark'), { variant: 'eclipse', origin: e.currentTarget })}>
+  Dark
+</button>
+```
+
+It returns a promise that resolves when the transition is over. `origin` is an element or a point in the viewport, the center of the screen by default. `duration` and `easing` are optional.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `theme` | | `'light'` or `'dark'`. |
+| `onThemeChange` | | Called with the other theme. |
+| `variant` | `'eclipse'` | `eclipse`, `split`, `rise` or `fade`. |
+| `duration` | `500` | Milliseconds the page change takes. |
+| `label` | `'Dark mode'` | Accessible name. |
+| `buttonVariant` | `'ghost'` | The Button variant of the switch. |

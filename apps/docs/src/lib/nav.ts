@@ -206,6 +206,39 @@ const sections: NavSection[] = [
       page('components/toggle', 'Toggle', 'A button that stays pressed, alone or in a group.'),
       page('components/tooltip', 'Tooltip', 'A short hint on hover or focus.'),
       page(
+        'components/button-group',
+        'Button Group',
+        'Related buttons in one surface, with a highlight that glides between them.',
+      ),
+      page(
+        'components/confirm-morph',
+        'Confirm Morph',
+        'A button that asks to confirm in place, then shows progress and Undo.',
+      ),
+      page('components/copy-button', 'Copy Button', 'Copies a value and confirms it at once.'),
+      page(
+        'components/expanding-button-group',
+        'Expanding Button Group',
+        'Icon buttons that grow to show their label on hover and focus.',
+      ),
+      page(
+        'components/hold-to-confirm',
+        'Hold to Confirm',
+        'A button that acts only after being pressed and held.',
+      ),
+      page('components/kbd', 'Kbd', 'Key caps and shortcuts, ⌘ on a Mac and Ctrl elsewhere.'),
+      page(
+        'components/segmented-control',
+        'Segmented Control',
+        'Pick one of a few views, with a thumb that slides.',
+      ),
+      page('components/split-button', 'Split Button', 'A main action with a menu of related ones.'),
+      page(
+        'components/theme-switch',
+        'Theme Switch',
+        'A light and dark switch that sweeps the new theme over the page.',
+      ),
+      page(
         'components/tour',
         'Tour',
         'Guided tours declared once by name, with a spotlight around each step.',
@@ -307,14 +340,23 @@ const sections: NavSection[] = [
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
   '2026-10-04': [
+    'components/button-group',
     'components/chip-group',
+    'components/confirm-morph',
+    'components/copy-button',
+    'components/expanding-button-group',
+    'components/hold-to-confirm',
     'components/inline-edit',
+    'components/kbd',
     'components/multi-select',
     'components/number-field',
     'components/password-field',
     'components/radio-cards',
     'components/search-field',
+    'components/segmented-control',
+    'components/split-button',
     'components/tag-input',
+    'components/theme-switch',
   ],
   '2026-10-01': [
     'components/accordion',
