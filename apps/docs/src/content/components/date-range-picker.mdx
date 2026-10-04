@@ -1,0 +1,60 @@
+A button that opens two months side by side with a column of presets. Pick both ends in the calendar, or a whole range in one click.
+
+<ComponentPreview name="date-range-picker-demo" />
+
+## Installation
+
+<Install name="date-range-picker" extra="Installs the Calendar, Popover and Button along with it." />
+
+## Usage
+
+```tsx
+import { DateRangePicker } from '@/components/ui/date-range-picker'
+
+<DateRangePicker value={range} onValueChange={setRange} />
+```
+
+The value is a `{ from, to }` of dates at local midnight. The trigger writes it with `Intl.DateTimeFormat.formatRange` in the locale, so a range inside one month reads "Mar 1 – 5, 2024". The popover closes once both ends are picked.
+
+## Presets
+
+The default column has Today, Yesterday, Last 7 days, Last 30 days, This month, Last month and This year. Pass your own list, each with a `label` and a `range` function that gets today, or `presets={false}` for none.
+
+```tsx
+import { addDays } from '@/components/ui/calendar'
+
+<DateRangePicker
+  presets={[
+    { label: 'Weekend', range: (today) => ({ from: today, to: addDays(today, 2) }) },
+    { label: 'One week', range: (today) => ({ from: today, to: addDays(today, 6) }) },
+  ]}
+/>
+```
+
+A preset jumps the calendar to the months it covers, and its button is pressed while the range matches it.
+
+## Apply and Cancel
+
+<ComponentPreview name="date-range-picker-confirm" />
+
+With `confirm` nothing is committed until Apply. Cancel, `Escape` or a click outside drops the pick. A single picked day applies as a one day range.
+
+## Small screens
+
+Below 640px the calendar shows one month and the presets become a row that scrolls sideways, so the panel fits a phone.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onValueChange` | | A `{ from, to }`. |
+| `presets` | today, last 7 days and more | Ranges one click away, or `false`. |
+| `confirm` | `false` | Wait for Apply. |
+| `numberOfMonths` | `2` | Months side by side. One on narrow screens. |
+| `locale` | browser | For the label and the calendar. |
+| `format` | medium date | `Intl.DateTimeFormat` options for the label. |
+| `min`, `max`, `disabledDates` | | Passed to the calendar. |
+| `today` | now | The day presets count from. |
+| `name` | | Hidden inputs `name.from` and `name.to` with ISO dates. |
+| `labels` | English | Placeholder, Apply, Cancel and the presets column name. |
+| `calendarProps` | | Anything else for the calendar. |

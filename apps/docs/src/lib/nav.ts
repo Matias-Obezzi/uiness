@@ -108,11 +108,21 @@ const sections: NavSection[] = [
       ),
       page('components/combobox', 'Combobox', 'A searchable select, single or multiple.'),
       page(
+        'components/color-picker',
+        'Color Picker',
+        'Area, hue and opacity, four formats, eye dropper, saved colors and contrast.',
+      ),
+      page(
         'components/context-menu',
         'Context Menu',
         'Right click menus declared once by name, picked per element with a hook.',
       ),
       page('components/date-picker', 'Date Picker', 'A button that opens a calendar.'),
+      page(
+        'components/date-range-picker',
+        'Date Range Picker',
+        'Two months side by side with presets, and Apply and Cancel.',
+      ),
       page(
         'components/command',
         'Command',
@@ -136,6 +146,21 @@ const sections: NavSection[] = [
       page('components/input-otp', 'Input OTP', 'A one time code field.'),
       page('components/label', 'Label', 'An accessible caption for a control.'),
       page(
+        'components/mention-input',
+        'Mention Input',
+        'A textarea where @ and # open suggestions at the caret.',
+      ),
+      page(
+        'components/money-input',
+        'Money Input',
+        'A currency field that groups as you type and returns minor units.',
+      ),
+      page(
+        'components/phone-input',
+        'Phone Input',
+        'A country picker and a number that formats as you type, out in E.164.',
+      ),
+      page(
         'components/line-chart',
         'Line Chart',
         'Lines and areas over time from a list of series, on recharts.',
@@ -152,6 +177,11 @@ const sections: NavSection[] = [
       page('components/select', 'Select', 'Pick one option from a list.'),
       page('components/separator', 'Separator', 'A visual divider.'),
       page(
+        'components/signature-pad',
+        'Signature Pad',
+        'Ink that thins with speed, with undo, replay and PNG or SVG export.',
+      ),
+      page(
         'components/sidebar',
         'Sidebar',
         'An app sidebar with groups, stacked menus and a remembered state. A drawer on phones.',
@@ -167,6 +197,11 @@ const sections: NavSection[] = [
       ),
       page('components/tabs', 'Tabs', 'Switch between views in the same space.'),
       page('components/textarea', 'Textarea', 'A multi line text field.'),
+      page(
+        'components/time-picker',
+        'Time Picker',
+        'Hour and minute segments for the keyboard, with an optional list.',
+      ),
       page('components/toggle', 'Toggle', 'A button that stays pressed, alone or in a group.'),
       page('components/tooltip', 'Tooltip', 'A short hint on hover or focus.'),
       page(
@@ -270,6 +305,15 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-04': [
+    'components/color-picker',
+    'components/date-range-picker',
+    'components/mention-input',
+    'components/money-input',
+    'components/phone-input',
+    'components/signature-pad',
+    'components/time-picker',
+  ],
   '2026-10-01': [
     'components/accordion',
     'components/alert-dialog',

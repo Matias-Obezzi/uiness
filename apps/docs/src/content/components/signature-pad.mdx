@@ -1,0 +1,57 @@
+A canvas to sign on with a mouse, a finger or a pen. The line thins as the hand speeds up, a pen uses its pressure, and the ink follows the theme. Undo, clear and replay are buttons, and the result exports as a PNG or an SVG.
+
+<ComponentPreview name="signature-pad-demo" />
+
+## Installation
+
+<Install name="signature-pad" extra="Installs the Button and the reduced motion hook along with it." />
+
+## Usage
+
+```tsx
+import { SignaturePad, type SignaturePadHandle } from '@/components/ui/signature-pad'
+
+const pad = useRef<SignaturePadHandle>(null)
+
+<SignaturePad ref={pad} onChange={(strokes) => setSigned(strokes.length > 0)} />
+
+const png = pad.current?.toDataURL({ background: '#fff' })
+const svg = pad.current?.toSVG()
+```
+
+## The handle
+
+| Method | Does |
+| --- | --- |
+| `toDataURL({ background, color, scale })` | A PNG data URL, transparent unless a background is given. Scale defaults to the pixel ratio. |
+| `toSVG({ background, color })` | An SVG document as a string, one path per curve so each keeps its width. |
+| `undo()`, `clear()` | The same as the buttons. |
+| `replay()` | Draws the strokes again at the pace they were made. With reduced motion it draws them at once. |
+| `isEmpty()` | True with no strokes. |
+
+`signatureToSVG(strokes, { width, height })` is exported too, for strokes you stored.
+
+## Strokes
+
+`onChange` gets the strokes after each one ends, and after undo and clear. A stroke is a list of points with `x` and `y` in CSS pixels, a time and a width, so you can store it, pass it back through `value` or `defaultValue`, and redraw it at any size.
+
+## Ink and resolution
+
+The ink is the text color unless you pass `color`, and it is read again when the root's class, style or `data-theme` changes or the system scheme flips, so a signature drawn in light mode redraws in dark. The canvas is backed by device pixels and redrawn whenever its size or the pixel ratio changes, so lines stay sharp on any screen.
+
+## Accessibility
+
+Drawing needs a pointer, there is no way around that for a signature. Everything else is reachable: Undo, Clear and Replay are buttons, `Ctrl+Z` or `Cmd+Z` inside the pad undoes, and the canvas is an image whose name says how many strokes it holds.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onChange` | | The strokes. |
+| `color` | text color | Ink color. |
+| `minWidth`, `maxWidth` | `0.75`, `3` | Line width when fast and when slow. |
+| `toolbar` | `true` | Show Undo, Clear and Replay. |
+| `disabled` | `false` | Stop drawing. |
+| `name` | | Hidden input with a PNG data URL. |
+| `labels` | English | Button and canvas texts. |
+| `canvasClassName` | | Classes for the canvas, height included. `className` goes on the wrapper. |
