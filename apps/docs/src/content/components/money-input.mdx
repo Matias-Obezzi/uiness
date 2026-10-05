@@ -1,0 +1,45 @@
+A currency field. It groups thousands as you type in the locale's way, keeps the caret where it was, holds its width with tabular digits, and hands back integer minor units so no float ever touches the money.
+
+<ComponentPreview name="money-input-demo" />
+
+## Installation
+
+<Install name="money-input" />
+
+## Usage
+
+```tsx
+import { MoneyInput } from '@/components/ui/money-input'
+
+const [cents, setCents] = useState<number | null>(1999)
+
+<MoneyInput currency="USD" locale="en-US" value={cents} onValueChange={setCents} />
+```
+
+The value is in minor units: `1999` is $19.99, and with `currency="JPY"`, which has no decimals, `1999` is ¥1,999. It is `null` when the field is empty.
+
+## How it reads input
+
+- Separators, the symbol and where it goes come from `Intl.NumberFormat` for the `locale` and `currency`, so `de-DE` with `EUR` reads `1.234,56 €`.
+- Either `.` or `,` types the decimal separator, so the keypad works on any keyboard layout.
+- Decimals stop at the currency's count. Leading zeros go.
+- `Backspace` right after a group separator removes the digit before it.
+- When focus leaves, the decimals are filled in: `12.5` becomes `12.50`.
+- `ArrowUp` and `ArrowDown` add or take `step` major units.
+- With `allowNegative`, typing `-` anywhere flips the sign.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onValueChange` | | Minor units, or `null`. |
+| `currency` | `'USD'` | ISO 4217 code. |
+| `locale` | browser | Separators and symbol position. |
+| `currencyDisplay` | `'narrowSymbol'` | `symbol`, `narrowSymbol`, `code` or `name`. |
+| `allowNegative` | `false` | Allow amounts below zero. |
+| `min`, `max` | | Bounds in minor units, applied on blur and by the arrow keys. |
+| `step` | `1` | Major units the arrow keys add. |
+| `name` | | Hidden input with the minor units. |
+| `inputClassName` | | Classes for the input. `className` goes on the wrapper. |
+
+Any other prop goes to the input, so `id`, `placeholder`, `aria-*` and the wiring from `FormControl` land on it.

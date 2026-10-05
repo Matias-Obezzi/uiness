@@ -1,0 +1,49 @@
+A search input with an icon, a clear button and a loading state, that can be focused from anywhere with a key. Press `/` to try it.
+
+<ComponentPreview name="search-field-demo" />
+
+## Installation
+
+<Install name="search-field" />
+
+## Usage
+
+```tsx
+import { SearchField } from '@/components/ui/search-field'
+
+<SearchField
+  aria-label="Search docs"
+  value={query}
+  onValueChange={setQuery}
+  onSearch={submit}
+  loading={pending}
+  shortcut="/"
+/>
+```
+
+Enter calls `onSearch`. The clear button and `Escape` empty the field and call `onClear`. `loading` swaps the icon for a spinner and marks the input `aria-busy`.
+
+## Shortcut
+
+`shortcut="/"` focuses the field when `/` is pressed anywhere outside another input, the way GitHub and YouTube do. `shortcut="mod+k"` uses `⌘K` on a Mac and `Ctrl K` elsewhere, and works from inside other fields too. The key shows as a hint in the empty field until it is focused, and is set as `aria-keyshortcuts` for assistive tech. Turn the hint off with `showShortcut={false}`.
+
+## Expanding
+
+<ComponentPreview name="search-field-expanding" />
+
+With `expanding` the field starts as an icon button and grows to `expandedWidth` when pressed or when its shortcut is used. It folds back once it loses focus empty, or on `Escape` in an empty field, which hands focus back to the button. The icon stays where it is the whole time, so the field seems to open out of it. With reduced motion it opens without the slide.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onValueChange` | | The text. |
+| `onSearch` | | Called with the text on Enter. |
+| `onClear` | | Called after the field is emptied. |
+| `loading` | `false` | Show a spinner and mark the field busy. |
+| `shortcut` | | `'/'` or `'mod+k'`. |
+| `showShortcut` | `true` | Show the key inside the empty field. |
+| `expanding` | `false` | Start as an icon button. |
+| `expandedWidth` | `'16rem'` | Width once open. |
+| `clearLabel` | `'Clear search'` | Name of the clear button. |
+| `inputClassName` | | Classes for the input. `className` goes on the box. |

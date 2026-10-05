@@ -1,0 +1,64 @@
+A textarea where `@` opens people and `#` opens channels, right at the caret. A picked mention is a single token: the caret steps over it and `Backspace` takes it out whole.
+
+<ComponentPreview name="mention-input-demo" />
+
+## Installation
+
+<Install name="mention-input" extra="Installs the Popover along with it." />
+
+## Usage
+
+```tsx
+import { MentionInput, type MentionTrigger } from '@/components/ui/mention-input'
+
+const triggers: MentionTrigger[] = [
+  { char: '@', label: 'People', items: people },
+  { char: '#', label: 'Channels', items: (query) => searchChannels(query) },
+]
+
+<MentionInput triggers={triggers} value={value} onValueChange={setValue} />
+```
+
+Each trigger has a character, a name for its list, and its items: an array filtered for you, or a function that gets the query and returns what to show. An item has an `id`, a `label` that is inserted and matched, and an optional `description`, `icon` and `keywords`.
+
+## The value
+
+The value is the plain text plus a list of mentions:
+
+```ts
+{
+  text: 'Ping @Ada Lovelace in #design',
+  mentions: [
+    { trigger: '@', id: 'u1', label: 'Ada Lovelace', start: 5, end: 18 },
+    { trigger: '#', id: 'design', label: 'design', start: 22, end: 29 },
+  ],
+}
+```
+
+Typing before a mention shifts its offsets; editing inside one by hand turns it back into plain text. To store or send it, `serializeMentions` writes every mention your way:
+
+```ts
+serializeMentions(value, (m) => `<${m.trigger}${m.id}>`)
+// 'Ping <@u1> in <#design>'
+```
+
+## Keyboard
+
+Suggestions open when a trigger starts a word and filter as you type. `ArrowUp` and `ArrowDown` move, `Enter` or `Tab` picks, `Escape` closes them for that trigger. Focus never leaves the textarea, which points at the active suggestion with `aria-activedescendant`, and a polite live region says how many there are.
+
+## How it draws the tokens
+
+A textarea cannot style parts of its text, so a mirror with the same font, padding and wrapping sits under it and draws the text with the mentions marked, while the textarea's own text is transparent. The same mirror measures where the trigger is, which is where the popover opens. The textarea still grows with its content.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onValueChange` | | `{ text, mentions }`. `defaultValue` can be a plain string. |
+| `triggers` | | Characters and what they suggest. |
+| `maxSuggestions` | `8` | Most suggestions at once. |
+| `emptyText` | `'No matches'` | Shown when nothing matches. |
+| `name` | | Hidden inputs `name` with the text and `name.mentions` with JSON. |
+| `textareaClassName` | | Classes for the textarea. `className` goes on the wrapper. |
+
+Any other prop goes to the textarea.
