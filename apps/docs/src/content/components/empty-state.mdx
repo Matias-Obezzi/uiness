@@ -1,0 +1,47 @@
+What to show when there is nothing to show: a list with no items yet, a search with no results, a request that failed. A drawing or an icon, a few words on why it is empty and the next step to take.
+
+<ComponentPreview name="empty-state-demo" />
+
+## Installation
+
+<Install name="empty-state" />
+
+## Usage
+
+```tsx
+import { EmptyState } from '@/components/ui/empty-state'
+
+<EmptyState
+  illustration="no-results"
+  title="No results"
+  description="Check the spelling or try fewer words."
+  actions={<Button variant="outline">Clear search</Button>}
+/>
+```
+
+## Drawings
+
+<ComponentPreview name="empty-state-illustrations" />
+
+Four simple drawings come built in: `no-results`, `no-files`, `inbox-zero` and `error`. They are drawn with the theme's muted, border and foreground colors, so they follow dark mode and your palette. Pass your own element to `illustration` instead, or a small `icon`, shown in a tinted circle, for tighter spaces. `EmptyStateIllustration` renders a drawing on its own.
+
+## Sizes and frames
+
+`size` is `sm`, `md` or `lg` and scales the spacing and the drawing. `variant` is `plain`, `dashed` for a drop area look, or `card`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `illustration` | | A built-in drawing by name, or any element. |
+| `icon` | | An icon in a circle, when there is no illustration. |
+| `title` | | What is empty. |
+| `description` | | Why, or what to do. |
+| `actions` | | Buttons or links for the next step. |
+| `titleAs` | `'h3'` | `h2`, `h3`, `h4` or `p`, to fit the page's outline. |
+| `size` | `'md'` | `sm`, `md` or `lg`. |
+| `variant` | `'plain'` | `plain`, `dashed` or `card`. |
+
+## Accessibility
+
+Drawings and icons are decoration and hidden from assistive tech: the title says what they mean. Pick `titleAs` so the heading sits at the right level in the page. When the empty state replaces results after a search, announce it from the search field, for example with a live region that reads the count.

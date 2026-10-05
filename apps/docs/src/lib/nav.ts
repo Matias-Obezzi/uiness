@@ -174,6 +174,52 @@ const sections: NavSection[] = [
         'Tour',
         'Guided tours declared once by name, with a spotlight around each step.',
       ),
+      page(
+        'components/announcement-bar',
+        'Announcement Bar',
+        'A top banner that rotates messages, counts down and folds away when dismissed.',
+      ),
+      page(
+        'components/breadcrumb',
+        'Breadcrumb',
+        'Where a page sits, with the middle folding into a menu when it does not fit.',
+      ),
+      page(
+        'components/empty-state',
+        'Empty State',
+        'A drawing, a few words and the next step when there is nothing to show.',
+      ),
+      page(
+        'components/expandable-card',
+        'Expandable Card',
+        'A card that grows out of the grid into a larger view and folds back.',
+      ),
+      page('components/hover-card', 'Hover Card', 'A preview of a person or a link on hover.'),
+      page(
+        'components/pagination',
+        'Pagination',
+        'Pages with ellipses worked out for you, and "Page 2 of 10" on phones.',
+      ),
+      page(
+        'components/resizable-panels',
+        'Resizable Panels',
+        'Panels that trade space by dragging or the keyboard, remembered.',
+      ),
+      page(
+        'components/stepper',
+        'Stepper',
+        'The steps of a flow, with lines that fill as you advance.',
+      ),
+      page(
+        'components/swipe-actions',
+        'Swipe Actions',
+        'List rows that reveal actions when swiped, with the same actions in a menu.',
+      ),
+      page(
+        'components/tree-view',
+        'Tree View',
+        'Nested folders with the tree keyboard, checkboxes and lazy loading.',
+      ),
     ],
   },
   {
@@ -270,6 +316,18 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-04': [
+    'components/announcement-bar',
+    'components/breadcrumb',
+    'components/empty-state',
+    'components/expandable-card',
+    'components/hover-card',
+    'components/pagination',
+    'components/resizable-panels',
+    'components/stepper',
+    'components/swipe-actions',
+    'components/tree-view',
+  ],
   '2026-10-01': [
     'components/accordion',
     'components/alert-dialog',
