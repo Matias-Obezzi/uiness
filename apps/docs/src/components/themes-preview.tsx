@@ -742,12 +742,9 @@ function VerifyCard() {
 }
 
 /** Every component that reads the theme, in one grid. */
-export function ThemesPreview({ compact = false }: { compact?: boolean }) {
+export function ThemesPreview() {
   return (
-    // Next to the color editor there is room for two columns, not three.
-    <BentoGrid
-      className={cn('md:grid-flow-row-dense', compact && 'md:grid-cols-2 2xl:grid-cols-3')}
-    >
+    <BentoGrid className="md:grid-flow-row-dense">
       <RevenueCard />
       <CalendarCard />
       <SubscriptionsCard />

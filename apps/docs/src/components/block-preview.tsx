@@ -1,7 +1,9 @@
 import { MonitorIcon, SmartphoneIcon, TabletIcon } from 'lucide-react'
 import { type ComponentType, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { SegmentedControl, SegmentedControlItem } from '@/ui/segmented-control'
 import { toProjectImports } from '~/lib/registry'
+import { themeScope } from '~/lib/themes'
 import { CodeBlock } from './code-block'
 
 // The tests sit next to the blocks; importing them would pull vitest into the page, which
@@ -33,6 +35,8 @@ const widths = [
   { id: 'mobile', label: 'Mobile', icon: SmartphoneIcon, width: '390px' },
 ] as const
 
+type Width = (typeof widths)[number]['id']
+
 export interface BlockPreviewProps {
   /** Registry name of the block, like `hero-01`. */
   name: string
@@ -47,7 +51,7 @@ export function BlockPreview({ name }: BlockPreviewProps) {
   const Block = modules[key]?.[exportName(name)] as ComponentType | undefined
   const source = sources[key]
   const [tab, setTab] = useState<'preview' | 'code'>('preview')
-  const [width, setWidth] = useState<(typeof widths)[number]['id']>('desktop')
+  const [width, setWidth] = useState<Width>('desktop')
 
   if (!Block || source === undefined) {
     return (
@@ -78,30 +82,31 @@ export function BlockPreview({ name }: BlockPreviewProps) {
           ))}
         </div>
         {tab === 'preview' && (
-          <fieldset className="hidden items-center gap-0.5 sm:flex">
-            <legend className="sr-only">Preview width</legend>
+          <SegmentedControl
+            aria-label="Preview width"
+            size="sm"
+            value={width}
+            onValueChange={(v) => setWidth(v as Width)}
+            className="mb-1 hidden h-7 sm:inline-flex"
+          >
             {widths.map(({ id, label, icon: Icon }) => (
-              <button
+              <SegmentedControlItem
                 key={id}
-                type="button"
+                value={id}
                 aria-label={label}
-                aria-pressed={width === id}
                 title={label}
-                onClick={() => setWidth(id)}
-                className={cn(
-                  'rounded-md p-1.5 text-muted-foreground transition-colors hover:text-foreground',
-                  width === id && 'bg-accent text-foreground',
-                )}
+                className="px-2"
               >
-                <Icon className="size-4" />
-              </button>
+                <Icon className="size-3.5" />
+              </SegmentedControlItem>
             ))}
-          </fieldset>
+          </SegmentedControl>
         )}
       </div>
       {tab === 'preview' ? (
         <div className="mt-3 overflow-hidden rounded-xl border bg-muted/30">
           <div
+            {...themeScope}
             className={cn(
               'mx-auto overflow-hidden bg-background transition-[max-width] duration-(--duration-slow,300ms) ease-(--easing-emphasized,ease-out)',
               width !== 'desktop' && 'border-x',

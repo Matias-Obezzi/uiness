@@ -6,12 +6,16 @@ import { DocPage } from './components/doc-page'
 import { Home } from './components/home'
 import { Layout } from './components/layout'
 import { Themes } from './components/themes'
+import { themeScope } from './lib/themes'
 
 export function App() {
   return (
     <>
-      <Island idle={false} />
-      <Toaster closeButton />
+      {/* Demos raise these, so they wear the reader's theme like the previews do. */}
+      <div {...themeScope} className="contents">
+        <Island idle={false} />
+        <Toaster closeButton />
+      </div>
       <Confirmer />
       <Routes>
         <Route element={<Layout />}>

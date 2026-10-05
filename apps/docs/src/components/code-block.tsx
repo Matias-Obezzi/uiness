@@ -1,6 +1,11 @@
 import { type ReactNode, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
-import { CopyButton } from './copy-button'
+import { Button } from '@/ui/button'
+import { CopyButton } from '@/ui/copy-button'
+
+/** The registry's copy button, sized down for a code block's corner. */
+const copyClass =
+  "size-7 text-muted-foreground hover:text-foreground [&_svg:not([class*='size-'])]:size-3.5"
 
 type Highlighter = Awaited<ReturnType<typeof createCore>>
 let highlighterPromise: Promise<Highlighter> | null = null
@@ -85,7 +90,7 @@ export function CodeBlock({
       {toolbar ? (
         <div className="flex items-center justify-between gap-2 border-b py-1.5 pr-2 pl-3">
           {toolbar}
-          <CopyButton value={trimmed} />
+          <CopyButton value={trimmed} label="Copy code" className={copyClass} />
         </div>
       ) : (
         <>
@@ -96,7 +101,11 @@ export function CodeBlock({
           )}
           <CopyButton
             value={trimmed}
-            className="absolute top-2 right-2 z-(--z-raised,10) opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100"
+            label="Copy code"
+            className={cn(
+              copyClass,
+              'absolute top-2 right-2 z-(--z-raised,10) opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100 data-[state=copied]:opacity-100',
+            )}
           />
         </>
       )}
@@ -115,13 +124,14 @@ export function CodeBlock({
       </div>
       {collapse && (
         <div className="absolute inset-x-0 bottom-0 flex h-24 items-end justify-center bg-gradient-to-t from-background to-transparent pb-3">
-          <button
-            type="button"
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => setExpanded(true)}
-            className="rounded-full border bg-background px-3 py-1 font-medium text-xs shadow-xs hover:bg-accent"
+            className="h-7 rounded-full px-3"
           >
             Expand
-          </button>
+          </Button>
         </div>
       )}
     </div>

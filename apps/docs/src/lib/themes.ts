@@ -425,10 +425,41 @@ export function themeCss(choice: ThemeChoice) {
 }
 
 /**
- * The same variables for previewing on this page. The selectors outrank the site's own
- * `:root` and `.dark`, and the dark block outranks the light one.
+ * Spread on an element whose subtree wears the reader's theme: component previews, block
+ * previews, the bento grid on the themes page. The site around them keeps its own look.
  */
-export function previewCss(choice: ThemeChoice) {
+export const themeScope = { 'data-theme-scope': '' } as const
+
+/**
+ * Class for the site's own overlays: the search, the menu, the Customize drawer, header
+ * tooltips. They render straight into <body> like the menus and dialogs a demo opens, and this
+ * class is what tells them apart.
+ */
+export const siteChrome = 'site-chrome'
+
+const SCOPE = '[data-theme-scope]'
+
+/**
+ * What a demo opens outside its preview. Radix portals menus, popovers, dialogs and sheets
+ * straight into <body>, next to the app root, so everything there wears the theme except the
+ * site's own overlays (marked on the element, or inside it for a popper wrapper).
+ */
+const PORTALS = `body > :not(#root, script, style, .${siteChrome}, :has(.${siteChrome}))`
+
+/**
+ * The reader's theme, scoped to previews and to what demos open in portals. The site's chrome
+ * never gets these variables, so a radius of 0 or a loud accent leaves the header, the search
+ * and the sidebar as they were. Each dark selector outranks its light one.
+ */
+export function scopedCss(choice: ThemeChoice) {
   const { light, dark } = themeVars(choice)
-  return `${block('html:root', light)}\n${block('html.dark:root', dark)}`
+  // Separate rules on purpose: a browser without :has() drops only the portal ones.
+  return [
+    block(SCOPE, light),
+    block(`.dark ${SCOPE}`, dark),
+    block(PORTALS, light),
+    block(`.dark ${PORTALS}`, dark),
+    // Text that sets no color of its own follows the theme, not the page around the preview.
+    `${SCOPE} {\n  color: var(--foreground);\n}`,
+  ].join('\n')
 }

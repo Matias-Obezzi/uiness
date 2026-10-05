@@ -3,6 +3,14 @@ import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { type ComponentType, lazy, Suspense, useEffect } from 'react'
 import { Link, Navigate, useLocation } from 'react-router'
 import { Badge } from '@/ui/badge'
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/ui/breadcrumb'
 import { Button } from '@/ui/button'
 import { findPage, isNew, nav, pageHref, pages } from '~/lib/nav'
 import { site } from '~/lib/site'
@@ -67,17 +75,23 @@ export function DocPage() {
   return (
     <article>
       <div className="mb-8 space-y-2">
-        <div className="flex items-center gap-2 text-muted-foreground text-sm">
-          {sectionStart && sectionStart !== page ? (
-            <Link to={pageHref(sectionStart)} className="transition-colors hover:text-foreground">
-              {section?.title}
-            </Link>
-          ) : (
-            <span>{section?.title ?? 'Docs'}</span>
-          )}
-          <ChevronRightIcon className="size-3.5" />
-          <span className="text-foreground">{page.title}</span>
-        </div>
+        <Breadcrumb>
+          <BreadcrumbList className="gap-1.5 sm:gap-2">
+            <BreadcrumbItem>
+              {sectionStart && sectionStart !== page ? (
+                <BreadcrumbLink asChild>
+                  <Link to={pageHref(sectionStart)}>{section?.title}</Link>
+                </BreadcrumbLink>
+              ) : (
+                <span>{section?.title ?? 'Docs'}</span>
+              )}
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{page.title}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <h1 className="flex items-center gap-3 font-bold text-3xl tracking-tight">
           {page.title}
           {isNew(page) && <NewBadge className="text-xs" />}

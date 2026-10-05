@@ -1,6 +1,7 @@
 import { SquareTerminalIcon } from 'lucide-react'
 import { type ReactNode, useEffect, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { SegmentedControl, SegmentedControlItem } from '@/ui/segmented-control'
 import {
   addCommand,
   type PackageManager,
@@ -36,23 +37,19 @@ export function PackageManagerCommand({
       toolbar={
         <div className="flex items-center gap-2">
           <SquareTerminalIcon aria-hidden className="size-4 text-muted-foreground" />
-          <fieldset className="flex items-center gap-0.5">
-            <legend className="sr-only">Package manager</legend>
+          <SegmentedControl
+            aria-label="Package manager"
+            size="sm"
+            value={pm}
+            onValueChange={(v) => setPm(v as PackageManager)}
+            className="h-7"
+          >
             {packageManagers.map((name) => (
-              <button
-                key={name}
-                type="button"
-                aria-pressed={pm === name}
-                onClick={() => setPm(name)}
-                className={cn(
-                  'rounded-md border border-transparent px-2 py-0.5 font-mono text-muted-foreground text-xs transition-colors hover:text-foreground',
-                  pm === name && 'border-border bg-background text-foreground shadow-xs',
-                )}
-              >
+              <SegmentedControlItem key={name} value={name} className="px-2 font-mono">
                 {name}
-              </button>
+              </SegmentedControlItem>
             ))}
-          </fieldset>
+          </SegmentedControl>
         </div>
       }
     />

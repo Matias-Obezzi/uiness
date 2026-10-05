@@ -1,5 +1,6 @@
 import { type ComponentType, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { themeScope } from '~/lib/themes'
 import { CodeBlock } from './code-block'
 
 const demos = import.meta.glob('../demos/*.tsx', { eager: true }) as Record<
@@ -67,13 +68,17 @@ export function ComponentPreview({
         ))}
       </div>
       {tab === 'preview' ? (
-        <div
-          className={cn(
-            'mt-3 flex min-h-[320px] w-full rounded-lg border p-8',
-            align === 'center' ? 'items-center justify-center' : 'items-start justify-start',
-          )}
-        >
-          <Demo />
+        // The frame is the site's; what is inside it wears the reader's theme.
+        <div className="mt-3 rounded-lg border">
+          <div
+            {...themeScope}
+            className={cn(
+              'flex min-h-[320px] w-full rounded-[inherit] bg-background p-8',
+              align === 'center' ? 'items-center justify-center' : 'items-start justify-start',
+            )}
+          >
+            <Demo />
+          </div>
         </div>
       ) : (
         <CodeBlock code={forDisplay(source)} className="mt-3" />

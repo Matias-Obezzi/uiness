@@ -1,11 +1,4 @@
-import {
-  ChevronRightIcon,
-  MenuIcon,
-  MoonIcon,
-  PaletteIcon,
-  SearchIcon,
-  SunIcon,
-} from 'lucide-react'
+import { ChevronRightIcon, MenuIcon, PaletteIcon, SearchIcon } from 'lucide-react'
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { cn } from '@/lib/utils'
@@ -20,9 +13,15 @@ import {
   useCommandShortcut,
 } from '@/ui/command'
 import { Drawer, DrawerBody, DrawerContent, DrawerDescription, DrawerTitle } from '@/ui/drawer'
+import { Kbd, KbdGroup } from '@/ui/kbd'
+import { ThemeSwitch } from '@/ui/theme-switch'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/tooltip'
 import { isNew, nav, pageHref } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { useTheme } from '~/lib/theme'
+import { setCustomizerOpen } from '~/lib/theme-choice'
+import { siteChrome } from '~/lib/themes'
+import { CustomizeDrawer } from './customize-drawer'
 import { Logo } from './logo'
 import { NewBadge } from './new-badge'
 
@@ -304,6 +303,7 @@ function Search({ open, onOpenChange }: { open: boolean; onOpenChange: (open: bo
       onOpenChange={onOpenChange}
       title="Search the docs"
       description="Find a page by its name or what it does"
+      contentClassName={siteChrome}
     >
       <CommandInput placeholder="Search docs…" />
       <CommandList>
@@ -334,12 +334,36 @@ function Search({ open, onOpenChange }: { open: boolean; onOpenChange: (open: bo
           </CommandGroup>
         ))}
       </CommandList>
+      <div className="flex items-center gap-4 border-t px-3 py-2 text-muted-foreground text-xs">
+        <span className="flex items-center gap-1.5">
+          <KbdGroup keys="up" />
+          <KbdGroup keys="down" /> to move
+        </span>
+        <span className="flex items-center gap-1.5">
+          <KbdGroup keys="enter" /> to open
+        </span>
+        <span className="ml-auto flex items-center gap-1.5">
+          <Kbd>Esc</Kbd> to close
+        </span>
+      </div>
     </CommandDialog>
   )
 }
 
+/** An icon button's name, shown on hover and focus. Part of the site, so it skips the theme. */
+function Hint({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent side="bottom" sideOffset={6} className={siteChrome}>
+        {label}
+      </TooltipContent>
+    </Tooltip>
+  )
+}
+
 export function Layout() {
-  const { dark, toggle } = useTheme()
+  const { theme, setTheme } = useTheme()
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const { pathname } = useLocation()
@@ -408,7 +432,7 @@ export function Layout() {
               <span className="flex items-center gap-2">
                 <SearchIcon className="size-3.5" /> Search docs…
               </span>
-              <kbd className="rounded border bg-muted px-1.5 font-mono text-[10px]">⌘K</kbd>
+              <KbdGroup keys="mod+k" />
             </Button>
             <Button
               variant="ghost"
@@ -419,32 +443,61 @@ export function Layout() {
             >
               <SearchIcon />
             </Button>
-            <Button variant="ghost" size="icon" asChild aria-label="GitHub">
-              <a href={site.github} target="_blank" rel="noreferrer">
-                <GithubIcon />
-              </a>
-            </Button>
-            <Button variant="ghost" size="icon" aria-label="Toggle theme" onClick={toggle}>
-              {dark ? <SunIcon /> : <MoonIcon />}
-            </Button>
+            <Hint label="Source on GitHub">
+              <Button variant="ghost" size="icon" asChild aria-label="GitHub">
+                <a href={site.github} target="_blank" rel="noreferrer">
+                  <GithubIcon />
+                </a>
+              </Button>
+            </Hint>
+            <Hint label="Theme the component previews">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="sm:w-auto sm:px-3"
+                onClick={() => setCustomizerOpen(true)}
+              >
+                <PaletteIcon />
+                <span className="sr-only sm:not-sr-only">Customize</span>
+              </Button>
+            </Hint>
+            {/* A span takes the tooltip's handlers: given to the switch, they would replace its click. */}
+            <Hint label={theme === 'dark' ? 'Switch to light' : 'Switch to dark'}>
+              <span className="inline-flex">
+                <ThemeSwitch theme={theme} onThemeChange={setTheme} />
+              </span>
+            </Hint>
           </div>
         </div>
       </header>
 
       <Search open={searchOpen} onOpenChange={setSearchOpen} />
+      <CustomizeDrawer />
 
       <Drawer open={menuOpen} onOpenChange={setMenuOpen}>
-        <DrawerContent side="left" showCloseButton={false} className="w-72">
+        <DrawerContent side="left" showCloseButton={false} className={cn(siteChrome, 'w-72')}>
           <DrawerTitle className="sr-only">Menu</DrawerTitle>
           <DrawerDescription className="sr-only">Documentation navigation</DrawerDescription>
           <DrawerBody className="py-6" data-sidebar-scroll>
-            <NavLink
-              to="/themes"
-              onClick={() => setMenuOpen(false)}
-              className="mb-4 flex items-center gap-2 font-medium text-sm"
-            >
-              <PaletteIcon className="size-4" /> Themes
-            </NavLink>
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <NavLink
+                to="/themes"
+                onClick={() => setMenuOpen(false)}
+                className="flex items-center gap-2 font-medium text-sm"
+              >
+                <PaletteIcon className="size-4" /> Themes
+              </NavLink>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setMenuOpen(false)
+                  setCustomizerOpen(true)
+                }}
+              >
+                Customize
+              </Button>
+            </div>
             <SidebarNav onNavigate={() => setMenuOpen(false)} />
           </DrawerBody>
         </DrawerContent>
