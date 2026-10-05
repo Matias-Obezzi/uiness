@@ -1,3 +1,13 @@
+import {
+  BookOpenIcon,
+  ComponentIcon,
+  GripVerticalIcon,
+  LayoutTemplateIcon,
+  type LucideIcon,
+  PackageIcon,
+  SparklesIcon,
+} from 'lucide-react'
+
 export interface NavPage {
   /** Route slug after /docs/. Empty for the introduction. */
   slug: string
@@ -16,6 +26,8 @@ export interface NavGroup {
 
 export interface NavSection {
   title: string
+  /** Drawn before the title in the sidebar and the search. */
+  icon: LucideIcon
   pages: NavPage[]
   /** Keep the pages in the order written, for sections meant to be read top to bottom. */
   ordered?: boolean
@@ -33,6 +45,7 @@ const page = (slug: string, title: string, description: string, file = slug): Na
 const sections: NavSection[] = [
   {
     title: 'Getting started',
+    icon: BookOpenIcon,
     ordered: true,
     pages: [
       page(
@@ -51,6 +64,7 @@ const sections: NavSection[] = [
   },
   {
     title: 'Packages',
+    icon: PackageIcon,
     pages: [
       page('image', 'Image', 'An <img> that loads with blur, pixels, reveals and real progress.'),
       page(
@@ -79,6 +93,7 @@ const sections: NavSection[] = [
   },
   {
     title: 'Components',
+    icon: ComponentIcon,
     pages: [
       page(
         'components/accordion',
@@ -232,6 +247,11 @@ const sections: NavSection[] = [
       page('components/progress', 'Progress', 'How far along a task is.'),
       page('components/radio-group', 'Radio Group', 'Pick one of several options.'),
       page('components/scroll-area', 'Scroll Area', 'A scrollable region with themed bars.'),
+      page(
+        'components/scroll-fade',
+        'Scroll Fade',
+        'Edges that fade out where there is more to scroll, on any background.',
+      ),
       page(
         'components/rich-text-editor',
         'Rich Text Editor',
@@ -406,6 +426,7 @@ const sections: NavSection[] = [
   },
   {
     title: 'Blocks',
+    icon: LayoutTemplateIcon,
     pages: [
       page('blocks/hero', 'Hero', 'The first thing a page says: headline, lead and actions.'),
       page('blocks/features', 'Features', 'What the product does: feature grids and live bentos.'),
@@ -447,6 +468,7 @@ const sections: NavSection[] = [
   },
   {
     title: 'Drag and drop',
+    icon: GripVerticalIcon,
     pages: [
       page('dnd/sortable', 'Sortable', 'A list you reorder by dragging, or with the keyboard.'),
       page('dnd/kanban', 'Kanban', 'Columns of cards, moved inside a column or across them.'),
@@ -469,6 +491,7 @@ const sections: NavSection[] = [
   },
   {
     title: 'Motion',
+    icon: SparklesIcon,
     pages: [
       page(
         'motion/spotlight',
@@ -575,6 +598,7 @@ const releases: Record<string, string[]> = {
     'components/radio-cards',
     'components/resizable-panels',
     'components/rich-text-editor',
+    'components/scroll-fade',
     'components/search-field',
     'components/segmented-control',
     'components/signature-pad',
@@ -673,18 +697,21 @@ const groups: Record<string, Record<string, string[]>> = {
       'textarea',
     ],
     Selection: [
+      'calendar',
       'checkbox',
       'chip-group',
       'color-picker',
       'combobox',
+      'date-picker',
+      'date-range-picker',
       'multi-select',
       'radio-cards',
       'radio-group',
       'select',
       'slider',
       'switch',
+      'time-picker',
     ],
-    'Date and time': ['calendar', 'date-picker', 'date-range-picker', 'time-picker'],
     Overlays: [
       'alert-dialog',
       'command',
@@ -708,6 +735,7 @@ const groups: Record<string, Record<string, string[]>> = {
       'gallery',
       'resizable-panels',
       'scroll-area',
+      'scroll-fade',
       'separator',
       'swipe-actions',
     ],
@@ -725,24 +753,36 @@ const groups: Record<string, Record<string, string[]>> = {
       'usage-meter',
     ],
     Charts: ['bar-chart', 'chart', 'donut-chart', 'line-chart', 'sparkline'],
-    Feedback: ['alert', 'announcement-bar', 'empty-state', 'progress', 'skeleton', 'spinner'],
-    Messaging: ['chat-thread', 'comment-thread', 'notification-center'],
+    Feedback: [
+      'alert',
+      'announcement-bar',
+      'empty-state',
+      'notification-center',
+      'progress',
+      'skeleton',
+      'spinner',
+    ],
+    Conversations: ['chat-thread', 'comment-thread'],
   },
   Blocks: {
-    Landing: [
+    Marketing: [
+      'blog',
+      'changelog',
       'comparison',
+      'contact',
       'cta',
+      'faq',
       'features',
+      'footer',
       'hero',
       'logos',
+      'navbar',
       'newsletter',
       'pricing',
       'stats',
       'testimonials',
     ],
-    Content: ['blog', 'changelog', 'contact', 'faq'],
-    Layout: ['footer', 'navbar', 'page-header'],
-    Application: ['auth', 'command-palette', 'file-upload', 'notifications'],
+    Application: ['auth', 'command-palette', 'file-upload', 'notifications', 'page-header'],
   },
   Motion: {
     Text: [
@@ -767,7 +807,7 @@ const groups: Record<string, Record<string, string[]>> = {
       'spotlight',
     ],
     Scroll: ['marquee', 'reveal', 'sticky-scroll', 'timeline', 'tracing-beam', 'velocity-marquee'],
-    'Hover and pointer': [
+    Pointer: [
       'animated-tooltip',
       'dock',
       'hover-highlight',
@@ -777,8 +817,17 @@ const groups: Record<string, Record<string, string[]>> = {
       'ripple',
       'tilt-card',
     ],
-    'Cards and lists': ['animated-list', 'card-stack', 'compare', 'flip-card', 'terminal'],
-    Effects: ['confetti', 'orbit', 'path-morph', 'sonar'],
+    'Cards and effects': [
+      'animated-list',
+      'card-stack',
+      'compare',
+      'confetti',
+      'flip-card',
+      'orbit',
+      'path-morph',
+      'sonar',
+      'terminal',
+    ],
   },
 }
 

@@ -14,6 +14,7 @@ import {
 } from '@/ui/command'
 import { Drawer, DrawerBody, DrawerContent, DrawerDescription, DrawerTitle } from '@/ui/drawer'
 import { Kbd, KbdGroup } from '@/ui/kbd'
+import { ScrollFade } from '@/ui/scroll-fade'
 import { ThemeSwitch } from '@/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/tooltip'
 import { isNew, nav, pageHref } from '~/lib/nav'
@@ -23,7 +24,7 @@ import { setCustomizerOpen } from '~/lib/theme-choice'
 import { siteChrome } from '~/lib/themes'
 import { CustomizeDrawer } from './customize-drawer'
 import { Logo } from './logo'
-import { NewBadge } from './new-badge'
+import { NewBadge, NewDot } from './new-badge'
 
 function GithubIcon() {
   return (
@@ -76,10 +77,17 @@ const sectionOf = (pathname: string) =>
 type Section = (typeof nav)[number]
 type Page = Section['pages'][number]
 
-/** The links of a section or a group, on a line that marks the one being read. */
+/** A focus ring drawn inside, so the clipped folds never cut it. */
+const focusRing =
+  'outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset'
+
+/**
+ * The links of a section or a group, along one guide line under the icon or the chevron. The
+ * line darkens at the page being read. Titles stay on one line, new pages get a dot.
+ */
 function PageList({ pages, onNavigate }: { pages: Page[]; onNavigate?: () => void }) {
   return (
-    <ul className="flex flex-col gap-0.5 border-l">
+    <ul className="ml-2 border-l">
       {pages.map((p) => (
         <li key={p.slug}>
           <NavLink
@@ -88,13 +96,14 @@ function PageList({ pages, onNavigate }: { pages: Page[]; onNavigate?: () => voi
             onClick={onNavigate}
             className={({ isActive }) =>
               cn(
-                '-ml-px flex items-center gap-2 border-l py-1 pl-4 text-muted-foreground transition-colors hover:text-foreground',
-                isActive && 'border-foreground font-medium text-foreground',
+                '-ml-px flex h-7 items-center gap-2 rounded-r-md border-transparent border-l pr-2 pl-[15px] text-muted-foreground transition-colors hover:border-foreground/25 hover:text-foreground',
+                focusRing,
+                isActive && 'border-foreground font-medium text-foreground hover:border-foreground',
               )
             }
           >
-            {p.title}
-            {isNew(p) && <NewBadge />}
+            <span className="truncate">{p.title}</span>
+            {isNew(p) && <NewDot />}
           </NavLink>
         </li>
       ))}
@@ -102,24 +111,43 @@ function PageList({ pages, onNavigate }: { pages: Page[]; onNavigate?: () => voi
   )
 }
 
-/** A heading that folds what follows it, with the count and a dot for new pages while closed. */
-function Fold({
+/** Opens and closes what follows a heading, animating the height from 0 to whatever it needs. */
+function Collapse({ id, open, children }: { id: string; open: boolean; children: ReactNode }) {
+  return (
+    <div
+      id={id}
+      className={cn(
+        'grid transition-[grid-template-rows] duration-(--duration-normal,200ms) ease-(--easing-standard,ease-out) motion-reduce:transition-none',
+        open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
+      )}
+      inert={!open}
+    >
+      {/* Open, it clips rather than hides: a hidden box is a scroller of its own, and the
+          sticky group headings inside would stick to it instead of to the sidebar. Closed, it
+          hides, since what a clip cuts off still counts towards the sidebar's scroll height. */}
+      <div className={cn('min-h-0', open ? 'overflow-clip' : 'overflow-hidden')}>{children}</div>
+    </div>
+  )
+}
+
+/**
+ * A group inside a long section: a chevron, the name and how many pages it holds. Its heading
+ * sticks under the section's while the reader scrolls through it.
+ */
+function SidebarGroup({
   title,
   pages,
   open,
   onToggle,
-  level,
-  children,
+  onNavigate,
 }: {
   title: string
   pages: Page[]
   open: boolean
   onToggle: () => void
-  level: 'section' | 'group'
-  children: ReactNode
+  onNavigate?: () => void
 }) {
   const listId = useId()
-  const fresh = pages.filter((p) => isNew(p)).length
   return (
     <div>
       <button
@@ -127,55 +155,37 @@ function Fold({
         aria-expanded={open}
         aria-controls={listId}
         onClick={onToggle}
+        data-scroll-fade-sticky
         className={cn(
-          'group flex w-full items-center gap-2 rounded-md py-1 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
-          level === 'section'
-            ? 'font-medium'
-            : 'text-muted-foreground text-xs uppercase tracking-wide hover:text-foreground aria-expanded:text-foreground',
+          'group sticky top-8 z-(--z-raised,10) flex h-7 w-full items-center gap-2 rounded-md bg-background text-left text-muted-foreground transition-colors hover:text-foreground aria-expanded:text-foreground',
+          focusRing,
         )}
       >
-        <ChevronRightIcon
-          className={cn(
-            'shrink-0 text-muted-foreground transition-transform duration-(--duration-fast,150ms)',
-            level === 'section' ? 'size-3.5' : 'size-3',
-            open && 'rotate-90',
-          )}
-        />
-        <span className="flex-1">{title}</span>
-        {!open && (
-          <span className="flex items-center gap-1.5 text-muted-foreground text-xs tabular-nums normal-case tracking-normal">
-            {fresh > 0 && <span className="size-1.5 rounded-full bg-primary" aria-hidden />}
-            {pages.length}
-          </span>
-        )}
+        <span className="flex w-4 shrink-0 justify-center">
+          <ChevronRightIcon
+            aria-hidden
+            className="size-3.5 text-muted-foreground transition-transform duration-(--duration-fast,150ms) group-aria-expanded:rotate-90 motion-reduce:transition-none"
+          />
+        </span>
+        <span className="truncate">{title}</span>
+        <span className="rounded-sm bg-muted px-1 text-[11px] text-muted-foreground tabular-nums leading-4">
+          {pages.length}
+          <span className="sr-only"> pages</span>
+        </span>
       </button>
-      {/* Rows from 0fr to 1fr animate the height to whatever the list needs. */}
-      <div
-        id={listId}
-        className={cn(
-          'grid transition-[grid-template-rows] duration-(--duration-normal,200ms) ease-(--easing-standard,ease-out) motion-reduce:transition-none',
-          open ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]',
-        )}
-        inert={!open}
-      >
-        {/* Padding goes inside the clipped box: on it, the padding would stay when closed. */}
-        <div className="min-h-0 overflow-hidden">
-          <div
-            className={cn(
-              level === 'section' ? 'ml-[0.4375rem] pt-1.5 pb-1' : 'ml-[0.3125rem] pt-1 pb-1.5',
-            )}
-          >
-            {children}
-          </div>
+      <Collapse id={listId} open={open}>
+        <div className="pt-0.5 pb-2">
+          <PageList pages={pages} onNavigate={onNavigate} />
         </div>
-      </div>
+      </Collapse>
     </div>
   )
 }
 
 /**
- * A section of the sidebar. The long ones are split into groups that fold on their own, so
- * opening Components shows a dozen headings rather than a hundred links.
+ * A section of the sidebar: its icon, title and page count. The heading sticks to the top of
+ * the sidebar while its pages scroll by. The long sections are split into groups that fold
+ * on their own, so opening Components shows ten headings rather than a hundred links.
  */
 function SidebarSection({
   section,
@@ -188,36 +198,51 @@ function SidebarSection({
   onToggle: (key: string) => void
   onNavigate?: () => void
 }) {
+  const listId = useId()
+  const open = isOpen(section.title)
+  const Icon = section.icon
   return (
-    <Fold
-      title={section.title}
-      pages={section.pages}
-      open={isOpen(section.title)}
-      onToggle={() => onToggle(section.title)}
-      level="section"
-    >
-      {section.groups ? (
-        <div className="flex flex-col gap-0.5 border-l pl-3">
-          {section.groups.map((group) => {
-            const key = `${section.title}/${group.title}`
-            return (
-              <Fold
-                key={key}
-                title={group.title}
-                pages={group.pages}
-                open={isOpen(key)}
-                onToggle={() => onToggle(key)}
-                level="group"
-              >
-                <PageList pages={group.pages} onNavigate={onNavigate} />
-              </Fold>
-            )
-          })}
+    <div>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={listId}
+        onClick={() => onToggle(section.title)}
+        data-scroll-fade-sticky
+        className={cn(
+          'sticky top-0 z-[calc(var(--z-raised,10)+1)] flex h-8 w-full items-center gap-2 rounded-md bg-background text-left font-medium text-foreground',
+          focusRing,
+        )}
+      >
+        <Icon aria-hidden className="size-4 shrink-0 text-muted-foreground" />
+        <span className="flex-1 truncate">{section.title}</span>
+        <span className="pr-1 font-normal text-muted-foreground text-xs tabular-nums">
+          {section.pages.length}
+          <span className="sr-only"> pages</span>
+        </span>
+      </button>
+      <Collapse id={listId} open={open}>
+        <div className="pt-0.5 pb-3">
+          {section.groups ? (
+            section.groups.map((group) => {
+              const key = `${section.title}/${group.title}`
+              return (
+                <SidebarGroup
+                  key={key}
+                  title={group.title}
+                  pages={group.pages}
+                  open={isOpen(key)}
+                  onToggle={() => onToggle(key)}
+                  onNavigate={onNavigate}
+                />
+              )
+            })
+          ) : (
+            <PageList pages={section.pages} onNavigate={onNavigate} />
+          )}
         </div>
-      ) : (
-        <PageList pages={section.pages} onNavigate={onNavigate} />
-      )}
-    </Fold>
+      </Collapse>
+    </div>
   )
 }
 
@@ -240,7 +265,7 @@ const placeOf = (pathname: string) => {
  * the rest stay as the reader left them. The page being read is scrolled into view in the
  * sidebar, which matters when arriving from a link straight to a page far down the list.
  */
-function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+function SidebarNav({ onNavigate, className }: { onNavigate?: () => void; className?: string }) {
   const { pathname } = useLocation()
   const ref = useRef<HTMLElement>(null)
   const [open, setOpen] = useState<Record<string, boolean>>(readOpen)
@@ -273,14 +298,19 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       if (!link || !scroller) return
       const box = scroller.getBoundingClientRect()
       const at = link.getBoundingClientRect()
-      if (at.top >= box.top + 24 && at.bottom <= box.bottom - 24) return
+      // The sticky headings cover the top, so the link has to be clear of them too.
+      if (at.top >= box.top + 96 && at.bottom <= box.bottom - 48) return
       scroller.scrollTop += at.top - box.top - box.height / 2 + at.height / 2
     }, 220)
     return () => clearTimeout(timer)
   }, [pathname])
 
   return (
-    <nav ref={ref} aria-label="Documentation" className="flex flex-col gap-3 text-sm">
+    <nav
+      ref={ref}
+      aria-label="Documentation"
+      className={cn('flex flex-col gap-1 text-sm', className)}
+    >
       {nav.map((section) => (
         <SidebarSection
           key={section.title}
@@ -309,7 +339,15 @@ function Search({ open, onOpenChange }: { open: boolean; onOpenChange: (open: bo
       <CommandList>
         <CommandEmpty>No results.</CommandEmpty>
         {nav.map((section) => (
-          <CommandGroup key={section.title} heading={section.title}>
+          <CommandGroup
+            key={section.title}
+            heading={
+              <span className="flex items-center gap-2">
+                <section.icon aria-hidden className="size-3.5" />
+                {section.title}
+              </span>
+            }
+          >
             {section.pages.map((p) => (
               <CommandItem
                 key={p.slug}
@@ -478,39 +516,47 @@ export function Layout() {
         <DrawerContent side="left" showCloseButton={false} className={cn(siteChrome, 'w-72')}>
           <DrawerTitle className="sr-only">Menu</DrawerTitle>
           <DrawerDescription className="sr-only">Documentation navigation</DrawerDescription>
-          <DrawerBody className="py-6" data-sidebar-scroll>
-            <div className="mb-4 flex items-center justify-between gap-2">
-              <NavLink
-                to="/themes"
-                onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-2 font-medium text-sm"
-              >
-                <PaletteIcon className="size-4" /> Themes
-              </NavLink>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  setMenuOpen(false)
-                  setCustomizerOpen(true)
-                }}
-              >
-                Customize
-              </Button>
-            </div>
-            <SidebarNav onNavigate={() => setMenuOpen(false)} />
-          </DrawerBody>
+          <ScrollFade asChild size={48}>
+            {/* The padding goes inside: on the scroller it would hold the sticky headings
+                that far from the top, with links showing above them. */}
+            <DrawerBody data-sidebar-scroll>
+              <div className="py-6">
+                <div className="mb-4 flex items-center justify-between gap-2">
+                  <NavLink
+                    to="/themes"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center gap-2 font-medium text-sm"
+                  >
+                    <PaletteIcon className="size-4" /> Themes
+                  </NavLink>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setMenuOpen(false)
+                      setCustomizerOpen(true)
+                    }}
+                  >
+                    Customize
+                  </Button>
+                </div>
+                <SidebarNav onNavigate={() => setMenuOpen(false)} />
+              </div>
+            </DrawerBody>
+          </ScrollFade>
         </DrawerContent>
       </Drawer>
 
       {inDocs ? (
         <div className="mx-auto flex w-full max-w-7xl flex-1 gap-10 px-4 sm:px-6">
-          <aside
-            data-sidebar-scroll
-            className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto overscroll-contain py-8 md:block"
-          >
-            <SidebarNav />
-          </aside>
+          <ScrollFade asChild size={48}>
+            <aside
+              data-sidebar-scroll
+              className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto overscroll-contain md:block"
+            >
+              <SidebarNav className="py-8" />
+            </aside>
+          </ScrollFade>
           <main
             className={cn(
               'w-full min-w-0 flex-1 py-8 lg:py-10',

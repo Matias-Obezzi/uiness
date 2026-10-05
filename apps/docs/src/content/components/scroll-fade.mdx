@@ -1,0 +1,79 @@
+A scroller whose edges fade out where there is more to see. Each edge fades only while there is content past it, so the fade says "keep scrolling" and goes away at the end.
+
+<ComponentPreview name="scroll-fade-demo" />
+
+## Installation
+
+<Install name="scroll-fade" />
+
+## Usage
+
+```tsx
+import { ScrollFade } from '@/components/ui/scroll-fade'
+
+<ScrollFade className="h-64">
+  <ul>...</ul>
+</ScrollFade>
+```
+
+`ScrollFade` is the element that scrolls: give it a height, or a width for a row, and put the content inside. The fade is a CSS mask, not a gradient painted over the content, so it works on any background, images and cards included, with nothing to match to the color behind it.
+
+Each fade grows with the distance left to scroll, up to `size`. Right at an edge there is none, and it reaches full size once that many pixels are left, which reads as the content easing out of view. It follows the scroll itself, so there is no transition to reduce for people who ask for less motion.
+
+The edges are measured again on every scroll, when the scroller changes size and when its content does, one frame at a time. Nothing re-renders: the sizes are written to the element as CSS variables.
+
+## Horizontal
+
+Rows of chips or tabs that overflow sideways are where a fade helps the most, since nothing else shows that there is more. `hideScrollbar` drops the bar, leaving the fade as the only hint.
+
+<ComponentPreview name="scroll-fade-horizontal" />
+
+```tsx
+<ScrollFade orientation="horizontal" size={32} hideScrollbar>
+  <div className="flex w-max gap-2">...</div>
+</ScrollFade>
+```
+
+`orientation="both"` fades all four edges, for a canvas or a wide table. Right to left layouts fade the correct side.
+
+## Sticky headers
+
+A fade at the top would also fade a sticky header stuck there. Mark the header with `data-scroll-fade-sticky` and the top fade starts below it, wherever it is: under the stuck one, below the next one pushing it away. The docs sidebar on the left uses this for its section and group headings.
+
+<ComponentPreview name="scroll-fade-sticky" />
+
+```tsx
+<ScrollFade className="h-72">
+  <section>
+    <p data-scroll-fade-sticky className="sticky top-0 bg-card">A</p>
+    <ul>...</ul>
+  </section>
+</ScrollFade>
+```
+
+The same goes for a column stuck on the left of a horizontal scroller.
+
+## Your own scroller
+
+With `asChild` the fade goes on your element instead of a new `div`. It has to be the element that scrolls.
+
+```tsx
+<ScrollFade asChild>
+  <aside className="sticky top-14 h-[calc(100dvh-3.5rem)] overflow-y-auto">...</aside>
+</ScrollFade>
+```
+
+The mask covers everything the scroller draws, its border and its scrollbar too. Put a border on a wrapper around it, as the demos above do.
+
+## Styling
+
+The scroller gets `data-fade-top`, `data-fade-bottom`, `data-fade-left` and `data-fade-right` while there is more content that way, for styling anything else by them, a shadow under a header for example. The fades themselves are the `--scroll-fade-top`, `--scroll-fade-bottom`, `--scroll-fade-left` and `--scroll-fade-right` variables.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `orientation` | `vertical` | `vertical`, `horizontal` or `both`. Sets the overflow and the edges that fade. |
+| `size` | `40` | How far each fade reaches into the content, in pixels. |
+| `hideScrollbar` | `false` | Hide the scrollbar while keeping the scroll. |
+| `asChild` | `false` | Fade your own element, which must be the one that scrolls. |
