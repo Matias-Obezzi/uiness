@@ -9,11 +9,18 @@ export interface NavPage {
   added?: string
 }
 
+export interface NavGroup {
+  title: string
+  pages: NavPage[]
+}
+
 export interface NavSection {
   title: string
   pages: NavPage[]
   /** Keep the pages in the order written, for sections meant to be read top to bottom. */
   ordered?: boolean
+  /** The same pages split into smaller lists, for the sidebar of the long sections. */
+  groups?: NavGroup[]
 }
 
 const page = (slug: string, title: string, description: string, file = slug): NavPage => ({
@@ -627,15 +634,179 @@ const releases: Record<string, string[]> = {
   ],
 }
 
+/**
+ * Smaller lists inside the long sections, in the order the sidebar shows them. The pages
+ * stay alphabetical inside each one. A page left out lands in a last "More" list, so a new
+ * page still shows up before it gets a home here.
+ */
+const groups: Record<string, Record<string, string[]>> = {
+  Components: {
+    Actions: [
+      'button',
+      'button-group',
+      'billing-toggle',
+      'confirm-morph',
+      'copy-button',
+      'expanding-button-group',
+      'hold-to-confirm',
+      'kbd',
+      'segmented-control',
+      'split-button',
+      'theme-switch',
+      'toggle',
+    ],
+    Inputs: [
+      'form',
+      'inline-edit',
+      'input',
+      'input-otp',
+      'label',
+      'mention-input',
+      'money-input',
+      'number-field',
+      'password-field',
+      'phone-input',
+      'rich-text-editor',
+      'search-field',
+      'signature-pad',
+      'tag-input',
+      'textarea',
+    ],
+    Selection: [
+      'checkbox',
+      'chip-group',
+      'color-picker',
+      'combobox',
+      'multi-select',
+      'radio-cards',
+      'radio-group',
+      'select',
+      'slider',
+      'switch',
+    ],
+    'Date and time': ['calendar', 'date-picker', 'date-range-picker', 'time-picker'],
+    Overlays: [
+      'alert-dialog',
+      'command',
+      'context-menu',
+      'dialog',
+      'drawer',
+      'dropdown-menu',
+      'hover-card',
+      'popover',
+      'tooltip',
+      'tour',
+    ],
+    Navigation: ['breadcrumb', 'navbar', 'pagination', 'sidebar', 'stepper', 'tabs', 'tree-view'],
+    Layout: [
+      'accordion',
+      'bento-grid',
+      'card',
+      'carousel',
+      'collapsible',
+      'expandable-card',
+      'gallery',
+      'resizable-panels',
+      'scroll-area',
+      'separator',
+      'swipe-actions',
+    ],
+    'Data display': [
+      'activity-heatmap',
+      'avatar',
+      'avatar-group',
+      'badge',
+      'code-block',
+      'data-table',
+      'gauge',
+      'json-viewer',
+      'metric-card',
+      'table',
+      'usage-meter',
+    ],
+    Charts: ['bar-chart', 'chart', 'donut-chart', 'line-chart', 'sparkline'],
+    Feedback: ['alert', 'announcement-bar', 'empty-state', 'progress', 'skeleton', 'spinner'],
+    Messaging: ['chat-thread', 'comment-thread', 'notification-center'],
+  },
+  Blocks: {
+    Landing: [
+      'comparison',
+      'cta',
+      'features',
+      'hero',
+      'logos',
+      'newsletter',
+      'pricing',
+      'stats',
+      'testimonials',
+    ],
+    Content: ['blog', 'changelog', 'contact', 'faq'],
+    Layout: ['footer', 'navbar', 'page-header'],
+    Application: ['auth', 'command-palette', 'file-upload', 'notifications'],
+  },
+  Motion: {
+    Text: [
+      'flip-words',
+      'gradient-text',
+      'number-ticker',
+      'odometer',
+      'scramble-text',
+      'shimmer',
+      'text-generate',
+      'text-morph',
+      'text-reveal',
+      'typewriter',
+    ],
+    Backgrounds: [
+      'aurora',
+      'meteors',
+      'parallax-grid',
+      'pattern',
+      'retro-grid',
+      'sparkles',
+      'spotlight',
+    ],
+    Scroll: ['marquee', 'reveal', 'sticky-scroll', 'timeline', 'tracing-beam', 'velocity-marquee'],
+    'Hover and pointer': [
+      'animated-tooltip',
+      'dock',
+      'hover-highlight',
+      'link-preview',
+      'magnetic',
+      'moving-border',
+      'ripple',
+      'tilt-card',
+    ],
+    'Cards and lists': ['animated-list', 'card-stack', 'compare', 'flip-card', 'terminal'],
+    Effects: ['confetti', 'orbit', 'path-morph', 'sonar'],
+  },
+}
+
+/** A section's pages split by `groups`, matching on the last part of the slug. */
+function groupPages(title: string, pages: NavPage[]): NavGroup[] | undefined {
+  const table = groups[title]
+  if (!table) return undefined
+  const name = (p: NavPage) => p.slug.slice(p.slug.lastIndexOf('/') + 1)
+  const placed = new Set<NavPage>()
+  const out = Object.entries(table).map(([group, names]) => {
+    const list = pages.filter((p) => names.includes(name(p)))
+    for (const p of list) placed.add(p)
+    return { title: group, pages: list }
+  })
+  const rest = pages.filter((p) => !placed.has(p))
+  if (rest.length) out.push({ title: 'More', pages: rest })
+  return out.filter((g) => g.pages.length > 0)
+}
+
 const addedOn = new Map(
   Object.entries(releases).flatMap(([date, slugs]) => slugs.map((slug) => [slug, date] as const)),
 )
 
-/** Every section alphabetical, apart from the ones meant to be read in order. */
+/** Every section alphabetical, apart from the ones meant to be read in order, with its groups. */
 export const nav: NavSection[] = sections.map((section) => {
   const pages = section.pages.map((p) => ({ ...p, added: addedOn.get(p.slug) }))
   if (!section.ordered) pages.sort((a, b) => a.title.localeCompare(b.title))
-  return { ...section, pages }
+  return { ...section, pages, groups: groupPages(section.title, pages) }
 })
 
 export const pages: NavPage[] = nav.flatMap((section) => section.pages)
