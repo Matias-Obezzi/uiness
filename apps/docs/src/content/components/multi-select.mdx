@@ -1,0 +1,48 @@
+Pick several options from a list you can search. What is picked shows as tags in the trigger, and the rest fold into a count so the field keeps its height.
+
+<ComponentPreview name="multi-select-demo" />
+
+## Installation
+
+<Install name="multi-select" extra="Installs Command and Popover along with it." />
+
+## Usage
+
+```tsx
+import { MultiSelect } from '@/components/ui/multi-select'
+
+const options = [
+  { value: 'react', label: 'React', group: 'Libraries' },
+  { value: 'vue', label: 'Vue', group: 'Libraries' },
+  { value: 'next', label: 'Next.js', group: 'Frameworks' },
+]
+
+<MultiSelect options={options} value={value} onValueChange={setValue} placeholder="Pick your stack" />
+```
+
+The list stays open while you pick. Options with the same `group` sit under a heading, `keywords` add words an option is found by, and `disabled` options are shown but cannot be picked. The value always comes back in the order of `options`, so the tags never reshuffle as you click.
+
+## Select all and clear
+
+"Select all" sits at the top of the list and picks every enabled option, or drops them all when they are already picked. It shows as mixed when only some are. "Clear selection" appears at the bottom once anything is picked. Both are list rows, so the arrow keys reach them. Hide the first with `selectAll={false}`.
+
+## Tags
+
+`maxShown` sets how many tags fit before the rest become "+N". Each tag has its own remove button, and `Backspace` on the trigger removes the last pick. The trigger is described by the full list, "4 selected: React, Svelte, Next.js, Astro", so the folded ones are still read out.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `options` | | Each with `value` and `label`, and optionally `group`, `keywords`, `icon`, `disabled`. |
+| `value`, `defaultValue`, `onValueChange` | | The picked values. |
+| `maxShown` | `3` | Tags before the count. |
+| `selectAll` | `true` | Show the select all row. |
+| `placeholder`, `searchPlaceholder`, `emptyText` | | Texts. |
+| `open`, `onOpenChange` | | Control the list. |
+| `name` | | Posts one value per pick with a form. |
+| `align` | `'start'` | Where the list sits under the trigger. |
+
+## When to use something else
+
+For a few options that all fit on screen, [Chip Group](/docs/components/chip-group) or checkboxes show the choice without a click. For picking one, use the [Combobox](/docs/components/combobox).

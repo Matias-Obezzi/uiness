@@ -1,0 +1,46 @@
+Filter chips. Picking one fills it in and slides a check in beside the label.
+
+<ComponentPreview name="chip-group-demo" />
+
+## Installation
+
+<Install name="chip-group" />
+
+## Usage
+
+```tsx
+import { ChipGroup, ChipGroupItem } from '@/components/ui/chip-group'
+
+<ChipGroup type="multiple" aria-label="Cuisine" value={picked} onValueChange={setPicked}>
+  <ChipGroupItem value="italian">Italian</ChipGroupItem>
+  <ChipGroupItem value="japanese">Japanese</ChipGroupItem>
+</ChipGroup>
+```
+
+`type="multiple"` lets any number be picked, and each chip is a pressed or unpressed button. `type="single"` keeps one at a time and reads as a radio group, though the picked chip can still be pressed again to clear it.
+
+## Single, with icons
+
+<ComponentPreview name="chip-group-single" />
+
+`icon` goes before the label, and `size="sm"` makes the chips smaller.
+
+## Keyboard
+
+The group is one tab stop. The arrow keys move between chips, skipping disabled ones and wrapping at the ends, and `Space` or `Enter` toggles the one in focus.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `type` | | `'single'` or `'multiple'`. |
+| `value`, `defaultValue`, `onValueChange` | | A string for single, a list for multiple. |
+| `size` | `'default'` | `'sm'` or `'default'`. |
+| `disabled` | `false` | Turn every chip off. |
+| `loop` | `true` | Arrow keys wrap around. |
+| `name` | | Posts one value per picked chip with a form. |
+| `icon` | | On an item, shown before the label. |
+
+## Details
+
+The fill grows out from the middle of the chip and the check slides in on a grid column that opens from zero, all in CSS. With reduced motion both change at once.

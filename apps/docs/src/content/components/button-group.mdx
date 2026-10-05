@@ -1,0 +1,52 @@
+Related buttons joined into one surface, split by hairlines. A single highlight glides to whichever button the pointer or the keyboard is on, so the row reads as one control rather than a set of buttons lighting up one by one.
+
+<ComponentPreview name="button-group-demo" />
+
+## Installation
+
+<Install name="button-group" />
+
+## Usage
+
+```tsx
+import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group'
+
+<ButtonGroup aria-label="Range">
+  <ButtonGroupItem aria-pressed={range === 'day'} onClick={() => setRange('day')}>
+    Day
+  </ButtonGroupItem>
+  <ButtonGroupItem aria-pressed={range === 'week'} onClick={() => setRange('week')}>
+    Week
+  </ButtonGroupItem>
+</ButtonGroup>
+```
+
+Each item is a plain button: Tab moves between them and they act on click. Mark the current one with `aria-pressed` and it keeps a background of its own. For one choice out of a few, with arrow keys, use a [Segmented Control](/docs/components/segmented-control) instead.
+
+## Links and columns
+
+<ComponentPreview name="button-group-vertical" />
+
+`asChild` renders the child instead of a button, so a group of links stays a group of links. Mark the current page with `aria-current="page"`. `orientation="vertical"` stacks the items, with the hairlines running across.
+
+```tsx
+<ButtonGroup orientation="vertical" aria-label="Account">
+  <ButtonGroupItem asChild>
+    <a href="/overview" aria-current="page">Overview</a>
+  </ButtonGroupItem>
+  <ButtonGroupItem asChild>
+    <a href="/settings">Settings</a>
+  </ButtonGroupItem>
+</ButtonGroup>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `orientation` | `'horizontal'` | `horizontal` or `vertical`. |
+| `size` | `'default'` | `sm`, `default` or `lg`. |
+| `duration` | `200` | Milliseconds the highlight takes to glide. |
+| `highlightClassName` | | Classes for the highlight. |
+
+`ButtonGroupItem` takes the props of a button, and `asChild`. The highlight jumps instead of gliding with reduced motion, and only follows focus that came from the keyboard.
