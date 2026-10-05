@@ -67,6 +67,7 @@ describe('ExpandableCard', () => {
 interface FakeAnimation {
   el: Element
   frames: Keyframe[]
+  options: KeyframeAnimationOptions
   finish: () => void
   cancelled: boolean
 }
@@ -74,7 +75,7 @@ interface FakeAnimation {
 /** Records each animation and leaves it running until the test finishes it. */
 function stubAnimations() {
   const animations: FakeAnimation[] = []
-  HTMLElement.prototype.animate = function (frames) {
+  HTMLElement.prototype.animate = function (frames, options) {
     let resolve = () => {}
     let reject = (_: unknown) => {}
     const finished = new Promise<void>((res, rej) => {
@@ -85,6 +86,7 @@ function stubAnimations() {
     const record: FakeAnimation = {
       el: this,
       frames: frames as Keyframe[],
+      options: options as KeyframeAnimationOptions,
       finish: resolve,
       cancelled: false,
     }
@@ -141,6 +143,20 @@ describe('ExpandableCard morph', () => {
     await motion.finishAll()
     expect(document.querySelector('[data-slot=expandable-card-ghost]')).toBeNull()
     expect(screen.getByRole('dialog')).toBeTruthy()
+  })
+
+  it('reads duration tokens in seconds, as minified CSS writes them', async () => {
+    // `300ms` comes out of a production build as `.3s`.
+    document.documentElement.style.setProperty('--duration-slow', '.3s')
+    try {
+      const motion = stubAnimations()
+      const user = userEvent.setup()
+      render(<Example />)
+      await user.click(screen.getByRole('button', { name: 'Northern lights' }))
+      expect(motion.surface()?.options.duration).toBeCloseTo(420)
+    } finally {
+      document.documentElement.style.removeProperty('--duration-slow')
+    }
   })
 
   it('folds back from wherever it is when closed while still growing', async () => {

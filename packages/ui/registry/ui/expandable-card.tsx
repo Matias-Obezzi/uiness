@@ -28,10 +28,15 @@ function useExpandableCard(component: string) {
   return context
 }
 
-/** A duration token from the theme in milliseconds, for animations run from script. */
+/**
+ * A duration token from the theme in milliseconds, for animations run from script. Minifiers
+ * rewrite `300ms` as `.3s`, so both units are read.
+ */
 function tokenMs(el: Element, name: string, fallback: number) {
-  const value = Number.parseFloat(getComputedStyle(el).getPropertyValue(name))
-  return Number.isNaN(value) ? fallback : value
+  const raw = getComputedStyle(el).getPropertyValue(name).trim()
+  const n = Number.parseFloat(raw)
+  if (Number.isNaN(n)) return fallback
+  return raw.endsWith('ms') ? n : raw.endsWith('s') ? n * 1000 : fallback
 }
 
 /** An easing token from the theme. The Web Animations API takes the literal curve. */
@@ -381,7 +386,7 @@ function ExpandableCard({
       const ghostFade: Keyframe[] = now
         ? [{ opacity: from.ghost.opacity }, { opacity: to.ghost.opacity }]
         : opening
-          ? [{ opacity: 1 }, { opacity: 0, offset: 0.35 }, { opacity: 0 }]
+          ? [{ opacity: 1 }, { opacity: 0, offset: 0.5 }, { opacity: 0 }]
           : [
               { opacity: 0 },
               { opacity: 0, offset: 0.2 },
@@ -390,7 +395,8 @@ function ExpandableCard({
             ]
       animate(ghost, ghostFade, { duration, easing: 'linear' })
 
-      // What only the view has comes in once the surface has room for it, and leaves first.
+      // What only the view has comes in once the surface has room for it, and leaves first. It
+      // starts while the card's text is still fading, so there is always text on the surface.
       faders.forEach((el, i) => {
         const a = from.faders[i]
         const b = to.faders[i]
@@ -398,7 +404,7 @@ function ExpandableCard({
         const frames: Keyframe[] = now
           ? [a, b]
           : opening
-            ? [a, { ...a, offset: 0.25, easing: fade }, b]
+            ? [a, { ...a, offset: 0.15, easing: fade }, b]
             : [a, { ...b, offset: 0.25 }, b]
         animate(el, frames, { duration, easing: now ? fade : 'linear' })
       })
