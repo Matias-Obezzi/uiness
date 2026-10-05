@@ -1,0 +1,90 @@
+A bell with the unread count that opens your notifications in a popover: All and Unread tabs plus your own, notifications grouped by day, mark one or all as read, buttons on the ones that need an answer, and new arrivals sliding in at the top. The bell rings and the badge pops when the count goes up.
+
+<ComponentPreview name="notification-center-demo" />
+
+## Installation
+
+<Install name="notification-center" />
+
+## Usage
+
+```tsx
+import { NotificationCenter, type NotificationData } from '@/components/ui/notification-center'
+
+<NotificationCenter
+  notifications={notifications}
+  onRead={(id) => markRead(id)}
+  onReadAll={() => markAllRead()}
+  onAction={(id, action) => handle(id, action)}
+  tabs={[{ value: 'mentions', label: 'Mentions', filter: (n) => n.category === 'Mentions' }]}
+  footer={<Button variant="ghost" size="sm" className="w-full">View all</Button>}
+/>
+```
+
+A notification is a title, a time and whatever else it needs:
+
+```tsx
+const notification: NotificationData = {
+  id: 'n1',
+  title: <><b>Leo Park</b> invited you to Design Systems</>,
+  description: 'Join to see the components and their docs.',
+  createdAt: new Date(),
+  avatar: '/leo.png',
+  name: 'Leo Park',
+  category: 'Invites',
+  actions: [
+    { id: 'accept', label: 'Accept' },
+    { id: 'decline', label: 'Decline' },
+  ],
+}
+```
+
+`icon` draws any node in a tile in place of the avatar. The first action is a filled button and the rest are outlined, unless they say otherwise with `variant`.
+
+The list is yours: `onRead`, `onReadAll` and `onAction` report what was pressed and you pass the updated notifications back. Pressing the title of an unread notification marks it read too, and calls `onSelect` with it, the place to open what it is about.
+
+### Tabs
+
+All and Unread are always there, Unread with its count. `tabs` adds more, each with a `filter` over the notifications. Every tab shows its own empty state, or pass `empty` for one of yours.
+
+### New notifications
+
+Notifications that arrive while the panel is open slide in at the top of their day; the ones already there when it opened stay still. With the panel closed, the bell swings and the badge pops instead. Neither moves with reduced motion.
+
+### Without the popover
+
+`NotificationPanel` is the panel on its own, for a notifications page or a sidebar. It takes the same props apart from the popover ones.
+
+<ComponentPreview name="notification-center-panel" />
+
+```tsx
+import { NotificationPanel } from '@/components/ui/notification-center'
+
+<NotificationPanel title="Inbox" notifications={notifications} onRead={markRead} />
+```
+
+`NotificationBell` and `NotificationItem` are exported too.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `notifications` | | Newest first or in any order; they are sorted and grouped by day. |
+| `onRead` | | `(id) => void`. Shows the unread dot as a button. |
+| `onReadAll` | | `() => void`. Shows "Mark all as read". |
+| `onAction` | | `(notificationId, actionId) => void`. |
+| `onSelect` | | `(notification) => void`, when a title is pressed. |
+| `tabs` | `[]` | More tabs after All and Unread: `{ value, label, filter }`. |
+| `defaultTab` | `'all'` | Tab open at first. |
+| `title` | `'Notifications'` | Heading of the panel and name of the bell. |
+| `footer` | | Under the list, such as a "View all" link. |
+| `empty` | | Shown when a tab is empty. |
+| `open`, `defaultOpen`, `onOpenChange` | | The popover's open state. |
+| `align` | `'end'` | Where the panel lines up with the bell. |
+| `panelClassName` | | Classes for the panel. `className` goes to the bell. |
+| `now` | the clock | What "now" is for the times and days. |
+| `locale` | the reader's | Locale for times and day names. |
+
+## Accessibility
+
+The bell's name includes the count, "Notifications, 3 unread". The panel is a Radix popover with focus moved in and returned, and the tabs are Radix tabs, so the arrow keys move between them. Each day is a region named after it. A notification's title is its button, stretched over the whole row, with the actions and the "Mark as read" dot above it so each is a separate stop for the keyboard.

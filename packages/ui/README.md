@@ -60,6 +60,8 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `alert-dialog` | A dialog that asks for a decision, plus `confirm()`, an awaitable version of it rendered by one `<Confirmer />`. |
 | `context-menu` | Right click menus declared once by name on a provider, picked per element with `useContextMenu`, extended or replaced where needed. Also opens from the keyboard and on a long press. |
 | `tour` | Guided tours declared once by name on a provider and started from anywhere with `useTour`: a spotlight around each target, a card that flips to fit, steps filtered with `when`. |
+| `chat-thread`, `comment-thread`, `notification-center` | Conversation pieces from plain data: a chat with grouped messages, reactions, read receipts, typing and a composer; comments with replies, mentions, edits and resolve; a bell that opens notifications in tabs, grouped by day. |
+| `rich-text-editor` | A lightweight `contenteditable` editor with no dependencies: Markdown shortcuts, a selection toolbar, a slash menu, its own undo history, sanitized pastes, and HTML and Markdown out. |
 | `navbar` | Bar that becomes a menu or a bottom tab bar on phones. |
 | `command` | Command palette with fuzzy search, plus `useCommandShortcut`. |
 | `scroll-area` | Scrollable region with themed bars. |

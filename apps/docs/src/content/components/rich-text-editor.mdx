@@ -1,0 +1,114 @@
+A small rich text editor for comments, notes and descriptions, built on `contenteditable` with no dependencies. Markdown shortcuts work as you type, selecting text brings up a formatting toolbar, `/` opens a menu of blocks, undo and redo keep their own history, pastes are cleaned to the tags it supports, and every change comes out as HTML and as Markdown.
+
+<ComponentPreview name="rich-text-editor-demo" />
+
+It is deliberately lightweight. There is no document model underneath, no collaboration, tables, images or plugins: it edits the DOM with a few rules that keep it to a handful of tags. If you need a full editor framework, reach for ProseMirror, Tiptap or Lexical. If you need a comment box that understands bold and lists, this is one file you own.
+
+## Installation
+
+<Install name="rich-text-editor" />
+
+## Usage
+
+```tsx
+import { RichTextEditor } from '@/components/ui/rich-text-editor'
+
+<RichTextEditor
+  defaultValue="<p>Hello <strong>world</strong></p>"
+  onChange={({ html, markdown }) => save(html, markdown)}
+  placeholder="Write a description…"
+/>
+```
+
+The editor is uncontrolled: `defaultValue` is read once, and `onChange` reports every change. To read or replace the content from outside, take a ref:
+
+```tsx
+const editor = useRef<RichTextEditorHandle>(null)
+
+<RichTextEditor ref={editor} />
+
+editor.current?.getMarkdown()
+editor.current?.setHTML('<p>Start over</p>')
+```
+
+The handle also has `getHTML()`, `focus()`, `undo()` and `redo()`.
+
+## Writing
+
+| Type | At the start of a line, then a space |
+| --- | --- |
+| Heading 1, 2, 3 | `#`, `##`, `###` |
+| Bulleted list | `-`, `*` or `+` |
+| Numbered list | `1.` |
+| Quote | `>` |
+| Divider | `---` |
+
+| Wrap a word in | For |
+| --- | --- |
+| `**bold**` or `__bold__` | **bold** |
+| `*italic*` or `_italic_` | *italic* |
+| `~~strike~~` | ~~strikethrough~~ |
+| `` `code` `` | `code` |
+
+Backspace at the start of a heading, quote or list item turns it back into a paragraph, and Enter on an empty one leaves it. Undoing right after a shortcut gives back the characters you typed.
+
+### Toolbar
+
+Selecting text shows a toolbar above it with bold, italic, underline, strikethrough, code, link, heading, the two lists and quote. Buttons show whether the selection already has that format, and pressing one again takes it off. Link opens a field for the address; links are kept only when they are `http`, `https`, `mailto`, `tel` or relative, and a bare domain gets `https://`.
+
+| Shortcut | Does |
+| --- | --- |
+| Ctrl/Cmd+B, I, U | Bold, italic, underline |
+| Ctrl/Cmd+Shift+X | Strikethrough |
+| Ctrl/Cmd+E | Code |
+| Ctrl/Cmd+K | Link |
+| Ctrl/Cmd+Z | Undo |
+| Ctrl/Cmd+Shift+Z or Ctrl+Y | Redo |
+| Alt+F10 | Move focus to the toolbar |
+
+### Slash menu
+
+`/` at the start of a line or after a space opens the blocks: text, three headings, both lists, quote and divider. Keep typing to filter, use the arrow keys and Enter or Tab to pick one, and Escape to close it and keep the slash.
+
+### Pasting
+
+Pasted HTML, from a web page, Google Docs or Word, is cleaned down to the supported tags before it goes in. Scripts, styles, images, frames, classes and every attribute but `href` are dropped; `<b>`, `<i>` and `<strike>` become `<strong>`, `<em>` and `<s>`; bold and italic set with inline styles are kept as tags; `h4` to `h6` become `h3`; `div`s become paragraphs. Pasted plain text keeps its paragraphs and line breaks. `sanitizeHtml()` is exported for cleaning HTML you got from somewhere else, such as a stored value.
+
+## Output
+
+`onChange` gets `{ html, markdown }`. The HTML is the same clean subset the paste produces:
+
+```html
+<h2>Launch notes</h2>
+<p>Some <strong>bold</strong> and <a href="https://uiness.vercel.app">a link</a>.</p>
+<ul><li>One</li><li>Two</li></ul>
+```
+
+The Markdown comes from a small serializer for exactly those tags, `htmlToMarkdown()`, which you can also call on its own. Strikethrough is GFM's `~~`; underline has no Markdown, so it stays `<u>`. Text that would read as Markdown, such as a paragraph starting with `#` or a literal `*`, is escaped.
+
+An empty editor reports an empty string for both.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `defaultValue` | `''` | Starting content as HTML, sanitized. |
+| `onChange` | | `({ html, markdown }) => void` after every change. |
+| `placeholder` | `"Write something, or press '/' for blocks…"` | Shown while empty. |
+| `readOnly` | `false` | No editing, no toolbar, no menu. |
+| `autoFocus` | `false` | Focus it and put the caret at the end on mount. |
+| `contentClassName` | | Classes for the editable area, such as a min height. |
+| `ref` | | `{ focus, getHTML, getMarkdown, setHTML, undo, redo }`. |
+| `aria-label` | `'Editor'` | Name of the text box. |
+
+## Accessibility
+
+The editable area is a `role="textbox"` with `aria-multiline`. The toolbar is a `role="toolbar"`: Alt+F10 moves focus into it, the arrow keys, Home and End move between the buttons, each of which has a name and `aria-pressed`, and Escape goes back to the text. The slash menu is a listbox the editor drives with `aria-activedescendant`, so focus stays in the text while you pick. The toolbar and menu do not animate with reduced motion.
+
+## Limits
+
+Being small has costs worth knowing before you choose it:
+
+- Bold, italic, underline and strikethrough go through the browser's `execCommand`, which is deprecated but still supported everywhere. The rest of the editing is its own.
+- One level of formatting per line: no tables, images, code blocks, nested quotes or indented lists. Nested lists in pasted content are kept and serialized, but the editor offers no way to create them.
+- Large documents re-serialize on every change, which is fine for notes and descriptions and not meant for book chapters.

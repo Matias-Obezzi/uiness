@@ -1,0 +1,87 @@
+A discussion attached to something: a design, a document, a pull request. Comments take one level of replies, which collapse, plus reactions, @mentions drawn as chips, inline edits of your own comments, delete behind a confirmation, and a resolved state that closes the thread until it is reopened.
+
+<ComponentPreview name="comment-thread-demo" />
+
+## Installation
+
+<Install name="comment-thread" />
+
+Deleting asks first with [`confirm()`](/docs/components/alert-dialog#confirm), so mount `<Confirmer />` once near the root if you have not already. Pass `confirmDelete={false}` to delete straight away instead.
+
+## Usage
+
+```tsx
+import { CommentThread, type ThreadComment } from '@/components/ui/comment-thread'
+
+<CommentThread
+  title="Homepage hero"
+  comments={comments}
+  users={users}
+  currentUserId="me"
+  resolved={resolved}
+  onResolvedChange={setResolved}
+  onComment={(body, parentId) => add(body, parentId)}
+  onEdit={(id, body) => edit(id, body)}
+  onDelete={(id) => remove(id)}
+  onReact={(id, emoji, added) => react(id, emoji, added)}
+/>
+```
+
+Comments are plain data, each top level comment with its `replies`:
+
+```ts
+const comment: ThreadComment = {
+  id: 'c1',
+  authorId: 'maya',
+  body: 'The headline wraps on phones. @Leo could we shorten it?',
+  createdAt: '2026-10-04T09:00:00Z',
+  reactions: [{ emoji: '👀', userIds: ['leo'] }],
+  replies: [{ id: 'c2', authorId: 'leo', body: 'On it.', createdAt: '2026-10-04T09:30:00Z' }],
+}
+```
+
+Like the [Chat Thread](/docs/components/chat-thread), it holds no comments of its own: every callback says what the user did and you pass the updated list back. Leave a callback out and its control goes with it: no `onEdit`, no Edit.
+
+### Replies
+
+Replies nest one level. Replying to a reply adds to the same thread and starts the field with a mention of the person answered. A thread with replies has a toggle to hide and show them; `defaultCollapsed` starts every one closed.
+
+### Mentions
+
+Bodies are plain text. An `@` followed by a user's `handle`, their first name or their whole name without spaces becomes a chip with their name on hover; any other `@word`, and emails, stay text. `parseMentions(text, users)` and `<CommentBody>` do the same for your own layouts.
+
+### Editing and deleting
+
+Only your own comments have the menu with Edit and Delete. Edit swaps the text for a field in place: Ctrl or Cmd+Enter saves and Escape cancels. A comment you changed shows "(edited)" when it has an `editedAt`.
+
+### Resolving
+
+The Resolve button calls `onResolvedChange`. A resolved thread is read only: no replies, edits, deletes or new reactions, and the field at the bottom says how to reopen it.
+
+### Times
+
+Times read "5 minutes ago", "yesterday" or "2 weeks ago" through `Intl.RelativeTimeFormat` in the reader's language, or in `locale`, with the full date on hover. They refresh every minute. `formatRelativeTime()` and `<RelativeTime>` are exported too.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `comments` | | Top level comments, oldest first, each with its replies. |
+| `users` | | Everyone who can appear or be mentioned. |
+| `currentUserId` | | Your id. Only your own comments can be edited and deleted. |
+| `title` | `'Comments'` | Heading of the thread. |
+| `onComment` | | `(body, parentId?) => void`. Without it there is nothing to write in. |
+| `onEdit` | | `(id, body) => void`, when you save an edit. |
+| `onDelete` | | `(id) => void`, after the delete is confirmed. |
+| `onReact` | | `(id, emoji, added) => void`. |
+| `resolved` | `false` | A resolved thread is read only. |
+| `onResolvedChange` | | Shows the Resolve and Reopen button. |
+| `confirmDelete` | `true` | Ask with `confirm()` before deleting. |
+| `reactions` | `['👍', '❤️', '🎉', '👀', '🚀', '😄']` | Emoji offered by the picker. |
+| `defaultCollapsed` | `false` | Start with every thread's replies hidden. |
+| `now` | the clock | What "now" is for the relative times. |
+| `locale` | the reader's | Locale for the relative times. |
+
+## Accessibility
+
+The thread is a `section` named by its heading, each comment an `article` named after its author, and replies a list inside it. The replies toggle has `aria-expanded` and `aria-controls`. Reactions are toggle buttons with `aria-pressed`; the menu, the emoji picker and the confirmation are the Radix dropdown, popover and alert dialog, with their keyboard support and focus return.

@@ -1,0 +1,117 @@
+A conversation drawn from plain data. Runs of messages by the same person share one avatar, days get a separator, your own messages sit on the right, and the thread keeps to the bottom while you are there and offers a way back down once you scroll up to read. Reactions, read receipts, a typing indicator, attachments and a composer come with it.
+
+<ComponentPreview name="chat-thread-demo" />
+
+## Installation
+
+<Install name="chat-thread" />
+
+## Usage
+
+```tsx
+import { ChatThread, type ChatMessage, type ChatUser } from '@/components/ui/chat-thread'
+
+const users: ChatUser[] = [
+  { id: 'me', name: 'Alex Morgan' },
+  { id: 'maya', name: 'Maya Chen', avatar: '/maya.png' },
+]
+
+<ChatThread
+  className="h-[520px]"
+  messages={messages}
+  users={users}
+  currentUserId="me"
+  typing={typingIds}
+  onSend={({ text, files }) => send(text, files)}
+  onReact={(messageId, emoji, added) => react(messageId, emoji, added)}
+/>
+```
+
+A message is an author, a time and any of text, attachments, reactions and `seenBy`:
+
+```ts
+const message: ChatMessage = {
+  id: 'm1',
+  authorId: 'maya',
+  text: 'Can someone review this before 3?',
+  createdAt: '2026-10-04T09:05:00Z',
+  attachments: [{ id: 'a1', name: 'pricing.pdf', type: 'application/pdf', size: 1_240_000 }],
+  reactions: [{ emoji: '👍', userIds: ['leo'] }],
+  seenBy: ['leo'],
+}
+```
+
+The thread does not keep messages of its own. `onSend` and `onReact` tell you what happened and you pass the new list back, which is where a request to your server goes. Your own messages can carry a `status` of `sending` or `failed` while that request runs.
+
+### Grouping
+
+Consecutive messages by one author share a header and an avatar until the day changes or more than `groupWithin` milliseconds pass between two of them, five minutes by default. The bubbles in a run square off the corners that touch. Turn names off with `showNames={false}` for one to one chats.
+
+### Reactions and read receipts
+
+Pressing a reaction you added takes it away, so `onReact` says which: `added` is `false` for a removal. The smile button next to each message opens the emoji in `reactions`. Each reader in `seenBy` is drawn once, as a small avatar under the last message they have seen, so you can add their id to every message they read without them piling up.
+
+### Attachments
+
+An attachment with an image `type` (or `kind: 'image'`) and a `url` shows as a thumbnail that opens the full picture. Anything else is a chip with the name and size, a download link when it has a `url`. The composer attaches files from its paperclip and from pasting them in, previews images, and hands you `File` objects to upload.
+
+### Jump to latest
+
+New messages scroll the thread down only while the reader is already at the bottom. Scrolled up, the thread stays put and a button appears to jump back, which turns into "New messages" once something arrives below. Sending always scrolls down to what you sent.
+
+## Building your own
+
+Every piece is exported, for layouts the data-driven thread does not cover: a support widget, a bot, a thread inside a card.
+
+<ComponentPreview name="chat-thread-compose" />
+
+```tsx
+import {
+  ChatBubble,
+  ChatComposer,
+  ChatMessageGroup,
+  ChatMessages,
+  ChatTypingIndicator,
+} from '@/components/ui/chat-thread'
+
+<ChatMessages scrollKey={sentCount} status={<ChatTypingIndicator users={typing} />}>
+  {lines.map((line) => (
+    <ChatMessageGroup key={line.id} self={line.self} author={bot} showName={false}>
+      <ChatBubble self={line.self}>{line.text}</ChatBubble>
+    </ChatMessageGroup>
+  ))}
+</ChatMessages>
+<ChatComposer onSend={({ text }) => ask(text)} allowAttachments={false} />
+```
+
+`ChatMessages` owns the scrolling, the log role and the jump button; `scrollKey` scrolls to the bottom whenever it changes. Also exported: `ChatAttachments`, `ChatReactions`, `ChatReactionPicker`, `ChatSeenBy`, `ChatDaySeparator`, and `groupChatMessages()`, `formatChatDay()` and `formatBytes()`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `messages` | | Oldest first. |
+| `users` | | Everyone who can appear, for names and avatars. |
+| `currentUserId` | | Your id. Your messages go on the right and your reactions show pressed. |
+| `onSend` | | `({ text, files }) => void`. Without it there is no composer. |
+| `onReact` | | `(messageId, emoji, added) => void`. Without it reactions are read only. |
+| `typing` | `[]` | Ids of the people typing right now. |
+| `reactions` | `['👍', '❤️', '😂', '🎉', '😮', '😢']` | Emoji offered by the picker. |
+| `groupWithin` | `300000` | Milliseconds between two messages that still share one avatar. |
+| `showNames` | `true` | Names above other people's runs. |
+| `locale` | the reader's | Locale for times, days and lists of names. |
+| `composerProps` | | Passed to the composer: `placeholder`, `accept`, `disabled`, `allowAttachments`. |
+
+### ChatComposer
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `onSend` | | `({ text, files }) => void`. Text is trimmed; the field empties afterwards. |
+| `placeholder` | `'Message'` | Also the accessible name of the field. |
+| `allowAttachments` | `true` | The paperclip and pasting files in. |
+| `accept` | | File types the picker offers. |
+| `disabled` | `false` | Turns the field and buttons off. |
+
+## Accessibility
+
+The messages are a `role="log"`, so screen readers announce new ones as they arrive, and every message starts with its author's name for them even where the run shows it once. The scrolling area takes focus so it can be read and scrolled from the keyboard. Reactions are toggle buttons with `aria-pressed`, the typing indicator is a `role="status"` that says who is typing, and read receipts are labelled "Seen by …". In the composer Enter sends and Shift+Enter starts a new line, and keys pressed while an input method is composing are left alone. New messages and the typing dots stay still with reduced motion.

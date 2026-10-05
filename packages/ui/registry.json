@@ -373,6 +373,95 @@
       ]
     },
     {
+      "name": "chat-thread",
+      "type": "registry:ui",
+      "title": "Chat Thread",
+      "description": "A conversation from data: runs of messages under one avatar, day separators, reactions, read receipts, typing, attachments, jump to latest and a composer.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/button",
+        "@uiness/popover",
+        "@uiness/use-reduced-motion"
+      ],
+      "css": {
+        "@keyframes chat-typing": {
+          "0%, 60%, 100%": {
+            "opacity": "0.35",
+            "transform": "none"
+          },
+          "30%": {
+            "opacity": "1",
+            "transform": "translateY(-3px)"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/chat-thread.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "comment-thread",
+      "type": "registry:ui",
+      "title": "Comment Thread",
+      "description": "Comments with one level of replies, reactions, @mentions, inline edits, delete behind a confirm and resolve.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/alert-dialog",
+        "@uiness/avatar",
+        "@uiness/button",
+        "@uiness/dropdown-menu",
+        "@uiness/popover",
+        "@uiness/textarea"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/comment-thread.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "notification-center",
+      "type": "registry:ui",
+      "title": "Notification Center",
+      "description": "A bell with the unread count that opens tabs of notifications grouped by day, with read state, actions and new ones sliding in.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/button",
+        "@uiness/popover",
+        "@uiness/tabs",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/notification-center.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "rich-text-editor",
+      "type": "registry:ui",
+      "title": "Rich Text Editor",
+      "description": "A lightweight contenteditable editor: Markdown shortcuts, a selection toolbar, a slash menu, undo, clean pastes, and HTML and Markdown out.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/rich-text-editor.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "tooltip",
       "type": "registry:ui",
       "title": "Tooltip",

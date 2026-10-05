@@ -100,6 +100,11 @@ const sections: NavSection[] = [
       page('components/calendar', 'Calendar', 'Pick a day, several days or a range.'),
       page('components/chart', 'Chart', 'The shadcn chart API on recharts, styled with the theme.'),
       page('components/card', 'Card', 'A surface with header, content and footer.'),
+      page(
+        'components/chat-thread',
+        'Chat Thread',
+        'A conversation from data: grouped messages, reactions, read receipts and a composer.',
+      ),
       page('components/checkbox', 'Checkbox', 'A control that can be checked or unchecked.'),
       page(
         'components/collapsible',
@@ -107,6 +112,11 @@ const sections: NavSection[] = [
         'A section that opens and closes, findable while closed.',
       ),
       page('components/combobox', 'Combobox', 'A searchable select, single or multiple.'),
+      page(
+        'components/comment-thread',
+        'Comment Thread',
+        'Comments with replies, reactions, mentions, inline edits and resolve.',
+      ),
       page(
         'components/context-menu',
         'Context Menu',
@@ -145,10 +155,20 @@ const sections: NavSection[] = [
         'Navbar',
         'Site navigation that becomes a menu or a bottom bar on phones.',
       ),
+      page(
+        'components/notification-center',
+        'Notification Center',
+        'A bell with the unread count that opens notifications in tabs, grouped by day.',
+      ),
       page('components/popover', 'Popover', 'Rich content anchored to a trigger.'),
       page('components/progress', 'Progress', 'How far along a task is.'),
       page('components/radio-group', 'Radio Group', 'Pick one of several options.'),
       page('components/scroll-area', 'Scroll Area', 'A scrollable region with themed bars.'),
+      page(
+        'components/rich-text-editor',
+        'Rich Text Editor',
+        'A lightweight editor with Markdown shortcuts, a toolbar, a slash menu and Markdown out.',
+      ),
       page('components/select', 'Select', 'Pick one option from a list.'),
       page('components/separator', 'Separator', 'A visual divider.'),
       page(
@@ -270,6 +290,12 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-04': [
+    'components/chat-thread',
+    'components/comment-thread',
+    'components/notification-center',
+    'components/rich-text-editor',
+  ],
   '2026-10-01': [
     'components/accordion',
     'components/alert-dialog',
