@@ -37,3 +37,41 @@ import { Auth01 } from '@/components/auth-01'
 | `signUp` | `{ prompt, label, href }` for the line under the form. `null` hides it. |
 | `testimonial` | `{ quote, name, role?, image? }` for the side panel on wide containers. `null` hides the panel. |
 | `labels` | Field labels and button text: `email`, `password`, `forgotPassword`, `submit`, `pending`, `divider`, `continueWith`, `error` and more. |
+
+## Sign In 01
+
+A passwordless sign in card that changes in place: an email, then a six digit code, then the signed in account. The card eases its height between steps and each step slides in from the side it comes from. Filling the last box checks the code, a wrong one shakes the field and clears it, a back button returns to the email, and the code can be sent again once a short countdown ends.
+
+<BlockPreview name="sign-in-01" />
+
+<Install name="sign-in-01" />
+
+```tsx
+import { SignIn01 } from '@/components/sign-in-01'
+
+<SignIn01
+  brand={{ name: 'Summit', href: '/' }}
+  resendAfter={45}
+  continueHref="/app"
+  onRequestCode={async (email) => {
+    const res = await fetch('/api/otp', { method: 'POST', body: JSON.stringify({ email }) })
+    if (!res.ok) throw new Error('We could not send a code to that address.')
+  }}
+  onVerify={async (email, code) => {
+    const res = await fetch('/api/otp/verify', { method: 'POST', body: JSON.stringify({ email, code }) })
+    if (!res.ok) throw new Error('That code did not match. Try again.')
+  }}
+  labels={{ emailTitle: 'Sign in to Summit' }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `brand` | `{ name, href, icon? }` for the mark above the card. |
+| `onRequestCode` | Called with the address, and again for a resend. Return a promise to show the pending state; throw an `Error` to show its message. |
+| `onVerify` | Called with the address and the code. Throw to reject it: the field shakes, clears and shows the message. |
+| `continueHref` | Where the button on the signed in step goes. |
+| `resendAfter` | Seconds before the code can be sent again. Default `30`. |
+| `defaultStep`, `defaultEmail` | Start on `email`, `code` or `done`, with an address, for previews and tests. |
+| `footer` | The line under the card. `null` hides it. |
+| `labels` | Titles, descriptions and button text for each step: `emailTitle`, `codeTitle`, `codeDescription` (with `{email}`), `resendIn` (with `{seconds}`), `doneTitle` and more. |

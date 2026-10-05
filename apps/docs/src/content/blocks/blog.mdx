@@ -1,0 +1,42 @@
+Indexes for writing: a blog, a news page, a library of guides. Every block takes its posts and words through props and lays itself out by the width of its container.
+
+## Blog 01
+
+A blog index that leads with a featured post, then chips to filter by category, a grid of post cards and pages to move through them. Opening a card slides the article in from the side, so people can read without losing their place in the list. Posts without a picture get a soft gradient in their category's colour.
+
+<BlockPreview name="blog-01" />
+
+<Install name="blog-01" />
+
+```tsx
+import { Blog01 } from '@/components/blog-01'
+
+<Blog01
+  title="Journal"
+  perPage={9}
+  onOpenPost={(slug) => history.replaceState(null, '', `#${slug}`)}
+  posts={[
+    {
+      slug: 'hello',
+      title: 'Hello, world',
+      excerpt: 'Why we started, and what comes next.',
+      category: 'News',
+      date: '2026-10-01',
+      readingTime: 4,
+      author: { name: 'Ada Lovelace', role: 'Founder' },
+      image: { src: '/covers/hello.jpg', alt: 'The team at the first offsite' },
+      body: <p>It began with a spreadsheet…</p>,
+      featured: true,
+    },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow`, `title`, `description` | The words above the index. `null` hides the eyebrow or the description. |
+| `posts` | `{ slug, title, excerpt, category, date, readingTime?, author, image?, body?, featured? }[]`, newest first. The first `featured` post leads the page while no filter is on. |
+| `perPage` | Cards per page, after the featured post. Default `6`. |
+| `onOpenPost` | Called with the slug when a post opens in the reader. |
+| `locale` | Locale for dates. Defaults to the browser's. |
+| `labels` | `all`, `filter`, `featured`, `readingTime` (with `{minutes}`), `read`, `previous`, `next`, `page`, `pagination`, `empty` and `close`. |

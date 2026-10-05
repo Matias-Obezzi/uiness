@@ -1,0 +1,62 @@
+A banner across the top of the page for news, a sale or a launch. Several messages take turns, it can count down to a date, and closing it folds its height away smoothly and is remembered.
+
+<ComponentPreview name="announcement-bar-demo" />
+
+## Installation
+
+<Install name="announcement-bar" />
+
+## Usage
+
+```tsx
+import { AnnouncementBar } from '@/components/ui/announcement-bar'
+
+<AnnouncementBar
+  storageKey="launch-v2"
+  messages={[
+    <>Version 2 is here. <a href="/changelog">See what is new</a></>,
+    <>We are hiring designers. <a href="/jobs">Open roles</a></>,
+  ]}
+/>
+```
+
+Put it first in the page, above the header. Links in a message are underlined for you.
+
+## Rotating
+
+With more than one message, each stays for `interval`, 5 seconds by default, and the next slides in. The rotation stops while the pointer is over the bar or focus is inside it, and the pause button stops it for good, which WCAG asks for on anything that moves by itself for more than five seconds. On wider screens arrows step through the messages by hand. With reduced motion the messages swap without sliding.
+
+## Countdown
+
+`countdownTo` takes a date, a string or a timestamp and shows the time left next to the message, to the second. `onCountdownEnd` runs once when it reaches zero, and `countdownDone` replaces it after, for "The sale is over". The time is only worked out in the browser, so server and client markup agree.
+
+```tsx
+<AnnouncementBar
+  messages={['Early bird pricing ends soon']}
+  countdownTo="2026-11-01T00:00:00Z"
+  countdownDone="Early bird pricing has ended"
+/>
+```
+
+## Dismissing
+
+The close button folds the bar's height away, then removes it and calls `onDismiss`. With `storageKey` the dismissal is kept in localStorage, so the bar stays closed on later visits; change the key for a new announcement. The stored value is read before the first paint in the browser. A server-rendered page shows the bar until the script runs, so for a bar that must never flash, decide on the server with a cookie instead.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `messages` | | One or more messages. |
+| `interval` | `5000` | Milliseconds each message stays. |
+| `countdownTo` | | Date to count down to. |
+| `countdownDone` | | Shown once the date has passed. |
+| `onCountdownEnd` | | Runs when the countdown reaches zero. |
+| `dismissible` | `true` | Show the close button. |
+| `storageKey` | | Remembers the dismissal under this name. |
+| `onDismiss` | | Runs after the bar has closed. |
+| `variant` | `'default'` | `default`, `primary` or `gradient`. |
+| `label` | `'Announcements'` | Names the region. |
+
+## Accessibility
+
+The bar is a named region. While it rotates by itself its changes are not announced, which would interrupt whatever a screen reader is reading; once paused, or when you step by hand, the new message is read. Each message says which one it is, "2 of 3". The countdown is a `timer` labelled with the time left in words.

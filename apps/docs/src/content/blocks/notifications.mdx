@@ -1,0 +1,37 @@
+A place for everything that happened while you were away. Every block takes its notifications and words through props and lays itself out by the width of its container.
+
+## Notifications 01
+
+A notifications section with filters along the top, the list grouped into today, yesterday and earlier, unread ones marked with a dot and counted in a badge that rolls, and a button to mark everything read. Opening a notification reveals its details and an action in place, and marks it read; the dot puts it back to unread.
+
+<BlockPreview name="notifications-01" />
+
+<Install name="notifications-01" />
+
+```tsx
+import { Notifications01 } from '@/components/notifications-01'
+
+<Notifications01
+  notifications={items.map((n) => ({
+    id: n.id,
+    kind: n.type, // 'mention' | 'comment' | 'merge' | 'deploy' | 'security' | 'invite'
+    actor: n.author?.name,
+    title: n.summary,
+    time: n.createdAt,
+    read: n.readAt != null,
+    details: n.preview,
+    action: { label: 'Open', href: n.url },
+  }))}
+  onReadChange={(ids, read) => fetch('/api/notifications/read', { method: 'POST', body: JSON.stringify({ ids, read }) })}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `title`, `description` | The heading and the line under it. `null` hides the description. |
+| `notifications` | `{ id, kind, actor?, title, time, read?, details?, action? }[]`, newest first. `time` is ISO. Read state starts from `read` and is kept by the block after that. |
+| `filters` | `{ id, label, match(item, read) }[]`. Defaults to All, Unread and Mentions. |
+| `onReadChange` | Called with the ids and the new state whenever notifications are marked read or unread. |
+| `now` | The moment the day groups and relative times are measured from. Defaults to now. |
+| `locale` | Locale for relative times. Defaults to the browser's. |
+| `labels` | `markAllRead`, `markRead`, `markUnread`, `today`, `yesterday`, `earlier`, `empty` and `filters`. |

@@ -1,0 +1,47 @@
+A collapsible tree for JSON: API responses, webhook payloads, settings. Values are colored by type, search opens the branches that hold a match and highlights it, long arrays load a page at a time, and every row copies its value or its path.
+
+<ComponentPreview name="json-viewer-demo" align="start" />
+
+## Installation
+
+<Install name="json-viewer" extra="Brings button and input along." />
+
+## Usage
+
+```tsx
+import { JsonViewer } from '@/components/ui/json-viewer'
+
+<JsonViewer data={response} />
+```
+
+`data` is any value `JSON.parse` returns. The root and its children start open; `defaultExpandDepth` opens more or fewer levels. The tree scrolls past `maxHeight`.
+
+## Search
+
+Typing in the search field finds keys and values, ignoring case. Every branch on the way to a match opens, and pages load until the match is shown, so nothing found stays hidden. The count says how many there are; Enter moves the focus to the next one and Shift+Enter to the previous. Branches opened by a search stay open, and can still be closed by hand.
+
+## Long arrays
+
+Arrays and objects with more than `pageSize` children (100 by default) show the first page and a **Show 100 more** row, so a payload with thousands of items opens instantly.
+
+## Copy
+
+Each row has two buttons, shown on hover: copy the value, as formatted JSON for objects and arrays and as raw text for strings, and copy the path, like `root.data.lines[3].amount` or `root["request id"]` for keys that are not identifiers. `onCopy` reports what was copied.
+
+## Keyboard
+
+The viewer follows the ARIA tree pattern. Up and Down move between rows, Right opens a branch or enters it, Left closes it or goes to its parent, Home and End jump to the ends, and Enter or Space toggles a branch or loads the next page. On a focused row, `c` copies the value and `p` the path.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `data` | | The JSON value. |
+| `rootName` | `"root"` | Name of the root in paths. |
+| `defaultExpandDepth` | `1` | Levels open on the first render. |
+| `searchable` | `true` | The search field and the expand and collapse all buttons. |
+| `pageSize` | `100` | Children shown at once in a long array or object. |
+| `copyable` | `true` | Copy value and copy path on each row. |
+| `onCopy` | | Called with `{ kind, path, text }` after a copy. |
+| `maxHeight` | `384` | Height the tree scrolls past. |
+| `aria-label` | `"JSON"` | Names the tree. |

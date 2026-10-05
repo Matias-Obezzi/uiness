@@ -1,0 +1,35 @@
+Signups for a newsletter that show what people are signing up for. Every block takes its issues and words through props and lays itself out by the width of its container.
+
+## Newsletter 01
+
+An email signup beside a fanned stack of past issues that spreads out on hover. The address is checked before anything is sent; once it goes through, the next issue drops onto the front of the stack addressed to that email, and the form turns into a thank you.
+
+<BlockPreview name="newsletter-01" />
+
+<Install name="newsletter-01" />
+
+```tsx
+import { Newsletter01 } from '@/components/newsletter-01'
+
+<Newsletter01
+  title="The Friday letter"
+  issues={[
+    { number: 12, title: 'On naming things', date: 'Oct 3' },
+    { number: 11, title: 'Small teams, big tables', date: 'Sep 26' },
+  ]}
+  nextIssue={{ title: 'Your first letter', excerpt: 'Arrives Friday morning.' }}
+  onSubscribe={async (email) => {
+    const res = await fetch('/api/subscribe', { method: 'POST', body: JSON.stringify({ email }) })
+    if (!res.ok) throw new Error('We could not add you just now. Try again later.')
+  }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow`, `title`, `description` | The words beside the stack. `null` hides the eyebrow or the description. |
+| `issues` | `{ number, title, excerpt?, date? }[]`, newest first. The first three make the stack. |
+| `nextIssue` | `{ title, excerpt?, date?, number? }` for the card that lands on the stack. The number defaults to one after the newest issue. |
+| `onSubscribe` | Called with the address. Return a promise to show the pending state; throw an `Error` to show its message. |
+| `note` | A line under the form. `null` hides it. |
+| `labels` | `email`, `placeholder`, `submit`, `pending`, `invalid`, `error`, `successTitle`, `successDescription` (with `{email}`), `again`, `to` and `issue`. |

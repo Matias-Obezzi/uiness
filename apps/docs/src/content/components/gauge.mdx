@@ -1,0 +1,56 @@
+A value against a known range, as a half circle or a full ring: CPU load, a quota, a score. Thresholds split the track into colored bands, filled up to the value and left faint above it, so you see both where the value is and what comes next.
+
+<ComponentPreview name="gauge-demo" />
+
+## Installation
+
+<Install name="gauge" />
+
+## Usage
+
+```tsx
+import { Gauge } from '@/components/ui/gauge'
+
+<Gauge
+  value={76}
+  label="CPU"
+  thresholds={[
+    { value: 0, color: 'var(--chart-2)', label: 'Healthy' },
+    { value: 70, color: 'oklch(0.78 0.16 70)', label: 'Busy' },
+    { value: 90, color: 'var(--destructive)', label: 'Critical' },
+  ]}
+  formatValue={(v) => `${Math.round(v)}%`}
+/>
+```
+
+Each threshold starts a band that runs to the next one, or to `max`. Without thresholds the gauge is one color, `--chart-1` by default. The value is clamped to `min` and `max`.
+
+When `value` changes, the arc and the number ease from where they are to the new value. With reduced motion they jump.
+
+## Variants
+
+`variant="arc"`, the default, is a half circle opening down with the range under its ends. `variant="ring"` is a full circle with the value in the middle. `needle` adds a pointer to the arc, and moves the value under it.
+
+The gauge is `size` pixels wide and shrinks to fit a narrower container; the text scales with it.
+
+## Accessibility
+
+The gauge is a `meter` with its minimum, maximum and value. The value text is the formatted value plus the band's label, like "76%, Busy", so the state is in words as well as color. A string `label` names the meter; otherwise pass `aria-label`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` | | The value, clamped to the range. |
+| `min`, `max` | `0`, `100` | The range. |
+| `variant` | `arc` | `arc` or `ring`. |
+| `thresholds` | | `{ value, color, label? }` per band, from low to high. |
+| `color` | `var(--chart-1)` | Fill without thresholds. |
+| `needle` | `false` | A pointer at the value. Arc only. |
+| `label` | | Caption under the value. Names the meter when a string. |
+| `size` | `180` | Width in pixels. |
+| `thickness` | `14` | Width of the arc in pixels. |
+| `formatValue` | locale number | Formats the value, the range and the value text. |
+| `locale` | browser | Locale of the default format. |
+| `showRange` | `true` for `arc` | Min and max under the ends. |
+| `duration` | `900` | Milliseconds to reach a new value. |

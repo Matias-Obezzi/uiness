@@ -1,0 +1,36 @@
+Copies a value and says so straight away: the icon turns into a check, screen readers hear "Copied", and an optional tooltip says it too.
+
+<ComponentPreview name="copy-button-demo" />
+
+## Installation
+
+<Install name="copy-button" />
+
+## Usage
+
+```tsx
+import { CopyButton } from '@/components/ui/copy-button'
+
+<CopyButton value="pnpm dlx shadcn add @uiness/button" />
+<CopyButton value={() => editor.getText()} tooltip />
+<CopyButton value={url} variant="outline" size="sm">Copy link</CopyButton>
+```
+
+`value` is text, or a function that returns it, or a promise of it, read at the moment of the click. Without children it is an icon button named by `label`; with children they sit next to the icon and name it.
+
+`onCopy` gets the text once it is on the clipboard. When the browser refuses, on a page without permission for example, the icon turns into a cross, "Copy failed" is announced and `onCopyError` gets the error. Without the Clipboard API, on a plain http page, it falls back to the older `execCommand('copy')`. The helper is exported as `copyToClipboard` for your own buttons.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` | | Text, or a function returning it or a promise of it. |
+| `onCopy` | | Called with the copied text. |
+| `onCopyError` | | Called with the error when the copy fails. |
+| `timeout` | `2000` | Milliseconds before the check turns back into the copy icon. |
+| `tooltip` | `false` | Show the label in a tooltip, and "Copied" in it after a copy. |
+| `label` | `'Copy'` | Accessible name, and the tooltip at rest. |
+| `copiedLabel` | `'Copied'` | Announced, and shown in the tooltip, after a copy. |
+| `errorLabel` | `'Copy failed'` | Announced when the copy fails. |
+
+It takes the Button `variant` (`ghost` by default) and `size`.

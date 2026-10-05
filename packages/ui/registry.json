@@ -1411,6 +1411,224 @@
       ]
     },
     {
+      "name": "number-field",
+      "type": "registry:ui",
+      "title": "Number Field",
+      "description": "A bounded number entry with minus and plus buttons, held to repeat, arrow and page keys, and Intl formatting for percent, currency and units.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/number-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "password-field",
+      "type": "registry:ui",
+      "title": "Password Field",
+      "description": "A password input with a reveal toggle, an optional strength meter with a built in scorer, and a checklist of rules.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/password-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "search-field",
+      "type": "registry:ui",
+      "title": "Search Field",
+      "description": "A search input with a clear button, a loading state and a shortcut that focuses it. Can start as an icon button that grows into the field.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
+      "files": [
+        {
+          "path": "registry/ui/search-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tag-input",
+      "type": "registry:ui",
+      "title": "Tag Input",
+      "description": "Typed values become removable tags on Enter, a comma or a pasted list, with a limit, validation and keyboard navigation between tags.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/tag-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "multi-select",
+      "type": "registry:ui",
+      "title": "Multi Select",
+      "description": "Pick several options from a searchable list, shown as tags in the trigger with a +N overflow, select all, clear and groups.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/command", "@uiness/popover"],
+      "files": [
+        {
+          "path": "registry/ui/multi-select.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chip-group",
+      "type": "registry:ui",
+      "title": "Chip Group",
+      "description": "Filter chips, one or several at a time, that fill in and slide a check in when picked.",
+      "dependencies": ["lucide-react", "radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/chip-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "inline-edit",
+      "type": "registry:ui",
+      "title": "Inline Edit",
+      "description": "Text that becomes a field where it stands, with no layout shift. Enter or blur saves, Escape cancels, with validation and async saves.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
+      "files": [
+        {
+          "path": "registry/ui/inline-edit.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "radio-cards",
+      "type": "registry:ui",
+      "title": "Radio Cards",
+      "description": "Selectable option cards with a selection ring that slides between them, slots for icon, title, description and price, and radio keyboard behaviour.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/radio-cards.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "time-picker",
+      "type": "registry:ui",
+      "title": "Time Picker",
+      "description": "A time field in segments you type into or step with the arrows, with an optional list of times.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/popover"],
+      "files": [
+        {
+          "path": "registry/ui/time-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "date-range-picker",
+      "type": "registry:ui",
+      "title": "Date Range Picker",
+      "description": "Two months side by side with a column of presets, and Apply and Cancel when you want them.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/calendar",
+        "@uiness/popover"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/date-range-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "color-picker",
+      "type": "registry:ui",
+      "title": "Color Picker",
+      "description": "A swatch that opens a picker: area, hue and opacity, hex, rgb, hsl and oklch, eye dropper, saved colors and a contrast check.",
+      "dependencies": ["lucide-react", "radix-ui"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/popover"],
+      "files": [
+        {
+          "path": "registry/ui/color-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "phone-input",
+      "type": "registry:ui",
+      "title": "Phone Input",
+      "description": "A phone field with a searchable country picker, formatting as you type and E.164 out.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/command",
+        "@uiness/popover"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/phone-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "money-input",
+      "type": "registry:ui",
+      "title": "Money Input",
+      "description": "A currency field that groups as you type and hands back integer minor units.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/money-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "mention-input",
+      "type": "registry:ui",
+      "title": "Mention Input",
+      "description": "A textarea where @ and # open suggestions at the caret, and mentions act as single tokens.",
+      "registryDependencies": ["@uiness/utils", "@uiness/popover"],
+      "files": [
+        {
+          "path": "registry/ui/mention-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "signature-pad",
+      "type": "registry:ui",
+      "title": "Signature Pad",
+      "description": "Ink that thins with speed, with undo, clear, replay and PNG or SVG export.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/signature-pad.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "carousel",
       "type": "registry:ui",
       "title": "Carousel",
@@ -1808,6 +2026,463 @@
       ]
     },
     {
+      "name": "split-button",
+      "type": "registry:ui",
+      "title": "Split Button",
+      "description": "A primary action joined to a chevron that opens a menu of related actions.",
+      "dependencies": ["radix-ui", "lucide-react", "class-variance-authority"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/dropdown-menu"],
+      "files": [
+        {
+          "path": "registry/ui/split-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "button-group",
+      "type": "registry:ui",
+      "title": "Button Group",
+      "description": "Related buttons joined in one surface with hairline dividers and a highlight that glides between them.",
+      "dependencies": ["radix-ui", "class-variance-authority"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/button-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "expanding-button-group",
+      "type": "registry:ui",
+      "title": "Expanding Button Group",
+      "description": "Icon buttons where the one under the pointer or keyboard grows to reveal its label.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/expanding-button-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "copy-button",
+      "type": "registry:ui",
+      "title": "Copy Button",
+      "description": "Copies a value with an icon that turns into a check, an optional tooltip and an announcement.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/tooltip"],
+      "files": [
+        {
+          "path": "registry/ui/copy-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hold-to-confirm",
+      "type": "registry:ui",
+      "title": "Hold to Confirm",
+      "description": "A button that acts only after being held down, with a fill that sweeps across and rewinds on release.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/spinner"],
+      "files": [
+        {
+          "path": "registry/ui/hold-to-confirm.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "confirm-morph",
+      "type": "registry:ui",
+      "title": "Confirm Morph",
+      "description": "A button that asks to confirm in place, shows a spinner while the action runs and offers Undo.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/spinner"],
+      "files": [
+        {
+          "path": "registry/ui/confirm-morph.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "segmented-control",
+      "type": "registry:ui",
+      "title": "Segmented Control",
+      "description": "A few mutually exclusive views with a thumb that slides to the chosen one.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/segmented-control.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "theme-switch",
+      "type": "registry:ui",
+      "title": "Theme Switch",
+      "description": "A light and dark switch that sweeps the new theme over the page with the View Transitions API.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/use-reduced-motion"],
+      "css": {
+        "html[data-theme-transition]::view-transition-old(root), html[data-theme-transition]::view-transition-new(root)": {
+          "animation": "none",
+          "mix-blend-mode": "normal"
+        },
+        "html[data-theme-transition] *:not([data-slot='theme-switch'] *)": {
+          "transition": "none !important"
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/theme-switch.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "kbd",
+      "type": "registry:ui",
+      "title": "Kbd",
+      "description": "Keyboard key caps and shortcuts, with ⌘ on a Mac and Ctrl elsewhere.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/kbd.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "breadcrumb",
+      "type": "registry:ui",
+      "title": "Breadcrumb",
+      "description": "Where a page sits in the hierarchy. A trail that folds its middle crumbs into a menu when there are too many or they do not fit.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/dropdown-menu"],
+      "files": [
+        {
+          "path": "registry/ui/breadcrumb.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pagination",
+      "type": "registry:ui",
+      "title": "Pagination",
+      "description": "Page links in the shadcn shape, plus a Paginator that works out the pages and ellipses and turns into \"Page 2 of 10\" on phones.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button"],
+      "files": [
+        {
+          "path": "registry/ui/pagination.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tree-view",
+      "type": "registry:ui",
+      "title": "Tree View",
+      "description": "Nested folders and items with the full tree keyboard, single or multiple selection, checkboxes with mixed folders and children loaded on demand.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
+      "files": [
+        {
+          "path": "registry/ui/tree-view.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "stepper",
+      "type": "registry:ui",
+      "title": "Stepper",
+      "description": "Steps of a flow, done, current, upcoming or failed, with lines that fill as you advance. Horizontal or vertical.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/stepper.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "hover-card",
+      "type": "registry:ui",
+      "title": "Hover Card",
+      "description": "A preview card on hover or focus, with open and close delays and a springy entrance. Includes a ready-made profile card.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils", "@uiness/avatar"],
+      "files": [
+        {
+          "path": "registry/ui/hover-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "resizable-panels",
+      "type": "registry:ui",
+      "title": "Resizable Panels",
+      "description": "Panels with handles between them to trade space, by pointer or keyboard. Limits, folding, double click to reset and a remembered layout, without a library.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/resizable-panels.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "expandable-card",
+      "type": "registry:ui",
+      "title": "Expandable Card",
+      "description": "A card that grows out of its place in a grid into a larger view, and folds back into it when closed.",
+      "dependencies": ["radix-ui", "lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/expandable-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:ui",
+      "title": "Empty State",
+      "description": "What to show when there is nothing to show: a drawing or icon, a title, a line and the next step. Four drawings in the theme's colors.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/empty-state.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "announcement-bar",
+      "type": "registry:ui",
+      "title": "Announcement Bar",
+      "description": "A banner across the top that rotates messages, counts down to a date and folds away when dismissed, remembered.",
+      "dependencies": ["class-variance-authority", "lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/announcement-bar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "swipe-actions",
+      "type": "registry:ui",
+      "title": "Swipe Actions",
+      "description": "List rows that reveal actions when swiped, with a full swipe for the first one and the same actions in a menu.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/dropdown-menu",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/swipe-actions.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "metric-card",
+      "type": "registry:ui",
+      "title": "Metric Card",
+      "description": "A compact KPI: label, a value that counts to each new figure, a colored delta with an arrow, a comparison, a sparkline slot and a loading state.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/number-ticker", "@uiness/skeleton"],
+      "files": [
+        {
+          "path": "registry/ui/metric-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sparkline",
+      "type": "registry:ui",
+      "title": "Sparkline",
+      "description": "A word sized trend as a line, an area or bars in inline SVG, with dots on the last, lowest and highest values and an optional tooltip.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/sparkline.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "gauge",
+      "type": "registry:ui",
+      "title": "Gauge",
+      "description": "A value against a range as a half or full circle, with colored threshold bands, an optional needle and the value in the centre. Read as a meter.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/gauge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "usage-meter",
+      "type": "registry:ui",
+      "title": "Usage Meter",
+      "description": "What fills an allowance as one stacked bar with a legend, \"x of y used\", and warning and over limit states.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/usage-meter.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "activity-heatmap",
+      "type": "registry:ui",
+      "title": "Activity Heatmap",
+      "description": "A year of days in weekly columns shaded by activity, with month and day labels, a legend, a tooltip per day and arrow key navigation.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/activity-heatmap.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "donut-chart",
+      "type": "registry:ui",
+      "title": "Donut Chart",
+      "description": "Parts of a whole as a ring on recharts through chart, with the total or the hovered slice rolling in the centre and legend toggles.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "@uiness/chart",
+        "@uiness/utils",
+        "@uiness/use-reduced-motion",
+        "@uiness/odometer"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/donut-chart.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar-group",
+      "type": "registry:ui",
+      "title": "Avatar Group",
+      "description": "Overlapping avatars with a max, name tooltips and a \"+N\" counter that opens a list of everyone else.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/popover",
+        "@uiness/tooltip"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/avatar-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "json-viewer",
+      "type": "registry:ui",
+      "title": "JSON Viewer",
+      "description": "A collapsible JSON tree with type colors, search that opens and highlights matches, paging for long arrays, copy value or path, and the tree keyboard pattern.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/input"],
+      "files": [
+        {
+          "path": "registry/ui/json-viewer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "code-block",
+      "type": "registry:ui",
+      "title": "Code Block",
+      "description": "Code with a header, line numbers, highlighted lines, a wrap switch, a copy button and a collapsed state. Takes plain text or HTML from any highlighter.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/code-block.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "Data Table",
+      "description": "A ready-made table on table: typed columns, multi column sort, search and faceted filters, row selection, pages and an empty state. No table library.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/checkbox",
+        "@uiness/input",
+        "@uiness/popover",
+        "@uiness/table"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/data-table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "billing-toggle",
+      "type": "registry:ui",
+      "title": "Billing Toggle",
+      "description": "A monthly and yearly switch with a savings badge, plus a Price whose digits roll to the new amount.",
+      "registryDependencies": ["@uiness/utils", "@uiness/odometer"],
+      "files": [
+        {
+          "path": "registry/ui/billing-toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text-morph",
+      "type": "registry:ui",
+      "title": "Text Morph",
+      "description": "Morphs a label into its next value letter by letter: shared letters slide, the rest fade. Crossfades with reduced motion.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/text-morph.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "hero-01",
       "type": "registry:block",
       "title": "Hero 01",
@@ -2044,6 +2719,191 @@
       "files": [
         {
           "path": "registry/blocks/stats-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "changelog-01",
+      "type": "registry:block",
+      "title": "Changelog 01",
+      "description": "A release feed filtered by tag chips, grouped by month, with version badges, entries that open in place and a subscribe link.",
+      "categories": ["changelog"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/badge", "@uiness/collapsible"],
+      "files": [
+        {
+          "path": "registry/blocks/changelog-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "sign-in-01",
+      "type": "registry:block",
+      "title": "Sign In 01",
+      "description": "A passwordless sign in card that morphs from email to a six digit code to the signed in account, easing its height between steps, with a back button and a resend timer.",
+      "categories": ["auth"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/button",
+        "@uiness/input",
+        "@uiness/input-otp",
+        "@uiness/label"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/sign-in-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "newsletter-01",
+      "type": "registry:block",
+      "title": "Newsletter 01",
+      "description": "An email signup beside a fanned stack of past issues; subscribing drops the next issue, addressed to the reader, onto the stack.",
+      "categories": ["newsletter"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/input", "@uiness/label"],
+      "files": [
+        {
+          "path": "registry/blocks/newsletter-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "comparison-01",
+      "type": "registry:block",
+      "title": "Comparison 01",
+      "description": "An us versus them table with a highlighted column, a sticky header and tick, cross and partial cells, stacking into cards when narrow.",
+      "categories": ["comparison"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/badge", "@uiness/button", "@uiness/table"],
+      "files": [
+        {
+          "path": "registry/blocks/comparison-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "contact-01",
+      "type": "registry:block",
+      "title": "Contact 01",
+      "description": "A validated contact form that morphs into a confirmation, support channel cards and office cards with a ticking local time.",
+      "categories": ["contact"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/input",
+        "@uiness/label",
+        "@uiness/textarea"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/contact-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "blog-01",
+      "type": "registry:block",
+      "title": "Blog 01",
+      "description": "A blog index with a featured post, category chips, post cards, pagination and a reader that slides in from the side.",
+      "categories": ["blog"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/badge",
+        "@uiness/button",
+        "@uiness/drawer"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/blog-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "page-header-01",
+      "type": "registry:block",
+      "title": "Page Header 01",
+      "description": "A project header with breadcrumbs, meta, a star button and actions that folds into a sticky tab bar on scroll, with counts that roll.",
+      "categories": ["page-header"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/odometer",
+        "@uiness/tabs"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/page-header-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "notifications-01",
+      "type": "registry:block",
+      "title": "Notifications 01",
+      "description": "A notifications section with filters, a list grouped by day with read state, mark all read and details that open in place.",
+      "categories": ["notifications"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/button",
+        "@uiness/collapsible",
+        "@uiness/odometer"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/notifications-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "command-palette-01",
+      "type": "registry:block",
+      "title": "Command Palette 01",
+      "description": "A ⌘K command palette with search, grouped results, recent items, nested pages and shortcuts drawn as key caps.",
+      "categories": ["command-palette"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/command", "@uiness/dialog"],
+      "files": [
+        {
+          "path": "registry/blocks/command-palette-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "file-upload-01",
+      "type": "registry:block",
+      "title": "File Upload 01",
+      "description": "A complete upload flow: a dropzone, per file progress, type and size errors, retry and remove, and a total progress bar.",
+      "categories": ["file-upload"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/dropzone",
+        "@uiness/progress"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/file-upload-01.tsx",
           "type": "registry:block"
         }
       ]

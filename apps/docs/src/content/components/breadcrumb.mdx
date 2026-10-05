@@ -1,0 +1,89 @@
+Shows where a page sits in the hierarchy and links back up it. Use the pieces to compose a trail by hand, or give `BreadcrumbTrail` the list of pages and it folds the middle ones into a menu when there are too many, or when they do not fit. Drag the slider to see it fold.
+
+<ComponentPreview name="breadcrumb-demo" />
+
+## Installation
+
+<Install name="breadcrumb" extra="Installs the Dropdown Menu, which holds the folded crumbs." />
+
+## Usage
+
+```tsx
+import { BreadcrumbTrail } from '@/components/ui/breadcrumb'
+
+<BreadcrumbTrail
+  items={[
+    { label: 'Home', href: '/' },
+    { label: 'Projects', href: '/projects' },
+    { label: 'Acme', href: '/projects/acme' },
+    { label: 'Settings' },
+  ]}
+/>
+```
+
+The last item is the page you are on. It is not a link and carries `aria-current="page"`. An item without `href` is plain text, for a level that has no page of its own.
+
+## Folding
+
+With more than `maxItems` crumbs, the trail keeps `itemsBeforeCollapse` at the start and `itemsAfterCollapse` at the end, the current page included, and puts the rest behind an ellipsis button. The button is named "Show 3 more" and opens a menu of the folded pages, so they stay one click and a few key presses away.
+
+With `fit` on, the default, the trail also measures itself. When the crumbs would be wider than their container it folds one more at a time until they fit, down to the first crumb and the current page, whose name truncates last. It measures every crumb once in a hidden copy and listens for the container's size, so it never flickers between two layouts.
+
+## Router links
+
+`renderLink` renders each link, in the trail and in the menu. Return your router's link; the trail passes its styles and handlers through it.
+
+```tsx
+<BreadcrumbTrail
+  items={items}
+  renderLink={({ href, children }) => <Link to={href}>{children}</Link>}
+/>
+```
+
+## Composed by hand
+
+The same pieces as shadcn/ui, so existing breadcrumbs keep working. `BreadcrumbLink` takes `asChild`, and `BreadcrumbSeparator` takes any icon as its child.
+
+<ComponentPreview name="breadcrumb-composed" />
+
+```tsx
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb'
+
+<Breadcrumb>
+  <BreadcrumbList>
+    <BreadcrumbItem>
+      <BreadcrumbLink href="/">Home</BreadcrumbLink>
+    </BreadcrumbItem>
+    <BreadcrumbSeparator />
+    <BreadcrumbItem>
+      <BreadcrumbPage>Settings</BreadcrumbPage>
+    </BreadcrumbItem>
+  </BreadcrumbList>
+</Breadcrumb>
+```
+
+## Props
+
+`BreadcrumbTrail`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `items` | | `{ label, href?, icon?, id? }` from the root to the current page. |
+| `maxItems` | `4` | Most crumbs shown before the middle folds. |
+| `itemsBeforeCollapse` | `1` | Crumbs kept at the start. |
+| `itemsAfterCollapse` | `2` | Crumbs kept at the end, the current page included. |
+| `fit` | `true` | Fold more while the trail is wider than its container. |
+| `separator` | chevron | What goes between crumbs. |
+| `renderLink` | `<a>` | Renders a link, for your router. |
+| `moreLabel` | `Show {n} more` | Names the fold button. |
+
+## Accessibility
+
+The trail is a `<nav>` named "Breadcrumb" holding an ordered list. Separators are hidden from assistive tech so a screen reader counts only the pages. The fold button is a real menu button with arrow key navigation.

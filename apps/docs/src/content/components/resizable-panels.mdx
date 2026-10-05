@@ -1,0 +1,79 @@
+Panels that share a space, with handles between them to trade it: an editor and its file list, a list and its detail. Drag a handle, or focus it and use the keyboard. Written from scratch, with no layout library underneath.
+
+<ComponentPreview name="resizable-panels-demo" />
+
+## Installation
+
+<Install name="resizable-panels" />
+
+## Usage
+
+```tsx
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable-panels'
+
+<ResizablePanelGroup direction="horizontal" className="h-96 rounded-lg border">
+  <ResizablePanel defaultSize={25} minSize={15}>Sidebar</ResizablePanel>
+  <ResizableHandle withHandle />
+  <ResizablePanel>Content</ResizablePanel>
+</ResizablePanelGroup>
+```
+
+The same shape as the shadcn/ui resizable. Sizes are percentages of the group. Panels without a `defaultSize` share what is left. Panels and handles must be direct children of the group, in order; nest a whole group inside a panel for a second direction, as in the demo.
+
+## Limits and folding
+
+`minSize` and `maxSize` hold a panel between two sizes. A handle only trades space between the two panels next to it, so a drag stops when either one reaches a limit.
+
+A `collapsible` panel dragged well under its `minSize` snaps shut to `collapsedSize`, 0 by default, and snaps back open when dragged out again. It gets `data-collapsed` so its content can change, like a rail of icons.
+
+## Keyboard
+
+Each handle is a focusable window splitter.
+
+| Key | Does |
+| --- | --- |
+| <kbd>←</kbd> <kbd>→</kbd> or <kbd>↑</kbd> <kbd>↓</kbd> | Moves the handle by `keyboardStep`, 5% by default. |
+| <kbd>Home</kbd> | The panel before it to its minimum, or folded if it can fold. |
+| <kbd>End</kbd> | The panel before it to its maximum. |
+| <kbd>Enter</kbd> | Folds a collapsible panel next to it, or opens it to the size it had. |
+
+A double click on a handle puts its two panels back to their default proportions.
+
+## Remembering the layout
+
+`autoSaveId` keeps the sizes in localStorage and restores them on the next visit. A stored layout for a different number of panels, or storage that is blocked, is ignored and the defaults stand. `onLayout` is called with the sizes whenever they change, to store them yourself.
+
+```tsx
+<ResizablePanelGroup autoSaveId="mail" onLayout={(sizes) => console.log(sizes)}>
+```
+
+## Props
+
+`ResizablePanelGroup`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `direction` | `'horizontal'` | `horizontal` or `vertical`. |
+| `autoSaveId` | | Remembers the layout under this name. |
+| `onLayout` | | Called with the sizes in percent. |
+| `keyboardStep` | `5` | Percent moved by each arrow key. |
+
+`ResizablePanel`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `defaultSize` | shared | Starting size in percent. |
+| `minSize` | `0` | Smallest size. |
+| `maxSize` | `100` | Largest size. |
+| `collapsible` | `false` | Can fold to `collapsedSize`. |
+| `collapsedSize` | `0` | Size when folded. |
+
+`ResizableHandle` takes `withHandle` for a visible grip and `disabled`.
+
+## Details
+
+The handle has `role="separator"`, with `aria-valuenow` and its limits, and `aria-controls` pointing at the panel before it. Its line is one pixel, but the area you can grab is wider. While dragging, the whole page shows the resize cursor and stops selecting text. Keyboard and double click changes animate, unless reduced motion is on. Right-to-left layouts flip the arrow keys and the drag.

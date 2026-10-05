@@ -1,0 +1,46 @@
+Parts of a whole as a ring. The centre shows the total, or the slice under the pointer with its share, and rolls to each new value. Click a legend entry to leave its slice out; the others close the gap. It is a ready-made [Chart](/docs/components/chart): recharts underneath, with the theme's colors.
+
+<ComponentPreview name="donut-chart-demo" />
+
+## Installation
+
+<Install name="donut-chart" extra="Brings the chart and odometer items and recharts along. Colors come from the --chart-1 to --chart-5 variables of the theme." />
+
+## Usage
+
+```tsx
+import { DonutChart } from '@/components/ui/donut-chart'
+
+<DonutChart
+  label="Visits"
+  data={[
+    { key: 'organic', label: 'Organic search', value: 18420 },
+    { key: 'direct', label: 'Direct', value: 9310 },
+    { key: 'social', label: 'Social', value: 6045, color: 'var(--primary)' },
+  ]}
+/>
+```
+
+Slices go clockwise from the top, in the order given. Each one's color follows its `key`, so a slice keeps its color when others are hidden or the data changes, and switching datasets with the same keys morphs the ring instead of redrawing it. Keys become CSS variables (`--color-organic`), so keep them to letters, digits, `-` and `_`.
+
+A donut reads well up to five or six slices. Past that, fold the small ones into "Other", or use a [Bar Chart](/docs/components/bar-chart).
+
+## Accessibility
+
+The chart is a figure whose label lists each slice's share and the total. The legend is a row of toggle buttons with each slice's value and percent: hovering or focusing one highlights its slice and shows it in the centre, and pressing it hides or shows the slice. The last visible slice stays.
+
+With reduced motion the ring appears without sweeping in and the centre changes without rolling.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `data` | | `{ key, label?, value, color? }` per slice. |
+| `size` | `200` | Diameter in pixels. |
+| `thickness` | `28` | Width of the ring in pixels. |
+| `label` | `"Total"` | Caption of the total in the centre. |
+| `format` | | Extra `Intl.NumberFormat` options for values. |
+| `locale` | browser | Locale of the formats. |
+| `showLegend` | `true` | The legend of toggles. |
+| `empty` | `"No data"` | Shown when every value is zero. |
+| `aria-label` | generated | Replaces the generated summary. |

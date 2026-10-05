@@ -1,0 +1,49 @@
+A primary action joined to a chevron that opens the actions next to it: Save with Save as draft, Merge with Squash and merge. The common choice is one click away, the rest stay out of sight until asked for.
+
+<ComponentPreview name="split-button-demo" />
+
+## Installation
+
+<Install name="split-button" />
+
+## Usage
+
+```tsx
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import { SplitButton, SplitButtonAction, SplitButtonMenu } from '@/components/ui/split-button'
+
+<SplitButton>
+  <SplitButtonAction onClick={save}>Save</SplitButtonAction>
+  <SplitButtonMenu label="More save options">
+    <DropdownMenuItem onSelect={saveDraft}>Save as draft</DropdownMenuItem>
+    <DropdownMenuItem onSelect={saveCopy}>Save a copy</DropdownMenuItem>
+  </SplitButtonMenu>
+</SplitButton>
+```
+
+The two halves are separate buttons, so each takes focus and each has its own name. The chevron has none of its own text, so give it a `label` that says what it opens. The menu is a [Dropdown Menu](/docs/components/dropdown-menu): Enter, Space or the down arrow open it, and any of its items, separators and groups go inside.
+
+`SplitButtonAction` takes every [Button](/docs/components/button) prop, `loading` and `asChild` included. Put `variant` and `size` on the root and both halves follow.
+
+## Props
+
+### SplitButton
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `variant` | `'default'` | `default`, `destructive`, `outline`, `secondary` or `ghost`. |
+| `size` | `'default'` | `sm`, `default` or `lg`. |
+| `disabled` | `false` | Disables the action and the menu together. |
+
+### SplitButtonMenu
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` | `'More options'` | Accessible name of the chevron. |
+| `icon` | chevron | Another icon for the trigger. |
+| `align` | `'end'` | Where the menu lines up with the button. |
+| `disabled` | `false` | Disables only the menu. |
+| `triggerClassName` | | Classes for the chevron button. |
+| `contentClassName` | | Classes for the menu. |
+
+`open`, `defaultOpen` and `onOpenChange` control the menu, as on Dropdown Menu.

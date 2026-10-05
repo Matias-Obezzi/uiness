@@ -1,0 +1,42 @@
+Your product next to the alternatives, so the difference is plain. Every block takes its products and rows through props and lays itself out by the width of its container.
+
+## Comparison 01
+
+An us versus them table. Your column is lifted out in colour with a badge and the main action under it, the header stays in view while the rows scroll, and each cell is a tick, a cross, a half mark or a short text, each read out in words. On a narrow container every product becomes a card with the same rows, yours first.
+
+<BlockPreview name="comparison-01" />
+
+<Install name="comparison-01" />
+
+```tsx
+import { Comparison01 } from '@/components/comparison-01'
+
+<Comparison01
+  title="Summit vs the rest"
+  maxHeight={null}
+  products={[
+    { id: 'us', name: 'Summit', caption: '$9 / seat', highlight: true },
+    { id: 'them', name: 'Other tool', caption: '$20 / seat' },
+  ]}
+  sections={[
+    {
+      title: 'Basics',
+      rows: [
+        { feature: 'Unlimited projects', values: { us: true, them: false } },
+        { feature: 'Offline mode', values: { us: true, them: 'partial' } },
+        { feature: 'Storage', values: { us: '1 TB', them: '100 GB' } },
+      ],
+    },
+  ]}
+  action={{ label: 'Try Summit', href: '/signup' }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow`, `title`, `description` | The words above the table. `null` hides the eyebrow or the description. |
+| `products` | `{ id, name, caption?, highlight? }[]`, one per column. Mark yours with `highlight`. |
+| `sections` | `{ title, rows }[]`. Each row is `{ feature, description?, values }`, where `values` maps a product id to `true`, `false`, `'partial'` or a short text. A missing value reads as `false`. |
+| `action` | `{ label, href }` for the button under the highlighted column. `null` hides it. |
+| `maxHeight` | Height of the box the table scrolls in, so the header stays put. Default `34rem`; `null` lets it grow. |
+| `labels` | `feature`, `yes`, `no`, `partial` and `recommended`. |

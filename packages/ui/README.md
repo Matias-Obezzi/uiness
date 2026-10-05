@@ -56,6 +56,9 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `select`, `combobox` | Pick from a list; the combobox searches. |
 | `form` | Field wiring: ids, `aria-describedby`, `aria-invalid`, error messages. |
 | `radio-group`, `slider`, `toggle`, `toggle-group`, `input-otp` | The rest of the form controls. |
+| `split-button`, `button-group`, `expanding-button-group`, `copy-button` | Buttons that do more: a main action with a menu, a joined row with a gliding highlight, icons that grow to show their label, a copy with instant confirmation. |
+| `hold-to-confirm`, `confirm-morph` | Confirmation without a dialog: press and hold, or "Are you sure?" in place with a spinner, a result and Undo. |
+| `segmented-control`, `theme-switch`, `kbd` | A sliding pick between a few views, a light and dark switch that sweeps the page with the View Transitions API, and platform aware key caps. |
 | `dialog`, `drawer`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
 | `alert-dialog` | A dialog that asks for a decision, plus `confirm()`, an awaitable version of it rendered by one `<Confirmer />`. |
 | `context-menu` | Right click menus declared once by name on a provider, picked per element with `useContextMenu`, extended or replaced where needed. Also opens from the keyboard and on a long press. |
@@ -81,6 +84,11 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `alert`, `spinner`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
 | `chart` | The shadcn/ui chart API on recharts (`ChartContainer`, `ChartTooltipContent`, `ChartLegendContent`, `ChartConfig`), styled with the theme. Installs over an existing shadcn `chart.tsx` without changing a screen. |
 | `bar-chart`, `line-chart` | Ready-made charts on `chart`, from a list of series: grouped or stacked bars, straight or smooth lines with area and gaps. Dates in the reader's locale, legend toggles, keyboard reading and an empty state. |
+| `donut-chart` | Parts of a whole as a ring on `chart`, with the total or the hovered slice rolling in the centre and legend toggles. |
+| `metric-card`, `sparkline`, `gauge`, `usage-meter`, `activity-heatmap` | Data display without recharts: a KPI with its delta, a word sized trend, a value against a range, an allowance split by what uses it, and a year of days. Colors from `--chart-1` to `--chart-5`, states in words as well as color, keyboard reading. |
+| `data-table` | A ready-made table on `table`: typed columns, multi column sort, search and faceted filters, selection, pages. No table library. |
+| `json-viewer`, `code-block` | A JSON tree with search, paging and copy value or path; code with line numbers, marked lines, wrap, copy and any highlighter's output. |
+| `avatar-group`, `billing-toggle`, `text-morph` | Overlapping avatars with a +N list; a monthly and yearly switch with a rolling `Price`; a label that morphs letter by letter. |
 | `carousel` | Horizontal run of items of any width and any content, on CSS scroll snapping. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
 | `island` | `<Island />` wired to the theme tokens, re-exports the `@uiness/island` API. |

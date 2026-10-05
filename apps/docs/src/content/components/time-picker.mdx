@@ -1,0 +1,58 @@
+A time field split into hour, minute and optional second segments. Click or tab into a segment and type, or step it with the arrow keys. With `step` a button opens a list of times.
+
+<ComponentPreview name="time-picker-demo" />
+
+## Installation
+
+<Install name="time-picker" extra="Installs the Popover along with it." />
+
+## Usage
+
+```tsx
+import { TimePicker } from '@/components/ui/time-picker'
+
+<TimePicker value={time} onValueChange={setTime} step={30} min="08:00" max="18:00" />
+```
+
+The value is always `"HH:mm"` on a 24 hour clock, or `"HH:mm:ss"` with `seconds`, the same string a native `<input type="time">` submits. It is `null` until every segment has a value.
+
+## Keyboard
+
+| Key | Does |
+| --- | --- |
+| Digits | Type into the segment. It moves on once it is full, or as soon as no second digit could fit: `7` is 07, `2` waits for `0` to `3`. |
+| `ArrowUp`, `ArrowDown` | Step the segment, wrapping around. |
+| `PageUp`, `PageDown` | Step minutes and seconds by 10. |
+| `Home`, `End` | Lowest and highest value of the segment. |
+| `ArrowLeft`, `ArrowRight` | Move between segments. Typing `:` moves ahead too. |
+| `Backspace`, `Delete` | Empty the segment. |
+| `A`, `P` | AM or PM, on a 12 hour clock. |
+
+Every segment is a `spinbutton` with its own label and value text, inside a `group` that takes the field's name. On phones the segments open the numeric keyboard.
+
+## 12 and 24 hours
+
+<ComponentPreview name="time-picker-cycles" />
+
+The hour cycle, the order of the segments, the separator and the AM and PM names all come from the locale. Pass `hourCycle={12}` or `hourCycle={24}` to choose yourself.
+
+## Min, max and the list
+
+`min` and `max` bound the list and mark the field invalid when a typed time falls outside. When focus leaves the field, an out of range time is pulled back to the nearest bound. The list opens on the picked time and moves with the arrow keys, `Home`, `End`, `PageUp` and `PageDown`; `Enter` picks.
+
+## In a form
+
+Pass `name` for a hidden input with the value. Inside a [Form](/docs/components/form) field, `FormControl` hands the group its label, description and error.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onValueChange` | | `"HH:mm"` or `"HH:mm:ss"`, or `null`. |
+| `seconds` | `false` | Add a seconds segment. |
+| `hourCycle` | locale | `12` or `24`. |
+| `locale` | browser | Segment order, separator and AM and PM names. |
+| `step` | | Minutes between entries of the list. The list button only shows when set. |
+| `min`, `max` | | Bounds as `"HH:mm"`. |
+| `name` | | Hidden input for a form. |
+| `labels` | English | Names of the segments and the list button. |

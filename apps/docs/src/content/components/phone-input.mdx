@@ -1,0 +1,53 @@
+A phone field with a searchable country picker. The number is laid out as it is typed, a pasted international number picks its country by itself, and the value comes out in E.164.
+
+<ComponentPreview name="phone-input-demo" />
+
+## Installation
+
+<Install name="phone-input" extra="Installs Command, Popover and Button along with it." />
+
+## Usage
+
+```tsx
+import { PhoneInput } from '@/components/ui/phone-input'
+
+<PhoneInput
+  defaultCountry="GB"
+  value={phone}
+  onValueChange={(e164, { country, national, complete }) => setPhone(e164)}
+/>
+```
+
+The value is E.164, like `+447911123456`, or an empty string when there are no digits. The second argument tells you the country, the national digits and whether the digit count fits the country's pattern.
+
+## What it is, and what it is not
+
+It ships a table of about fifty countries, each with its calling code, a layout pattern, the shortest complete length and its trunk prefix. That covers the common mobile and landline shapes and keeps the bundle small. **It is not libphonenumber**: it does not know every numbering plan, area code or carrier, and `complete` only means the length fits. Validate on the server with [libphonenumber](https://github.com/google/libphonenumber) when it matters.
+
+The table is exported as `phoneCountries`, along with `formatPhone` and `parsePhone`, so you can read or extend it.
+
+## Typing and pasting
+
+- Separators appear as digits arrive and the caret stays after the digit it was after.
+- `Backspace` right after a separator takes the digit before it too, instead of getting stuck.
+- A trunk prefix typed in front, like the UK's `0`, is dropped, since E.164 leaves it out.
+- A number typed or pasted with `+` or `00` switches the country by its calling code. The US and Canada share `+1`; the current country wins the tie.
+- Argentina and Brazil switch to a longer layout once the short one is full, for mobile numbers.
+
+## Countries
+
+The picker is a [Command](/docs/components/command) list. Search by name, ISO code or calling code. Names come from `Intl.DisplayNames` in the `locale`, and flags are emoji built from the code. Limit and order the list with `countries={['AR', 'UY', 'BR']}`. Without `defaultCountry`, the region of the locale is used, then the US.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onValueChange` | | E.164 string, and details. |
+| `country`, `defaultCountry`, `onCountryChange` | locale region | ISO code. |
+| `countries` | all | Codes to show, in order. |
+| `locale` | browser | For the country names. |
+| `name` | | Hidden input with the E.164 value. |
+| `labels` | English | Picker and search texts. |
+| `inputClassName` | | Classes for the number field. `className` goes on the wrapper. |
+
+Any other prop goes to the number field, so `id`, `aria-*` and the wiring from `FormControl` land on it.

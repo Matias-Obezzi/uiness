@@ -1,0 +1,42 @@
+A row of icon buttons that stays compact until you need it: the button under the pointer or the keyboard grows to show its label, and its neighbours slide aside to make room.
+
+<ComponentPreview name="expanding-button-group-demo" />
+
+## Installation
+
+<Install name="expanding-button-group" />
+
+## Usage
+
+```tsx
+import { ExpandingButton, ExpandingButtonGroup } from '@/components/ui/expanding-button-group'
+
+<ExpandingButtonGroup aria-label="Message actions">
+  <ExpandingButton icon={<ReplyIcon />} label="Reply" onClick={reply} />
+  <ExpandingButton icon={<ArchiveIcon />} label="Archive" onClick={archive} />
+</ExpandingButtonGroup>
+```
+
+One button is open at a time. When the pointer leaves, the label goes back to the button with keyboard focus, if there is one.
+
+The label is collapsed, not removed: it keeps its place in the accessibility tree at zero width, so every button is named by its label at rest as well as open, and needs no `aria-label`. The icon is hidden from screen readers.
+
+Pass `expanded` to keep a button open, to show a result in place for example ("Copied", "Saved"). With reduced motion the label appears without the slide.
+
+## Props
+
+### ExpandingButtonGroup
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `size` | `'default'` | `sm`, `default` or `lg`. |
+
+### ExpandingButton
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `icon` | | The icon shown at rest. |
+| `label` | | Revealed on hover and focus, and always the button's name. |
+| `expanded` | | Keep the label open. |
+
+Every other prop goes to the `<button>`.

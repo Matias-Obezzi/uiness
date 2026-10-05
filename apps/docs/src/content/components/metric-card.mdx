@@ -1,0 +1,55 @@
+A compact KPI: what is measured, the figure, how it moved against a period and, if you want, a sparkline of the trend. The number counts up when the card scrolls into view, and from the old figure to the new one when it changes.
+
+<ComponentPreview name="metric-card-demo" align="start" />
+
+## Installation
+
+<Install name="metric-card" extra="Brings number-ticker and skeleton along. Pair it with sparkline for the trend." />
+
+## Usage
+
+```tsx
+import { MetricCard } from '@/components/ui/metric-card'
+import { Sparkline } from '@/components/ui/sparkline'
+
+<MetricCard
+  label="Revenue"
+  value={48210}
+  format={{ style: 'currency', currency: 'USD', maximumFractionDigits: 0 }}
+  delta={0.124}
+  comparison="vs last month"
+  sparkline={<Sparkline data={trend} variant="area" />}
+/>
+```
+
+`value` is a number formatted with `Intl.NumberFormat`, so currency, percent and compact notation come from `format`. Anything that is not a number, like a word or a duration you formatted yourself, is shown as it is.
+
+## Delta
+
+`delta` is the change as a fraction: `0.124` reads **+12.4%**, `-0.05` reads **−5%**. Its sign picks the arrow, and whether the move is good picks the color: green for good, the destructive color for bad, gray for no change. For metrics where less is better, like churn, costs or response time, set `inverse` and a drop turns green.
+
+The delta always carries an arrow and, for screen readers, the words "Up" or "Down", so the direction never rests on color alone. Use `deltaFormat` for something other than a percent, like `{ signDisplay: 'exceptZero' }` for an absolute change.
+
+## Loading
+
+`loading` swaps the value, delta and sparkline for placeholders of the same size, and marks the card busy, so the layout does not jump when the numbers arrive.
+
+<ComponentPreview name="metric-card-loading" />
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` | | What is measured, in sentence case. Names the card for screen readers. |
+| `value` | | A number that counts, or any node shown as it is. |
+| `format` | | Extra `Intl.NumberFormat` options for a number value. |
+| `decimals` | `0` | Digits after the decimal point. |
+| `locale` | browser | Locale of the value and delta. |
+| `delta` | | The change as a fraction; its sign picks the arrow. |
+| `deltaFormat` | signed percent | `Intl.NumberFormat` options for the delta. |
+| `inverse` | `false` | Down is the good direction. |
+| `comparison` | | What the delta compares against, like "vs last month". |
+| `sparkline` | | A small chart under the value. |
+| `action` | | An icon or button in the top right corner. |
+| `loading` | `false` | Placeholders instead of the figures. |
+| `duration` | `1200` | Milliseconds the value takes to count. |
