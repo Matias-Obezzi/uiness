@@ -170,6 +170,57 @@ const sections: NavSection[] = [
       page('components/toggle', 'Toggle', 'A button that stays pressed, alone or in a group.'),
       page('components/tooltip', 'Tooltip', 'A short hint on hover or focus.'),
       page(
+        'components/activity-heatmap',
+        'Activity Heatmap',
+        'A year of days shaded by activity, with a tooltip and arrow keys.',
+      ),
+      page(
+        'components/avatar-group',
+        'Avatar Group',
+        'Overlapping avatars with a +N counter that lists the rest.',
+      ),
+      page(
+        'components/billing-toggle',
+        'Billing Toggle',
+        'A monthly and yearly switch, with prices that roll.',
+      ),
+      page(
+        'components/code-block',
+        'Code Block',
+        'Code with line numbers, marked lines, wrap, copy and any highlighter.',
+      ),
+      page(
+        'components/data-table',
+        'Data Table',
+        'A sortable, filterable table with selection and pages, no library.',
+      ),
+      page(
+        'components/donut-chart',
+        'Donut Chart',
+        'Parts of a whole as a ring, with the total rolling in the centre.',
+      ),
+      page('components/gauge', 'Gauge', 'A value against a range, with colored bands. A meter.'),
+      page(
+        'components/json-viewer',
+        'JSON Viewer',
+        'A JSON tree with search, paging and copy value or path.',
+      ),
+      page(
+        'components/metric-card',
+        'Metric Card',
+        'A KPI with its change, a comparison and a sparkline.',
+      ),
+      page(
+        'components/sparkline',
+        'Sparkline',
+        'A trend the size of a word, as a line, an area or bars.',
+      ),
+      page(
+        'components/usage-meter',
+        'Usage Meter',
+        'What fills an allowance, as one stacked bar with a legend.',
+      ),
+      page(
         'components/tour',
         'Tour',
         'Guided tours declared once by name, with a spotlight around each step.',
@@ -264,12 +315,31 @@ const sections: NavSection[] = [
       page('motion/ripple', 'Ripple', 'An ink ripple from where you press.'),
       page('motion/dock', 'Dock', 'A dock that magnifies under the pointer.'),
       page('motion/flip-card', 'Flip Card', 'A card that turns over to show its back.'),
+      page(
+        'motion/text-morph',
+        'Text Morph',
+        'A label that morphs into its next value, letter by letter.',
+      ),
     ],
   },
 ]
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-04': [
+    'components/activity-heatmap',
+    'components/avatar-group',
+    'components/billing-toggle',
+    'components/code-block',
+    'components/data-table',
+    'components/donut-chart',
+    'components/gauge',
+    'components/json-viewer',
+    'components/metric-card',
+    'components/sparkline',
+    'components/usage-meter',
+    'motion/text-morph',
+  ],
   '2026-10-01': [
     'components/accordion',
     'components/alert-dialog',

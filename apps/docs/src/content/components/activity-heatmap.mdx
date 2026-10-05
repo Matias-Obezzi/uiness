@@ -1,0 +1,55 @@
+A year of activity at a glance, one square per day and one column per week, shaded by how much happened. Hover or focus a day for its value; the arrow keys move across days and weeks.
+
+<ComponentPreview name="activity-heatmap-demo" align="start" />
+
+## Installation
+
+<Install name="activity-heatmap" />
+
+## Usage
+
+```tsx
+import { ActivityHeatmap } from '@/components/ui/activity-heatmap'
+
+<ActivityHeatmap
+  data={[
+    { date: '2026-09-01', value: 3 },
+    { date: '2026-09-02', value: 7 },
+    // ...
+  ]}
+/>
+```
+
+`data` is a list of `{ date, value }` or a map of ISO dates to values; days left out count as zero and repeated days add up. Dates can be `Date` objects or ISO strings, read as that day where the reader is.
+
+By default it shows the 52 weeks up to today. `startDate` and `endDate` pick any other stretch: a quarter, a month, a season. `weekStart={1}` starts weeks on Monday.
+
+## Scale
+
+Days are shaded in `levels` steps, five by default including the empty one. Without `thresholds` the steps split evenly up to the busiest day; pass ascending lower bounds, like `[1, 5, 10, 20]`, to fix them. Every step is the same hue: the empty day is `--muted` a step towards the text color, and each step mixes more of `color` (`--chart-2` by default) into it, so the scale reads from light to dark in both themes.
+
+## Size
+
+Days shrink to fit the width of the container, up to `cellSize` pixels. Below eight pixels a day stops shrinking and the grid scrolls sideways instead, starting at its latest weeks. The weekday names stay in view while it scrolls, on the page's `--background`.
+
+## Accessibility
+
+The grid is a table of seven weekday rows and one column per week, with the ARIA grid pattern: one day is in the tab order, the left and right arrows move a week, up and down a day, Page Up and Page Down four weeks, Home and End to the ends of the row, and Ctrl with Home or End to the first or last day. Every day is labelled with its date and value; `formatDay` writes that text and the tooltip's. Enter or a click calls `onSelect`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `data` | | `{ date, value }[]` or `{ [isoDate]: value }`. |
+| `startDate` | 52 weeks back | First day shown. |
+| `endDate` | today | Last day shown. |
+| `weekStart` | `0` | `0` for Sunday, `1` for Monday. |
+| `levels` | `5` | Steps in the scale, the empty one included. |
+| `thresholds` | even steps | Lowest value of each step after the empty one. |
+| `color` | `var(--chart-2)` | Darkest color of the scale. |
+| `cellSize` | `12` | Largest size of a day in pixels. |
+| `formatDay` | `"3 on Mon, Sep 1, 2026"` | Text of the tooltip and of each day for screen readers. |
+| `locale` | browser | Locale of the month, weekday and date names. |
+| `onSelect` | | Called with `{ date, value }` on click or Enter. |
+| `showLegend` | `true` | The "Less … More" legend. |
+| `aria-label` | the date range | Names the grid. |

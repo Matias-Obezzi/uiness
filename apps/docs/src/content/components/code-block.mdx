@@ -1,0 +1,64 @@
+Code presented for reading: a header with the file name and language, line numbers, marked lines, a wrap switch and a copy button, collapsed when long. It does no highlighting itself, so it adds nothing to your bundle: give it plain text, or the output of any highlighter.
+
+<ComponentPreview name="code-block-demo" align="start" />
+
+## Installation
+
+<Install name="code-block" />
+
+## Usage
+
+```tsx
+import { CodeBlock } from '@/components/ui/code-block'
+
+<CodeBlock code={source} filename="app/page.tsx" language="tsx" highlight="3-5,8" />
+```
+
+`code` is always the source: it is what the copy button copies, and what is shown, in plain monospace, when there is nothing highlighted. `highlight` marks lines by the numbers in the gutter, as a list like `"3-5,8"` or an array; with `startLine={40}` the first line is 40.
+
+Past `maxLines` (20 by default) the block collapses behind a **Show all** button. `maxLines={false}` never collapses it.
+
+<ComponentPreview name="code-block-plain" align="start" />
+
+## Highlighting with shiki
+
+Pass the highlighted HTML as `html`, one line of source per line of HTML. [Shiki](https://shiki.style) returns exactly that, and its dual themes follow your dark mode with no extra CSS:
+
+```tsx
+import { codeToHtml } from 'shiki'
+import { CodeBlock } from '@/components/ui/code-block'
+
+export async function Snippet({ code }: { code: string }) {
+  const html = await codeToHtml(code, {
+    lang: 'tsx',
+    themes: { light: 'github-light', dark: 'github-dark' },
+    defaultColor: false,
+  })
+  return <CodeBlock code={code} html={html} language="tsx" />
+}
+```
+
+In a server component that highlighting happens on the server and ships no highlighter to the browser. In the browser, render with `code` alone first and pass `html` once it is ready, as the demo above does: the plain text and the highlighted lines take the same space, so nothing moves. The wrapping `<pre>` and `<code>` shiki adds are dropped.
+
+Any other highlighter works through `lines`, an array of React nodes, one per line. Only pass `html` you produced yourself: it is inserted as it is.
+
+## Accessibility
+
+The code is a region named by the file name, or the language, that takes focus so long lines can be scrolled with the keyboard. Line numbers are left out of what screen readers read and of what a selection copies. The wrap switch is a toggle button, the collapse button says whether the block is expanded.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `code` | | The source. Copied, and shown plain when nothing else is given. |
+| `html` | | Highlighted HTML, one line per line of source. |
+| `lines` | | Highlighted lines as React nodes. Wins over `html`. |
+| `filename` | | Shown in the header. |
+| `language` | | Shown in the header. |
+| `lineNumbers` | `true` | Numbers in the gutter. |
+| `startLine` | `1` | Number of the first line. |
+| `highlight` | | Lines to mark, `"3-5,8"` or `[3, 4, 5, 8]`. |
+| `wrap` | `false` | Start with long lines wrapped. |
+| `wrapToggle` | `true` | The wrap switch. |
+| `copyable` | `true` | The copy button. |
+| `maxLines` | `20` | Lines before it collapses; `false` never collapses. |

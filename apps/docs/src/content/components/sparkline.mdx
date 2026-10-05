@@ -1,0 +1,48 @@
+A trend the size of a word: a line, an area or bars in a small inline SVG, next to a value or inside a sentence. Dots mark the last value and, if you want, the lowest and highest. Hover or focus it with `tooltip` on to read each value.
+
+<ComponentPreview name="sparkline-demo" />
+
+## Installation
+
+<Install name="sparkline" />
+
+## Usage
+
+```tsx
+import { Sparkline } from '@/components/ui/sparkline'
+
+<Sparkline data={[4, 6, 5, 9, 7, 11, 8, 12]} />
+<Sparkline data={prices} labels={days} variant="area" tooltip />
+```
+
+Without `width` the sparkline fills its container and follows it as it resizes. With a `width` it sits inline in text, at the height you give it. A `null` in `data` breaks the line instead of joining across the gap.
+
+The line is drawn in on mount and then holds still: new data swaps in place, which reads as a live value changing rather than a chart replaying.
+
+## Variants
+
+<ComponentPreview name="sparkline-variants" />
+
+`line` is the default. `area` lays a light wash of the same color under the line. `bar` draws one bar per value from zero, the latest at full strength and the others fainter. Colors default to `--chart-1`; any CSS color works.
+
+## Accessibility
+
+The SVG is an image whose label sums the trend up: how many values, the first and last, the lowest and highest. Pass `aria-label` to say it your way. With `tooltip` the sparkline takes focus, starts on the latest value, and the left and right arrows, Home and End move through the others; the value is announced as it changes.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `data` | | Values, oldest first. `null` leaves a gap. |
+| `variant` | `line` | `line`, `area` or `bar`. |
+| `color` | `var(--chart-1)` | Any CSS color. |
+| `width` | container | Width in pixels. Leave it out to fill the container. |
+| `height` | `32` | Height in pixels. |
+| `markers` | `['last']` | Dots on `first`, `last`, `min` and `max`. |
+| `min`, `max` | the data | Ends of the scale. Bars always include zero. |
+| `tooltip` | `false` | Values on hover and with the arrow keys. |
+| `labels` | | A name per point for the tooltip, like the date. |
+| `format` | locale number | Formats values in the tooltip and the summary. |
+| `locale` | browser | Locale of the default format. |
+| `animate` | `true` | Draw in on mount. Off with reduced motion. |
+| `aria-label` | generated | Replaces the generated summary. |

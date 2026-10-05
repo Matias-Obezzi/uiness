@@ -1,0 +1,53 @@
+A monthly or yearly switch for a pricing table, with a savings badge on the yearly option. Next to it, `Price` rolls each digit to the new amount when the period changes.
+
+<ComponentPreview name="billing-toggle-demo" />
+
+## Installation
+
+<Install name="billing-toggle" extra="Brings odometer along for the rolling digits." />
+
+## Usage
+
+```tsx
+import { type BillingPeriod, BillingToggle, Price } from '@/components/ui/billing-toggle'
+
+const [period, setPeriod] = useState<BillingPeriod>('monthly')
+
+<BillingToggle value={period} onValueChange={setPeriod} savings={0.2} />
+<Price amount={period === 'yearly' ? 19 : 24} period="/month" />
+```
+
+`savings` takes a fraction, `0.2` for "Save 20%", or any node, like "2 months free". The thumb slides to the picked option and follows its width when the labels or the font change. Leave out `value` and the toggle keeps its own state from `defaultValue`.
+
+## Price
+
+`Price` formats `amount` with `Intl.NumberFormat` in `currency` (USD by default) and `locale`. Whole amounts drop the cents, others show two decimals; set `decimals` to pin it. When the amount changes, each digit rolls to its new value, starting from the right, while the currency symbol and separators stay put. It is the [Odometer](/docs/motion/odometer) with a price's defaults.
+
+## Accessibility
+
+The toggle is a radio group named "Billing period": only the picked option is in the tab order, and the arrow keys switch and move the focus. The badge is part of the yearly option's name. `Price` gives screen readers the formatted amount once, not digit by digit; with reduced motion the digits change without rolling and the thumb without sliding.
+
+## Props
+
+### BillingToggle
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` | | The picked period, to control it. |
+| `defaultValue` | `monthly` | The period picked first. |
+| `onValueChange` | | Called with `monthly` or `yearly`. |
+| `savings` | | A fraction or a node for the badge. |
+| `monthlyLabel`, `yearlyLabel` | `"Monthly"`, `"Yearly"` | Labels of the options. |
+| `locale` | browser | Locale of the savings percent. |
+| `aria-label` | `"Billing period"` | Names the group. |
+
+### Price
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `amount` | | The amount. |
+| `currency` | `USD` | ISO 4217 code. |
+| `locale` | browser | Formatting locale. |
+| `decimals` | `0` or `2` | Digits after the decimal point. |
+| `period` | | Shown after the amount, like "/month". |
+| `duration` | `700` | Milliseconds a digit takes to roll. |

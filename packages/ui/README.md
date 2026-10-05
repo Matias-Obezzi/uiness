@@ -79,6 +79,11 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `alert`, `spinner`, `tabs`, `avatar`, `progress`, `skeleton` | Feedback and layout pieces. |
 | `chart` | The shadcn/ui chart API on recharts (`ChartContainer`, `ChartTooltipContent`, `ChartLegendContent`, `ChartConfig`), styled with the theme. Installs over an existing shadcn `chart.tsx` without changing a screen. |
 | `bar-chart`, `line-chart` | Ready-made charts on `chart`, from a list of series: grouped or stacked bars, straight or smooth lines with area and gaps. Dates in the reader's locale, legend toggles, keyboard reading and an empty state. |
+| `donut-chart` | Parts of a whole as a ring on `chart`, with the total or the hovered slice rolling in the centre and legend toggles. |
+| `metric-card`, `sparkline`, `gauge`, `usage-meter`, `activity-heatmap` | Data display without recharts: a KPI with its delta, a word sized trend, a value against a range, an allowance split by what uses it, and a year of days. Colors from `--chart-1` to `--chart-5`, states in words as well as color, keyboard reading. |
+| `data-table` | A ready-made table on `table`: typed columns, multi column sort, search and faceted filters, selection, pages. No table library. |
+| `json-viewer`, `code-block` | A JSON tree with search, paging and copy value or path; code with line numbers, marked lines, wrap, copy and any highlighter's output. |
+| `avatar-group`, `billing-toggle`, `text-morph` | Overlapping avatars with a +N list; a monthly and yearly switch with a rolling `Price`; a label that morphs letter by letter. |
 | `carousel` | Horizontal run of items of any width and any content, on CSS scroll snapping. |
 | `gallery` | Image grid with a full screen lightbox that flies from the thumbnail. Also exports `Lightbox`. |
 | `island` | `<Island />` wired to the theme tokens, re-exports the `@uiness/island` API. |

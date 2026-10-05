@@ -1719,6 +1719,185 @@
       ]
     },
     {
+      "name": "metric-card",
+      "type": "registry:ui",
+      "title": "Metric Card",
+      "description": "A compact KPI: label, a value that counts to each new figure, a colored delta with an arrow, a comparison, a sparkline slot and a loading state.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/number-ticker", "@uiness/skeleton"],
+      "files": [
+        {
+          "path": "registry/ui/metric-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "sparkline",
+      "type": "registry:ui",
+      "title": "Sparkline",
+      "description": "A word sized trend as a line, an area or bars in inline SVG, with dots on the last, lowest and highest values and an optional tooltip.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/sparkline.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "gauge",
+      "type": "registry:ui",
+      "title": "Gauge",
+      "description": "A value against a range as a half or full circle, with colored threshold bands, an optional needle and the value in the centre. Read as a meter.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/gauge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "usage-meter",
+      "type": "registry:ui",
+      "title": "Usage Meter",
+      "description": "What fills an allowance as one stacked bar with a legend, \"x of y used\", and warning and over limit states.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/usage-meter.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "activity-heatmap",
+      "type": "registry:ui",
+      "title": "Activity Heatmap",
+      "description": "A year of days in weekly columns shaded by activity, with month and day labels, a legend, a tooltip per day and arrow key navigation.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/activity-heatmap.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "donut-chart",
+      "type": "registry:ui",
+      "title": "Donut Chart",
+      "description": "Parts of a whole as a ring on recharts through chart, with the total or the hovered slice rolling in the centre and legend toggles.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "@uiness/chart",
+        "@uiness/utils",
+        "@uiness/use-reduced-motion",
+        "@uiness/odometer"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/donut-chart.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar-group",
+      "type": "registry:ui",
+      "title": "Avatar Group",
+      "description": "Overlapping avatars with a max, name tooltips and a \"+N\" counter that opens a list of everyone else.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/popover",
+        "@uiness/tooltip"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/avatar-group.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "json-viewer",
+      "type": "registry:ui",
+      "title": "JSON Viewer",
+      "description": "A collapsible JSON tree with type colors, search that opens and highlights matches, paging for long arrays, copy value or path, and the tree keyboard pattern.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/input"],
+      "files": [
+        {
+          "path": "registry/ui/json-viewer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "code-block",
+      "type": "registry:ui",
+      "title": "Code Block",
+      "description": "Code with a header, line numbers, highlighted lines, a wrap switch, a copy button and a collapsed state. Takes plain text or HTML from any highlighter.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/code-block.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:ui",
+      "title": "Data Table",
+      "description": "A ready-made table on table: typed columns, multi column sort, search and faceted filters, row selection, pages and an empty state. No table library.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/checkbox",
+        "@uiness/input",
+        "@uiness/popover",
+        "@uiness/table"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/data-table.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "billing-toggle",
+      "type": "registry:ui",
+      "title": "Billing Toggle",
+      "description": "A monthly and yearly switch with a savings badge, plus a Price whose digits roll to the new amount.",
+      "registryDependencies": ["@uiness/utils", "@uiness/odometer"],
+      "files": [
+        {
+          "path": "registry/ui/billing-toggle.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text-morph",
+      "type": "registry:ui",
+      "title": "Text Morph",
+      "description": "Morphs a label into its next value letter by letter: shared letters slide, the rest fade. Crossfades with reduced motion.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/text-morph.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "hero-01",
       "type": "registry:block",
       "title": "Hero 01",

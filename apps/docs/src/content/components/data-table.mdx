@@ -1,0 +1,85 @@
+A ready-made table for records: typed columns, sorting by one column or several, a toolbar with search and faceted filters, row selection, pages and an empty state. It is built on [Table](/docs/components/table) and holds its own state, with no table library behind it.
+
+<ComponentPreview name="data-table-demo" align="start" />
+
+## Installation
+
+<Install name="data-table" extra="Brings table, button, checkbox, input and popover along." />
+
+## Usage
+
+```tsx
+import { DataTable, type DataTableColumn } from '@/components/ui/data-table'
+
+interface Payment {
+  id: string
+  customer: string
+  status: 'Paid' | 'Pending' | 'Failed'
+  amount: number
+}
+
+const columns: DataTableColumn<Payment>[] = [
+  { id: 'id', header: 'Payment', sortable: true },
+  { id: 'customer', header: 'Customer', sortable: true },
+  { id: 'status', header: 'Status', cell: (row) => <Badge>{row.status}</Badge> },
+  {
+    id: 'amount',
+    header: 'Amount',
+    sortable: true,
+    align: 'right',
+    cell: (row) => money.format(row.amount),
+  },
+]
+
+<DataTable
+  data={payments}
+  columns={columns}
+  filters={[{ column: 'status', title: 'Status' }]}
+/>
+```
+
+## Columns
+
+Each column reads its value with `accessor`, a key or a function, or from `row[id]` when there is none. `cell` renders it; by default the value is shown as text. `align: 'right'` lines numbers up on the right with tabular figures. `className` goes on every cell of the column, for widths and weights.
+
+The search looks through the text of every column unless `searchable: false`; turn it off for amounts and dates, where matching digits is rarely what anyone wants.
+
+## Sorting
+
+Click a sortable header to sort up, again to sort down, and a third time to go back to the data's order. Shift click adds the column to the sort instead of replacing it, and each sorted header shows its rank. Numbers, dates and booleans sort by value, text in natural order (`INV-2` before `INV-10`), and missing values always last. Pass `compare` for anything else, and `defaultSort` for the first render.
+
+## Filters
+
+Each entry in `filters` adds a button to the toolbar that opens a list of the column's values, with how many rows each would leave. Pick several to see rows matching any of them. The options come from the data unless you pass `options`. A column whose value is an array, like tags, matches when any of its items is picked. **Reset** clears the search and every filter.
+
+## Selection
+
+`selectable` adds a checkbox to each row and one in the header for every row the filters leave, which shows a dash when only some are picked. Read the picked ids from `onSelectionChange`, or control them with `selection`. Rows are identified by `getRowId`, by `row.id`, or by their index.
+
+## Pages and scrolling
+
+`pageSize` rows show at a time (10 by default) with previous and next buttons; `pageSize={false}` shows them all. Search, filters and sorting go back to the first page. Give `containerClassName` a max height, like `max-h-96`, and the rows scroll under a sticky header.
+
+## Accessibility
+
+Sorted headers carry `aria-sort`, and their buttons are reachable with Tab. The result count under the table is announced as it changes. Checkboxes are named after the first column of their row, like "Select PAY-1040". When nothing matches, the empty state offers to reset the filters.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `data` | | The rows. |
+| `columns` | | `{ id, header, accessor?, cell?, sortable?, compare?, align?, searchable?, className? }` per column. |
+| `getRowId` | `row.id` or index | Stable id of a row. |
+| `filters` | | `{ column, title, options? }` per faceted filter. |
+| `searchable` | `true` | The search field. |
+| `searchPlaceholder` | `"Search…"` | Placeholder and name of the search field. |
+| `defaultSort` | | `{ id, desc }[]` on the first render. |
+| `selectable` | `false` | Checkboxes on rows and in the header. |
+| `selection`, `onSelectionChange` | | Controlled selection, as row ids. |
+| `pageSize` | `10` | Rows per page, or `false` for all. |
+| `stickyHeader` | `true` | Keeps the header in view while rows scroll. |
+| `containerClassName` | | Classes for the scrolling box, like a max height. |
+| `empty` | `"No results."` | Shown when nothing matches. |
+| `toolbar` | | Extra controls at the end of the toolbar. |
+| `caption` | | Names the table, and shows under it. |

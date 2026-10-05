@@ -1,0 +1,50 @@
+Overlapping avatars for a team, the people on a document or the guests of an event. Past `max`, a "+N" counter opens a list of everyone else.
+
+<ComponentPreview name="avatar-group-demo" />
+
+## Installation
+
+<Install name="avatar-group" extra="Brings avatar, popover and tooltip along." />
+
+## Usage
+
+```tsx
+import { AvatarGroup } from '@/components/ui/avatar-group'
+
+<AvatarGroup
+  max={4}
+  items={[
+    { name: 'Ada Lovelace', src: '/ada.png', description: 'Analyst' },
+    { name: 'Grace Hopper', src: '/grace.png' },
+    { name: 'Alan Turing', initials: 'AT' },
+    // ...
+  ]}
+/>
+```
+
+Each avatar shows its picture, or the initials of `name` while it loads or when it fails. Hovering one shows the name. The counter lists the people past `max` with their `description`; a counter of one would take the room of an avatar, so the last person is shown instead.
+
+When `items` holds only part of a long list, like the first page of members, pass the full count as `total`: the counter shows it, and the list ends with how many more there are.
+
+## Ring
+
+Every avatar wears a two pixel ring so the overlap reads. The ring is the page color, `--background`; on a card or any other surface, set it to match:
+
+```tsx
+<AvatarGroup items={team} className="[--avatar-group-ring:var(--card)]" />
+```
+
+## Accessibility
+
+The group is named by its people, like "Ada Lovelace, Grace Hopper and 6 more". The counter is a button that says how many it holds, and opens the list in a popover that closes with Escape.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `items` | | `{ name, src?, initials?, description? }` per person. |
+| `max` | `4` | Avatars before the counter. |
+| `total` | `items.length` | The full count when `items` is partial. |
+| `size` | `md` | `sm` (24px), `md` (32px) or `lg` (40px). |
+| `tooltips` | `true` | Names on hover. |
+| `overflowLabel` | `"More people"` | Heading of the list. |

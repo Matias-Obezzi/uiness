@@ -1,0 +1,50 @@
+What fills an allowance, in one stacked bar: storage by file type, seats by role, credits by project. It says how much is used of how much, warns near the limit and shows the overage past it.
+
+<ComponentPreview name="usage-meter-demo" />
+
+## Installation
+
+<Install name="usage-meter" />
+
+## Usage
+
+```tsx
+import { UsageMeter } from '@/components/ui/usage-meter'
+
+<UsageMeter
+  label="Workspace storage"
+  limit={100}
+  format={(n) => `${n.toFixed(1)} GB`}
+  segments={[
+    { key: 'images', label: 'Images', value: 21.4 },
+    { key: 'video', label: 'Video', value: 18 },
+    { key: 'docs', label: 'Documents', value: 6.2 },
+  ]}
+/>
+```
+
+Segments keep their order and take `--chart-1` to `--chart-5` unless they bring a `color`. A two pixel gap of track separates them, so neighbours read apart without outlines. Keep the `key` stable while values change and each segment resizes in place. Up to five segments read clearly; fold the rest into "Other".
+
+## States
+
+<ComponentPreview name="usage-meter-states" />
+
+From `warnAt` (80% by default) the meter shows **Almost full** with a warning icon. Past the limit it shows **Over by …**, the bar spans the total, and a mark shows where the limit falls. Both states come with an icon and words, never color alone, and are reflected in `data-state` (`ok`, `warning`, `over`) for your own styling.
+
+## Accessibility
+
+The bar is a `meter` named by `label`, with the used amount against the limit and a value text like "60 GB of 100 GB used, almost full". The legend is a list of each segment and its amount, plus what is free.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` | | What is measured. Names the meter. |
+| `segments` | | `{ key, label, value, color? }` per part, in order. |
+| `limit` | | The allowance, in the unit of the segments. |
+| `format` | locale number | Formats every amount. |
+| `locale` | browser | Locale of the default format. |
+| `warnAt` | `0.8` | Share of the limit from which it warns. |
+| `showLegend` | `true` | The list of segments under the bar. |
+| `warningLabel` | `"Almost full"` | Text of the warning state. |
+| `overLabel` | `"Over by …"` | Text of the over limit state, from the formatted overage. |

@@ -1,0 +1,34 @@
+Morphs a label into its next value letter by letter: letters the two share slide to their new place, the others fade in or out, and the width follows, so the button around it grows and shrinks smoothly. For buttons and status text that change a few letters at a time, like Save, Saving and Saved.
+
+<ComponentPreview name="text-morph-demo" />
+
+## Installation
+
+<Install name="text-morph" />
+
+## Usage
+
+```tsx
+import { TextMorph } from '@/components/ui/text-morph'
+
+<Button>
+  <TextMorph>{saving ? 'Saving' : 'Save'}</TextMorph>
+</Button>
+```
+
+Every change of the text morphs from the one on screen, even in the middle of a morph. Letters are matched by character and by how many times they appeared before, so the second "o" of one word pairs with the second "o" of the next. It runs on the Web Animations API, with no animation library.
+
+Keep it to short text on one line. For numbers, the [Odometer](/docs/motion/odometer) rolls each digit instead.
+
+## Accessibility
+
+Screen readers get the plain text, once, and not the letters. Wrap it in a live region, or a button with `aria-live`, when the change should be announced. With reduced motion the old text crossfades into the new one instead of moving.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `children` | | The text. |
+| `as` | `span` | Element to render: `span`, `div`, `p`, `strong` or a heading. |
+| `duration` | `450` | Milliseconds a morph takes. |
+| `stagger` | `18` | Milliseconds between new letters appearing. |
