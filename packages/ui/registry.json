@@ -1958,6 +1958,191 @@
           "type": "registry:block"
         }
       ]
+    },
+    {
+      "name": "changelog-01",
+      "type": "registry:block",
+      "title": "Changelog 01",
+      "description": "A release feed filtered by tag chips, grouped by month, with version badges, entries that open in place and a subscribe link.",
+      "categories": ["changelog"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/badge", "@uiness/collapsible"],
+      "files": [
+        {
+          "path": "registry/blocks/changelog-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "sign-in-01",
+      "type": "registry:block",
+      "title": "Sign In 01",
+      "description": "A passwordless sign in card that morphs from email to a six digit code to the signed in account, easing its height between steps, with a back button and a resend timer.",
+      "categories": ["auth"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/button",
+        "@uiness/input",
+        "@uiness/input-otp",
+        "@uiness/label"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/sign-in-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "newsletter-01",
+      "type": "registry:block",
+      "title": "Newsletter 01",
+      "description": "An email signup beside a fanned stack of past issues; subscribing drops the next issue, addressed to the reader, onto the stack.",
+      "categories": ["newsletter"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/input", "@uiness/label"],
+      "files": [
+        {
+          "path": "registry/blocks/newsletter-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "comparison-01",
+      "type": "registry:block",
+      "title": "Comparison 01",
+      "description": "An us versus them table with a highlighted column, a sticky header and tick, cross and partial cells, stacking into cards when narrow.",
+      "categories": ["comparison"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/badge", "@uiness/button", "@uiness/table"],
+      "files": [
+        {
+          "path": "registry/blocks/comparison-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "contact-01",
+      "type": "registry:block",
+      "title": "Contact 01",
+      "description": "A validated contact form that morphs into a confirmation, support channel cards and office cards with a ticking local time.",
+      "categories": ["contact"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/input",
+        "@uiness/label",
+        "@uiness/textarea"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/contact-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "blog-01",
+      "type": "registry:block",
+      "title": "Blog 01",
+      "description": "A blog index with a featured post, category chips, post cards, pagination and a reader that slides in from the side.",
+      "categories": ["blog"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/badge",
+        "@uiness/button",
+        "@uiness/drawer"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/blog-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "page-header-01",
+      "type": "registry:block",
+      "title": "Page Header 01",
+      "description": "A project header with breadcrumbs, meta, a star button and actions that folds into a sticky tab bar on scroll, with counts that roll.",
+      "categories": ["page-header"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/odometer",
+        "@uiness/tabs"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/page-header-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "notifications-01",
+      "type": "registry:block",
+      "title": "Notifications 01",
+      "description": "A notifications section with filters, a list grouped by day with read state, mark all read and details that open in place.",
+      "categories": ["notifications"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/button",
+        "@uiness/collapsible",
+        "@uiness/odometer"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/notifications-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "command-palette-01",
+      "type": "registry:block",
+      "title": "Command Palette 01",
+      "description": "A ⌘K command palette with search, grouped results, recent items, nested pages and shortcuts drawn as key caps.",
+      "categories": ["command-palette"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/command", "@uiness/dialog"],
+      "files": [
+        {
+          "path": "registry/blocks/command-palette-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "file-upload-01",
+      "type": "registry:block",
+      "title": "File Upload 01",
+      "description": "A complete upload flow: a dropzone, per file progress, type and size errors, retry and remove, and a total progress bar.",
+      "categories": ["file-upload"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/dropzone",
+        "@uiness/progress"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/file-upload-01.tsx",
+          "type": "registry:block"
+        }
+      ]
     }
   ]
 }

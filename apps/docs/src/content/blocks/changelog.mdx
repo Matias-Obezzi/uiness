@@ -1,0 +1,47 @@
+What shipped and when, in a feed people can skim. Every block takes its entries and words through props and lays itself out by the width of its container.
+
+## Changelog 01
+
+A release feed with tag chips that filter it, entries grouped under their month, version badges, and a subscribe link. Each entry opens in place to show its details, and opening one closes the last, like an accordion. On a wide container the month rides beside its entries.
+
+<BlockPreview name="changelog-01" />
+
+<Install name="changelog-01" />
+
+```tsx
+import { Changelog01 } from '@/components/changelog-01'
+
+<Changelog01
+  title="Release notes"
+  subscribe={{ label: 'RSS', href: '/changelog.xml' }}
+  defaultOpen={null}
+  entries={[
+    {
+      version: '3.1.0',
+      date: '2026-10-02',
+      title: 'Comments on any field',
+      summary: 'Start a thread on a single value, not just the whole record.',
+      tags: ['Feature'],
+      details: <p>Threads follow the value when it moves, and resolve when it changes.</p>,
+      href: '/changelog/3-1-0',
+    },
+    {
+      version: '3.0.4',
+      date: '2026-09-21',
+      title: 'Fixes for exports',
+      summary: 'Large exports no longer time out.',
+      tags: ['Fix'],
+    },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow`, `title`, `description` | The words above the feed. `null` hides the eyebrow or the description. |
+| `entries` | `{ version, date, title, summary, tags?, details?, href? }[]`, newest first. `date` is an ISO day and groups the entry by month. An entry without `details` or `href` does not open. |
+| `tags` | The chips to offer. Defaults to every tag found in `entries`. |
+| `defaultOpen` | Version of the entry that starts open. Defaults to the first; `null` starts with all closed. |
+| `subscribe` | `{ label, href }` for the link beside the heading, an RSS feed or a signup. `null` hides it. |
+| `locale` | Locale for month names and dates. Defaults to the browser's. |
+| `labels` | `all`, `filter`, `expand`, `collapse`, `empty` and `readMore`. |

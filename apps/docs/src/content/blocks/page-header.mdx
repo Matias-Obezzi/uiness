@@ -1,0 +1,44 @@
+The top of a page inside an app: what this is, what you can do, and where to go next. Every block takes its words, actions and tabs through props and lays itself out by the width of its container.
+
+## Page Header 01
+
+A project header with breadcrumbs, a title and status, a line about it, small facts, a star button and actions, over tabs with counts. Scroll past the title and the tab bar stays at the top, picking up a small title and the main action. Counts roll to their new value whenever they change: in the preview, open Issues and close one.
+
+<BlockPreview name="page-header-01" />
+
+<Install name="page-header-01" />
+
+The preview gives the block its own scroll box with `height`. On a real page, pass `height={null}` and the bar sticks to the top of the window instead; `stickyOffset` keeps it under a fixed navbar.
+
+```tsx
+import { PageHeader01 } from '@/components/page-header-01'
+
+<PageHeader01
+  height={null}
+  stickyOffset={64}
+  breadcrumbs={[{ label: 'Acme', href: '/' }]}
+  title="billing"
+  description="Invoices, plans and payment methods."
+  actions={[{ label: 'New invoice', href: '/invoices/new', primary: true }]}
+  tabs={[
+    { id: 'overview', label: 'Overview' },
+    { id: 'invoices', label: 'Invoices', count: invoices.length },
+  ]}
+>
+  {({ tab, setCount }) => (tab === 'invoices' ? <Invoices onChange={(n) => setCount('invoices', n)} /> : <Overview />)}
+</PageHeader01>
+```
+
+| Prop | Description |
+| --- | --- |
+| `breadcrumbs` | `{ label, href }[]` above the title. An empty list hides them. |
+| `title`, `description`, `status` | The heading, the line under it and a badge beside it. `null` hides the description or the status. |
+| `meta` | `{ icon?, label }[]`, small facts under the description. |
+| `star` | `{ count, starred?, onChange? }` for a star button whose count rolls. `null` hides it. |
+| `actions` | `{ label, icon?, href?, onClick?, primary? }[]`. The `primary` one stays in the folded bar. |
+| `tabs` | `{ id, label, icon?, count? }[]`. New counts roll in. |
+| `value`, `defaultValue`, `onValueChange` | The open tab, controlled or not. |
+| `height` | Gives the block a scroll box of this height to fold inside. Default `36rem`; `null` leaves scrolling to the page. |
+| `stickyOffset` | Pixels from the top where the bar sticks. Default `0`. |
+| `children` | What sits under the tabs. A function gets `{ tab, counts, setCount }`, so the content can move a count. |
+| `labels` | `star`, `starred`, `breadcrumb` and `tabs`. |

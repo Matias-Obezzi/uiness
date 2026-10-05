@@ -190,6 +190,31 @@ const sections: NavSection[] = [
       page('blocks/pricing', 'Pricing', 'Plans side by side with a billing switch.'),
       page('blocks/testimonials', 'Testimonials', 'Quotes from customers, in moving rows.'),
       page('blocks/faq', 'FAQ', 'Questions and answers that open in place.'),
+      page('blocks/changelog', 'Changelog', 'Release notes filtered by tag and grouped by month.'),
+      page('blocks/newsletter', 'Newsletter', 'An email signup framed by a stack of past issues.'),
+      page('blocks/comparison', 'Comparison', 'Us versus them, as a table or stacked cards.'),
+      page('blocks/contact', 'Contact', 'A checked form, support channels and office clocks.'),
+      page('blocks/blog', 'Blog', 'A post index with filters, pages and an in-place reader.'),
+      page(
+        'blocks/page-header',
+        'Page Header',
+        'A project header that folds into a sticky tab bar.',
+      ),
+      page(
+        'blocks/notifications',
+        'Notifications',
+        'Updates grouped by day, with read state and details.',
+      ),
+      page(
+        'blocks/command-palette',
+        'Command Palette',
+        'A ⌘K search over pages and actions, with nested lists.',
+      ),
+      page(
+        'blocks/file-upload',
+        'File Upload',
+        'Dropped files with progress, errors, retry and a total.',
+      ),
     ],
   },
   {
@@ -270,6 +295,17 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-04': [
+    'blocks/changelog',
+    'blocks/newsletter',
+    'blocks/comparison',
+    'blocks/contact',
+    'blocks/blog',
+    'blocks/page-header',
+    'blocks/notifications',
+    'blocks/command-palette',
+    'blocks/file-upload',
+  ],
   '2026-10-01': [
     'components/accordion',
     'components/alert-dialog',
