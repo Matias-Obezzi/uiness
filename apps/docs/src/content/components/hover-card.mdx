@@ -1,0 +1,64 @@
+A card that previews what a link points at, a person or a page, when the pointer rests on it or the link gets keyboard focus. Hover the name below.
+
+<ComponentPreview name="hover-card-demo" />
+
+## Installation
+
+<Install name="hover-card" extra="Installs the Avatar, used by the profile card." />
+
+## Profile card
+
+`ProfileHoverCard` is ready-made: a picture, a name, a handle, a line about them, a few figures and a button. The child is the trigger, usually a link.
+
+```tsx
+import { ProfileHoverCard } from '@/components/ui/hover-card'
+
+<ProfileHoverCard
+  name="Noor Haddad"
+  handle="@noor"
+  avatar="/noor.jpg"
+  description="Type designer."
+  stats={[
+    { label: 'Following', value: 312 },
+    { label: 'Followers', value: '12.4k' },
+  ]}
+  action={<Button size="sm" variant="outline">Follow</Button>}
+>
+  <a href="/noor">@noor</a>
+</ProfileHoverCard>
+```
+
+Initials stand in while the picture loads, or when there is none. `meta` adds a line of small details, like a place and a date.
+
+## Your own card
+
+The same pieces as shadcn/ui. `arrow` adds a small arrow pointing at the trigger.
+
+<ComponentPreview name="hover-card-link" />
+
+```tsx
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
+
+<HoverCard>
+  <HoverCardTrigger href="/notes/4-2">Release notes 4.2</HoverCardTrigger>
+  <HoverCardContent arrow>Faster builds and a new tree view.</HoverCardContent>
+</HoverCard>
+```
+
+## Delays
+
+The card opens after `openDelay`, 500ms, so moving the pointer across a paragraph does not set off every link it crosses, and closes `closeDelay`, 200ms, after the pointer leaves, so it can travel from the link into the card. It comes in with a small spring from the side it opens on, and leaves quicker than it came. With reduced motion it only fades.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `openDelay` | `500` | Milliseconds of hovering before it opens. |
+| `closeDelay` | `200` | Milliseconds after leaving before it closes. |
+| `open` / `defaultOpen` / `onOpenChange` | | The open state. |
+
+`HoverCardContent` takes `side`, `align`, `sideOffset` and `arrow`.
+
+## Accessibility
+
+A hover card is a preview of where a link goes, never the only way to reach something: touch screens have no hover. Keep anything people need on the page the link opens. Keyboard focus on the trigger opens it too.

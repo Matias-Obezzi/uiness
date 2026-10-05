@@ -1,0 +1,54 @@
+A card in a grid that grows out of its place into a larger view over the page, and folds back into the same place when closed. Click a card.
+
+<ComponentPreview name="expandable-card-demo" />
+
+## Installation
+
+<Install name="expandable-card" />
+
+## Usage
+
+```tsx
+import {
+  ExpandableCard,
+  ExpandableCardContent,
+  ExpandableCardDescription,
+  ExpandableCardTitle,
+  ExpandableCardTrigger,
+} from '@/components/ui/expandable-card'
+
+<ExpandableCard>
+  <ExpandableCardTrigger>
+    <img src="/lofoten.jpg" alt="" />
+    <span className="p-4 font-semibold">Lofoten</span>
+  </ExpandableCardTrigger>
+  <ExpandableCardContent>
+    <img src="/lofoten.jpg" alt="" />
+    <div className="p-6">
+      <ExpandableCardTitle>Lofoten</ExpandableCardTitle>
+      <ExpandableCardDescription>Norway · 6 nights</ExpandableCardDescription>
+      ...
+    </div>
+  </ExpandableCardContent>
+</ExpandableCard>
+```
+
+`ExpandableCardTrigger` is the card in the grid, a button with card styles. Keep what is inside it to text and pictures, or pass `asChild` with an element of your own. `ExpandableCardContent` is the larger view; style its width with `className`, `max-w-2xl` by default.
+
+## How it moves
+
+When the card opens, the larger view is laid out where it ends up, then starts from the card's exact box and grows into place, so the card seems to become the view. Its contents fade in once the box has nearly arrived, so nothing inside stretches. Closing runs the same path back to wherever the card is now, and the card hides while the view is open so there is only ever one of it.
+
+It is all transforms on one element through the Web Animations API, timed by `--duration-slow` and the theme's easings. With reduced motion the view opens and closes at once.
+
+## Focus
+
+The larger view is a dialog. Focus moves into it, Tab stays inside it, the page behind does not scroll, and Escape, a click outside or the close button fold it back. Focus returns to the card it came from. Give it an `ExpandableCardTitle` so it is named; `ExpandableCardDescription` is read after the title.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `open` / `defaultOpen` / `onOpenChange` | | The open state. `onOpenChange(false)` runs when it starts folding back. |
+
+`ExpandableCardContent` takes `showCloseButton`, `true` by default, and `overlayClassName` for the backdrop.

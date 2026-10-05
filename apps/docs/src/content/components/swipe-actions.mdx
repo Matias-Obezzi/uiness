@@ -1,0 +1,62 @@
+List rows that reveal actions when swiped sideways, the way a mail app does. Let go past halfway and the row stays open; swipe all the way and the first action runs by itself. Every action is also in a menu, so nobody has to swipe. Try it with a finger or by dragging with the mouse.
+
+<ComponentPreview name="swipe-actions-demo" />
+
+## Installation
+
+<Install name="swipe-actions" extra="Installs the Dropdown Menu, which offers the same actions from a button." />
+
+## Usage
+
+```tsx
+import { SwipeActions, SwipeActionsRow } from '@/components/ui/swipe-actions'
+
+<SwipeActions aria-label="Inbox">
+  {messages.map((m) => (
+    <SwipeActionsRow
+      key={m.id}
+      label={m.subject}
+      leading={[
+        { label: 'Read', icon: <MailOpenIcon />, tone: 'primary', keepRow: true, onSelect: () => markRead(m.id) },
+      ]}
+      trailing={[
+        { label: 'Delete', icon: <TrashIcon />, tone: 'destructive', onSelect: () => remove(m.id) },
+        { label: 'Archive', icon: <ArchiveIcon />, onSelect: () => archive(m.id) },
+      ]}
+    >
+      <MessagePreview message={m} />
+    </SwipeActionsRow>
+  ))}
+</SwipeActions>
+```
+
+`leading` actions sit under the left edge and show when you swipe right; `trailing` ones sit under the right edge. The first action of each side is at the edge and is the one a full swipe runs. `label` names the row's menu button, "More actions for Lunch on Friday".
+
+## What happens when an action runs
+
+By default the row slides away, folds its height so the list closes the gap, and then calls `onSelect`: remove the item there. For an action that keeps the item, like marking it read, set `keepRow` and the row slides back into place instead. With reduced motion `onSelect` runs at once.
+
+## The gesture
+
+A press only becomes a swipe after it moves sideways more than it moves down, so vertical scrolling stays native on touch screens. When let go, the speed of the swipe carries the row a little further, so a quick flick opens it. Past its actions the row follows with resistance, unless `fullSwipe` is on, the default, in which case the first action grows to fill the row past 60% of the width and runs on release.
+
+Only one row in a `SwipeActions` list is open at a time. A tap on the open row, a press anywhere else or Escape puts it away. Elements marked `data-swipe-ignore` never start a swipe.
+
+## Props
+
+`SwipeActionsRow`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` | | Names the row in its menu button. |
+| `leading` | | Actions revealed by swiping right. |
+| `trailing` | | Actions revealed by swiping left. |
+| `fullSwipe` | `true` | A long swipe runs the first action of that side. |
+| `menu` | `true` | Show the menu button with every action. |
+| `contentClassName` | | Classes for the layer that slides. |
+
+Each action is `{ label, icon?, tone?, onSelect, keepRow? }`, with `tone` one of `neutral`, `primary` or `destructive`.
+
+## Accessibility
+
+Swiping is a shortcut, never the only way. The menu button holds every action of the row and works with the keyboard, screen readers, switch controls and a plain click. While a row is closed its revealed buttons are inert, out of the tab order; when open, they can be tabbed to.

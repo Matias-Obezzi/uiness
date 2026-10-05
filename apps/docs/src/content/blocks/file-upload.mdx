@@ -1,0 +1,59 @@
+Getting files from people's computers to your server, with progress they can trust. Every block takes its rules and words through props and lays itself out by the width of its container.
+
+## File Upload 01
+
+A whole upload flow around the [Dropzone](/docs/dnd/dropzone). Picked or dropped files join a list, each with its own progress; failures say why and can be retried; any file can be removed, which cancels it; and a bar on top adds it all up. Files that break the type or size rules show up with the reason instead of vanishing. Until you pass `upload` the transfers are simulated, which is what the preview does.
+
+<BlockPreview name="file-upload-01" />
+
+<Install name="file-upload-01" />
+
+`upload` gets each file with an abort signal and a progress callback. Report progress through `onProgress` and resolve when done:
+
+```tsx
+import { FileUpload01 } from '@/components/file-upload-01'
+
+<FileUpload01
+  defaultFiles={[]}
+  accept="image/*,.pdf"
+  maxSize={25 * 1024 * 1024}
+  upload={(file, { signal, onProgress }) =>
+    new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest()
+      xhr.open('POST', '/api/upload')
+      xhr.upload.onprogress = (e) => onProgress(e.loaded / e.total)
+      xhr.onload = () => (xhr.status < 300 ? resolve(xhr.response) : reject(new Error('The server said no.')))
+      xhr.onerror = () => reject(new Error('The connection dropped.'))
+      signal.addEventListener('abort', () => xhr.abort())
+      const body = new FormData()
+      body.append('file', file)
+      xhr.send(body)
+    })
+  }
+/>
+```
+
+Or return an async iterable that yields progress from 0 to 1:
+
+```tsx
+<FileUpload01
+  upload={async function* (file, { signal }) {
+    const { url, parts } = await startMultipart(file, signal)
+    for (let i = 0; i < parts.length; i++) {
+      await sendPart(url, parts[i], signal)
+      yield (i + 1) / parts.length
+    }
+  }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `title`, `description` | The words above the dropzone. `null` hides the description. |
+| `accept` | Types or extensions, comma separated, like the `accept` attribute. |
+| `maxSize` | Largest file in bytes. Default 10 MB. |
+| `maxFiles` | Most files per drop. Default `10`. |
+| `upload` | `(file, { signal, onProgress }) => Promise \| AsyncIterable<number>`. Throw to mark the file failed with your message. Without it uploads are simulated. |
+| `onUploaded` | Called with the item each time a file finishes. |
+| `defaultFiles` | `{ name, size, type?, status, progress?, error? }[]` to show from the start. Pass `[]` for an empty list. |
+| `labels` | `drop`, `browse`, `type`, `size` (with `{max}`), `count`, `failed`, `retry`, `remove`, `clear`, `done`, `summary`, `allDone`, `empty` and `files`. |

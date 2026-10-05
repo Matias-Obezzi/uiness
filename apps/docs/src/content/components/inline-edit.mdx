@@ -1,0 +1,58 @@
+Text that turns into a field where it stands. Click the project name or the owner below.
+
+<ComponentPreview name="inline-edit-demo" />
+
+## Installation
+
+<Install name="inline-edit" />
+
+## Usage
+
+```tsx
+import { InlineEdit } from '@/components/ui/inline-edit'
+
+<h2 className="text-2xl font-semibold">
+  <InlineEdit aria-label="Project name" value={name} onSave={rename} />
+</h2>
+```
+
+The field inherits the font, size, weight and spacing of the text around it and takes the same box, so a heading stays a heading and nothing on the page moves when it opens. It is as wide as what it holds and grows as you type.
+
+`Enter` or leaving the field saves, `Escape` puts the old text back and calls `onCancel`. Focus returns to the text after either key, so a keyboard user does not lose their place.
+
+## Validation and saving
+
+`validate` returns a message to refuse the draft. The field stays open, marked invalid, with the message under it. `onSave` can return a promise: a spinner shows beside the field while it runs and the field becomes read only, then a check shows briefly once it lands. If the promise rejects, the field stays open with the error's message, so nothing typed is lost.
+
+```tsx
+<InlineEdit
+  aria-label="Project name"
+  value={name}
+  validate={(v) => (v.trim() ? null : 'A project needs a name.')}
+  onSave={async (v) => {
+    await api.rename(id, v)
+    setName(v)
+  }}
+/>
+```
+
+The spinner, the check and the message all sit outside the box, so they never push the text either.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue` | | The saved text. |
+| `onSave` | | Store the new text. Return a promise to wait on it. |
+| `onCancel` | | Called when Escape throws an edit away. |
+| `validate` | | Return a message to refuse the draft. |
+| `editing`, `onEditingChange` | | Control whether the field is open. |
+| `placeholder` | `'Empty'` | Shown, muted, when there is no text. |
+| `selectOnEdit` | `true` | Select all the text when the field opens. |
+| `readOnly` | | Show the text without the button. |
+| `name` | | Posts the saved text with a form. |
+| `textClassName` | | Classes shared by the text and the field. |
+
+## Details
+
+The text is a button named by the field's label followed by its value, so a screen reader user knows both what it is and what it says. Inside a [Form](/docs/components/form) field it takes the label from `FormLabel`.

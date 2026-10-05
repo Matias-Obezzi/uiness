@@ -1,0 +1,105 @@
+Folders and items nested to any depth, like a file explorer. Folders open and close with a height animation, the keyboard works the way the ARIA tree pattern describes, and a folder can fetch its contents the first time it opens.
+
+<ComponentPreview name="tree-view-demo" />
+
+## Installation
+
+<Install name="tree-view" extra="Installs the Spinner, shown while a folder loads." />
+
+## Usage
+
+```tsx
+import { type TreeNode, TreeView } from '@/components/ui/tree-view'
+
+const files: TreeNode[] = [
+  {
+    id: 'src',
+    label: 'src',
+    children: [
+      { id: 'src/app.tsx', label: 'app.tsx' },
+      { id: 'src/main.tsx', label: 'main.tsx' },
+    ],
+  },
+  { id: 'package.json', label: 'package.json' },
+]
+
+<TreeView aria-label="Files" data={files} defaultExpanded={['src']} />
+```
+
+Every node needs an `id` unique in the whole tree. A node with `children` is a folder. Name the tree with `aria-label` or `aria-labelledby`.
+
+## Keyboard
+
+The tree is one tab stop. Inside it:
+
+| Key | Does |
+| --- | --- |
+| <kbd>↓</kbd> <kbd>↑</kbd> | Next or previous visible node. |
+| <kbd>→</kbd> | Opens a closed folder, or moves into an open one. |
+| <kbd>←</kbd> | Closes an open folder, or moves to the parent. |
+| <kbd>Home</kbd> <kbd>End</kbd> | First or last visible node. |
+| <kbd>Enter</kbd> | Selects the node and runs `onAction`. |
+| <kbd>Space</kbd> | Selects, or toggles the selection in `multiple` mode, or checks with `checkboxes`. |
+| <kbd>*</kbd> | Opens every folder next to the focused one. |
+| Letters | Jump to the next node starting with what you type. |
+| <kbd>Shift</kbd> + <kbd>↓</kbd> <kbd>↑</kbd> | Extends the selection in `multiple` mode. |
+| <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>A</kbd> | Selects every visible node in `multiple` mode. |
+
+A click on a folder opens or closes it and selects it.
+
+## Selection
+
+`selectionMode` is `single` by default, `multiple` for any number, or `none`. Control it with `selected` and `onSelectedChange`, or start it with `defaultSelected`. The same goes for open folders with `expanded`, `onExpandedChange` and `defaultExpanded`. In `multiple` mode a click toggles a node and <kbd>Shift</kbd> + click selects a range.
+
+## Icons
+
+`renderIcon` gets each node and whether it is a folder, open or loading, so folders can show an open folder icon. A node's own `icon` wins over it.
+
+```tsx
+<TreeView
+  data={files}
+  renderIcon={(node, { branch, expanded }) =>
+    branch ? (expanded ? <FolderOpenIcon /> : <FolderIcon />) : <FileIcon />
+  }
+/>
+```
+
+## Checkboxes
+
+<ComponentPreview name="tree-view-checkboxes" />
+
+With `checkboxes`, every row gets a box and selection makes way for checking. Checking a folder checks everything in it; a folder with only some of its contents checked shows a dash and reads as "mixed". `onCheckedChange` gets every id that reads as checked, folders included, so you can pass it straight back as `checked`. Disabled nodes keep their state when a folder around them changes.
+
+## Loading children
+
+<ComponentPreview name="tree-view-lazy" />
+
+Give a node `hasChildren` instead of `children`, and `loadChildren` is called the first time it opens. The chevron turns into a spinner and the node is marked `aria-busy` until the promise settles. The result is kept, so closing and opening again does not fetch twice. If the promise rejects, the folder closes and shows an alert icon; opening it again retries.
+
+```tsx
+<TreeView
+  data={[{ id: 'db', label: 'Database', hasChildren: true }]}
+  loadChildren={async (node) => {
+    const tables = await api.tables(node.id)
+    return tables.map((t) => ({ id: t.id, label: t.name }))
+  }}
+/>
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `data` | | The top level nodes: `{ id, label, children?, hasChildren?, icon?, textValue?, disabled? }`. |
+| `selectionMode` | `'single'` | `single`, `multiple` or `none`. |
+| `selected` / `defaultSelected` / `onSelectedChange` | | Selected ids. |
+| `expanded` / `defaultExpanded` / `onExpandedChange` | | Open folder ids. |
+| `checkboxes` | `false` | A checkbox on every row, with mixed folders. |
+| `checked` / `defaultChecked` / `onCheckedChange` | | Checked ids. |
+| `loadChildren` | | `(node) => Promise<TreeNode[]>` for nodes with `hasChildren`. |
+| `renderIcon` | | `(node, { expanded, branch, loading }) => ReactNode`. |
+| `onAction` | | Runs on Enter and on a click. |
+
+## Details
+
+The structure is the ARIA tree pattern: a `role="tree"` list of `treeitem`s with `aria-level`, `aria-setsize`, `aria-posinset` and `aria-expanded`, and a `role="group"` list for each folder's contents. Closed folders stay mounted after their first opening, hidden and inert, so closing can animate; with reduced motion they open and close at once. Type-ahead matches `textValue`, or the label when it is a string.

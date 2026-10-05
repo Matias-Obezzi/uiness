@@ -1,0 +1,61 @@
+Jump anywhere and run anything from the keyboard. Every block takes its commands and words through props and lays itself out by the width of its container.
+
+## Command Palette 01
+
+A keyboard first action surface built on the [Command](/docs/components/command) and [Dialog](/docs/components/dialog) components. ⌘K, or Ctrl+K, opens a search over pages and actions in groups, with the last few used on top. Some items open a list of their own, like Change theme → Light, Dark, Match system: crumbs above the search say where you are, and Backspace on an empty search or Escape steps back out. Shortcuts are drawn as key caps.
+
+<BlockPreview name="command-palette-01" />
+
+<Install name="command-palette-01" />
+
+```tsx
+import { CommandPalette01 } from '@/components/command-palette-01'
+
+<CommandPalette01
+  title="Search"
+  groups={[
+    {
+      heading: 'Go to',
+      items: [
+        { id: 'home', label: 'Home', href: '/', shortcut: ['G', 'H'] },
+        { id: 'billing', label: 'Billing', href: '/billing', keywords: ['invoices'] },
+      ],
+    },
+    {
+      heading: 'Preferences',
+      items: [
+        {
+          id: 'theme',
+          label: 'Theme',
+          page: {
+            title: 'Theme',
+            groups: [
+              {
+                heading: 'Theme',
+                items: [
+                  { id: 'light', label: 'Light', onSelect: () => setTheme('light') },
+                  { id: 'dark', label: 'Dark', onSelect: () => setTheme('dark') },
+                ],
+              },
+            ],
+          },
+        },
+      ],
+    },
+  ]}
+  onRun={(item) => track('command', item.id)}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow`, `title`, `description` | The words above the trigger. `null` hides the eyebrow or the description. |
+| `groups` | `{ heading, items }[]`. Each item is `{ id, label, icon?, keywords?, shortcut?, hint?, href?, onSelect?, page? }`. An item with `page` opens `{ title, placeholder?, groups }` instead of running. |
+| `defaultRecent` | Ids shown under Recent before anything has run. Nested items count. |
+| `maxRecent` | How many recent items to keep. Default `3`; `0` turns the group off. |
+| `hotkey` | The letter that opens it with ⌘ or Ctrl. Default `k`; `null` turns the shortcut off. |
+| `onRun` | Called with the item after any item runs, nested ones included. |
+| `defaultOpen` | Start open. |
+| `labels` | `trigger`, `placeholder`, `empty`, `recent`, `home`, `back`, `ran` (with `{label}`) and the hints in the footer. |
+
+Shortcuts on items are drawn, not bound: wire them to your own key handling if they should work outside the palette.

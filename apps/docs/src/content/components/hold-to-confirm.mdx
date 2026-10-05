@@ -1,0 +1,36 @@
+A button you have to press and hold before it acts, for things a stray click should never do. A fill sweeps across while you hold; let go early and it rewinds.
+
+<ComponentPreview name="hold-to-confirm-demo" />
+
+## Installation
+
+<Install name="hold-to-confirm" />
+
+## Usage
+
+```tsx
+import { HoldToConfirm } from '@/components/ui/hold-to-confirm'
+
+<HoldToConfirm onConfirm={deleteRepository} confirmedLabel="Deleted">
+  <Trash2Icon />
+  Hold to delete
+</HoldToConfirm>
+```
+
+A click does nothing; only a hold of `duration` milliseconds runs `onConfirm`. Sliding off the button, or the touch turning into a scroll, cancels like letting go. Return a promise from `onConfirm` and a spinner shows until it settles; if it rejects the button goes back to rest.
+
+From the keyboard, hold Space or Enter. Auto repeat does not restart the hold. Screen readers hear "Press and hold to confirm." as the button's description, change it with `hint`, and the `confirmedLabel` is announced once it is done.
+
+The fill is drawn frame by frame rather than with a CSS transition, so it still shows progress with reduced motion, where it is the only way to know how long is left. The rewind is instant then, and the button does not shrink while pressed.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `onConfirm` | | Runs when the hold completes. A promise shows a spinner. |
+| `duration` | `1200` | Milliseconds to hold. |
+| `variant` | `'destructive'` | `destructive` or `default`, the color of the fill. |
+| `size` | `'default'` | `sm`, `default` or `lg`. |
+| `confirmedLabel` | | Shown and announced once confirmed. |
+| `resetAfter` | `2000` | Milliseconds before it resets, or `false` to stay confirmed. |
+| `hint` | `'Press and hold to confirm.'` | The description screen readers hear. |

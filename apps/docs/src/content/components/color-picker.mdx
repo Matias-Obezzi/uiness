@@ -1,0 +1,50 @@
+A swatch that opens a picker: a saturation and brightness area, hue and opacity sliders, a text field in hex, rgb, hsl or oklch, the system eye dropper where the browser has one, saved colors and a contrast check.
+
+<ComponentPreview name="color-picker-demo" />
+
+## Installation
+
+<Install name="color-picker" extra="Installs the Popover and Button along with it." />
+
+## Usage
+
+```tsx
+import { ColorPicker } from '@/components/ui/color-picker'
+
+<ColorPicker value={color} onValueChange={setColor} />
+```
+
+The value is a CSS color string written in the current format: `#6d28d9`, `rgb(109 40 217)`, `hsl(263 69% 50%)` or `oklch(0.491 0.241 292.58)`. Alpha is only written when it is below 1. The starting format is the one of the value you pass, and the buttons in the picker switch it.
+
+## Formats
+
+The text field reads any of the four, in modern or legacy syntax, so `rgba(0, 0, 0, .5)` and `#0008` work too. It applies as soon as what you type reads as a color, and marks itself invalid until then. OKLCH colors outside sRGB are clipped per channel, as a browser would show them.
+
+## Saved colors
+
+`swatches` lists saved colors under the picker. The plus button saves the current one and `Delete` on a focused swatch removes it; both call `onSwatchesChange`. Use `defaultSwatches` to let the component keep the list.
+
+## Contrast
+
+Pass `contrastWith` and the picker shows the WCAG 2 contrast ratio between the color and that background, with AA (4.5), AAA (7) and AA Large (3). A see-through color is first laid over the background, which is what the eye ends up comparing. `contrastRatio`, `parseColor` and `formatColor` are exported for your own checks.
+
+## Keyboard
+
+The area is a two dimensional slider: left and right change saturation, up and down brightness, with `Shift` for steps of 10. `Home` and `End` go to no and full saturation. The hue and opacity sliders take the arrow keys, `PageUp`, `PageDown`, `Home` and `End`.
+
+## Eye dropper
+
+The pipette button only appears where the [EyeDropper API](https://developer.mozilla.org/en-US/docs/Web/API/EyeDropper_API) exists, which today means Chromium on desktop. `Escape` cancels it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onValueChange` | `#000000` | A hex, rgb(), hsl() or oklch() string. |
+| `format`, `defaultFormat`, `onFormatChange` | from the value | `hex`, `rgb`, `hsl` or `oklch`. |
+| `alpha` | `true` | Show the opacity slider and write alpha. |
+| `swatches`, `defaultSwatches`, `onSwatchesChange` | `[]` | Saved colors. |
+| `contrastWith` | | A background to check the contrast against. |
+| `showValue` | `true` | Show the value next to the swatch in the button. |
+| `name` | | Hidden input for a form. |
+| `labels` | English | Accessible names of the parts. |

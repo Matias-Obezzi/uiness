@@ -1,0 +1,47 @@
+Key caps for shortcuts and instructions. Write a shortcut once, `mod+k`, and it shows ⌘ K on a Mac and Ctrl + K everywhere else.
+
+<ComponentPreview name="kbd-demo" />
+
+## Installation
+
+<Install name="kbd" />
+
+## Usage
+
+```tsx
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
+
+<Kbd>Esc</Kbd>
+<KbdGroup keys="mod+shift+p" />
+```
+
+`Kbd` is a single cap and shows its children as written. `KbdGroup` with `keys` splits a shortcut on `+` and draws one cap per key. Modifiers and named keys turn into the platform's spelling:
+
+| Key | Mac | Elsewhere |
+| --- | --- | --- |
+| `mod` | ⌘ | Ctrl |
+| `ctrl` | ⌃ | Ctrl |
+| `alt`, `option` | ⌥ | Alt |
+| `shift` | ⇧ | Shift |
+| `cmd`, `meta` | ⌘ | Win |
+| `enter` | ↵ | Enter |
+| `backspace` | ⌫ | Backspace |
+| `up`, `down`, `left`, `right` | ↑ ↓ ← → | ↑ ↓ ← → |
+
+`esc`, `tab`, `space`, `delete`, `pageup` and friends are covered too, single letters show in capitals, and anything else is shown as written. A trailing `++` is the plus key, `mod++`.
+
+On a Mac the caps sit side by side; elsewhere they are joined by `+`, the way each platform writes them. Change it with `separator`, and force a platform with `platform="mac"` or `"other"`. The platform is detected after hydration, so the server and the first render agree.
+
+Screen readers hear the name of each key, "Command K", not the symbol, which would read as "place of interest sign". The group is a `<kbd>` around `<kbd>` caps, the HTML for a key combination.
+
+`useIsMac`, `formatKey` and `parseShortcut` are exported for showing shortcuts elsewhere, in a menu for example.
+
+## Props
+
+### KbdGroup
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `keys` | | A shortcut like `mod+k`. Without it the children are shown. |
+| `separator` | none on a Mac, `+` elsewhere | Put between caps. |
+| `platform` | detected | `mac` or `other`. |

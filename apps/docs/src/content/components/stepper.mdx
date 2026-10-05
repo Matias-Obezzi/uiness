@@ -1,0 +1,72 @@
+Shows where someone is in a flow of several steps: what is done, what is next and what failed. The line to each step fills as it is reached, and done steps are buttons that go back to them.
+
+<ComponentPreview name="stepper-demo" />
+
+## Installation
+
+<Install name="stepper" />
+
+## Usage
+
+```tsx
+import { Stepper } from '@/components/ui/stepper'
+
+const [step, setStep] = useState(0)
+
+<Stepper
+  value={step}
+  onValueChange={setStep}
+  steps={[
+    { title: 'Account', description: 'Email and password' },
+    { title: 'Workspace' },
+    { title: 'Invite' },
+  ]}
+/>
+```
+
+`value` is the current step, from 0. Steps before it are done and show a check, the step at it is current, the rest are upcoming. Set `value` to the number of steps to show them all done.
+
+## Vertical, with content
+
+<ComponentPreview name="stepper-vertical" />
+
+`orientation="vertical"` stacks the steps with the line running down the side, and each `StepperItem` shows its children under the title, for the form or the message of that step.
+
+```tsx
+import { Stepper, StepperItem } from '@/components/ui/stepper'
+
+<Stepper value={2} orientation="vertical">
+  <StepperItem title="Upload the file" />
+  <StepperItem title="Match the columns" />
+  <StepperItem title="Check the rows" error>
+    <Button size="sm">Skip them</Button>
+  </StepperItem>
+  <StepperItem title="Import" />
+</Stepper>
+```
+
+`error` marks a step as failed. `status` sets any step's state by hand, `complete`, `current`, `upcoming` or `error`, when the flow is not linear.
+
+## Going back
+
+With `onValueChange`, done steps are buttons. `clickable="all"` makes every step one, for a flow where steps can be filled in any order, and `clickable={false}` none.
+
+## On phones
+
+A horizontal stepper narrower than 36rem keeps only the numbered circles and the lines, and spells out the current step under them, "Workspace, Step 2 of 4", so the row never overflows. Descriptions show from 48rem up. The widths are the stepper's own, through a container query, not the screen's.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` | | The current step, from 0. |
+| `onValueChange` | | Called with a step that was clicked. |
+| `orientation` | `'horizontal'` | `horizontal` or `vertical`. |
+| `clickable` | `'complete'` | Which steps are buttons: `complete`, `all` or `false`. |
+| `steps` | | `{ title, description?, error?, icon? }[]`, instead of children. |
+
+`StepperItem` takes `title`, `description`, `error`, `icon` and `status`.
+
+## Accessibility
+
+The steps are an ordered list. The current step has `aria-current="step"`, and each step says its state in words, "completed", "current step" or "has an error", so it is not carried by color and icons alone. With reduced motion the lines fill at once.

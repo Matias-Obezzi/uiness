@@ -56,6 +56,9 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `select`, `combobox` | Pick from a list; the combobox searches. |
 | `form` | Field wiring: ids, `aria-describedby`, `aria-invalid`, error messages. |
 | `radio-group`, `slider`, `toggle`, `toggle-group`, `input-otp` | The rest of the form controls. |
+| `split-button`, `button-group`, `expanding-button-group`, `copy-button` | Buttons that do more: a main action with a menu, a joined row with a gliding highlight, icons that grow to show their label, a copy with instant confirmation. |
+| `hold-to-confirm`, `confirm-morph` | Confirmation without a dialog: press and hold, or "Are you sure?" in place with a spinner, a result and Undo. |
+| `segmented-control`, `theme-switch`, `kbd` | A sliding pick between a few views, a light and dark switch that sweeps the page with the View Transitions API, and platform aware key caps. |
 | `dialog`, `drawer`, `dropdown-menu`, `tooltip`, `popover` | Overlays on Radix, animated with tw-animate-css. |
 | `alert-dialog` | A dialog that asks for a decision, plus `confirm()`, an awaitable version of it rendered by one `<Confirmer />`. |
 | `context-menu` | Right click menus declared once by name on a provider, picked per element with `useContextMenu`, extended or replaced where needed. Also opens from the keyboard and on a long press. |

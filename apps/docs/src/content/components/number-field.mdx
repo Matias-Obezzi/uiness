@@ -1,0 +1,59 @@
+A number you type or step, kept inside its bounds. The buttons step once on a click and keep going while held, and the keyboard does the rest.
+
+<ComponentPreview name="number-field-demo" />
+
+## Installation
+
+<Install name="number-field" />
+
+## Usage
+
+```tsx
+import { NumberField } from '@/components/ui/number-field'
+
+<NumberField value={guests} onValueChange={setGuests} min={1} max={12} />
+```
+
+The value is a `number`, or `null` while the field is empty. What is typed is read back when the field loses focus or on Enter, and pulled inside `min` and `max` then, so nobody is fought mid number.
+
+## Formatting
+
+<ComponentPreview name="number-field-format" />
+
+`formatOptions` goes straight to `Intl.NumberFormat`, so percent, currency, units and fixed fraction digits all work, in the reader's locale or the one you pass with `locale`. The field reads its own output back: typing `12%`, `€1,200.50` or just `12` all land on the right number. With `style: 'percent'` the value is the fraction, `0.15` for 15%.
+
+## Keyboard
+
+| Key | Does |
+| --- | --- |
+| `↑` `↓` | One step up or down. |
+| `PageUp` `PageDown` | A big step, ten steps unless `largeStep` says otherwise. |
+| `Home` `End` | Jump to `min` or `max`, when set. |
+| `Enter` | Read back what was typed. |
+| `Escape` | Throw away what was typed. |
+
+Steps land on the grid that starts at `min`: with a step of `0.2`, an up arrow from `0.1` goes to `0.2`, not `0.3`, and decimals never pick up floating point noise.
+
+## In a form
+
+Pass `name` and the field renders a hidden input with the plain number, so `1500` is posted rather than `1,500`. Inside a [Form](/docs/components/form) field, `FormControl` hands the input its id and ARIA.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue` | | The number, or `null`. |
+| `onValueChange` | | Called with each new value. |
+| `min`, `max` | | Bounds. |
+| `step` | `1` | Size of a step. |
+| `largeStep` | `step * 10` | Size of a PageUp or PageDown step. |
+| `formatOptions` | | `Intl.NumberFormat` options. |
+| `locale` | browser | Locale for formatting and reading. |
+| `allowWheel` | `false` | Step with the wheel while focused. |
+| `decrementLabel`, `incrementLabel` | `'Decrease'`, `'Increase'` | Names of the buttons. |
+| `name` | | Posts the plain number with a form. |
+| `inputClassName` | | Classes for the input. `className` goes on the box. |
+
+## Details
+
+The input is a `spinbutton` with `aria-valuenow`, the bounds and the formatted text as `aria-valuetext`, so a screen reader hears "15%" rather than "0.15". The buttons are left out of the tab order, since the arrow keys do the same job from the field, and pressing them keeps focus where it was. The wheel is off by default: a page that scrolls past a number field should not change it.

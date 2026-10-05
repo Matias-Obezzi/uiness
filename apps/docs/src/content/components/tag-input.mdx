@@ -1,0 +1,52 @@
+Short values typed one after another, each turned into a tag you can remove. Labels, topics, email addresses.
+
+<ComponentPreview name="tag-input-demo" />
+
+## Installation
+
+<Install name="tag-input" />
+
+## Usage
+
+```tsx
+import { TagInput } from '@/components/ui/tag-input'
+
+<TagInput value={tags} onValueChange={setTags} placeholder="Add a topic" />
+```
+
+Enter or a comma turns the text into a tag, and pasting `one, two, three` adds all three. Text left in the field is added when it loses focus, unless `addOnBlur` is off. Enter in an empty field is left alone, so it still submits the form.
+
+## Validation
+
+<ComponentPreview name="tag-input-validate" />
+
+`validate` gets each tag before it is added. Return `false` to refuse it quietly, or a message to refuse it and show why under the field, linked through `aria-describedby`. Duplicates are refused unless `allowDuplicates` is set, compared without case, and `max` caps how many there can be. A refused tag stays in the field so it can be fixed, and `onReject` hears about each one with the reason: `'invalid'`, `'duplicate'` or `'max'`.
+
+`transform` cleans a tag up before any of that, for lowercase slugs or trimmed handles.
+
+## Keyboard
+
+| Key | Does |
+| --- | --- |
+| `Enter` `,` | Add what is typed. |
+| `Backspace` | In an empty field, remove the last tag. |
+| `←` | At the start of the field, move to the last tag. |
+| `←` `→` | Move between tags, and back into the field past the last one. |
+| `Backspace` `Delete` | On a tag, remove it and land on its neighbour. |
+| `Escape` | On a tag, go back to the field. |
+
+Each tag's remove button is named `Remove {tag}` and is reached with the arrows rather than Tab, so a long list does not add a tab stop per tag. Additions and removals are announced politely.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value`, `defaultValue`, `onValueChange` | | The tags. |
+| `max` | | Most tags allowed. |
+| `allowDuplicates` | `false` | Let the same tag in twice. |
+| `validate` | | Return `false` or a message to refuse a tag. |
+| `onReject` | | Called with the tag, the reason and the message. |
+| `transform` | trims | Clean a tag up before it is checked. |
+| `addOnBlur` | `true` | Add leftover text when the field loses focus. |
+| `removeLabel` | `Remove {tag}` | Name of a remove button. |
+| `name` | | Posts one value per tag with a form. |
