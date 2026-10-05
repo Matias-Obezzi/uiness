@@ -6,7 +6,7 @@ import {
   SearchIcon,
   SunIcon,
 } from 'lucide-react'
-import { useEffect, useId, useRef, useState } from 'react'
+import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
@@ -74,19 +74,53 @@ const sectionOf = (pathname: string) =>
     s.pages.some((p) => pageHref(p) === pathname.replace(/\/$/, '') || pageHref(p) === pathname),
   )?.title
 
-function SidebarSection({
-  section,
+type Section = (typeof nav)[number]
+type Page = Section['pages'][number]
+
+/** The links of a section or a group, on a line that marks the one being read. */
+function PageList({ pages, onNavigate }: { pages: Page[]; onNavigate?: () => void }) {
+  return (
+    <ul className="flex flex-col gap-0.5 border-l">
+      {pages.map((p) => (
+        <li key={p.slug}>
+          <NavLink
+            to={pageHref(p)}
+            end
+            onClick={onNavigate}
+            className={({ isActive }) =>
+              cn(
+                '-ml-px flex items-center gap-2 border-l py-1 pl-4 text-muted-foreground transition-colors hover:text-foreground',
+                isActive && 'border-foreground font-medium text-foreground',
+              )
+            }
+          >
+            {p.title}
+            {isNew(p) && <NewBadge />}
+          </NavLink>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/** A heading that folds what follows it, with the count and a dot for new pages while closed. */
+function Fold({
+  title,
+  pages,
   open,
   onToggle,
-  onNavigate,
+  level,
+  children,
 }: {
-  section: (typeof nav)[number]
+  title: string
+  pages: Page[]
   open: boolean
   onToggle: () => void
-  onNavigate?: () => void
+  level: 'section' | 'group'
+  children: ReactNode
 }) {
   const listId = useId()
-  const fresh = section.pages.filter((p) => isNew(p)).length
+  const fresh = pages.filter((p) => isNew(p)).length
   return (
     <div>
       <button
@@ -94,19 +128,25 @@ function SidebarSection({
         aria-expanded={open}
         aria-controls={listId}
         onClick={onToggle}
-        className="group flex w-full items-center gap-2 rounded-md py-1 text-left font-medium outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className={cn(
+          'group flex w-full items-center gap-2 rounded-md py-1 text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+          level === 'section'
+            ? 'font-medium'
+            : 'text-muted-foreground text-xs uppercase tracking-wide hover:text-foreground aria-expanded:text-foreground',
+        )}
       >
         <ChevronRightIcon
           className={cn(
-            'size-3.5 shrink-0 text-muted-foreground transition-transform duration-(--duration-fast,150ms)',
+            'shrink-0 text-muted-foreground transition-transform duration-(--duration-fast,150ms)',
+            level === 'section' ? 'size-3.5' : 'size-3',
             open && 'rotate-90',
           )}
         />
-        <span className="flex-1">{section.title}</span>
+        <span className="flex-1">{title}</span>
         {!open && (
-          <span className="flex items-center gap-1.5 text-muted-foreground text-xs tabular-nums">
+          <span className="flex items-center gap-1.5 text-muted-foreground text-xs tabular-nums normal-case tracking-normal">
             {fresh > 0 && <span className="size-1.5 rounded-full bg-primary" aria-hidden />}
-            {section.pages.length}
+            {pages.length}
           </span>
         )}
       </button>
@@ -119,44 +159,93 @@ function SidebarSection({
         )}
         inert={!open}
       >
-        <ul className="ml-[0.4375rem] flex min-h-0 flex-col gap-0.5 overflow-hidden border-l">
-          {section.pages.map((p, i) => (
-            <li
-              key={p.slug}
-              className={cn(i === 0 && 'mt-1.5', i === section.pages.length - 1 && 'mb-1')}
-            >
-              <NavLink
-                to={pageHref(p)}
-                end
-                onClick={onNavigate}
-                className={({ isActive }) =>
-                  cn(
-                    '-ml-px flex items-center gap-2 border-l py-1 pl-4 text-muted-foreground transition-colors hover:text-foreground',
-                    isActive && 'border-foreground font-medium text-foreground',
-                  )
-                }
-              >
-                {p.title}
-                {isNew(p) && <NewBadge />}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
+        {/* Padding goes inside the clipped box: on it, the padding would stay when closed. */}
+        <div className="min-h-0 overflow-hidden">
+          <div
+            className={cn(
+              level === 'section' ? 'ml-[0.4375rem] pt-1.5 pb-1' : 'ml-[0.3125rem] pt-1 pb-1.5',
+            )}
+          >
+            {children}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
 
 /**
- * Sections fold so the list stays short: the one holding the current page opens, the rest
- * stay as the reader left them. The page being read is scrolled into view in the sidebar,
- * which matters when arriving from a link straight to a page far down the list.
+ * A section of the sidebar. The long ones are split into groups that fold on their own, so
+ * opening Components shows a dozen headings rather than a hundred links.
+ */
+function SidebarSection({
+  section,
+  isOpen,
+  onToggle,
+  onNavigate,
+}: {
+  section: Section
+  isOpen: (key: string) => boolean
+  onToggle: (key: string) => void
+  onNavigate?: () => void
+}) {
+  return (
+    <Fold
+      title={section.title}
+      pages={section.pages}
+      open={isOpen(section.title)}
+      onToggle={() => onToggle(section.title)}
+      level="section"
+    >
+      {section.groups ? (
+        <div className="flex flex-col gap-0.5 border-l pl-3">
+          {section.groups.map((group) => {
+            const key = `${section.title}/${group.title}`
+            return (
+              <Fold
+                key={key}
+                title={group.title}
+                pages={group.pages}
+                open={isOpen(key)}
+                onToggle={() => onToggle(key)}
+                level="group"
+              >
+                <PageList pages={group.pages} onNavigate={onNavigate} />
+              </Fold>
+            )
+          })}
+        </div>
+      ) : (
+        <PageList pages={section.pages} onNavigate={onNavigate} />
+      )}
+    </Fold>
+  )
+}
+
+/** The section and, when it has groups, the group holding the page being read. */
+const placeOf = (pathname: string) => {
+  const path = pathname.replace(/\/$/, '') || '/'
+  for (const section of nav) {
+    const page = section.pages.find((p) => pageHref(p) === path)
+    if (!page) continue
+    const group = section.groups?.find((g) => g.pages.includes(page))
+    return [section.title, group && `${section.title}/${group.title}`].filter(
+      (key): key is string => Boolean(key),
+    )
+  }
+  return []
+}
+
+/**
+ * Sections and groups fold so the list stays short: the ones holding the current page open,
+ * the rest stay as the reader left them. The page being read is scrolled into view in the
+ * sidebar, which matters when arriving from a link straight to a page far down the list.
  */
 function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const { pathname } = useLocation()
   const ref = useRef<HTMLElement>(null)
   const [open, setOpen] = useState<Record<string, boolean>>(readOpen)
-  const current = sectionOf(pathname)
+  const current = placeOf(pathname)
 
   const save = (next: Record<string, boolean>) => {
     setOpen(next)
@@ -165,16 +254,20 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
     } catch {}
   }
 
-  // Arriving at a page opens its section, wherever the reader came from.
+  const isOpen = (key: string) => open[key] ?? current.includes(key)
+
+  // Arriving at a page opens its section and group, wherever the reader came from.
   // biome-ignore lint/correctness/useExhaustiveDependencies: only a change of page should open it
   useEffect(() => {
-    if (current && !open[current]) save({ ...open, [current]: true })
-  }, [current])
+    const closed = current.filter((key) => !open[key])
+    if (closed.length) save({ ...open, ...Object.fromEntries(closed.map((key) => [key, true])) })
+  }, [pathname])
 
   // Bring the current link into view inside the sidebar, without moving the page itself.
+  // Waits for the fold to finish opening, so the link is where it will stay.
   // biome-ignore lint/correctness/useExhaustiveDependencies: each new page is the trigger
   useEffect(() => {
-    const frame = requestAnimationFrame(() => {
+    const timer = setTimeout(() => {
       const nav = ref.current
       const link = nav?.querySelector<HTMLElement>('[aria-current="page"]')
       const scroller = nav?.closest<HTMLElement>('[data-sidebar-scroll]')
@@ -183,8 +276,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       const at = link.getBoundingClientRect()
       if (at.top >= box.top + 24 && at.bottom <= box.bottom - 24) return
       scroller.scrollTop += at.top - box.top - box.height / 2 + at.height / 2
-    })
-    return () => cancelAnimationFrame(frame)
+    }, 220)
+    return () => clearTimeout(timer)
   }, [pathname])
 
   return (
@@ -193,10 +286,8 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         <SidebarSection
           key={section.title}
           section={section}
-          open={open[section.title] ?? section.title === current}
-          onToggle={() =>
-            save({ ...open, [section.title]: !(open[section.title] ?? section.title === current) })
-          }
+          isOpen={isOpen}
+          onToggle={(key) => save({ ...open, [key]: !isOpen(key) })}
           onNavigate={onNavigate}
         />
       ))}
