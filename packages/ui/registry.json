@@ -731,6 +731,20 @@
       ]
     },
     {
+      "name": "scroll-fade",
+      "type": "registry:ui",
+      "title": "Scroll Fade",
+      "description": "A scroller whose edges fade where there is more to see, vertical, horizontal or both, and below sticky headers.",
+      "dependencies": ["radix-ui"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/scroll-fade.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "select",
       "type": "registry:ui",
       "title": "Select",
