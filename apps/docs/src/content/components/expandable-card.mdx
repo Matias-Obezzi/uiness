@@ -37,9 +37,15 @@ import {
 
 ## How it moves
 
-When the card opens, the larger view is laid out where it ends up, then starts from the card's exact box and grows into place, so the card seems to become the view. Its contents fade in once the box has nearly arrived, so nothing inside stretches. Closing runs the same path back to wherever the card is now, and the card hides while the view is open so there is only ever one of it.
+The card itself grows into the view. When it opens, the view is laid out where it ends up, then its surface starts on the card's exact box, with the card's corners and shadow, and grows into place while the backdrop fades in. The card in the grid hides from the first frame, so there is only ever one of it.
 
-It is all transforms on one element through the Web Animations API, timed by `--duration-slow` and the theme's easings. With reduced motion the view opens and closes at once.
+- The surface changes size rather than scale, so text never stretches; the view's contents keep their final layout and the growing surface uncovers them.
+- The picture the card and the view share moves from its place in the card to its place in the view, resized so it crops the same way at both ends. It is the first `img`, `video`, `picture` or `canvas` in each, or the element you mark with `data-expandable-card-media`.
+- The card's own text rides under the picture and fades out early, and what only the view has (the text, tags and buttons around the picture) fades in once there is room for it.
+
+Closing runs the same path back to wherever the card is now, and the card shows again only once the view has landed on it. Closing while it is still growing, or opening it again while it folds, turns around from wherever it is.
+
+It runs on the Web Animations API, timed from `--duration-slow` and `--easing-standard`, with no animation library. With reduced motion the view fades in over the card instead.
 
 ## Focus
 
