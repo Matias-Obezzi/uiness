@@ -24,7 +24,7 @@ export const registryItem = (name: string) => items.get(name)
 // The tests sit next to the components and must never be pulled in (see block-preview.tsx).
 const sources = import.meta.glob(
   [
-    '../../../../packages/ui/registry/**/*.{ts,tsx}',
+    '../../../../packages/ui/registry/**/*.{ts,tsx,md}',
     '!../../../../packages/ui/registry/**/*.test.{ts,tsx}',
   ],
   { query: '?raw', import: 'default' },
@@ -44,7 +44,8 @@ const folders: Record<string, string> = {
 
 /** Where the CLI would write the file in a project. */
 export function targetPath(file: RegistryFile) {
-  if (file.target) return file.target
+  // `~/` is the project root for the CLI.
+  if (file.target) return file.target.replace(/^~\//, '')
   const base = file.path.split('/').pop() ?? file.path
   return `${folders[file.type] ?? 'components'}/${base}`
 }

@@ -1,5 +1,5 @@
 import { MDXProvider } from '@mdx-js/react'
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { ChevronLeftIcon, ChevronRightIcon, FileTextIcon } from 'lucide-react'
 import { type ComponentType, lazy, Suspense, useEffect } from 'react'
 import { Link, Navigate, useLocation } from 'react-router'
 import { Badge } from '@/ui/badge'
@@ -12,6 +12,8 @@ import {
   BreadcrumbSeparator,
 } from '@/ui/breadcrumb'
 import { Button } from '@/ui/button'
+import { CopyButton } from '@/ui/copy-button'
+import { markdownPath } from '~/lib/markdown'
 import { findPage, isNew, nav, pageHref, pages } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { mdxComponents } from './mdx-components'
@@ -75,23 +77,26 @@ export function DocPage() {
   return (
     <article>
       <div className="mb-8 space-y-2">
-        <Breadcrumb>
-          <BreadcrumbList className="gap-1.5 sm:gap-2">
-            <BreadcrumbItem>
-              {sectionStart && sectionStart !== page ? (
-                <BreadcrumbLink asChild>
-                  <Link to={pageHref(sectionStart)}>{section?.title}</Link>
-                </BreadcrumbLink>
-              ) : (
-                <span>{section?.title ?? 'Docs'}</span>
-              )}
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{page.title}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+        <div className="flex items-center justify-between gap-2">
+          <Breadcrumb className="min-w-0">
+            <BreadcrumbList className="gap-1.5 sm:gap-2">
+              <BreadcrumbItem>
+                {sectionStart && sectionStart !== page ? (
+                  <BreadcrumbLink asChild>
+                    <Link to={pageHref(sectionStart)}>{section?.title}</Link>
+                  </BreadcrumbLink>
+                ) : (
+                  <span>{section?.title ?? 'Docs'}</span>
+                )}
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{page.title}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <PageMarkdown slug={page.slug} />
+        </div>
         <h1 className="flex items-center gap-3 font-bold text-3xl tracking-tight">
           {page.title}
           {isNew(page) && <NewBadge className="text-xs" />}
@@ -129,5 +134,30 @@ export function DocPage() {
         )}
       </nav>
     </article>
+  )
+}
+
+const quiet = 'h-7 gap-1.5 px-2 text-muted-foreground text-xs hover:text-foreground'
+
+/** The page as Markdown, for pasting into a chat or pointing an agent at: copy it or open it. */
+function PageMarkdown({ slug }: { slug: string }) {
+  const href = `${import.meta.env.BASE_URL}${markdownPath(slug).slice(1)}`
+  const load = async () => {
+    const res = await fetch(href)
+    if (!res.ok) throw new Error(`${href} answered ${res.status}`)
+    return res.text()
+  }
+  return (
+    <div className="flex shrink-0 items-center gap-1">
+      <CopyButton value={load} size="sm" className={quiet} label="Copy page as Markdown">
+        <span className="sr-only sm:not-sr-only">Copy page</span>
+      </CopyButton>
+      <Button asChild variant="ghost" size="sm" className={quiet}>
+        <a href={href} target="_blank" rel="noreferrer">
+          <FileTextIcon aria-hidden />
+          <span className="sr-only sm:not-sr-only">Markdown</span>
+        </a>
+      </Button>
+    </div>
   )
 }

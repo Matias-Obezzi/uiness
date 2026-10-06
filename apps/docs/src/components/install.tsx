@@ -191,7 +191,7 @@ function ManualSteps({ name }: { name: string }) {
                     ? toProjectImports(sources[i] ?? '')
                     : '// Loading…'
               }
-              lang={file.path.endsWith('.ts') ? 'ts' : 'tsx'}
+              lang={file.path.match(/\.(tsx?)$/)?.[1] ?? 'text'}
             />
           ))}
         </div>

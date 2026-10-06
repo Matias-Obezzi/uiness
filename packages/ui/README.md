@@ -46,6 +46,10 @@ pnpm --filter @uiness/ui build     # writes public/r/*.json
 npx shadcn@latest add ./packages/ui/public/r/button.json
 ```
 
+## AI and MCP
+
+Agents can use the registry through the MCP server at `https://uiness.vercel.app/api/mcp`, the Markdown docs (`/llms.txt`, `/llms-full.txt`, or `.md` after any page address) and the agent skill, `npx shadcn@latest add @uiness/uiness-skill`. Client setup: [AI and MCP](https://uiness.vercel.app/docs/ai).
+
 ## What is in the registry
 
 | Item | Notes |
@@ -96,6 +100,7 @@ npx shadcn@latest add ./packages/ui/public/r/button.json
 | `fx` | `<Fx />` canvas effects with theme defaults, re-exports every `@uiness/fx` effect. |
 | `toast` | `<Toaster />` wired to the theme tokens, re-exports `toast()` from `@uiness/toast`. |
 | `choreo` | `<Choreo />` that animates a whole site from its DOM, skipping the registry components that animate themselves. Re-exports `@uiness/choreo`. |
+| `uiness-skill` | An agent skill, installed to `.claude/skills/uiness/SKILL.md`: how to install items, where to look up their APIs, and the conventions to keep. |
 
 ### Blocks
 
