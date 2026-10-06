@@ -185,6 +185,48 @@
   }
 }
 
+/* Scroll-driven: these run on view timelines (`animation-timeline`), not on the clock. */
+@keyframes text-reveal-word {
+  from {
+    opacity: var(--text-reveal-from);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes timeline-progress {
+  from {
+    height: 0%;
+  }
+  to {
+    height: 100%;
+  }
+}
+
+@keyframes timeline-dot {
+  from {
+    border-color: var(--border);
+    background-color: var(--background);
+  }
+  to {
+    border-color: var(--timeline-color);
+    background-color: var(--timeline-color);
+  }
+}
+
+@keyframes velocity-marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes velocity-marquee-scroll {
+  to {
+    transform: translateX(calc(-100% / var(--velocity-marquee-copies)));
+  }
+}
+
 /* Theme Switch draws its own reveal over the page, so the browser's cross fade is switched off
  * while one of its view transitions runs, and only then. Color transitions are held too: the
  * new theme is a live picture, and buttons still fading from the old colors would show in it. */

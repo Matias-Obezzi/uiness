@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { GradientBorder, GradientText } from './gradient-text'
 import { Odometer } from './odometer'
@@ -253,7 +253,7 @@ describe('TextReveal', () => {
     vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(1000)
     // Below the start line: nothing revealed.
     const rect = geometry(900)
-    render(<TextReveal text="One two three" from={0.2} />)
+    render(<TextReveal text="One two three" from={0.2} driver="js" />)
     const p = document.querySelector<HTMLElement>('[data-slot=text-reveal]')
     expect(p?.style.getPropertyValue('--text-reveal-from')).toBe('0.2')
     expect(p?.style.getPropertyValue('--text-reveal-count')).toBe('3')
@@ -271,8 +271,48 @@ describe('TextReveal', () => {
 
   it('stops listening on unmount', () => {
     const remove = vi.spyOn(window, 'removeEventListener')
-    const { unmount } = render(<TextReveal text="Gone" />)
+    const { unmount } = render(<TextReveal text="Gone" driver="js" />)
     unmount()
     expect(remove).toHaveBeenCalledWith('scroll', expect.any(Function))
+  })
+
+  it('runs on a CSS view timeline where the browser has one, without listening', () => {
+    vi.stubGlobal('CSS', { supports: () => true })
+    const add = vi.spyOn(window, 'addEventListener')
+    render(<TextReveal text="One two three four" />)
+    const p = document.querySelector<HTMLElement>('[data-slot=text-reveal]')
+    expect(p?.dataset.driver).toBe('css')
+    // ['start 0.85', 'end 0.45'] is the viewport cut to 45% from the top and 15% from the bottom.
+    expect(p?.style.getPropertyValue('view-timeline-inset')).toBe('45% 15%')
+    const words = document.querySelectorAll<HTMLElement>('[data-slot=text-reveal-word]')
+    expect(words[1]?.style.getPropertyValue('animation-range')).toBe('cover 25% cover 50%')
+    expect(words[1]?.className).toContain('[animation-name:text-reveal-word]')
+    expect(p?.style.getPropertyValue('--text-reveal-progress')).toBe('')
+    expect(add).not.toHaveBeenCalledWith('scroll', expect.any(Function), expect.anything())
+  })
+
+  it('falls back to JavaScript without scroll timelines, or inside a box that never scrolls', () => {
+    vi.stubGlobal('CSS', { supports: () => false })
+    render(<TextReveal text="One two" />)
+    expect(document.querySelector<HTMLElement>('[data-slot=text-reveal]')?.dataset.driver).toBe(
+      'js',
+    )
+    cleanup()
+    vi.stubGlobal('CSS', { supports: () => true })
+    render(
+      <div style={{ overflow: 'hidden' }}>
+        <TextReveal text="One two" />
+      </div>,
+    )
+    const p = document.querySelector<HTMLElement>('[data-slot=text-reveal]')
+    expect(p?.dataset.driver).toBe('js')
+    expect(p?.querySelector('span')?.className).not.toContain('animation-name')
+  })
+
+  it('stays fully visible with the CSS driver and an offset CSS cannot express', () => {
+    render(<TextReveal text="One two" driver="css" offset={['start 100px', 'end 0.5']} />)
+    const word = document.querySelector<HTMLElement>('[data-slot=text-reveal-word]')
+    expect(word?.className).not.toContain('animation-name')
+    expect(word?.style.opacity).toContain('var(--text-reveal-progress, 1)')
   })
 })

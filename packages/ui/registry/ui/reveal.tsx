@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { useInView } from '@/hooks/use-in-view'
+import { useMotionReady } from '@/hooks/use-motion-ready'
 import { cn } from '@/lib/utils'
 
 export type RevealVariant = 'fade' | 'up' | 'down' | 'left' | 'right' | 'blur' | 'scale'
@@ -33,6 +34,10 @@ export interface RevealProps extends React.ComponentProps<'div'> {
 /**
  * Plays a transition when its content scrolls into view. With `stagger` each child
  * follows the previous one; children then need to accept `style` and `data-state`.
+ *
+ * The server renders the content visible. It is only hidden after mount, with motion allowed,
+ * and only if it is not on screen yet (or the page was rendered on the client), so without
+ * JavaScript, or with slow JavaScript, nothing stays blank.
  */
 function Reveal({
   variant = 'up',
@@ -48,8 +53,14 @@ function Reveal({
 }: RevealProps) {
   const ref = React.useRef<HTMLDivElement>(null)
   const inView = useInView(ref, { once: !repeat, amount })
-  const state = inView ? 'visible' : 'hidden'
-  const transition = `opacity ${duration}ms ease-out, transform ${duration}ms ease-out, filter ${duration}ms ease-out`
+  const animate = useMotionReady(ref) === 'armed'
+  const state = !animate || inView ? 'visible' : 'hidden'
+  // Only on the way in: hiding has to be instant, or the content would fade out after mount.
+  const transition: React.CSSProperties = {
+    transitionProperty: animate && inView ? 'opacity, transform, filter' : 'none',
+    transitionDuration: `${duration}ms`,
+    transitionTimingFunction: 'ease-out',
+  }
 
   if (stagger === undefined) {
     return (
@@ -57,12 +68,13 @@ function Reveal({
         ref={ref}
         data-slot="reveal"
         data-state={state}
+        data-animate={animate || undefined}
         className={cn(
           'motion-reduce:transition-none motion-reduce:data-[state=hidden]:transform-none motion-reduce:data-[state=hidden]:opacity-100 motion-reduce:data-[state=hidden]:blur-none',
           hiddenStyles[variant],
           className,
         )}
-        style={{ transition, transitionDelay: `${delay}ms`, ...style }}
+        style={{ ...transition, transitionDelay: `${delay}ms`, ...style }}
         {...props}
       >
         {children}
@@ -75,6 +87,7 @@ function Reveal({
       ref={ref}
       data-slot="reveal"
       data-state={state}
+      data-animate={animate || undefined}
       className={className}
       style={style}
       {...props}
@@ -91,7 +104,7 @@ function Reveal({
           ),
           style: {
             ...child.props.style,
-            transition,
+            ...transition,
             transitionDelay: `${delay + i * stagger}ms`,
           },
         } as Record<string, unknown>)

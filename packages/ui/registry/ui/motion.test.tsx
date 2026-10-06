@@ -116,8 +116,7 @@ describe('NumberTicker', () => {
       ],
     })
     render(<NumberTicker value={1234} duration={200} />)
-    const shown = () =>
-      document.querySelector('[data-slot=number-ticker] [aria-hidden]')?.textContent
+    const shown = () => document.querySelector('[data-slot=number-ticker-value]')?.textContent
     expect(shown()).toBe('0')
     act(() => vi.advanceTimersByTime(100))
     const mid = Number(shown()?.replace(/,/g, ''))

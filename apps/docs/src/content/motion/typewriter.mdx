@@ -28,3 +28,7 @@ A single string types once and stays. An array cycles, with `loop={false}` to st
 | `onWordTyped` | | Called when a word is complete. |
 
 With `prefers-reduced-motion` the whole word shows at once.
+
+## Server rendering
+
+The server HTML holds the first word typed in full, so search engines read it and a page whose JavaScript is slow or fails still says something. On the client it clears and starts typing before the first paint. If the server HTML was already on screen when the page hydrated, it does not wipe what the reader is looking at: it holds that word for `pause` and carries on with the next one, so a single word stays as it is.

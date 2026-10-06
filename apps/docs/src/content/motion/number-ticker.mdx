@@ -26,3 +26,9 @@ import { NumberTicker } from '@/components/ui/number-ticker'
 | `decimals` | `0` | Digits after the decimal point. |
 | `locale`, `format` | browser | Passed to `Intl.NumberFormat`. |
 | `whenVisible` | `true` | Wait until it scrolls into view. |
+
+## Server rendering
+
+The server renders the final number, not `from`, so it is in the HTML for search engines and for anyone whose JavaScript has not run. After mount, with motion allowed, it drops to `from` and counts up when it scrolls into view; the final value keeps holding the width, so nothing next to it moves. If the server HTML was already on screen when the page hydrated, the number stays put instead of dropping to `from` in front of the reader.
+
+Pass `locale` when rendering on the server, as the server and the browser may not format numbers alike.

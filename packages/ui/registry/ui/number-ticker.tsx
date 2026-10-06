@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import { useInView } from '@/hooks/use-in-view'
-import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useMotionReady } from '@/hooks/use-motion-ready'
 import { useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
@@ -30,6 +30,10 @@ const easeOut = (t: number) => 1 - (1 - t) ** 3
 /**
  * A number that counts up, or down, to its value when it scrolls into view.
  * Renders the final value for screen readers and with reduced motion.
+ *
+ * The server renders the final value. After mount, with motion allowed and the number not on
+ * screen yet, it drops to `from` and counts when it scrolls in. The final value keeps holding
+ * the width while it counts, so nothing around it moves.
  */
 function NumberTicker({
   value,
@@ -46,16 +50,23 @@ function NumberTicker({
   const locale = useLocale(localeProp)
   const ref = React.useRef<HTMLSpanElement>(null)
   const inView = useInView(ref)
-  const reduced = useReducedMotion()
-  const play = !whenVisible || inView
-  const [current, setCurrent] = React.useState(from)
+  const ready = useMotionReady(ref)
+  const animate = ready === 'armed'
+  const play = animate && (!whenVisible || inView)
+  // The final value first: that is what the server sends and what crawlers read.
+  const [current, setCurrent] = React.useState(value)
+  const [reset, setReset] = React.useState(false)
+  if (animate && !reset) {
+    setReset(true)
+    setCurrent(from)
+  }
 
   React.useEffect(() => {
-    if (!play) return
-    if (reduced) {
+    if (!animate) {
       setCurrent(value)
       return
     }
+    if (!play) return
     let frame = 0
     let start = 0
     const tick = (now: number) => {
@@ -71,7 +82,7 @@ function NumberTicker({
       clearTimeout(timer)
       cancelAnimationFrame(frame)
     }
-  }, [play, reduced, value, from, duration, delay])
+  }, [animate, play, value, from, duration, delay])
 
   const formatter = React.useMemo(
     () =>
@@ -91,7 +102,23 @@ function NumberTicker({
       {...props}
     >
       <span className="sr-only">{formatter.format(value)}</span>
-      <span aria-hidden>{formatter.format(current)}</span>
+      {animate ? (
+        <span aria-hidden className="inline-grid justify-items-end">
+          {/* The final value as generated content: it holds the width, but is not text twice. */}
+          <span
+            data-slot="number-ticker-sizer"
+            data-value={formatter.format(value)}
+            className="invisible [grid-area:1/1] before:content-[attr(data-value)]"
+          />
+          <span data-slot="number-ticker-value" className="[grid-area:1/1]">
+            {formatter.format(current)}
+          </span>
+        </span>
+      ) : (
+        <span aria-hidden data-slot="number-ticker-value">
+          {formatter.format(current)}
+        </span>
+      )}
     </span>
   )
 }

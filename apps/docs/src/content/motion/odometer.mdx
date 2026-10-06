@@ -19,6 +19,8 @@ Every change of `value` rolls the digits, starting from the right. When the numb
 
 Screen readers get the plain value. With reduced motion the digits change without rolling.
 
+The server renders the final digits in place, so the number is in the HTML and does not roll from zero on load. Pass `locale` (or set one on a [`LabelsProvider`](/docs/localization)) when rendering on the server: left out, the server formats with its own locale and the browser with the reader's, and a `1,234` against a `1.234` is a hydration mismatch.
+
 ## Props
 
 | Prop | Default | Description |
