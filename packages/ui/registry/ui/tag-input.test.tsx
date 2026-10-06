@@ -18,6 +18,47 @@ describe('TagInput', () => {
     expect(onValueChange).toHaveBeenLastCalledWith(['react', 'vue'])
   })
 
+  it('splits on a comma that arrives without its keydown, as Android keyboards send it', () => {
+    const onValueChange = vi.fn()
+    render(<TagInput aria-label="Tags" onValueChange={onValueChange} />)
+    const input = field()
+    // Android: every key is "Unidentified" and only the input event carries the text.
+    fireEvent.keyDown(input, { key: 'Unidentified', keyCode: 229 })
+    fireEvent.input(input, { target: { value: 'a' } })
+    fireEvent.keyDown(input, { key: 'Unidentified', keyCode: 229 })
+    fireEvent.input(input, { target: { value: 'a,b' } })
+    expect(tags()).toEqual(['a'])
+    expect(input.value).toBe('b')
+    expect(onValueChange).toHaveBeenLastCalledWith(['a'])
+    fireEvent.input(input, { target: { value: 'b,' } })
+    expect(tags()).toEqual(['a', 'b'])
+    expect(input.value).toBe('')
+  })
+
+  it('splits every comma of text inserted at once and keeps the last part to type on', () => {
+    render(<TagInput aria-label="Tags" defaultValue={['one']} />)
+    fireEvent.change(field(), { target: { value: 'one, two,three, fo' } })
+    expect(tags()).toEqual(['one', 'two', 'three'])
+    // The duplicate is put back in front of what is still being typed.
+    expect(field().value).toBe('one, fo')
+    expect(screen.getByText('one is already added.')).toBeTruthy()
+    // Typing on does not split the commas that were already there.
+    fireEvent.change(field(), { target: { value: 'one, fou' } })
+    expect(tags()).toEqual(['one', 'two', 'three'])
+    expect(field().value).toBe('one, fou')
+  })
+
+  it('waits for an input method to commit before splitting', () => {
+    render(<TagInput aria-label="Tags" />)
+    const input = field()
+    fireEvent.compositionStart(input)
+    fireEvent.input(input, { target: { value: 'a,' }, isComposing: true })
+    expect(tags()).toEqual([])
+    fireEvent.compositionEnd(input)
+    expect(tags()).toEqual(['a'])
+    expect(input.value).toBe('')
+  })
+
   it('splits a pasted list', async () => {
     render(<TagInput aria-label="Tags" />)
     await userEvent.click(field())

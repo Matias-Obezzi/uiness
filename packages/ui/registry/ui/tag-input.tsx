@@ -62,6 +62,15 @@ export interface TagInputProps
 /** What splits a paste into several tags. */
 const SPLIT = /[,;\n\t]+/
 
+const commas = (text: string) => text.split(',').length - 1
+
+/** Move focus to the remove button at `index`, or back to the field when there is none. */
+function focusTagIn(list: HTMLUListElement | null, input: HTMLInputElement | null, index: number) {
+  const buttons = Array.from(list?.querySelectorAll<HTMLButtonElement>('button') ?? [])
+  if (index < 0 || index >= buttons.length) input?.focus()
+  else buttons[index]?.focus()
+}
+
 /**
  * Typed values turn into removable tags on Enter or a comma, and a pasted list becomes several
  * at once. Backspace in the empty field removes the last tag, and the arrow keys walk through
@@ -91,6 +100,8 @@ function TagInput({
   onPaste,
   onBlur,
   onChange,
+  onCompositionStart,
+  onCompositionEnd,
   'aria-describedby': describedBy,
   'aria-invalid': ariaInvalid,
   ...props
@@ -163,21 +174,15 @@ function TagInput({
     setError(null)
   }
 
-  const removeButtons = () =>
-    Array.from(listRef.current?.querySelectorAll<HTMLButtonElement>('button') ?? [])
-
-  const focusTag = (index: number) => {
-    const buttons = removeButtons()
-    if (index < 0 || index >= buttons.length) inputRef.current?.focus()
-    else buttons[index]?.focus()
-  }
+  const focusTag = (index: number) => focusTagIn(listRef.current, inputRef.current, index)
 
   // Focus moves once the removed tag is gone from the DOM.
   const pendingFocus = React.useRef<number | null>(null)
+  const textBeforeComposition = React.useRef('')
   // biome-ignore lint/correctness/useExhaustiveDependencies: runs when the tags change
   React.useLayoutEffect(() => {
     if (pendingFocus.current === null) return
-    focusTag(pendingFocus.current)
+    focusTagIn(listRef.current, inputRef.current, pendingFocus.current)
     pendingFocus.current = null
   }, [tags])
 
@@ -233,6 +238,22 @@ function TagInput({
         break
       }
     }
+  }
+
+  /**
+   * A comma that reached the field without its keydown: Android keyboards send
+   * `key: "Unidentified"`, and autofill or dictation insert text with no keys at all. Everything
+   * before the last comma becomes tags, the rest stays in the field to keep typing.
+   */
+  const typeText = (next: string, before = text) => {
+    if (!interactive || commas(next) <= commas(before)) {
+      setText(next)
+      return
+    }
+    const parts = next.split(',')
+    const rest = parts.pop() ?? ''
+    const refused = add(parts)
+    setText([...refused, rest.trimStart()].filter(Boolean).join(', '))
   }
 
   const full = max !== undefined && tags.length >= max
@@ -302,8 +323,18 @@ function TagInput({
           value={text}
           onChange={(e) => {
             onChange?.(e)
-            setText(e.target.value)
             if (error) setError(null)
+            // An input method in the middle of a word is left alone until it commits.
+            if ((e.nativeEvent as InputEvent).isComposing) setText(e.target.value)
+            else typeText(e.target.value)
+          }}
+          onCompositionStart={(e) => {
+            onCompositionStart?.(e)
+            textBeforeComposition.current = text
+          }}
+          onCompositionEnd={(e) => {
+            onCompositionEnd?.(e)
+            typeText(e.currentTarget.value, textBeforeComposition.current)
           }}
           onKeyDown={handleInputKeyDown}
           onPaste={(e) => {
