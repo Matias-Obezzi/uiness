@@ -101,6 +101,9 @@ export const fr = {
     previous: 'Précédent',
     next: 'Suivant',
     goTo: (index: number, count: number) => `Aller à l’élément ${index} sur ${count}`,
+    position: (index: number, count: number) => `Élément ${index} sur ${count}`,
+    play: 'Lancer le défilement automatique',
+    pause: 'Mettre en pause le défilement automatique',
   },
   chart: {
     empty: 'Aucune donnée',
