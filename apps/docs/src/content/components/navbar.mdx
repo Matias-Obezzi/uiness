@@ -63,3 +63,18 @@ With `mobile="tabs"` the links leave the top bar on small screens and become a f
 ## Details
 
 The bar is a `header` with a `nav` inside, labelled Primary. Selecting a link closes the menu, and so does growing the window past the breakpoint. The bottom bar clears the home indicator on a phone with `env(safe-area-inset-bottom)`.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Navbar` takes them as `labels` and hands them to `NavbarLinks`. To set them for the whole app, put them under `'navbar'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultNavbarLabels: NavbarLabels = {
+  menu: 'Menu',
+  openMenu: 'Open menu',
+  siteNavigation: 'Site navigation',
+  primary: 'Primary',
+  more: 'More',
+  morePages: 'More pages',
+}
+```

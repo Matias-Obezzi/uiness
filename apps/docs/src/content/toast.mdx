@@ -77,6 +77,7 @@ The toast starts as loading and turns into success or error with the resolved va
 | `gap`, `offset` | `14`, `24` | Spacing in px. |
 | `icons` | | Custom icons per type. |
 | `toastClassName`, `toastStyle` | | Applied to every card. |
+| `label`, `closeLabel` | `'Notifications'`, `'Close'` | Names of the region and of the close button. The registry `Toaster` fills them from its [labels](#labels). |
 
 ## Theming
 
@@ -95,3 +96,14 @@ The region is labelled "Notifications". Each toast is a polite live region, or a
 ## Toast or Island?
 
 Both are transient messages. [Island](/docs/island) is a single spot at the top that morphs between states, good for one live activity or a confirm. Toasts stack, so they fit streams of events. They share the promise API, so switching is a one line change.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. The registry `Toaster` takes them as `labels`. To set them for the whole app, put them under `'toast'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultToastLabels: ToastLabels = {
+  region: 'Notifications',
+  close: 'Close',
+}
+```

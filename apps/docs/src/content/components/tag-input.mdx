@@ -50,3 +50,17 @@ Each tag's remove button is named `Remove {tag}` and is reached with the arrows 
 | `addOnBlur` | `true` | Add leftover text when the field loses focus. |
 | `removeLabel` | `Remove {tag}` | Name of a remove button. |
 | `name` | | Posts one value per tag with a form. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'tag-input'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultTagInputLabels: TagInputLabels = {
+  remove: (tag) => `Remove ${tag}`,
+  max: (max) => `Up to ${max} ${max === 1 ? 'tag' : 'tags'}.`,
+  duplicate: (tag) => `${tag} is already added.`,
+  added: (tags) => `Added ${tags}.`,
+  removed: (tag) => `Removed ${tag}.`,
+}
+```

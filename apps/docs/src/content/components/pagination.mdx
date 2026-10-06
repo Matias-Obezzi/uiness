@@ -70,3 +70,20 @@ The shadcn/ui pieces are all here, so existing pagination keeps working. `Pagina
 ## Accessibility
 
 It is a `<nav>` named "Pagination". The current page has `aria-current="page"`, each page is named "Page 4", and the arrows "Go to previous page" and "Go to next page". At either end the arrow is disabled, or loses its link. The compact counter is a polite live region, so moving with the arrows reads out the new page.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Paginator` takes them as `labels`; the parts read them from the provider. To set them for the whole app, put them under `'pagination'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultPaginationLabels: PaginationLabels = {
+  nav: 'Pagination',
+  previous: 'Previous',
+  next: 'Next',
+  previousPage: 'Go to previous page',
+  nextPage: 'Go to next page',
+  page: (page) => `Page ${page}`,
+  morePages: 'More pages',
+  pageOf: (page, count) => `Page ${page} of ${count}`,
+}
+```

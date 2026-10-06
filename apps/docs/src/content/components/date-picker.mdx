@@ -34,3 +34,14 @@ The popover closes once the pick is complete: a day, or both ends of a range.
 | `min`, `max`, `disabledDates` | | Passed to the calendar. |
 | `name` | | Hidden inputs with ISO dates, for a form. |
 | `calendarProps` | | Anything else for the calendar. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'date-picker'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultDatePickerLabels: DatePickerLabels = {
+  placeholder: 'Pick a date',
+  rangePlaceholder: 'Pick a range',
+}
+```

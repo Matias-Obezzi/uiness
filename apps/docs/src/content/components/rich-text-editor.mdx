@@ -112,3 +112,35 @@ Being small has costs worth knowing before you choose it:
 - Bold, italic, underline and strikethrough go through the browser's `execCommand`, which is deprecated but still supported everywhere. The rest of the editing is its own.
 - One level of formatting per line: no tables, images, code blocks, nested quotes or indented lists. Nested lists in pasted content are kept and serialized, but the editor offers no way to create them.
 - Large documents re-serialize on every change, which is fine for notes and descriptions and not meant for book chapters.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'rich-text-editor'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultRichTextEditorLabels: RichTextEditorLabels = {
+  placeholder: "Write something, or press '/' for blocks…",
+  editor: 'Editor',
+  formatting: 'Formatting',
+  blocks: 'Blocks',
+  linkPlaceholder: 'Paste or type a link',
+  linkAddress: 'Link address',
+  applyLink: 'Apply link',
+  removeLink: 'Remove link',
+  bold: 'Bold',
+  italic: 'Italic',
+  underline: 'Underline',
+  strikethrough: 'Strikethrough',
+  code: 'Code',
+  link: 'Link',
+  heading: 'Heading',
+  bulletedList: 'Bulleted list',
+  numberedList: 'Numbered list',
+  quote: 'Quote',
+  text: 'Text',
+  heading1: 'Heading 1',
+  heading2: 'Heading 2',
+  heading3: 'Heading 3',
+  divider: 'Divider',
+}
+```

@@ -44,3 +44,14 @@ With reduced motion the ring appears without sweeping in and the centre changes 
 | `showLegend` | `true` | The legend of toggles. |
 | `empty` | `"No data"` | Shown when every value is zero. |
 | `aria-label` | generated | Replaces the generated summary. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'donut-chart'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultDonutChartLabels: DonutChartLabels = {
+  total: 'Total',
+  summary: (slices, caption, total) => `Donut chart, ${slices.join(', ')}. ${caption} ${total}.`,
+}
+```

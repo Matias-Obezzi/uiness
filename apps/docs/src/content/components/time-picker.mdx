@@ -55,4 +55,19 @@ Pass `name` for a hidden input with the value. Inside a [Form](/docs/components/
 | `step` | | Minutes between entries of the list. The list button only shows when set. |
 | `min`, `max` | | Bounds as `"HH:mm"`. |
 | `name` | | Hidden input for a form. |
-| `labels` | English | Names of the segments and the list button. |
+| `labels` | English | Names of the segments and the list button. See [Labels](#labels). |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'time-picker'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultTimePickerLabels: TimePickerLabels = {
+  hour: 'Hours',
+  minute: 'Minutes',
+  second: 'Seconds',
+  period: 'AM/PM',
+  list: 'Choose a time',
+  empty: 'Empty',
+}
+```

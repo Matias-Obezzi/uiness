@@ -88,3 +88,23 @@ import { NotificationPanel } from '@/components/ui/notification-center'
 ## Accessibility
 
 The bell's name includes the count, "Notifications, 3 unread". The panel is a Radix popover with focus moved in and returned, and the tabs are Radix tabs, so the arrow keys move between them. Each day is a region named after it. A notification's title is its button, stretched over the whole row, with the actions and the "Mark as read" dot above it so each is a separate stop for the keyboard.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Every part takes them as `labels`. To set them for the whole app, put them under `'notification-center'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultNotificationCenterLabels: NotificationCenterLabels = {
+  title: 'Notifications',
+  unread: (label, count) => `${label}, ${count} unread`,
+  markAsRead: 'Mark as read',
+  unreadDot: 'Unread',
+  allTab: 'All',
+  unreadTab: 'Unread',
+  markAllAsRead: 'Mark all as read',
+  caughtUp: 'You are all caught up',
+  caughtUpHint: 'Nothing new since you last looked.',
+  empty: 'No notifications',
+  emptyHint: 'New activity will show up here.',
+}
+```

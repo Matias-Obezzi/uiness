@@ -47,3 +47,14 @@ With `expanding` the field starts as an icon button and grows to `expandedWidth`
 | `expandedWidth` | `'16rem'` | Width once open. |
 | `clearLabel` | `'Clear search'` | Name of the clear button. |
 | `inputClassName` | | Classes for the input. `className` goes on the box. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'search-field'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultSearchFieldLabels: SearchFieldLabels = {
+  placeholder: 'Search…',
+  clear: 'Clear search',
+}
+```

@@ -40,3 +40,18 @@ Leave `position` out and the component owns it, starting from `defaultPosition`.
 | `roleDescription` | `'draggable'` | What a screen reader calls it. |
 
 `<DraggableHandle>` draws a grip and a `label`, `'Move panel'` by default, read out as its name. Give it children and they are shown instead of the hidden label.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'draggable'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+`start`, `move`, `drop` and `cancel` are the four announcements, functions of the drag as `@uiness/dnd` describes it; the defaults are its `defaultAnnouncements`. The `announcements` prop still wins over them.
+
+```ts
+const defaultDraggableLabels: DraggableLabels = {
+  draggable: 'draggable',
+  panel: 'panel',
+  handle: 'Move panel',
+  ...defaultAnnouncements,
+}
+```

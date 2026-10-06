@@ -56,3 +56,16 @@ The spinner, the check and the message all sit outside the box, so they never pu
 ## Details
 
 The text is a button named by the field's label followed by its value, so a screen reader user knows both what it is and what it says. Inside a [Form](/docs/components/form) field it takes the label from `FormLabel`.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'inline-edit'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultInlineEditLabels: InlineEditLabels = {
+  placeholder: 'Empty',
+  saveError: 'Could not save. Try again.',
+  saving: 'Saving…',
+  saved: 'Saved',
+}
+```

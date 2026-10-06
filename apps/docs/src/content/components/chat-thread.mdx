@@ -115,3 +115,29 @@ import {
 ## Accessibility
 
 The messages are a `role="log"`, so screen readers announce new ones as they arrive, and every message starts with its author's name for them even where the run shows it once. The scrolling area takes focus so it can be read and scrolled from the keyboard. Reactions are toggle buttons with `aria-pressed`, the typing indicator is a `role="status"` that says who is typing, and read receipts are labelled "Seen by …". In the composer Enter sends and Shift+Enter starts a new line, and keys pressed while an input method is composing are left alone. New messages and the typing dots stay still with reduced motion.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ChatThread` takes them as `labels` and hands them to its parts, which also read the provider when used alone. To set them for the whole app, put them under `'chat-thread'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultChatThreadLabels: ChatThreadLabels = {
+  messages: 'Messages',
+  jumpToLatest: 'Jump to latest',
+  newMessages: 'New messages',
+  you: 'You',
+  reactions: 'Reactions',
+  addReaction: 'Add reaction',
+  reactWith: (emoji) => `React with ${emoji}`,
+  seenBy: (names) => `Seen by ${names}`,
+  typing: (names, count) =>
+    count > 2 ? `${count} people are typing` : `${names} ${count === 1 ? 'is' : 'are'} typing`,
+  message: 'Message',
+  attach: 'Attach files',
+  attachments: 'Attachments',
+  remove: (name) => `Remove ${name}`,
+  send: 'Send',
+  sending: 'Sending…',
+  notSent: 'Not sent',
+}
+```

@@ -63,3 +63,13 @@ It returns a promise that resolves when the transition is over. `origin` is an e
 | `duration` | `500` | Milliseconds the page change takes. |
 | `label` | `'Dark mode'` | Accessible name. |
 | `buttonVariant` | `'ghost'` | The Button variant of the switch. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'theme-switch'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultThemeSwitchLabels: ThemeSwitchLabels = {
+  darkMode: 'Dark mode',
+}
+```

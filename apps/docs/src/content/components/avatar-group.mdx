@@ -48,3 +48,21 @@ The group is named by its people, like "Ada Lovelace, Grace Hopper and 6 more". 
 | `size` | `md` | `sm` (24px), `md` (32px) or `lg` (40px). |
 | `tooltips` | `true` | Names on hover. |
 | `overflowLabel` | `"More people"` | Heading of the list. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'avatar-group'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultAvatarGroupLabels: AvatarGroupLabels = {
+  group: (names, more) =>
+    more > 0
+      ? `${names.join(', ')} and ${more} more`
+      : names.length > 1
+        ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
+        : (names[0] ?? 'Nobody'),
+  showMore: (count) => `Show ${count} more`,
+  overflow: 'More people',
+  andMore: (count) => `and ${count} more`,
+}
+```

@@ -47,7 +47,19 @@ The picker is a [Command](/docs/components/command) list. Search by name, ISO co
 | `countries` | all | Codes to show, in order. |
 | `locale` | browser | For the country names. |
 | `name` | | Hidden input with the E.164 value. |
-| `labels` | English | Picker and search texts. |
+| `labels` | English | Picker and search texts. See [Labels](#labels). |
 | `inputClassName` | | Classes for the number field. `className` goes on the wrapper. |
 
 Any other prop goes to the number field, so `id`, `aria-*` and the wiring from `FormControl` land on it.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'phone-input'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultPhoneInputLabels: PhoneInputLabels = {
+  country: 'Country',
+  search: 'Search countries…',
+  empty: 'No country found.',
+}
+```

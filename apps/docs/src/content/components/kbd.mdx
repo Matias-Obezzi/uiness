@@ -45,3 +45,36 @@ Screen readers hear the name of each key, "Command K", not the symbol, which wou
 | `keys` | | A shortcut like `mod+k`. Without it the children are shown. |
 | `separator` | none on a Mac, `+` elsewhere | Put between caps. |
 | `platform` | detected | `mac` or `other`. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `KbdGroup` takes them as `labels`, and `formatKey` as its third argument. To set them for the whole app, put them under `'kbd'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultKbdLabels: KbdLabels = {
+  command: 'Command',
+  control: 'Control',
+  windows: 'Windows',
+  option: 'Option',
+  alt: 'Alt',
+  shift: 'Shift',
+  return: 'Return',
+  enter: 'Enter',
+  delete: 'Delete',
+  forwardDelete: 'Forward Delete',
+  backspace: 'Backspace',
+  escape: 'Escape',
+  tab: 'Tab',
+  space: 'Space',
+  capsLock: 'Caps Lock',
+  upArrow: 'Up Arrow',
+  downArrow: 'Down Arrow',
+  leftArrow: 'Left Arrow',
+  rightArrow: 'Right Arrow',
+  pageUp: 'Page Up',
+  pageDown: 'Page Down',
+  home: 'Home',
+  end: 'End',
+  plus: 'Plus',
+}
+```

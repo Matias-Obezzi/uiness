@@ -81,3 +81,17 @@ Give the carousel a `label` whenever a page has more than one, so the two are to
 ### CarouselVideo
 
 Takes everything a `<video>` takes. `src` is required, and `poster` is worth giving: it is what shows under a reduced motion preference.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Carousel` takes them as `labels` and hands them to its parts. To set them for the whole app, put them under `'carousel'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultCarouselLabels: CarouselLabels = {
+  carousel: 'carousel',
+  items: (label) => (label ? `${label} items` : 'Carousel items'),
+  previous: 'Previous',
+  next: 'Next',
+  goTo: (index, count) => `Go to item ${index} of ${count}`,
+}
+```

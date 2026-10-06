@@ -47,3 +47,15 @@ Pass `name` and the component renders hidden inputs, one per selected value, so 
 ## When to use something else
 
 For a handful of fixed options a [Select](/docs/components/select) is simpler and gets the native behaviour on a phone. Reach for the combobox when the list is long enough that searching helps.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'combobox'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultComboboxLabels: ComboboxLabels = {
+  placeholder: 'Select…',
+  search: 'Search…',
+  empty: 'No results.',
+}
+```

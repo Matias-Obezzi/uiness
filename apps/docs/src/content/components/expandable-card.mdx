@@ -58,3 +58,13 @@ The larger view is a dialog. Focus moves into it, Tab stays inside it, the page 
 | `open` / `defaultOpen` / `onOpenChange` | | The open state. `onOpenChange(false)` runs when it starts folding back. |
 
 `ExpandableCardContent` takes `showCloseButton`, `true` by default, and `overlayClassName` for the backdrop.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ExpandableCardContent` takes them as `labels`. To set them for the whole app, put them under `'expandable-card'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultExpandableCardLabels: ExpandableCardLabels = {
+  close: 'Close',
+}
+```

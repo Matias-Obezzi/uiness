@@ -46,3 +46,20 @@ The list stays open while you pick. Options with the same `group` sit under a he
 ## When to use something else
 
 For a few options that all fit on screen, [Chip Group](/docs/components/chip-group) or checkboxes show the choice without a click. For picking one, use the [Combobox](/docs/components/combobox).
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'multi-select'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultMultiSelectLabels: MultiSelectLabels = {
+  placeholder: 'Select…',
+  search: 'Search…',
+  empty: 'No results.',
+  selectAll: 'Select all',
+  clear: 'Clear selection',
+  remove: (label) => `Remove ${label}`,
+  noneSelected: 'None selected',
+  selected: (count, labels) => `${count} selected: ${labels}`,
+}
+```

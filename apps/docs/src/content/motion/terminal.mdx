@@ -56,3 +56,13 @@ Direct children play in order, each one after the one before it has finished. It
 | `icon` | check mark | Icon once finished. |
 
 With `prefers-reduced-motion` the whole session is shown at once.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'terminal'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultTerminalLabels: TerminalLabels = {
+  replay: 'Replay',
+}
+```

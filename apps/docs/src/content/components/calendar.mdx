@@ -43,3 +43,14 @@ The first click sets the start, the second the end; hovering previews the range.
 ## Keyboard
 
 Arrows move by a day or a week, Home and End go to the ends of the week, Page Up and Down change the month, with Shift the year. Enter and Space pick. The grid follows the ARIA date picker pattern, one tab stop with the focused day inside.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'calendar'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultCalendarLabels: CalendarLabels = {
+  previousMonth: 'Previous month',
+  nextMonth: 'Next month',
+}
+```

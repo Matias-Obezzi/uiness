@@ -60,3 +60,13 @@ Each action is `{ label, icon?, tone?, onSelect, keepRow? }`, with `tone` one of
 ## Accessibility
 
 Swiping is a shortcut, never the only way. The menu button holds every action of the row and works with the keyboard, screen readers, switch controls and a plain click. While a row is closed its revealed buttons are inert, out of the tab order; when open, they can be tabbed to.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `SwipeActionsRow` takes them as `labels`. To set them for the whole app, put them under `'swipe-actions'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultSwipeActionsLabels: SwipeActionsLabels = {
+  moreActions: (label) => `More actions for ${label}`,
+}
+```

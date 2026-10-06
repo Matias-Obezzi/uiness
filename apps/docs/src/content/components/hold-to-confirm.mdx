@@ -34,3 +34,14 @@ The fill is drawn frame by frame rather than with a CSS transition, so it still 
 | `confirmedLabel` | | Shown and announced once confirmed. |
 | `resetAfter` | `2000` | Milliseconds before it resets, or `false` to stay confirmed. |
 | `hint` | `'Press and hold to confirm.'` | The description screen readers hear. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'hold-to-confirm'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultHoldToConfirmLabels: HoldToConfirmLabels = {
+  hint: 'Press and hold to confirm.',
+  confirmed: 'Confirmed',
+}
+```

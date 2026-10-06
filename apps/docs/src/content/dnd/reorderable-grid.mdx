@@ -41,3 +41,16 @@ A pointer drag floats a copy of the tile under the pointer while the tile itself
 | `overlay` | `children` | `(id) => ReactNode`. What the copy that follows the pointer looks like. By default the tile itself. |
 
 `<ReorderableGridItem>` takes the `id` it renders.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'reorderable-grid'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+`start`, `move`, `drop` and `cancel` are the four announcements, functions of the drag as `@uiness/dnd` describes it; the defaults are its `defaultAnnouncements`. The `announcements` prop still wins over them.
+
+```ts
+const defaultReorderableGridLabels: ReorderableGridLabels = {
+  tile: 'grid item',
+  ...defaultAnnouncements,
+}
+```

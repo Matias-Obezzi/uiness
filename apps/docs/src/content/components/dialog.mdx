@@ -32,3 +32,13 @@ import {
 `DialogContent` renders a close button in the corner; pass `showCloseButton={false}` to drop it. Control the dialog with `open` and `onOpenChange` on the root.
 
 For a quick confirmation that should not cover the page, consider [Island](/docs/island#confirm), which asks from the top of the screen and resolves a promise.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `DialogContent` takes them as `labels`. To set them for the whole app, put them under `'dialog'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultDialogLabels: DialogLabels = {
+  close: 'Close',
+}
+```

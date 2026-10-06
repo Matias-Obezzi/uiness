@@ -72,3 +72,14 @@ Or keep it and change the ranking with `filter`, which gets the value, the searc
 ## Keyboard
 
 Arrows move, Home and End jump to the ends, cmd and an arrow does the same, Enter selects and disabled items are skipped. The input keeps focus the whole time and points at the active item with `aria-activedescendant`, so a screen reader announces the selection without the focus moving.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Command` and `CommandDialog` take them as `labels`. To set them for the whole app, put them under `'command'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultCommandLabels: CommandLabels = {
+  title: 'Command menu',
+  description: 'Search for a command or a page',
+}
+```

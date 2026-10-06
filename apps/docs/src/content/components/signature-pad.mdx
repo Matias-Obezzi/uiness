@@ -53,5 +53,21 @@ Drawing needs a pointer, there is no way around that for a signature. Everything
 | `toolbar` | `true` | Show Undo, Clear and Replay. |
 | `disabled` | `false` | Stop drawing. |
 | `name` | | Hidden input with a PNG data URL. |
-| `labels` | English | Button and canvas texts. |
+| `labels` | English | Button and canvas texts. See [Labels](#labels). |
 | `canvasClassName` | | Classes for the canvas, height included. `className` goes on the wrapper. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'signature-pad'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultSignaturePadLabels: SignaturePadLabels = {
+  pad: 'Signature',
+  strokes: (count) => `${count} ${count === 1 ? 'stroke' : 'strokes'}`,
+  empty: 'empty',
+  undo: 'Undo',
+  clear: 'Clear',
+  replay: 'Replay',
+  placeholder: 'Sign here',
+}
+```

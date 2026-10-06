@@ -115,7 +115,7 @@ const [open, setOpen] = useState(false)
 | `padding` | `8` | Space around the target inside the highlight, in pixels. |
 | `radius` | `10` | Corner radius of the highlight, in pixels. |
 | `arrow` | `true` | Draw an arrow from the card to the target. |
-| `labels` | | `{ next, back, done, skip, progress: (n, total) => string }` to translate the card. |
+| `labels` | English | The buttons and the counter of the card. See [Labels](#labels). |
 | `onStepChange` | | Called with `{ tour, step, index, total }` whenever a step shows, the first included. |
 | `onComplete` | | Called when Done is pressed on the last step. |
 | `onSkip` | | Called when the tour is closed before the end, with the step it was on. |
@@ -123,3 +123,17 @@ const [open, setOpen] = useState(false)
 | `spotlightClassName` | | Class for the highlight. Its shadow is the dimmed page, so change the color there. |
 
 The options of `start` are `startAt`, `skipMissing`, `allowInteraction`, `padding` and the three events, which fire for that run alongside the provider's.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'tour'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultTourLabels: TourLabels = {
+  next: 'Next',
+  back: 'Back',
+  done: 'Done',
+  skip: 'Skip tour',
+  progress: (current, total) => `${current} of ${total}`,
+}
+```

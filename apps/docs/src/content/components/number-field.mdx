@@ -57,3 +57,14 @@ Pass `name` and the field renders a hidden input with the plain number, so `1500
 ## Details
 
 The input is a `spinbutton` with `aria-valuenow`, the bounds and the formatted text as `aria-valuetext`, so a screen reader hears "15%" rather than "0.15". The buttons are left out of the tab order, since the arrow keys do the same job from the field, and pressing them keeps focus where it was. The wheel is off by default: a page that scrolls past a number field should not change it.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'number-field'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultNumberFieldLabels: NumberFieldLabels = {
+  decrement: 'Decrease',
+  increment: 'Increase',
+}
+```

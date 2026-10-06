@@ -83,3 +83,28 @@ Sorted headers carry `aria-sort`, and their buttons are reachable with Tab. The 
 | `empty` | `"No results."` | Shown when nothing matches. |
 | `toolbar` | | Extra controls at the end of the toolbar. |
 | `caption` | | Names the table, and shows under it. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'data-table'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultDataTableLabels: DataTableLabels = {
+  search: 'Search…',
+  reset: 'Reset',
+  resetFilters: 'Reset filters',
+  empty: 'No results.',
+  selectAll: 'Select all rows',
+  selectRow: (name) => `Select ${name || 'row'}`,
+  sortHint: 'Click to sort, shift click to sort by several columns',
+  results: (count, total) =>
+    `${count} ${count === 1 ? 'result' : 'results'}${total === undefined ? '' : ` of ${total}`}`,
+  selected: (count, total) => `${count} of ${total} selected`,
+  pages: 'Pages',
+  pageOf: (page, count) => `Page ${page} of ${count}`,
+  previousPage: 'Previous page',
+  nextPage: 'Next page',
+  filterSelected: (count) => `${count} selected`,
+  clearFilter: 'Clear filter',
+}
+```

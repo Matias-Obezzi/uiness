@@ -206,3 +206,15 @@ The sidebar uses shadcn's sidebar variables, so a shadcn theme styles it as is. 
 ### Hooks
 
 `useSidebar()` exposes `open`, `setOpen`, `toggle`, `mobileOpen`, `setMobileOpen`, `isMobile`, `expanded` and `inDrawer` to anything inside the provider. `expanded` is true when labels show, always inside the drawer; `inDrawer` tells the drawer's copy apart, handy to open a menu downwards there and to the right on desktop. `isMobile` is only known after mount, so do not use it to choose what to render. `useSidebarViews()` returns `value` and `setValue` inside `SidebarViews`.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Sidebar` takes them as `labels`; `SidebarTrigger` reads them from the provider. To set them for the whole app, put them under `'sidebar'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultSidebarLabels: SidebarLabels = {
+  menu: 'Menu',
+  navigation: 'Navigation',
+  toggle: 'Toggle sidebar',
+}
+```

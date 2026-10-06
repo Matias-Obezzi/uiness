@@ -23,3 +23,13 @@ For buttons, use the `loading` prop of [Button](/docs/components/button#loading)
 ## Details
 
 It is a lucide icon with `role="status"`, so any `svg` prop works. With `prefers-reduced-motion` it turns more slowly rather than stopping, since a still spinner reads as a stuck one.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'spinner'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultSpinnerLabels: SpinnerLabels = {
+  loading: 'Loading',
+}
+```

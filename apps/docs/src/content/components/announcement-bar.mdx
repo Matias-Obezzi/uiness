@@ -60,3 +60,22 @@ The close button folds the bar's height away, then removes it and calls `onDismi
 ## Accessibility
 
 The bar is a named region. While it rotates by itself its changes are not announced, which would interrupt whatever a screen reader is reading; once paused, or when you step by hand, the new message is read. Each message says which one it is, "2 of 3". The countdown is a `timer` labelled with the time left in words.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'announcement-bar'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultAnnouncementBarLabels: AnnouncementBarLabels = {
+  region: 'Announcements',
+  previous: 'Previous message',
+  next: 'Next message',
+  play: 'Play messages',
+  pause: 'Pause messages',
+  dismiss: 'Dismiss',
+  position: (current, count) => `${current} of ${count}:`,
+  endsIn: (days, hours, minutes) =>
+    `Ends in ${[days > 0 && plural(days, 'day'), hours > 0 && plural(hours, 'hour'), plural(minutes, 'minute')].filter(Boolean).join(' ')}`,
+  days: (days) => `${days}d`,
+}
+```

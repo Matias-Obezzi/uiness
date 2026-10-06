@@ -70,3 +70,17 @@ A horizontal stepper narrower than 36rem keeps only the numbered circles and the
 ## Accessibility
 
 The steps are an ordered list. The current step has `aria-current="step"`, and each step says its state in words, "completed", "current step" or "has an error", so it is not carried by color and icons alone. With reduced motion the lines fill at once.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Stepper` takes them as `labels` and hands them to its steps. To set them for the whole app, put them under `'stepper'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultStepperLabels: StepperLabels = {
+  complete: 'completed',
+  current: 'current step',
+  upcoming: 'not started',
+  error: 'has an error',
+  stepOf: (step, count) => `Step ${step} of ${count}`,
+}
+```

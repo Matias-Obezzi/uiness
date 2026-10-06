@@ -30,3 +30,13 @@ Anything goes in either side, as long as both have the same size. The `after` la
 | `labels` | | Two corner labels. |
 
 The divider is a slider: arrows move it by two, with shift by ten, Home and End go to the edges.
+
+## Labels
+
+Every word it reads out to screen readers, in English by default. Set them for the whole app under `'compare'` in a [`LabelsProvider`](/docs/localization). Its `labels` prop holds the two corner captions, so the words below are only set through a provider, or `aria-label` for the slider.
+
+```ts
+const defaultCompareLabels: CompareLabels = {
+  slider: 'Compare',
+}
+```

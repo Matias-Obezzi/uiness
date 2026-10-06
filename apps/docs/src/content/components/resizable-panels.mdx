@@ -77,3 +77,13 @@ A double click on a handle puts its two panels back to their default proportions
 ## Details
 
 The handle has `role="separator"`, with `aria-valuenow` and its limits, and `aria-controls` pointing at the panel before it. Its line is one pixel, but the area you can grab is wider. While dragging, the whole page shows the resize cursor and stops selecting text. Keyboard and double click changes animate, unless reduced motion is on. Right-to-left layouts flip the arrow keys and the drag.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ResizableHandle` takes them as `labels`. To set them for the whole app, put them under `'resizable-panels'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultResizablePanelsLabels: ResizablePanelsLabels = {
+  handle: 'Resize panels',
+}
+```

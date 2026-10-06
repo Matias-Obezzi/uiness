@@ -46,3 +46,15 @@ The SVG is an image whose label sums the trend up: how many values, the first an
 | `locale` | browser | Locale of the default format. |
 | `animate` | `true` | Draw in on mount. Off with reduced motion. |
 | `aria-label` | generated | Replaces the generated summary. |
+
+## Labels
+
+Every word it reads out to screen readers, in English by default. Set them for the whole app under `'sparkline'` in a [`LabelsProvider`](/docs/localization). Its `labels` prop names the points, so the words below are only set through a provider, or `aria-label` for the whole summary.
+
+```ts
+const defaultSparklineLabels: SparklineLabels = {
+  summary: ({ count, first, last, low, high }) =>
+    `Trend of ${count} values${first !== undefined && last !== undefined ? `, from ${first} to ${last}` : ''}, low ${low}, high ${high}`,
+  empty: 'No data',
+}
+```

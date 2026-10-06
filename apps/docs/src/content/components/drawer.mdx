@@ -85,3 +85,15 @@ While a promise is pending, more attempts are ignored, and a promise that reject
 ## Details
 
 Built on the Radix dialog, so focus is trapped, the page behind does not scroll and Escape closes. Bottom and top drawers clear the safe areas of a phone. With `prefers-reduced-motion` the drawer appears instead of sliding. Inputs, textareas, selects and anything marked `data-no-drag` never start a drag.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `DrawerContent` takes them as `labels`. To set them for the whole app, put them under `'drawer'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultDrawerLabels: DrawerLabels = {
+  close: 'Close',
+  resize: 'Resize drawer',
+  dragToClose: 'Drag to close',
+}
+```

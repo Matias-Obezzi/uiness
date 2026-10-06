@@ -62,3 +62,18 @@ The code is a region named by the file name, or the language, that takes focus s
 | `wrapToggle` | `true` | The wrap switch. |
 | `copyable` | `true` | The copy button. |
 | `maxLines` | `20` | Lines before it collapses; `false` never collapses. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'code-block'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultCodeBlockLabels: CodeBlockLabels = {
+  wrap: 'Wrap lines',
+  copy: 'Copy code',
+  copied: 'Copied',
+  code: (language) => (language ? `${language} code` : 'Code'),
+  showLess: 'Show less',
+  showAll: (lines) => `Show all ${lines} lines`,
+}
+```

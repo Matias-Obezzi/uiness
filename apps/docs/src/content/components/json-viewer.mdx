@@ -45,3 +45,30 @@ The viewer follows the ARIA tree pattern. Up and Down move between rows, Right o
 | `onCopy` | | Called with `{ kind, path, text }` after a copy. |
 | `maxHeight` | `384` | Height the tree scrolls past. |
 | `aria-label` | `"JSON"` | Names the tree. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'json-viewer'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultJsonViewerLabels: JsonViewerLabels = {
+  search: 'Search keys and values',
+  match: (current, total) => `${current} of ${total}`,
+  noMatches: 'No matches',
+  expandAll: 'Expand all',
+  collapseAll: 'Collapse all',
+  tree: 'JSON',
+  size: (count, type) =>
+    `${count} ${type === 'array' ? (count === 1 ? 'item' : 'items') : count === 1 ? 'key' : 'keys'}`,
+  array: 'array',
+  object: 'object',
+  showMore: (count) => `Show ${count} more`,
+  left: (count) => `${count} left`,
+  copyValue: (path) => `Copy value of ${path}`,
+  copyPath: (path) => `Copy path ${path}`,
+  copyValueHint: 'Copy value (c)',
+  copyPathHint: 'Copy path (p)',
+  valueCopied: 'Value copied',
+  pathCopied: 'Path copied',
+}
+```

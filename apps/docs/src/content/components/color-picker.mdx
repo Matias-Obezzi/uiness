@@ -47,4 +47,26 @@ The pipette button only appears where the [EyeDropper API](https://developer.moz
 | `contrastWith` | | A background to check the contrast against. |
 | `showValue` | `true` | Show the value next to the swatch in the button. |
 | `name` | | Hidden input for a form. |
-| `labels` | English | Accessible names of the parts. |
+| `labels` | English | Accessible names of the parts. See [Labels](#labels). |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'color-picker'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultColorPickerLabels: ColorPickerLabels = {
+  area: 'Saturation and brightness',
+  areaRole: '2D slider',
+  areaValue: (saturation, brightness) => `Saturation ${saturation}%, brightness ${brightness}%`,
+  hue: 'Hue',
+  alpha: 'Opacity',
+  format: 'Color format',
+  input: 'Color value',
+  eyeDropper: 'Pick a color from the screen',
+  swatches: 'Saved colors',
+  addSwatch: 'Save this color',
+  contrast: 'Contrast',
+  passes: 'Passes',
+  fails: 'Fails',
+}
+```

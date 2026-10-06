@@ -47,3 +47,19 @@ For a decision that deserves the whole screen, use an [Alert Dialog](/docs/compo
 | `undoLabel` | `'Undo'` | |
 | `resetAfter` | `4000` | Milliseconds the result stays. |
 | `disabled` | `false` | |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'confirm-morph'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultConfirmMorphLabels: ConfirmMorphLabels = {
+  question: 'Are you sure?',
+  confirm: 'Confirm',
+  cancel: 'Cancel',
+  pending: 'Working…',
+  success: 'Done',
+  error: 'Something went wrong',
+  undo: 'Undo',
+}
+```

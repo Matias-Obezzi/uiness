@@ -51,3 +51,16 @@ The toggle is a radio group named "Billing period": only the picked option is in
 | `decimals` | `0` or `2` | Digits after the decimal point. |
 | `period` | | Shown after the amount, like "/month". |
 | `duration` | `700` | Milliseconds a digit takes to roll. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'billing-toggle'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultBillingToggleLabels: BillingToggleLabels = {
+  group: 'Billing period',
+  monthly: 'Monthly',
+  yearly: 'Yearly',
+  save: (percent) => `Save ${percent}`,
+}
+```

@@ -48,3 +48,19 @@ The bar is a `meter` named by `label`, with the used amount against the limit an
 | `showLegend` | `true` | The list of segments under the bar. |
 | `warningLabel` | `"Almost full"` | Text of the warning state. |
 | `overLabel` | `"Over by …"` | Text of the over limit state, from the formatted overage. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'usage-meter'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultUsageMeterLabels: UsageMeterLabels = {
+  warning: 'Almost full',
+  over: (overage) => `Over by ${overage}`,
+  amount: (used, limit) => `${used} of ${limit}`,
+  valueText: (used, limit) => `${used} of ${limit} used`,
+  almostFull: 'almost full',
+  overLimit: (overage) => `over the limit by ${overage}`,
+  free: 'Free',
+}
+```

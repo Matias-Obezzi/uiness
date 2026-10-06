@@ -53,3 +53,17 @@ The grid is a table of seven weekday rows and one column per week, with the ARIA
 | `onSelect` | | Called with `{ date, value }` on click or Enter. |
 | `showLegend` | `true` | The "Less … More" legend. |
 | `aria-label` | the date range | Names the grid. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'activity-heatmap'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultActivityHeatmapLabels: ActivityHeatmapLabels = {
+  grid: (from, to) => `Activity from ${from} to ${to}`,
+  day: (value, date) => `${value} on ${date}`,
+  none: 'Nothing',
+  less: 'Less',
+  more: 'More',
+}
+```

@@ -76,3 +76,17 @@ const config = {
 ## Accessibility
 
 Pass `accessibilityLayer` to the recharts chart. The chart then takes focus, and the left and right arrow keys move the tooltip from point to point.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `BarChart` and `LineChart` take them as `labels`; `ChartEmpty` reads them from the provider. To set them for the whole app, put them under `'chart'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultChartLabels: ChartLabels = {
+  empty: 'No data',
+  summary: (series, points, from, to) =>
+    `${series.join(', ')}, ${points} ${points === 1 ? 'point' : 'points'}${points ? `, from ${from} to ${to}` : ''}`,
+  barChart: (summary) => `Bar chart of ${summary}`,
+  lineChart: (summary) => `Line chart of ${summary}`,
+}
+```

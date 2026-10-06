@@ -51,3 +51,19 @@ import { Lightbox } from '@/components/ui/gallery'
 ## Keyboard and touch
 
 Arrow keys move, Escape closes, focus stays inside the viewer. On touch, swipe sideways to move and down to close. `prefers-reduced-motion` turns the flight into a plain fade.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Gallery` and `Lightbox` take them as `labels`. To set them for the whole app, put them under `'gallery'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultGalleryLabels: GalleryLabels = {
+  open: (index, alt) => (alt ? `Open ${alt}` : `Open image ${index}`),
+  image: (index, count) => `Image ${index} of ${count}`,
+  help: 'Use the arrow keys to move between images and Escape to close.',
+  close: 'Close',
+  previous: 'Previous image',
+  next: 'Next image',
+  show: (index) => `Show image ${index}`,
+}
+```

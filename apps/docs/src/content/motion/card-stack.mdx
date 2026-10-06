@@ -35,3 +35,16 @@ Each child is one card, so give them the same height. The stack takes focus: arr
 | `onIndexChange` | | Called with the index of the new front card. |
 
 With `prefers-reduced-motion` autoplay is off and cards swap in place.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'card-stack'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultCardStackLabels: CardStackLabels = {
+  region: 'Cards',
+  carousel: 'carousel',
+  slide: 'slide',
+  position: (index, count) => `${index} of ${count}`,
+}
+```

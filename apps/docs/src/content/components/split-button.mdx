@@ -47,3 +47,13 @@ The two halves are separate buttons, so each takes focus and each has its own na
 | `contentClassName` | | Classes for the menu. |
 
 `open`, `defaultOpen` and `onOpenChange` control the menu, as on Dropdown Menu.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `SplitButtonMenu` takes them as `labels`. To set them for the whole app, put them under `'split-button'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultSplitButtonLabels: SplitButtonLabels = {
+  more: 'More options',
+}
+```

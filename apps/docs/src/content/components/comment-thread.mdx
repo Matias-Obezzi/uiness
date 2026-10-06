@@ -85,3 +85,41 @@ Times read "5 minutes ago", "yesterday" or "2 weeks ago" through `Intl.RelativeT
 ## Accessibility
 
 The thread is a `section` named by its heading, each comment an `article` named after its author, and replies a list inside it. The replies toggle has `aria-expanded` and `aria-controls`. Reactions are toggle buttons with `aria-pressed`; the menu, the emoji picker and the confirmation are the Radix dropdown, popover and alert dialog, with their keyboard support and focus return.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `CommentThread` takes them as `labels` and hands them to its parts. To set them for the whole app, put them under `'comment-thread'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultCommentThreadLabels: CommentThreadLabels = {
+  title: 'Comments',
+  placeholder: 'Add a comment',
+  comment: 'Comment',
+  cancel: 'Cancel',
+  addReaction: 'Add reaction',
+  reactWith: (emoji) => `React with ${emoji}`,
+  you: 'You',
+  commentBy: (name) => `Comment by ${name ?? 'unknown'}`,
+  unknown: 'Unknown',
+  edited: '(edited)',
+  moreActions: 'More actions',
+  edit: 'Edit',
+  delete: 'Delete',
+  editPlaceholder: 'Edit comment',
+  save: 'Save',
+  reply: 'Reply',
+  replyPlaceholder: 'Write a reply',
+  showReplies: (count) => `Show ${count} ${count === 1 ? 'reply' : 'replies'}`,
+  hideReplies: (count) => `Hide ${count === 1 ? 'reply' : 'replies'}`,
+  repliesTo: (name) => `Replies to ${name ?? 'comment'}`,
+  resolved: 'Resolved',
+  resolve: 'Resolve',
+  reopen: 'Reopen',
+  empty: 'No comments yet.',
+  resolvedNotice: 'This thread is resolved.',
+  reopenToReply: 'Reopen it to reply.',
+  deleteTitle: 'Delete this comment?',
+  deleteDescription: 'This cannot be undone.',
+  deleteWithReplies: 'Its replies go with it. This cannot be undone.',
+}
+```

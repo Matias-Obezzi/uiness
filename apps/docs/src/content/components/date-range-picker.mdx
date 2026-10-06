@@ -56,5 +56,25 @@ Below 640px the calendar shows one month and the presets become a row that scrol
 | `min`, `max`, `disabledDates` | | Passed to the calendar. |
 | `today` | now | The day presets count from. |
 | `name` | | Hidden inputs `name.from` and `name.to` with ISO dates. |
-| `labels` | English | Placeholder, Apply, Cancel and the presets column name. |
+| `labels` | English | The words of the picker and its presets. See [Labels](#labels). |
 | `calendarProps` | | Anything else for the calendar. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'date-range-picker'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultDateRangePickerLabels: DateRangePickerLabels = {
+  placeholder: 'Pick a range',
+  apply: 'Apply',
+  cancel: 'Cancel',
+  presets: 'Presets',
+  today: 'Today',
+  yesterday: 'Yesterday',
+  last7Days: 'Last 7 days',
+  last30Days: 'Last 30 days',
+  thisMonth: 'This month',
+  lastMonth: 'Last month',
+  thisYear: 'This year',
+}
+```

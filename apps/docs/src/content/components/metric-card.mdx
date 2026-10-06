@@ -53,3 +53,16 @@ The delta always carries an arrow and, for screen readers, the words "Up" or "Do
 | `action` | | An icon or button in the top right corner. |
 | `loading` | `false` | Placeholders instead of the figures. |
 | `duration` | `1200` | Milliseconds the value takes to count. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'metric-card'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultMetricCardLabels: MetricCardLabels = {
+  loading: 'Loading',
+  up: 'Up',
+  down: 'Down',
+  noChange: 'No change',
+}
+```

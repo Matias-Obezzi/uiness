@@ -38,3 +38,25 @@ Files that break `accept`, `maxSize` or `maxFiles` go to `onRejected` with a `re
 | `disabled` | | Stops the drop and the picker, and dims the box. |
 | `preview` | `true` | Show thumbnails of the images that were accepted. |
 | `children` | | Shown in the middle instead of the default prompt. |
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'dropzone'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultDropzoneLabels: DropzoneLabels = {
+  prompt: (multiple) => `Drop ${multiple ? 'files' : 'a file'} here, or press to choose`,
+  maxSize: (size) => `up to ${size} each`,
+  maxFiles: (count) => `at most ${count} files`,
+  anyFile: 'Any file',
+  notAccepted: (name) => `${name} is not an accepted type.`,
+  tooLarge: (name, size) => `${name} is larger than ${size}.`,
+  tooMany: (name, limit) =>
+    limit === 1
+      ? `${name} was not taken: only one file at a time.`
+      : `${name} was not taken: at most ${limit} files at a time.`,
+  added: (count) => `${fileCount(count)} added.`,
+  rejected: (count) => `${fileCount(count)} rejected:`,
+  noFiles: 'No files.',
+}
+```

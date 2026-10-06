@@ -87,3 +87,15 @@ import {
 ## Accessibility
 
 The trail is a `<nav>` named "Breadcrumb" holding an ordered list. Separators are hidden from assistive tech so a screen reader counts only the pages. The fold button is a real menu button with arrow key navigation.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `BreadcrumbTrail` takes them as `labels`; the parts read them from the provider. To set them for the whole app, put them under `'breadcrumb'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultBreadcrumbLabels: BreadcrumbLabels = {
+  nav: 'Breadcrumb',
+  more: 'More',
+  showMore: (count) => `Show ${count} more`,
+}
+```

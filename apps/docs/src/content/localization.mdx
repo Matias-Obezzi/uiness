@@ -1,0 +1,130 @@
+Every component speaks English out of the box, and every word it shows or reads out to screen readers can be changed: for one component with its `labels` prop, or for the whole app at once with `LabelsProvider`. A Spanish pack is ready to install.
+
+<ComponentPreview name="localization-demo" />
+
+## The labels prop
+
+Each component with words of its own takes `labels`. Pass only the ones to change; the rest stay in English.
+
+```tsx
+<Paginator
+  page={page}
+  total={total}
+  onPageChange={setPage}
+  labels={{
+    previous: 'Anterior',
+    next: 'Siguiente',
+    pageOf: (page, count) => `Página ${page} de ${count}`,
+  }}
+/>
+```
+
+Labels that hold a number or a name are functions, so the sentence can be built the way your language builds it, plurals included. Every component exports the shape of its labels and the English defaults, `PaginationLabels` and `defaultPaginationLabels` for the paginator, and its page ends with a **Labels** section that lists them.
+
+Props that already named one word, like `placeholder` or the `label` of a copy button, still work and win over `labels`.
+
+## LabelsProvider
+
+To translate everything in one place, wrap the app in `LabelsProvider` with the labels of each component under its registry name. It comes with every component that has words, in `lib/labels.tsx`, so there is nothing else to install.
+
+```tsx
+import { LabelsProvider } from '@/lib/labels'
+
+<LabelsProvider
+  labels={{
+    pagination: { previous: 'Anterior', next: 'Siguiente' },
+    dialog: { close: 'Cerrar' },
+    'copy-button': { copy: 'Copiar', copied: 'Copiado' },
+  }}
+>
+  <App />
+</LabelsProvider>
+```
+
+A component takes its English defaults, then what the nearest provider has for it, then its own `labels` prop. Providers nest: an inner one changes only the words it names, component by component, so one part of the app can say "Delete" where the rest says "Remove". Without a provider the components use their defaults and nothing extra renders.
+
+Parts of a composed component read the provider too, so a dialog's close button follows `dialog` wherever it is rendered. The `labels` prop of a root, like the one of `ChatThread` or `Navbar`, reaches all of its parts.
+
+## Spanish
+
+<Install name="labels-es" extra="Installs lib/labels-es.ts, with every component in neutral Spanish." />
+
+```tsx
+'use client'
+
+import { LabelsProvider } from '@/lib/labels'
+import { es } from '@/lib/labels-es'
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <LabelsProvider labels={es} locale="es">
+      {children}
+    </LabelsProvider>
+  )
+}
+```
+
+The pack names every component in the registry. The ones you have not installed are never read, and it still compiles. It is a plain file in your project: change any word in it, or keep it as it is and nest a provider with your own:
+
+```tsx
+<LabelsProvider labels={es} locale="es-AR">
+  <LabelsProvider labels={{ 'copy-button': { copied: '¡Listo!' } }}>
+    <App />
+  </LabelsProvider>
+</LabelsProvider>
+```
+
+Some labels are functions, and functions cannot be passed from a server component to a client one. In the Next.js App Router, import the pack in a file that starts with `'use client'`, as above, and render that from your layout.
+
+## Locale
+
+Dates, numbers, month and day names, relative times and country names come from `Intl`, so they need no labels: they follow a locale. Components with a `locale` prop, from the calendar and the date pickers to the charts, the number field and the phone input, use the provider's `locale` when theirs is not set, and the browser's when neither is.
+
+```tsx
+<LabelsProvider labels={es} locale="es-AR">
+  <DateRangePicker />
+</LabelsProvider>
+```
+
+## Your own pack
+
+Start from `labels-es.ts`: it has every key, and a test in the uiness registry makes sure it keeps up with the components. A pack is an object keyed by component name:
+
+```ts
+import type { LabelsPack } from '@/lib/labels'
+import type { PaginationLabels } from '@/components/ui/pagination'
+
+export const fr = {
+  pagination: {
+    previous: 'Précédent',
+    next: 'Suivant',
+    pageOf: (page: number, count: number) => `Page ${page} sur ${count}`,
+  } satisfies Partial<PaginationLabels>,
+  dialog: { close: 'Fermer' },
+} satisfies LabelsPack
+```
+
+`LabelsPack` is typed loosely on purpose: it accepts any component name, so a pack written for the whole registry works in a project that installed three components. To have an entry checked against its component, add `satisfies Partial<XLabels>` to it, as with `pagination` above.
+
+## Your own components
+
+`useLabels` gives your components the same three layers, and `useLocale` the same locale:
+
+```tsx
+import { useLabels, useLocale } from '@/lib/labels'
+
+const defaultInvoiceLabels = {
+  due: (date: string) => `Due ${date}`,
+  paid: 'Paid',
+}
+
+function InvoiceStatus({ due, paid, labels }: InvoiceStatusProps) {
+  const t = useLabels('invoice-status', defaultInvoiceLabels, labels)
+  const locale = useLocale()
+  return paid ? t.paid : t.due(due.toLocaleDateString(locale))
+}
+```
+
+## What is not covered
+
+Text you pass in is yours: titles, options, messages and the copy of the blocks, which take it through props. The confirm of the Dynamic Island takes its button texts with each call, as `confirmText` and `cancelText`.

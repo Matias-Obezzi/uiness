@@ -103,3 +103,13 @@ Give a node `hasChildren` instead of `children`, and `loadChildren` is called th
 ## Details
 
 The structure is the ARIA tree pattern: a `role="tree"` list of `treeitem`s with `aria-level`, `aria-setsize`, `aria-posinset` and `aria-expanded`, and a `role="group"` list for each folder's contents. Closed folders stay mounted after their first opening, hidden and inert, so closing can animate; with reduced motion they open and close at once. Type-ahead matches `textValue`, or the label when it is a string.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'tree-view'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultTreeViewLabels: TreeViewLabels = {
+  loadFailed: 'could not load, open to retry',
+}
+```

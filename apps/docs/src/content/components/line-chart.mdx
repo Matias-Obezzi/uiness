@@ -63,3 +63,19 @@ The dots on the active row have a ring in the page color, so they stay readable 
 | `aria-label` | generated | Replaces the generated summary. |
 
 For anything these props do not cover, write the recharts chart yourself inside a [`ChartContainer`](/docs/components/chart).
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. Pass the ones to change as `labels`. To set them for the whole app, put them under `'chart'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+The words are shared by every chart, under `chart`.
+
+```ts
+const defaultChartLabels: ChartLabels = {
+  empty: 'No data',
+  summary: (series, points, from, to) =>
+    `${series.join(', ')}, ${points} ${points === 1 ? 'point' : 'points'}${points ? `, from ${from} to ${to}` : ''}`,
+  barChart: (summary) => `Bar chart of ${summary}`,
+  lineChart: (summary) => `Line chart of ${summary}`,
+}
+```
