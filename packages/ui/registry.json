@@ -959,6 +959,32 @@
       ]
     },
     {
+      "name": "use-motion-ready",
+      "type": "registry:hook",
+      "title": "useMotionReady",
+      "description": "Lets a text animation start from its server-rendered final state: idle on the server, armed after mount.",
+      "registryDependencies": ["@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/hooks/use-motion-ready.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "use-scroll-driver",
+      "type": "registry:hook",
+      "title": "useScrollDriver",
+      "description": "Picks CSS scroll-driven animations or @uiness/scroll for a scroll-linked component, and maps scroll offsets to view timelines.",
+      "dependencies": ["@uiness/scroll"],
+      "files": [
+        {
+          "path": "registry/hooks/use-scroll-driver.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "spotlight",
       "type": "registry:ui",
       "title": "Spotlight",
@@ -1060,7 +1086,7 @@
       "type": "registry:ui",
       "title": "Text Generate",
       "description": "Text that appears one word at a time from a blur.",
-      "registryDependencies": ["@uiness/utils", "@uiness/use-in-view"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-in-view", "@uiness/use-motion-ready"],
       "css": {
         "@keyframes blur-in": {
           "from": {
@@ -1087,7 +1113,7 @@
       "type": "registry:ui",
       "title": "Typewriter",
       "description": "Types words one character at a time, deletes and moves on.",
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-motion-ready"],
       "css": {
         "@keyframes blink": {
           "50%": {
@@ -1168,8 +1194,8 @@
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/use-in-view",
-        "@uiness/use-reduced-motion",
-        "@uiness/labels"
+        "@uiness/labels",
+        "@uiness/use-motion-ready"
       ],
       "files": [
         {
@@ -1183,7 +1209,7 @@
       "type": "registry:ui",
       "title": "Reveal",
       "description": "Plays a transition when content scrolls into view, with stagger.",
-      "registryDependencies": ["@uiness/utils", "@uiness/use-in-view"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-in-view", "@uiness/use-motion-ready"],
       "files": [
         {
           "path": "registry/ui/reveal.tsx",
@@ -1342,7 +1368,27 @@
       "title": "Timeline",
       "description": "Entries down a line that lights up as you scroll. Installs @uiness/scroll.",
       "dependencies": ["@uiness/scroll"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-scroll-driver"],
+      "css": {
+        "@keyframes timeline-progress": {
+          "from": {
+            "height": "0%"
+          },
+          "to": {
+            "height": "100%"
+          }
+        },
+        "@keyframes timeline-dot": {
+          "from": {
+            "border-color": "var(--border)",
+            "background-color": "var(--background)"
+          },
+          "to": {
+            "border-color": "var(--timeline-color)",
+            "background-color": "var(--timeline-color)"
+          }
+        }
+      },
       "files": [
         {
           "path": "registry/ui/timeline.tsx",
@@ -1775,7 +1821,12 @@
       "title": "Carousel",
       "description": "A horizontal run of items of any width and any content, snapped as you scroll.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/labels"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-reduced-motion",
+        "@uiness/use-in-view",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/carousel.tsx",
@@ -1909,7 +1960,17 @@
       "title": "Text Reveal",
       "description": "A paragraph whose words light up as it scrolls by. Installs @uiness/scroll.",
       "dependencies": ["@uiness/scroll"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-scroll-driver"],
+      "css": {
+        "@keyframes text-reveal-word": {
+          "from": {
+            "opacity": "var(--text-reveal-from)"
+          },
+          "to": {
+            "opacity": "1"
+          }
+        }
+      },
       "files": [
         {
           "path": "registry/ui/text-reveal.tsx",
@@ -2058,8 +2119,21 @@
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/use-in-view",
-        "@uiness/use-reduced-motion"
+        "@uiness/use-reduced-motion",
+        "@uiness/use-scroll-driver"
       ],
+      "css": {
+        "@keyframes velocity-marquee": {
+          "to": {
+            "transform": "translateX(-100%)"
+          }
+        },
+        "@keyframes velocity-marquee-scroll": {
+          "to": {
+            "transform": "translateX(calc(-100% / var(--velocity-marquee-copies)))"
+          }
+        }
+      },
       "files": [
         {
           "path": "registry/ui/velocity-marquee.tsx",

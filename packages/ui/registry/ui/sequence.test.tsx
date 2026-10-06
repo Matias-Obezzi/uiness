@@ -300,6 +300,37 @@ describe('VelocityMarquee', () => {
     expect(vi.getTimerCount()).toBe(0)
   })
 
+  it('runs on CSS alone with the css driver: a constant run plus a scroll-linked push', () => {
+    frames()
+    vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(500)
+    render(
+      <VelocityMarquee driver="css" baseVelocity={100} sensitivity={2}>
+        <span>first</span>
+        <span>second</span>
+      </VelocityMarquee>,
+    )
+    const root = document.querySelector<HTMLElement>('[data-slot=velocity-marquee]')
+    expect(root?.dataset.driver).toBe('css')
+    expect(root?.style.getPropertyValue('view-timeline')).toBe('--velocity-marquee block')
+    expect(root?.style.getPropertyValue('--velocity-marquee-loops')).toBe('2')
+    const [a, b] = rows()
+    expect(a?.className).toContain('[animation-name:velocity-marquee-scroll]')
+    expect(a?.style.getPropertyValue('animation-timeline')).toBe('--velocity-marquee')
+    expect(a?.style.getPropertyValue('animation-direction')).toBe('normal')
+    expect(b?.style.getPropertyValue('animation-direction')).toBe('reverse')
+    // 500px wide row and copy: one to cover it plus two spare, as the run and the push add up.
+    expect(a?.children).toHaveLength(3)
+    expect(a?.style.getPropertyValue('--velocity-marquee-copies')).toBe('3')
+    const copy = a?.children[0] as HTMLElement
+    expect(copy.className).toContain('[animation-name:velocity-marquee]')
+    // 500px at 100px a second.
+    expect(copy.style.animationDuration).toBe('5s')
+    // No frame loop: nothing written by JavaScript.
+    act(() => vi.advanceTimersByTime(100))
+    expect(a?.style.transform).toBe('')
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
   it('cancels its frame on unmount', () => {
     frames()
     const { unmount } = render(

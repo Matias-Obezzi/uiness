@@ -1,21 +1,35 @@
 import type * as React from 'react'
 import { cn } from '@/lib/utils'
 
-function BentoGrid({ className, ...props }: React.ComponentProps<'div'>) {
+export interface BentoGridProps extends React.ComponentProps<'div'> {
+  /** Class for the wrapper whose width decides the columns. `className` goes on the grid. */
+  containerClassName?: string
+}
+
+/**
+ * Three columns when the grid has room for them, one when it does not. It measures its own
+ * wrapper with a container query, not the screen, so it also stacks inside a narrow column or
+ * a sidebar on a wide screen.
+ */
+function BentoGrid({ className, containerClassName, ...props }: BentoGridProps) {
   return (
-    <div
-      data-slot="bento-grid"
-      className={cn(
-        'grid auto-rows-[minmax(11rem,auto)] grid-cols-1 gap-4 md:grid-cols-3',
-        className,
-      )}
-      {...props}
-    />
+    // An element cannot query its own width, so the wrapper is the container the grid and the
+    // cards measure. `w-full` keeps it from collapsing inside a flex row.
+    <div data-slot="bento-grid-container" className={cn('@container w-full', containerClassName)}>
+      <div
+        data-slot="bento-grid"
+        className={cn(
+          'grid auto-rows-[minmax(11rem,auto)] grid-cols-1 gap-4 @xl:grid-cols-3',
+          className,
+        )}
+        {...props}
+      />
+    </div>
   )
 }
 
-const spanClasses = { 1: 'md:col-span-1', 2: 'md:col-span-2', 3: 'md:col-span-3' } as const
-const rowClasses = { 1: 'md:row-span-1', 2: 'md:row-span-2', 3: 'md:row-span-3' } as const
+const spanClasses = { 1: '@xl:col-span-1', 2: '@xl:col-span-2', 3: '@xl:col-span-3' } as const
+const rowClasses = { 1: '@xl:row-span-1', 2: '@xl:row-span-2', 3: '@xl:row-span-3' } as const
 
 export interface BentoCardProps extends Omit<React.ComponentProps<'div'>, 'title'> {
   title?: React.ReactNode
@@ -23,9 +37,9 @@ export interface BentoCardProps extends Omit<React.ComponentProps<'div'>, 'title
   icon?: React.ReactNode
   /** Visual at the top of the card: an image, a chart, a pattern. Lifts on hover. */
   header?: React.ReactNode
-  /** Columns the card takes on wide screens. Default 1. */
+  /** Columns the card takes once the grid has three. Default 1. */
   span?: 1 | 2 | 3
-  /** Rows the card takes on wide screens. Default 1. */
+  /** Rows the card takes once the grid has three columns. Default 1. */
   rows?: 1 | 2 | 3
   /** Makes the whole card a link. */
   href?: string

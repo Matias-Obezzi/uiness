@@ -22,6 +22,16 @@ import { Ripple } from '@/components/ui/ripple'
 
 Several ripples can overlap. Each one grows while held and fades once released. Without `asChild` it renders a `div`.
 
+With `asChild` the ink is not passed down as a second child: after mount it is drawn in a layer appended to the element, so the child can be any component that renders one element, another `asChild` included.
+
+```tsx
+<Ripple asChild>
+  <Button asChild>
+    <a href="/pricing">Pricing</a>
+  </Button>
+</Ripple>
+```
+
 ## Your own element
 
 `useRipple` returns the `handlers` to spread on an element and the `ripples` to render inside it. Give the element `relative`.

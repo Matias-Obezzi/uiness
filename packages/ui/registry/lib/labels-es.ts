@@ -96,6 +96,9 @@ export const es = {
     previous: 'Anterior',
     next: 'Siguiente',
     goTo: (index: number, count: number) => `Ir al elemento ${index} de ${count}`,
+    position: (index: number, count: number) => `Elemento ${index} de ${count}`,
+    play: 'Iniciar el desplazamiento automático',
+    pause: 'Pausar el desplazamiento automático',
   },
   chart: {
     empty: 'Sin datos',
@@ -549,6 +552,7 @@ export const es = {
     back: 'Atrás',
     done: 'Listo',
     skip: 'Saltar el recorrido',
+    exit: 'Salir',
     progress: (current: number, total: number) => `${current} de ${total}`,
   },
   'tree-view': {

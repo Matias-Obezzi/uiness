@@ -9,6 +9,13 @@ function rand(seed: number) {
   return x - Math.floor(x)
 }
 
+/**
+ * `Math.sin` is not bit for bit the same everywhere: Node and Chrome disagree in the last
+ * decimals for some seeds, and an unrounded style would differ between the server HTML and the
+ * hydrating client. Two decimals of a percent or a second is plenty and comes out the same.
+ */
+const fixed = (n: number) => n.toFixed(2)
+
 export interface MeteorsProps extends React.ComponentProps<'div'> {
   /** How many streaks. Default 20. */
   count?: number
@@ -47,9 +54,9 @@ function Meteors({
           style={{
             // The angle lives on `rotate`, so it holds while the animation waits out its delay.
             rotate: 'var(--angle)',
-            top: `${rand(i * 3 + 1) * 60 - 10}%`,
-            left: `${rand(i * 3 + 2) * 120 - 10}%`,
-            animation: `meteor ${(rand(i * 3 + 3) * 5 + 4).toFixed(2)}s linear ${(rand(i * 7 + 5) * 8).toFixed(2)}s infinite`,
+            top: `${fixed(rand(i * 3 + 1) * 60 - 10)}%`,
+            left: `${fixed(rand(i * 3 + 2) * 120 - 10)}%`,
+            animation: `meteor ${fixed(rand(i * 3 + 3) * 5 + 4)}s linear ${fixed(rand(i * 7 + 5) * 8)}s infinite`,
           }}
         />
       ))}

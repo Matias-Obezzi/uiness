@@ -42,7 +42,7 @@ export default function BentoGridDemo() {
         title="Scroll-linked"
         description="Progress, parallax and the active section, measured once per frame."
         header={header('/img/gallery-6.png')}
-        className="md:min-h-56"
+        className="@xl:min-h-56"
       />
     </BentoGrid>
   )

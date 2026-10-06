@@ -29,8 +29,13 @@ export interface CompareProps extends Omit<React.ComponentProps<'div'>, 'childre
   onValueChange?: (value: number) => void
   /** `drag` moves the divider while pressing, `hover` follows the pointer. Default drag. */
   mode?: 'drag' | 'hover'
-  /** Labels shown in the corners. */
+  /** Labels shown in the corners. An empty one draws nothing, so one side can go without. */
   labels?: [string, string]
+  /**
+   * What the slider reads out for a position, its `aria-valuetext`. Without it, screen readers
+   * read the number alone. E.g. `(value) => \`${Math.round(value)}% before\``.
+   */
+  getValueText?: (value: number) => string
   /** Accessible name of the slider. Default "Compare". */
   'aria-label'?: string
 }
@@ -47,6 +52,7 @@ function Compare({
   onValueChange,
   mode = 'drag',
   labels,
+  getValueText,
   className,
   'aria-label': ariaLabel,
   onPointerDown,
@@ -60,6 +66,7 @@ function Compare({
   const [uncontrolled, setUncontrolled] = React.useState(initial)
   const position = value ?? uncontrolled
   const dragging = React.useRef(false)
+  const touchWaiting = React.useRef(false)
 
   const set = (next: number) => {
     const clamped = Math.max(0, Math.min(100, next))
@@ -80,7 +87,9 @@ function Compare({
       data-mode={mode}
       className={cn(
         'group/compare relative select-none overflow-hidden rounded-xl',
-        mode === 'drag' ? 'cursor-col-resize touch-none' : 'cursor-crosshair',
+        // pan-y, not none: the drag only wants the sideways movement, and a photo as wide as a
+        // phone must still let the page scroll past it.
+        mode === 'drag' ? 'cursor-col-resize touch-pan-y' : 'cursor-crosshair',
         className,
       )}
       style={{ '--position': `${position}%` } as React.CSSProperties}
@@ -89,18 +98,29 @@ function Compare({
         if (mode !== 'drag' || e.button !== 0) return
         dragging.current = true
         e.currentTarget.setPointerCapture(e.pointerId)
-        fromPointer(e)
+        // A finger going down may be the start of a page scroll, which the browser announces
+        // with a pointercancel. Until it moves sideways or lifts, the divider stays put, so
+        // scrolling past the picture does not also yank the divider under the finger.
+        touchWaiting.current = e.pointerType === 'touch'
+        if (!touchWaiting.current) fromPointer(e)
       }}
       onPointerMove={(e) => {
         onPointerMove?.(e)
-        if (mode === 'hover' || dragging.current) fromPointer(e)
+        if (mode === 'hover' || dragging.current) {
+          touchWaiting.current = false
+          fromPointer(e)
+        }
       }}
       onPointerUp={(e) => {
         onPointerUp?.(e)
+        // A tap with no drag still puts the divider where it landed.
+        if (dragging.current && touchWaiting.current) fromPointer(e)
         dragging.current = false
+        touchWaiting.current = false
       }}
       onPointerCancel={() => {
         dragging.current = false
+        touchWaiting.current = false
       }}
       {...props}
     >
@@ -114,15 +134,21 @@ function Compare({
       >
         {before}
       </div>
-      {labels && (
-        <>
-          <span className="pointer-events-none absolute top-3 left-3 rounded-md bg-black/60 px-2 py-0.5 text-white text-xs">
-            {labels[0]}
-          </span>
-          <span className="pointer-events-none absolute top-3 right-3 rounded-md bg-black/60 px-2 py-0.5 text-white text-xs">
-            {labels[1]}
-          </span>
-        </>
+      {labels?.[0] && (
+        <span
+          data-slot="compare-label"
+          className="pointer-events-none absolute top-3 left-3 rounded-md bg-background/80 px-2 py-0.5 text-foreground text-xs backdrop-blur-sm"
+        >
+          {labels[0]}
+        </span>
+      )}
+      {labels?.[1] && (
+        <span
+          data-slot="compare-label"
+          className="pointer-events-none absolute top-3 right-3 rounded-md bg-background/80 px-2 py-0.5 text-foreground text-xs backdrop-blur-sm"
+        >
+          {labels[1]}
+        </span>
       )}
       <div
         role="slider"
@@ -131,15 +157,18 @@ function Compare({
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(position)}
+        aria-valuetext={getValueText?.(position)}
         aria-orientation="horizontal"
         data-slot="compare-handle"
-        className="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-white shadow-[0_0_0_1px_rgb(0_0_0/0.2)] outline-none [left:var(--position)] focus-visible:ring-[3px] focus-visible:ring-ring/50"
+        className="absolute inset-y-0 w-0.5 -translate-x-1/2 bg-background shadow-[0_0_0_1px_color-mix(in_oklab,var(--color-foreground)_20%,transparent)] outline-none [left:var(--position)] focus-visible:ring-[3px] focus-visible:ring-ring/50"
         onKeyDown={(e) => {
           onKeyDown?.(e)
           if (e.defaultPrevented) return
           const step = e.shiftKey ? 10 : 2
           if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') set(position - step)
           else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') set(position + step)
+          else if (e.key === 'PageDown') set(position - 10)
+          else if (e.key === 'PageUp') set(position + 10)
           else if (e.key === 'Home') set(0)
           else if (e.key === 'End') set(100)
           else return
@@ -148,7 +177,7 @@ function Compare({
       >
         <span
           aria-hidden
-          className="absolute top-1/2 left-1/2 flex size-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-black shadow-md transition-transform group-active/compare:scale-110"
+          className="absolute top-1/2 left-1/2 flex size-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-background text-foreground shadow-md ring-1 ring-foreground/10 transition-transform group-active/compare:scale-110"
         >
           <svg
             aria-hidden="true"

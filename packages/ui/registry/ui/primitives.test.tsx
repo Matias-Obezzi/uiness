@@ -13,22 +13,90 @@ import { Textarea } from './textarea'
 
 describe('Alert', () => {
   // An alert nobody is told about is just a coloured box: the role is the whole point.
-  it('announces itself', () => {
+  it('announces itself, politely unless it needs attention now', () => {
     render(
       <Alert>
         <AlertTitle>Heads up</AlertTitle>
         <AlertDescription>Something happened.</AlertDescription>
       </Alert>,
     )
-    const alert = screen.getByRole('alert')
+    const alert = screen.getByRole('status')
     expect(alert.dataset.slot).toBe('alert')
     expect(alert.textContent).toContain('Heads up')
     expect(alert.textContent).toContain('Something happened.')
   })
 
+  it('interrupts only for warning and destructive', () => {
+    render(
+      <>
+        <Alert>Plain</Alert>
+        <Alert variant="info">Info</Alert>
+        <Alert variant="success">Saved</Alert>
+        <Alert variant="warning">Careful</Alert>
+        <Alert variant="destructive">Broken</Alert>
+      </>,
+    )
+    expect(screen.getAllByRole('alert').map((el) => el.textContent)).toEqual(['Careful', 'Broken'])
+    expect(screen.getAllByRole('status').map((el) => el.textContent)).toEqual([
+      'Plain',
+      'Info',
+      'Saved',
+    ])
+  })
+
+  it('takes another role, or none', () => {
+    render(
+      <>
+        <Alert variant="destructive" role="status">
+          Quiet error
+        </Alert>
+        <Alert variant="info" role="alert">
+          Loud info
+        </Alert>
+        <Alert variant="warning" role="none">
+          No live role
+        </Alert>
+        <Alert variant="warning" {...{ role: undefined }}>
+          No role
+        </Alert>
+      </>,
+    )
+    expect(screen.getByRole('status').textContent).toBe('Quiet error')
+    expect(screen.getByRole('alert').textContent).toBe('Loud info')
+    expect(screen.getByText('No live role').getAttribute('role')).toBe('none')
+    expect(screen.getByText('No role').hasAttribute('role')).toBe(false)
+  })
+
   it('carries its variant into the classes', () => {
     render(<Alert variant="destructive">Broken</Alert>)
-    expect(screen.getByRole('alert').className).toContain('destructive')
+    const alert = screen.getByRole('alert')
+    expect(alert.className).toContain('destructive')
+    expect(alert.dataset.variant).toBe('destructive')
+  })
+
+  // Coloured text on a pale tint of the same colour fails 4.5:1; only the icon carries it.
+  it('keeps the text in foreground and colours the icon', () => {
+    render(
+      <>
+        <Alert variant="info">Info</Alert>
+        <Alert variant="success">Saved</Alert>
+        <Alert variant="warning">Careful</Alert>
+        <Alert variant="destructive">Broken</Alert>
+      </>,
+    )
+    const alerts = [...screen.getAllByRole('status'), ...screen.getAllByRole('alert')]
+    expect(alerts).toHaveLength(4)
+    for (const alert of alerts) {
+      const classes = alert.className.split(' ')
+      expect(classes).toContain('text-foreground')
+      // No coloured text left on the alert itself, in light or dark.
+      expect(
+        classes.filter((c) => /^(dark:)?text-(sky|emerald|amber|destructive)/.test(c)),
+      ).toEqual([])
+      expect(
+        classes.some((c) => c.startsWith('[&>svg]:text-') && c !== '[&>svg]:text-current'),
+      ).toBe(true)
+    }
   })
 
   it('brings the icon of its variant, none for default', () => {
@@ -38,7 +106,7 @@ describe('Alert', () => {
         <Alert>Plain</Alert>
       </>,
     )
-    const [success, plain] = screen.getAllByRole('alert')
+    const [success, plain] = screen.getAllByRole('status')
     expect(success?.firstElementChild?.getAttribute('data-slot')).toBe('alert-icon')
     expect(success?.firstElementChild?.classList.contains('lucide-circle-check')).toBe(true)
     expect(plain?.querySelector('svg')).toBeNull()
@@ -70,7 +138,7 @@ describe('Alert', () => {
         Heads up
       </Alert>,
     )
-    expect(screen.getByRole('alert').className).toContain(
+    expect(screen.getByRole('status').className).toContain(
       'has-[>svg:not([data-slot=alert-icon])]:*:data-[slot=alert-icon]:hidden',
     )
   })

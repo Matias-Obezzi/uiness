@@ -9,6 +9,7 @@
 ```tsx
 import {
   Dialog,
+  DialogBody,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -32,6 +33,41 @@ import {
 `DialogContent` renders a close button in the corner; pass `showCloseButton={false}` to drop it. Control the dialog with `open` and `onOpenChange` on the root.
 
 For a quick confirmation that should not cover the page, consider [Island](/docs/island#confirm), which asks from the top of the screen and resolves a promise.
+
+## Long content
+
+The panel is never taller than the screen: it stops 1rem from the top and the bottom. Put what runs long in a `DialogBody` and only that part scrolls, while the header with the title and the footer with the buttons stay in view.
+
+<ComponentPreview name="dialog-scroll" />
+
+```tsx
+<DialogContent>
+  <DialogHeader>
+    <DialogTitle>Terms of service</DialogTitle>
+  </DialogHeader>
+  <DialogBody>{/* as long as it needs to be */}</DialogBody>
+  <DialogFooter>...</DialogFooter>
+</DialogContent>
+```
+
+Without a `DialogBody` nothing changes for short dialogs, and a long one scrolls as a whole instead of running off the screen. `DialogBody` reaches the edges of the panel, so its scrollbar sits on the border and the padding stays inside it.
+
+## Props
+
+`DialogContent` takes the props of Radix's `Dialog.Content`, and these:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `showCloseButton` | `true` | Draw the close button in the corner. |
+| `className` | | Class for the panel: its width, padding or position. |
+| `contentClassName` | | Class for the `DialogBody` inside, so a component that renders the whole dialog can style its body from one place. The body's own `className` wins over it. |
+| `labels` | English | See [Labels](#labels). |
+
+| Part | Description |
+| --- | --- |
+| `DialogHeader` | Title and description. Never shrinks. |
+| `DialogBody` | The part that scrolls when the dialog is taller than the screen. |
+| `DialogFooter` | The buttons. Never shrinks. Stacked on phones, in a row from `sm`. |
 
 ## Labels
 

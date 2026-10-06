@@ -24,3 +24,8 @@ It waits until it scrolls into view. Pass `whenVisible={false}` to start right a
 | `duration` | `600` | Milliseconds each word takes to appear. |
 | `delay` | `0` | Milliseconds before the first word. |
 | `by` | `'word'` | Split by `word` or `character`. |
+| `whenVisible` | `true` | Wait until it scrolls into view. |
+
+## Server rendering
+
+The server sends the text fully visible. The words are hidden only after mount, with motion allowed, and the paragraph then carries `data-animate`. Without JavaScript nothing is hidden, so crawlers and readers on a slow connection get the text. If the server HTML was already on screen when the page hydrated, the text stays as it is instead of vanishing and coming back; below the fold it plays as it scrolls in. With reduced motion it never hides.

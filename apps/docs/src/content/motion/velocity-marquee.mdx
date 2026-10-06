@@ -27,5 +27,20 @@ Each direct child is one row, and each row runs the other way from the one above
 | `direction` | `'left'` | Which way the first row runs. |
 | `sensitivity` | `1` | How strongly scrolling speeds it up. `0` ignores the scroll. |
 | `gap` | `'2rem'` | Space between copies of a row. |
+| `driver` | `'js'` | `js`, `css` or `auto`. See below. |
 
 It stops while off screen and stands still with `prefers-reduced-motion`.
+
+## CSS mode
+
+<ComponentPreview name="velocity-marquee-css" />
+
+CSS cannot measure how fast the page scrolls, so the CSS mode is a different effect, not the same one without JavaScript. With `driver="css"`:
+
+- Each row runs at a constant speed, its own CSS animation. After mount the loop is timed from the width of the row so it moves at `baseVelocity` pixels per second; without JavaScript a loop takes 20 seconds (set `--velocity-marquee-duration` to change it).
+- On top of that, where the browser has scroll-driven animations, the rows are pushed along by the scroll position through a view timeline on the marquee: forwards while the page goes down, backwards while it goes up. Scroll fast enough upwards and the rows run the other way. `sensitivity` is how many copy widths they are pushed while the marquee crosses the viewport.
+- The rows do not keep a direction after the page stops, and the push follows position rather than speed.
+
+`driver="auto"` uses the CSS mode where scroll-driven animations exist and the marquee is not inside an `overflow: hidden` box that would catch the timeline, and the JavaScript one elsewhere. The default stays `js`, which follows the real scroll speed.
+
+Browser support for CSS scroll-driven animations: Chrome and Edge 115 and later, Opera 101 and later, Safari 26 and later. Firefox has them only behind a flag at the time of writing, so it gets the JavaScript driver with `auto`, and only the constant run with `css`.

@@ -116,8 +116,7 @@ describe('NumberTicker', () => {
       ],
     })
     render(<NumberTicker value={1234} duration={200} />)
-    const shown = () =>
-      document.querySelector('[data-slot=number-ticker] [aria-hidden]')?.textContent
+    const shown = () => document.querySelector('[data-slot=number-ticker-value]')?.textContent
     expect(shown()).toBe('0')
     act(() => vi.advanceTimersByTime(100))
     const mid = Number(shown()?.replace(/,/g, ''))
@@ -361,6 +360,36 @@ describe('AnimatedTooltip, Shimmer, MovingBorder', () => {
     const h1 = screen.getByRole('heading', { name: 'Title' })
     expect(h1.dataset.slot).toBe('shimmer')
     expect(h1.style.animation).toContain('shimmer 2s')
+  })
+
+  it('shimmer empties the glyphs without touching color, so currentColor still works', () => {
+    render(
+      <p style={{ color: 'rgb(255, 0, 0)' }}>
+        <Shimmer
+          color="color-mix(in oklab, currentColor 55%, transparent)"
+          highlight="currentColor"
+        >
+          Loading
+        </Shimmer>
+      </p>,
+    )
+    const el = screen.getByText('Loading')
+    expect(el.className).toContain('[-webkit-text-fill-color:transparent]')
+    expect(el.className).not.toContain('text-transparent')
+    // The text color is inherited, which is what currentColor in the gradient resolves to.
+    expect(getComputedStyle(el).color).toBe('rgb(255, 0, 0)')
+    expect(el.style.backgroundImage).toContain('currentcolor')
+  })
+
+  it('moving border fills a ring its parent stretches', () => {
+    render(
+      <MovingBorder className="w-full">
+        <span>Wide</span>
+      </MovingBorder>,
+    )
+    const inner = document.querySelector<HTMLElement>('[data-slot=moving-border-inner]')
+    expect(inner?.className).toMatch(/\bgrow\b/)
+    expect(inner?.className).toContain('self-stretch')
   })
 
   it('moving border keeps its content and can wrap a button', () => {

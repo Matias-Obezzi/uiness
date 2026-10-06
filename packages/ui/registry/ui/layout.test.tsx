@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useState } from 'react'
-import { beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { BentoCard, BentoGrid } from './bento-grid'
 import { Calendar, type DateRange, dateKey } from './calendar'
 import { DatePicker } from './date-picker'
@@ -10,6 +10,11 @@ import { ParallaxGrid } from './parallax-grid'
 import { alignPoints, morphPoints, PathMorph, type Point, toPath } from './path-morph'
 import { StickyScroll } from './sticky-scroll'
 import { Timeline, TimelineItem } from './timeline'
+
+afterEach(() => {
+  vi.unstubAllGlobals()
+  vi.restoreAllMocks()
+})
 
 beforeAll(() => {
   window.matchMedia ??= ((query: string) => ({
@@ -197,10 +202,30 @@ describe('BentoGrid', () => {
       </BentoGrid>,
     )
     const big = screen.getByText('Big').closest('[data-slot=bento-card]')
-    expect(big?.className).toContain('md:col-span-2')
-    expect(big?.className).toContain('md:row-span-2')
+    expect(big?.className).toContain('@xl:col-span-2')
+    expect(big?.className).toContain('@xl:row-span-2')
     expect(big?.querySelector('[data-slot=bento-header]')).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Link' }).getAttribute('href')).toBe('/go')
+  })
+
+  // Container queries, not the screen: the grid stacks inside a narrow column on a wide screen.
+  it('sizes its columns from its wrapper, not from the viewport', () => {
+    render(
+      <BentoGrid id="features" className="gap-2" containerClassName="max-w-sm">
+        <BentoCard span={3} title="Wide" />
+      </BentoGrid>,
+    )
+    const grid = document.getElementById('features') as HTMLElement
+    const wrapper = grid.parentElement as HTMLElement
+    expect(grid.dataset.slot).toBe('bento-grid')
+    expect(wrapper.dataset.slot).toBe('bento-grid-container')
+    expect(wrapper.className.split(' ')).toEqual(['@container', 'w-full', 'max-w-sm'])
+    expect(grid.className).toContain('@xl:grid-cols-3')
+    expect(grid.className).toContain('gap-2')
+    expect(grid.className).not.toContain('gap-4')
+    const wide = screen.getByText('Wide').closest('[data-slot=bento-card]') as HTMLElement
+    expect(wide.className).toContain('@xl:col-span-3')
+    for (const el of [grid, wide]) expect(el.className).not.toMatch(/(^|\s)md:/)
   })
 })
 
@@ -299,6 +324,53 @@ describe('scroll pieces', () => {
     expect(
       document.querySelector<HTMLElement>('[data-slot=timeline-progress]')?.style.height,
     ).toMatch(/%$/)
+  })
+
+  it('lights the timeline with view timelines in CSS mode', () => {
+    vi.stubGlobal('CSS', { supports: () => true })
+    render(
+      <Timeline anchor={0.5}>
+        <TimelineItem title="Launch">Body</TimelineItem>
+      </Timeline>,
+    )
+    const root = document.querySelector<HTMLElement>('[data-slot=timeline]')
+    expect(root?.dataset.driver).toBe('css')
+    expect(root?.style.getPropertyValue('view-timeline-inset')).toBe('50% 50%')
+    const line = document.querySelector<HTMLElement>('[data-slot=timeline-progress]')
+    expect(line?.className).toContain('[animation-name:timeline-progress]')
+    expect(line?.style.getPropertyValue('animation-timeline')).toBe('--timeline')
+    const dot = document.querySelector<HTMLElement>('[data-slot=timeline-dot]')
+    expect(dot?.className).toContain('[animation-name:timeline-dot]')
+    expect(dot?.style.getPropertyValue('animation-timeline')).toBe('--timeline-item')
+  })
+
+  it('measures the scroll in JS mode', () => {
+    vi.stubGlobal('CSS', { supports: () => false })
+    vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(1000)
+    // The top of everything sits below the reading position: nothing lit yet.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      top: 900,
+      bottom: 1300,
+      height: 400,
+      left: 0,
+      right: 100,
+      width: 100,
+      x: 0,
+      y: 900,
+      toJSON() {},
+    } as DOMRect)
+    render(
+      <Timeline>
+        <TimelineItem title="Launch">Body</TimelineItem>
+      </Timeline>,
+    )
+    expect(document.querySelector<HTMLElement>('[data-slot=timeline]')?.dataset.driver).toBe('js')
+    const line = document.querySelector<HTMLElement>('[data-slot=timeline-progress]')
+    expect(line?.style.height).toBe('0%')
+    expect(line?.className).not.toContain('animation-name')
+    expect(document.querySelector('[data-slot=timeline-item]')?.getAttribute('data-state')).toBe(
+      'idle',
+    )
   })
 })
 

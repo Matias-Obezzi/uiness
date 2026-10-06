@@ -32,3 +32,7 @@ With `stagger` the children are cloned with a `style` and a `data-state`, so the
 | `stagger` | | Milliseconds between children. |
 | `repeat` | `false` | Play again every time it scrolls into view. |
 | `amount` | `0.2` | How much has to be visible first. |
+
+## Server rendering
+
+The server sends the content visible, with `data-state="visible"`. It is hidden only after mount, with motion allowed, and then marked `data-animate`; the hide is instant and only the way in is animated. Without JavaScript nothing is hidden, so a section never stays blank. If the server HTML was already on screen when the page hydrated, it stays visible rather than disappearing to play its entrance; below the fold it plays as it scrolls in.
