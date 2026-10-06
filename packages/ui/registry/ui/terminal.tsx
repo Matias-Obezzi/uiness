@@ -33,7 +33,9 @@ function useStep(): [StepState, () => void, boolean] {
 /** Run `fn` after `ms` while `when` holds. */
 function useTimeout(when: boolean, ms: number, fn: () => void) {
   const fnRef = React.useRef(fn)
-  fnRef.current = fn
+  React.useLayoutEffect(() => {
+    fnRef.current = fn
+  })
   React.useEffect(() => {
     if (!when) return
     const timer = setTimeout(() => fnRef.current(), ms)

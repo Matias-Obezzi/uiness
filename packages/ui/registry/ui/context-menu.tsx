@@ -216,7 +216,9 @@ function ContextMenuProvider({ menus, fallback, className, children }: ContextMe
     key: 0,
   })
   const menusRef = React.useRef(menus)
-  menusRef.current = menus
+  React.useLayoutEffect(() => {
+    menusRef.current = menus
+  })
   const returnFocus = React.useRef<HTMLElement | null>(null)
   // Set as it happens, not on render: a menu closing late must know a new one is open.
   const isOpen = React.useRef(false)
@@ -344,7 +346,9 @@ export interface ContextMenuTriggerProps {
 function useContextMenu<T = unknown>(options: UseContextMenuOptions<T>): ContextMenuTriggerProps {
   const { resolve, show } = useContextMenuContext('useContextMenu')
   const optionsRef = React.useRef(options)
-  optionsRef.current = options
+  React.useLayoutEffect(() => {
+    optionsRef.current = options
+  })
   const press = React.useRef<{ timer: ReturnType<typeof setTimeout>; x: number; y: number } | null>(
     null,
   )

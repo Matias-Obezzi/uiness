@@ -49,13 +49,11 @@ function NumberTicker({
   const reduced = useReducedMotion()
   const play = !whenVisible || inView
   const [current, setCurrent] = React.useState(from)
+  // Reduced motion shows the value straight away once it plays, adjusted during render.
+  if (play && reduced && current !== value) setCurrent(value)
 
   React.useEffect(() => {
-    if (!play) return
-    if (reduced) {
-      setCurrent(value)
-      return
-    }
+    if (!play || reduced) return
     let frame = 0
     let start = 0
     const tick = (now: number) => {

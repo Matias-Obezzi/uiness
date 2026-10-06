@@ -196,11 +196,9 @@ function inView(rect: Box) {
 /** The element's box in the viewport, kept current through scrolling and resizing. */
 function useBox(element: Element | null) {
   const [box, setBox] = React.useState<Box | null>(null)
+  if (!element && box !== null) setBox(null)
   React.useLayoutEffect(() => {
-    if (!element) {
-      setBox(null)
-      return
-    }
+    if (!element) return
     let frame = 0
     const measure = () => {
       frame = 0
@@ -275,7 +273,9 @@ function TourProvider({
   const runRef = React.useRef<Run | null>(null)
   const config = { tours, skipMissing, onStepChange, onComplete, onSkip }
   const configRef = React.useRef(config)
-  configRef.current = config
+  React.useLayoutEffect(() => {
+    configRef.current = config
+  })
   const returnFocus = React.useRef<HTMLElement | null>(null)
   const runs = React.useRef(0)
 
@@ -475,8 +475,10 @@ function TourLayer({
 }: TourLayerProps) {
   const labels = useLabels('tour', defaultTourLabels, labelsProp)
   const reduced = useReducedMotion()
-  // biome-ignore lint/correctness/useExhaustiveDependencies: looked up again for every step, not on every render
-  const element = React.useMemo(() => resolveTarget(step), [stepKey])
+  // Looked up again for every step, not on every render.
+  const [target, setTarget] = React.useState(() => ({ key: stepKey, element: resolveTarget(step) }))
+  if (target.key !== stepKey) setTarget({ key: stepKey, element: resolveTarget(step) })
+  const element = target.element
   const box = useBox(element)
   const hole = box ? grow(box, padding) : null
 
@@ -758,10 +760,13 @@ function TourDriver({
   startAt?: number | string
 }) {
   const { start, stop } = useTour()
+  // Read when it opens, so new arrays while it runs do not restart it.
   const stepsRef = React.useRef(steps)
-  stepsRef.current = steps
   const startAtRef = React.useRef(startAt)
-  startAtRef.current = startAt
+  React.useLayoutEffect(() => {
+    stepsRef.current = steps
+    startAtRef.current = startAt
+  })
   React.useEffect(() => {
     if (!open) return
     start(stepsRef.current, { startAt: startAtRef.current })

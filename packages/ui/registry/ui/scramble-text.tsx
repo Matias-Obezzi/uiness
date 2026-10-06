@@ -54,13 +54,20 @@ function ScrambleText({
   const [run, setRun] = React.useState(0)
   const running = React.useRef(false)
   const doneRef = React.useRef(onComplete)
-  doneRef.current = onComplete
+  React.useLayoutEffect(() => {
+    doneRef.current = onComplete
+  })
 
+  // Plays when it is armed, and again for a new text while armed. Counted during render.
   const armed = trigger === 'mount' || (trigger === 'view' && inView)
-  // biome-ignore lint/correctness/useExhaustiveDependencies: a new text plays again
-  React.useEffect(() => {
-    if (armed) setRun((r) => r + 1)
-  }, [armed, text])
+  const armedText = armed ? text : null
+  const [playedFor, setPlayedFor] = React.useState<string | null>(null)
+  if (playedFor !== armedText) {
+    setPlayedFor(armedText)
+    if (armedText !== null) setRun((r) => r + 1)
+  }
+  // Reduced motion shows the real text straight away.
+  if (reduced && run > 0 && shown !== text) setShown(text)
 
   React.useEffect(() => {
     const el = ref.current
@@ -81,7 +88,6 @@ function ScrambleText({
   React.useEffect(() => {
     if (run === 0) return
     if (reduced) {
-      setShown(text)
       doneRef.current?.()
       return
     }

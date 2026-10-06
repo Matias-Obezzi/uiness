@@ -311,6 +311,9 @@ export interface ColorPickerProps
  * ColorPicker
  * -----------------------------------------------------------------------------------------------*/
 
+const subscribeNever = () => () => {}
+const hasEyeDropper = () => typeof window !== 'undefined' && 'EyeDropper' in window
+
 /**
  * A swatch that opens a picker: a saturation and brightness area, hue and opacity sliders,
  * a text field in hex, rgb, hsl or oklch, the system eye dropper where there is one, saved
@@ -395,8 +398,8 @@ function ColorPicker({
     onSwatchesChange?.(next)
   }
 
-  const [dropper, setDropper] = React.useState(false)
-  React.useEffect(() => setDropper(typeof window !== 'undefined' && 'EyeDropper' in window), [])
+  // Off on the server and while hydrating, so the first render matches the HTML.
+  const dropper = React.useSyncExternalStore(subscribeNever, hasEyeDropper, () => false)
 
   const pickFromScreen = async () => {
     const Ctor = (

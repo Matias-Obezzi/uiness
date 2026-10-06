@@ -27,10 +27,14 @@ const create: TourStep = {
 const profile: TourStep = { id: 'profile', target: '[data-tour="profile"]', title: 'Profile' }
 const steps = [search, create, profile]
 
-let controls: ReturnType<typeof useTour>
+// The latest controls Page saw, written after each commit.
+const captured = { controls: undefined as unknown as ReturnType<typeof useTour> }
 
 function Page({ start }: { start?: () => void }) {
-  controls = useTour()
+  const controls = useTour()
+  React.useLayoutEffect(() => {
+    captured.controls = controls
+  })
   return (
     <div>
       <input data-tour="search" aria-label="Search" />
@@ -72,7 +76,12 @@ describe('Tour', () => {
     expect(screen.getByRole('dialog', { name: 'Search' })).toBe(dialog)
     expect(dialog.getAttribute('aria-describedby')).toBe(screen.getByText('Find anything.').id)
     expect(progress()).toBe('1 of 3')
-    expect(controls).toMatchObject({ active: true, tour: 'onboarding', index: 0, total: 3 })
+    expect(captured.controls).toMatchObject({
+      active: true,
+      tour: 'onboarding',
+      index: 0,
+      total: 3,
+    })
     expect(onStepChange).toHaveBeenCalledWith({
       tour: 'onboarding',
       step: search,
@@ -95,12 +104,12 @@ describe('Tour', () => {
 
     await userEvent.click(screen.getByRole('button', { name: 'Back' }))
     await screen.findByRole('dialog', { name: 'Search' })
-    expect(controls.index).toBe(0)
+    expect(captured.controls.index).toBe(0)
 
-    act(() => controls.stop())
+    act(() => captured.controls.stop())
     expect(screen.queryByRole('dialog')).toBeNull()
     expect(document.querySelector('[data-slot=tour-overlay]')).toBeNull()
-    expect(controls.active).toBe(false)
+    expect(captured.controls.active).toBe(false)
     expect(onSkip).not.toHaveBeenCalled()
     expect(onComplete).not.toHaveBeenCalled()
   })
@@ -221,9 +230,9 @@ describe('Tour', () => {
     expect((await card()).textContent).toContain('Profile')
     expect(progress()).toBe('3 of 3')
 
-    act(() => controls.start(steps, { startAt: 1 }))
+    act(() => captured.controls.start(steps, { startAt: 1 }))
     expect(await screen.findByRole('dialog', { name: 'Create' })).toBeTruthy()
-    expect(controls.tour).toBeUndefined()
+    expect(captured.controls.tour).toBeUndefined()
   })
 
   it('blocks the page, or lets clicks reach the target with allowInteraction', async () => {
@@ -231,9 +240,9 @@ describe('Tour', () => {
     await userEvent.click(screen.getByText('Start'))
     await card()
     expect(document.querySelector('[data-slot=tour-blocker]')).toBeTruthy()
-    act(() => controls.stop())
+    act(() => captured.controls.stop())
 
-    act(() => controls.start('onboarding', { allowInteraction: true }))
+    act(() => captured.controls.start('onboarding', { allowInteraction: true }))
     await card()
     expect(document.querySelector('[data-slot=tour-blocker]')).toBeNull()
   })

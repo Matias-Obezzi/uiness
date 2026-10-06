@@ -173,7 +173,11 @@ function PageHeader01({
     Object.fromEntries(tabs.filter((t) => t.count !== undefined).map((t) => [t.id, t.count])),
   )
   const [counts, setCounts] = React.useState<Record<string, number>>(() => JSON.parse(countsKey))
-  React.useEffect(() => setCounts(JSON.parse(countsKey)), [countsKey])
+  const [countsFor, setCountsFor] = React.useState(countsKey)
+  if (countsFor !== countsKey) {
+    setCountsFor(countsKey)
+    setCounts(JSON.parse(countsKey))
+  }
   const setCount = React.useCallback<PageHeaderContext['setCount']>((id, next) => {
     setCounts((prev) => ({
       ...prev,

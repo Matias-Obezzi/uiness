@@ -107,6 +107,40 @@ describe('SwipeActions', () => {
     expect(content.style.transform).toBe('translate3d(-152px, 0, 0)')
   })
 
+  it('arms the first action once a swipe passes the full swipe point', () => {
+    const { content, row } = setup()
+    const deleteButton = () =>
+      within(row).getByRole('button', { name: 'Delete', hidden: true }) as HTMLElement
+    fireEvent.pointerDown(content, {
+      pointerId: 1,
+      clientX: 390,
+      clientY: 10,
+      pointerType: 'touch',
+    })
+    // The first move only picks the axis.
+    fireEvent.pointerMove(content, {
+      pointerId: 1,
+      clientX: 380,
+      clientY: 10,
+      pointerType: 'touch',
+    })
+    fireEvent.pointerMove(content, {
+      pointerId: 1,
+      clientX: 200,
+      clientY: 10,
+      pointerType: 'touch',
+    })
+    expect(deleteButton().dataset.armed).toBeUndefined()
+    // Past 60% of the 400px row.
+    fireEvent.pointerMove(content, {
+      pointerId: 1,
+      clientX: 100,
+      clientY: 10,
+      pointerType: 'touch',
+    })
+    expect(deleteButton().dataset.armed).toBe('true')
+  })
+
   it('runs the first action on a full swipe', async () => {
     const { content, remove } = setup()
     await swipe(content, 390, 50)

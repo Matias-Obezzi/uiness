@@ -156,13 +156,16 @@ function ResizablePanelGroup({
     })
   }
   const configsRef = React.useRef(configs)
-  configsRef.current = configs
 
   const [state, setState] = React.useState(() => defaultLayout(configs))
   // A panel added or removed starts over from the defaults.
   const sizes = state.length === configs.length ? state : defaultLayout(configs)
   const sizesRef = React.useRef(sizes)
-  sizesRef.current = sizes
+  // The latest props and sizes for handlers, written before the effects below read them.
+  React.useLayoutEffect(() => {
+    configsRef.current = configs
+    sizesRef.current = sizes
+  })
   const [dragging, setDragging] = React.useState<number | null>(null)
   // The size each panel had before it collapsed, to open it back to.
   const beforeCollapse = React.useRef(new Map<number, number>())
@@ -176,7 +179,9 @@ function ResizablePanelGroup({
   }, [autoSaveId])
 
   const onLayoutRef = React.useRef(onLayout)
-  onLayoutRef.current = onLayout
+  React.useLayoutEffect(() => {
+    onLayoutRef.current = onLayout
+  })
   const firstLayout = React.useRef(true)
   React.useEffect(() => {
     if (firstLayout.current) {

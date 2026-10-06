@@ -115,17 +115,18 @@ export interface DateRangePickerProps
 
 const NARROW = '(max-width: 639px)'
 
+function subscribeNarrow(onChange: () => void) {
+  if (typeof matchMedia !== 'function') return () => {}
+  const mq = matchMedia(NARROW)
+  mq.addEventListener('change', onChange)
+  return () => mq.removeEventListener('change', onChange)
+}
+
+const isNarrow = () => typeof matchMedia === 'function' && matchMedia(NARROW).matches
+
+/** Wide on the server and while hydrating, so the first render matches the HTML. */
 function useNarrow() {
-  const [narrow, setNarrow] = React.useState(false)
-  React.useEffect(() => {
-    if (typeof matchMedia !== 'function') return
-    const mq = matchMedia(NARROW)
-    setNarrow(mq.matches)
-    const onChange = () => setNarrow(mq.matches)
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [])
-  return narrow
+  return React.useSyncExternalStore(subscribeNarrow, isNarrow, () => false)
 }
 
 const sameRange = (a: DateRange, b: DateRange) =>

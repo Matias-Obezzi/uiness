@@ -122,12 +122,12 @@ function SearchField({
   }
 
   // Hand focus back to the icon button after folding with Escape, once it is on screen again.
-  const [refocus, setRefocus] = React.useState(false)
+  const refocus = React.useRef(false)
   React.useEffect(() => {
-    if (!refocus || expanded) return
+    if (!refocus.current || expanded) return
     buttonRef.current?.focus()
-    setRefocus(false)
-  }, [refocus, expanded])
+    refocus.current = false
+  }, [expanded])
 
   React.useEffect(() => {
     if (!shortcut || disabled) return
@@ -202,7 +202,7 @@ function SearchField({
             } else if (expanding) {
               e.preventDefault()
               setOpen(false)
-              setRefocus(true)
+              refocus.current = true
             }
           }
         }}

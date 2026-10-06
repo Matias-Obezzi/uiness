@@ -159,16 +159,39 @@ const fill = (template: string, values: Record<string, string | number>) =>
 type Field = keyof ContactValues
 type Errors = Partial<Record<Field, string>>
 
+/** One clock for every card on the page, ticking while anything listens. */
+const clock = {
+  now: null as Date | null,
+  listeners: new Set<() => void>(),
+  timer: undefined as ReturnType<typeof setInterval> | undefined,
+  subscribe(listener: () => void) {
+    clock.listeners.add(listener)
+    if (clock.listeners.size === 1) {
+      clock.now = new Date()
+      clock.timer = setInterval(() => {
+        clock.now = new Date()
+        for (const l of clock.listeners) l()
+      }, 1000)
+    }
+    return () => {
+      clock.listeners.delete(listener)
+      if (clock.listeners.size > 0) return
+      clearInterval(clock.timer)
+      clock.now = null
+    }
+  },
+  get: () => clock.now,
+}
+const subscribeNever = () => () => {}
+const noTime = () => null
+
 /** The time now, refreshed every second, and `null` until mounted so the server and the first render agree. */
 function useNow(enabled: boolean) {
-  const [now, setNow] = React.useState<Date | null>(null)
-  React.useEffect(() => {
-    if (!enabled) return
-    setNow(new Date())
-    const id = setInterval(() => setNow(new Date()), 1000)
-    return () => clearInterval(id)
-  }, [enabled])
-  return now
+  return React.useSyncExternalStore(
+    enabled ? clock.subscribe : subscribeNever,
+    enabled ? clock.get : noTime,
+    noTime,
+  )
 }
 
 /** Measures what is inside, so the panel can ease between the form and the confirmation. */

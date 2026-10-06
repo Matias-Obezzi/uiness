@@ -124,8 +124,6 @@ function Odometer({
   ...props
 }: OdometerProps) {
   const locale = useLocale(localeProp)
-  const [ready, setReady] = React.useState(false)
-  React.useEffect(() => setReady(true), [])
 
   const formatter = React.useMemo(
     () =>
@@ -137,6 +135,14 @@ function Odometer({
     [locale, decimals, format],
   )
   const cells = cellsFor(formatter.formatToParts(value))
+
+  // Columns from the first render appear in place for as long as they stay. Any column that
+  // shows up later, or comes back after leaving, rolls in.
+  const keys = cells.map((cell) => cell.key)
+  const [firstKeys, setFirstKeys] = React.useState(() => new Set(keys))
+  if ([...firstKeys].some((key) => !keys.includes(key))) {
+    setFirstKeys(new Set(keys.filter((key) => firstKeys.has(key))))
+  }
 
   return (
     <span data-slot="odometer" className={cn('inline-flex tabular-nums', className)} {...props}>
@@ -151,7 +157,7 @@ function Odometer({
             <OdometerDigit
               key={cell.key}
               digit={Number(cell.char)}
-              rollIn={ready}
+              rollIn={!firstKeys.has(cell.key)}
               duration={duration}
               delay={cell.order * stagger}
             />

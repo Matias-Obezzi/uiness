@@ -50,13 +50,19 @@ const easeOut = (t: number) => 1 - (1 - t) ** 3
 /** Eases from what is on screen to `target`; jumps with reduced motion. */
 function useTween(target: number, from: number, duration: number, reduced: boolean) {
   const [shown, setShown] = React.useState(reduced ? target : from)
+  // Reduced motion jumps straight there, adjusted during render.
+  if (reduced && shown !== target) setShown(target)
+  // Where a new tween starts from: what is on screen at that moment.
   const shownRef = React.useRef(shown)
-  shownRef.current = shown
+  React.useLayoutEffect(() => {
+    shownRef.current = shown
+  })
 
   React.useEffect(() => {
-    if (reduced || typeof requestAnimationFrame !== 'function') {
-      setShown(target)
-      return
+    if (reduced) return
+    if (typeof requestAnimationFrame !== 'function') {
+      const timer = setTimeout(() => setShown(target))
+      return () => clearTimeout(timer)
     }
     const start = shownRef.current
     let frame = 0

@@ -124,7 +124,9 @@ function SwipeActionsRow({
   const [dragging, setDragging] = React.useState(false)
   const [busy, setBusy] = React.useState(false)
   const offsetRef = React.useRef(0)
-  offsetRef.current = offset
+  React.useLayoutEffect(() => {
+    offsetRef.current = offset
+  })
   const drag = React.useRef<{
     pointer: number
     startX: number
@@ -139,10 +141,21 @@ function SwipeActionsRow({
   const trailingWidth = trailing.length * ACTION_WIDTH
   const rowWidth = () => rowRef.current?.offsetWidth || 360
   const fullAt = () => rowWidth() * FULL_SWIPE
+  // The row's width for rendering, kept in state: render cannot measure the DOM.
+  const [measuredWidth, setMeasuredWidth] = React.useState(360)
+  React.useLayoutEffect(() => {
+    const row = rowRef.current
+    if (!row) return
+    setMeasuredWidth(row.offsetWidth || 360)
+    if (typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(() => setMeasuredWidth(row.offsetWidth || 360))
+    observer.observe(row)
+    return () => observer.disconnect()
+  }, [])
   const armed =
     fullSwipe &&
-    ((offset > 0 && leading.length > 0 && offset >= fullAt()) ||
-      (offset < 0 && trailing.length > 0 && -offset >= fullAt()))
+    ((offset > 0 && leading.length > 0 && offset >= measuredWidth * FULL_SWIPE) ||
+      (offset < 0 && trailing.length > 0 && -offset >= measuredWidth * FULL_SWIPE))
 
   const settle = React.useCallback(
     (next: number) => {
@@ -236,6 +249,8 @@ function SwipeActionsRow({
       axis: null,
       samples: [[event.timeStamp, event.clientX]],
     }
+    // Measured again as a drag starts, so the full swipe point matches the handlers'.
+    setMeasuredWidth(rowWidth())
   }
 
   const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -290,43 +305,6 @@ function SwipeActionsRow({
     else settle(0)
   }
 
-  const side = (actions: SwipeAction[], where: 'leading' | 'trailing') => {
-    const open = where === 'leading' ? offset > 0 : offset < 0
-    const width = Math.abs(open ? offset : 0)
-    return (
-      <div
-        data-slot={`swipe-actions-${where}`}
-        inert={!open || dragging || busy}
-        className={cn(
-          'absolute inset-y-0 flex overflow-hidden',
-          where === 'leading' ? 'left-0' : 'right-0 flex-row-reverse',
-          !dragging &&
-            'transition-[width] duration-(--duration-normal,200ms) ease-(--easing-standard,cubic-bezier(0.2,0,0,1)) motion-reduce:transition-none',
-        )}
-        style={{ width }}
-      >
-        {actions.map((action, i) => (
-          <button
-            key={action.label}
-            type="button"
-            tabIndex={open ? 0 : -1}
-            data-armed={(armed && i === 0) || undefined}
-            className={cn(
-              'flex min-w-0 shrink grow basis-0 flex-col items-center justify-center gap-1 overflow-hidden px-2 font-medium text-xs outline-none transition-[flex-grow] duration-(--duration-normal,200ms) focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-inset motion-reduce:transition-none [&_svg]:size-5 [&_svg]:shrink-0',
-              tones[action.tone ?? 'neutral'],
-              // Past the full swipe point the first action takes the whole width.
-              armed && (i === 0 ? 'grow-[100]' : 'grow-0'),
-            )}
-            onClick={() => void run(action, where === 'leading' ? 1 : -1)}
-          >
-            {action.icon}
-            <span className="max-w-full truncate">{action.label}</span>
-          </button>
-        ))}
-      </div>
-    )
-  }
-
   const all = [...leading.map((a) => [a, 1] as const), ...trailing.map((a) => [a, -1] as const)]
 
   return (
@@ -337,8 +315,28 @@ function SwipeActionsRow({
       className={cn('relative overflow-hidden bg-background', className)}
       {...props}
     >
-      {leading.length > 0 && side(leading, 'leading')}
-      {trailing.length > 0 && side(trailing, 'trailing')}
+      {leading.length > 0 && (
+        <SwipeActionsSide
+          actions={leading}
+          where="leading"
+          offset={offset}
+          dragging={dragging}
+          busy={busy}
+          armed={armed}
+          onRun={run}
+        />
+      )}
+      {trailing.length > 0 && (
+        <SwipeActionsSide
+          actions={trailing}
+          where="trailing"
+          offset={offset}
+          dragging={dragging}
+          busy={busy}
+          armed={armed}
+          onRun={run}
+        />
+      )}
       <div
         data-slot="swipe-actions-content"
         data-dragging={dragging || undefined}
@@ -392,6 +390,60 @@ function SwipeActionsRow({
         )}
       </div>
     </li>
+  )
+}
+
+/** The actions under one side of a row, as wide as the row has moved that way. */
+function SwipeActionsSide({
+  actions,
+  where,
+  offset,
+  dragging,
+  busy,
+  armed,
+  onRun,
+}: {
+  actions: SwipeAction[]
+  where: 'leading' | 'trailing'
+  offset: number
+  dragging: boolean
+  busy: boolean
+  armed: boolean
+  onRun: (action: SwipeAction, direction: 1 | -1) => void
+}) {
+  const open = where === 'leading' ? offset > 0 : offset < 0
+  const width = Math.abs(open ? offset : 0)
+  return (
+    <div
+      data-slot={`swipe-actions-${where}`}
+      inert={!open || dragging || busy}
+      className={cn(
+        'absolute inset-y-0 flex overflow-hidden',
+        where === 'leading' ? 'left-0' : 'right-0 flex-row-reverse',
+        !dragging &&
+          'transition-[width] duration-(--duration-normal,200ms) ease-(--easing-standard,cubic-bezier(0.2,0,0,1)) motion-reduce:transition-none',
+      )}
+      style={{ width }}
+    >
+      {actions.map((action, i) => (
+        <button
+          key={action.label}
+          type="button"
+          tabIndex={open ? 0 : -1}
+          data-armed={(armed && i === 0) || undefined}
+          className={cn(
+            'flex min-w-0 shrink grow basis-0 flex-col items-center justify-center gap-1 overflow-hidden px-2 font-medium text-xs outline-none transition-[flex-grow] duration-(--duration-normal,200ms) focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-inset motion-reduce:transition-none [&_svg]:size-5 [&_svg]:shrink-0',
+            tones[action.tone ?? 'neutral'],
+            // Past the full swipe point the first action takes the whole width.
+            armed && (i === 0 ? 'grow-[100]' : 'grow-0'),
+          )}
+          onClick={() => onRun(action, where === 'leading' ? 1 : -1)}
+        >
+          {action.icon}
+          <span className="max-w-full truncate">{action.label}</span>
+        </button>
+      ))}
+    </div>
   )
 }
 

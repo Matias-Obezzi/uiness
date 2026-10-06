@@ -390,12 +390,13 @@ describe('SidebarViews', () => {
       act(() => {
         for (const a of animations.splice(0)) a.onfinish?.()
       })
-    let go: (view: string) => void = () => {}
     function Deep() {
       const [view, setView] = useState('main')
-      go = setView
       return (
         <SidebarProvider collapsible="none">
+          {['main', 'settings', 'billing', 'help'].map((to) => (
+            <button key={to} type="button" data-go={to} onClick={() => setView(to)} />
+          ))}
           <Sidebar>
             <SidebarViews value={view} onValueChange={setView}>
               <SidebarView name="main">
@@ -416,33 +417,37 @@ describe('SidebarViews', () => {
       )
     }
     render(<Deep />)
+    const go = (to: string) => {
+      const button = document.querySelector<HTMLElement>(`[data-go=${to}]`)
+      if (button) fireEvent.click(button)
+    }
     const views = () => document.querySelector<HTMLElement>('[data-slot=sidebar-views]')
     const leftward = () =>
       animations.some((a) => a.frames.at(-1)?.transform === 'translateX(-100%)')
     expect(views()?.dataset.direction).toBeUndefined()
 
-    act(() => go('settings'))
+    go('settings')
     expect(views()?.dataset.direction).toBe('forward')
     expect(leftward()).toBe(true)
     settle()
     expect(views()?.dataset.direction).toBeUndefined()
 
-    act(() => go('billing'))
+    go('billing')
     expect(views()?.dataset.direction).toBe('forward')
     settle()
 
     // Straight to the top, two levels up.
-    act(() => go('main'))
+    go('main')
     expect(views()?.dataset.direction).toBe('back')
     expect(leftward()).toBe(false)
     settle()
 
     // Between views at the same depth, it counts as going forward.
-    act(() => go('help'))
+    go('help')
     expect(views()?.dataset.direction).toBe('forward')
     settle()
 
-    act(() => go('billing'))
+    go('billing')
     settle()
     await userEvent.click(screen.getByRole('button', { name: 'Settings' }))
     expect(views()?.dataset.direction).toBe('back')

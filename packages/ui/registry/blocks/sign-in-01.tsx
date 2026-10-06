@@ -172,7 +172,8 @@ function SignIn01({
   const { inner, height } = useAnimatedHeight<HTMLDivElement>()
   const otpRef = React.useRef<HTMLDivElement>(null)
   const stepRef = React.useRef<HTMLDivElement>(null)
-  const moved = React.useRef(false)
+  // Whether the user has changed step yet: the first step neither animates in nor takes focus.
+  const [moved, setMoved] = React.useState(false)
 
   React.useEffect(() => {
     if (left <= 0) return
@@ -183,16 +184,16 @@ function SignIn01({
   // Move focus to the first field of a new step, so keyboard users land where they type.
   // biome-ignore lint/correctness/useExhaustiveDependencies: runs when the step changes
   React.useEffect(() => {
-    if (!moved.current) return
+    if (!moved) return
     stepRef.current?.querySelector<HTMLElement>('input, a, button:not([data-back])')?.focus()
-  }, [step])
+  }, [step, moved])
 
   React.useEffect(() => {
     if (attempt > 0) otpRef.current?.querySelector('input')?.focus()
   }, [attempt])
 
   const go = (next: SignInStep, dir: 1 | -1) => {
-    moved.current = true
+    setMoved(true)
     setDirection(dir)
     setError(null)
     setNotice(null)
@@ -311,7 +312,7 @@ function SignIn01({
               ref={stepRef}
               className={cn(
                 'duration-(--duration-slow,300ms) ease-(--easing-emphasized,ease-out) motion-reduce:animate-none',
-                moved.current &&
+                moved &&
                   (direction === 1
                     ? 'animate-in fade-in-0 slide-in-from-right-6'
                     : 'animate-in fade-in-0 slide-in-from-left-6'),

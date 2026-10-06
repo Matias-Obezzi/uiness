@@ -93,6 +93,9 @@ function useObjectUrls(files: File[]): (string | null)[] {
     const created = files.map((file) =>
       file.type.startsWith('image/') ? URL.createObjectURL(file) : null,
     )
+    // The URLs are resources created here and revoked by the cleanup below, so they cannot be
+    // made during render (a discarded render would leak them).
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- publishes what this effect created
     setUrls(created)
     return () => {
       for (const url of created) if (url) URL.revokeObjectURL(url)

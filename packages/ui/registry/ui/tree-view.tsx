@@ -173,7 +173,8 @@ function TreeView({
   const selected = React.useMemo(() => new Set(selectedIds), [selectedIds])
   const items = React.useRef(new Map<string, HTMLLIElement>())
   // Folders opened at least once keep their contents mounted, so closing can animate.
-  const opened = React.useRef(new Set<string>())
+  const [opened, setOpened] = React.useState<ReadonlySet<string>>(() => new Set(expandedIds))
+  if (expandedIds.some((id) => !opened.has(id))) setOpened(new Set([...opened, ...expandedIds]))
   const anchor = React.useRef<string | null>(null)
   const typeahead = React.useRef({ text: '', timer: 0 })
 
@@ -261,7 +262,9 @@ function TreeView({
 
   // Loading resolves later, when these may have changed, so it reads them from here.
   const latest = React.useRef({ checkedIds, expandedIds, loaded })
-  latest.current = { checkedIds, expandedIds, loaded }
+  React.useLayoutEffect(() => {
+    latest.current = { checkedIds, expandedIds, loaded }
+  })
 
   const load = (node: TreeNode) => {
     if (!loadChildren || loading.has(node.id)) return
@@ -460,7 +463,6 @@ function TreeView({
     nodes.map((node, i) => {
       const branch = isBranch(node)
       const open = branch && expanded.has(node.id)
-      if (open) opened.current.add(node.id)
       const kids = childrenOf(node)
       const isLoading = loading.has(node.id)
       const isSelected = selectionMode !== 'none' && !checkboxes && selected.has(node.id)
@@ -550,7 +552,7 @@ function TreeView({
             <span className="min-w-0 flex-1 truncate">{node.label}</span>
             {failed.has(node.id) && <span className="sr-only">, {labels.loadFailed}</span>}
           </div>
-          {branch && (open || opened.current.has(node.id)) && (
+          {branch && (open || opened.has(node.id)) && (
             <div
               data-state={open ? 'open' : 'closed'}
               inert={!open}

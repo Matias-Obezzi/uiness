@@ -141,6 +141,9 @@ function AnnouncementBar({
   // Read after mount so the server and the first client render agree. In a layout effect, so a
   // remembered dismissal hides the bar before it paints.
   React.useLayoutEffect(() => {
+    // Storage cannot be read during render without a hydration mismatch, and a store snapshot
+    // would only switch after the first paint. The one extra render happens before paint.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reads storage before paint, see above
     if (storageKey && readDismissed(storageKey)) setState('closed')
   }, [storageKey])
 
@@ -152,7 +155,9 @@ function AnnouncementBar({
   }, [rotating, count, interval, index])
 
   const onDismissRef = React.useRef(onDismiss)
-  onDismissRef.current = onDismiss
+  React.useLayoutEffect(() => {
+    onDismissRef.current = onDismiss
+  })
   const closingRef = React.useRef(false)
   const finishClosing = React.useCallback(() => {
     if (!closingRef.current) return
@@ -290,7 +295,9 @@ function Countdown({
   const [now, setNow] = React.useState<number | null>(null)
   const ended = React.useRef(false)
   const onEndRef = React.useRef(onEnd)
-  onEndRef.current = onEnd
+  React.useLayoutEffect(() => {
+    onEndRef.current = onEnd
+  })
 
   React.useEffect(() => {
     ended.current = false

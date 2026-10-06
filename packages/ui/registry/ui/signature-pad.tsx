@@ -251,7 +251,9 @@ function SignaturePad({
   const [internal, setInternal] = React.useState<SignatureStroke[]>(defaultValue ?? [])
   const strokes = valueProp ?? internal
   const strokesRef = React.useRef(strokes)
-  strokesRef.current = strokes
+  React.useLayoutEffect(() => {
+    strokesRef.current = strokes
+  })
 
   const commit = (next: SignatureStroke[]) => {
     strokesRef.current = next

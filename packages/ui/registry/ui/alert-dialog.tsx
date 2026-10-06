@@ -235,14 +235,14 @@ function Confirmer({
   const [pending, setPending] = React.useState(false)
   const returnFocus = React.useRef<HTMLElement | null>(null)
 
-  React.useEffect(() => {
-    if (shown || !head) return
-    // Only the first of a run of dialogs knows where the user was.
-    if (!returnFocus.current && document.activeElement instanceof HTMLElement) {
-      returnFocus.current = document.activeElement
-    }
-    setShown(head)
-  }, [shown, head])
+  if (!shown && head) setShown(head)
+
+  // Before the dialog takes focus, which Radix does in a passive effect. Only the first of a run
+  // of dialogs knows where the user was.
+  React.useLayoutEffect(() => {
+    if (!shown || returnFocus.current) return
+    if (document.activeElement instanceof HTMLElement) returnFocus.current = document.activeElement
+  }, [shown])
 
   const open = !!shown && shown === head
 

@@ -1026,7 +1026,9 @@ function RichTextEditor({
   }>({ entries: [], index: -1, at: 0, kind: '' })
   const composing = React.useRef(false)
   const onChangeRef = React.useRef(onChange)
-  onChangeRef.current = onChange
+  React.useLayoutEffect(() => {
+    onChangeRef.current = onChange
+  })
   const menuId = React.useId()
 
   const [toolbar, setToolbar] = React.useState<{ x: number; y: number; below: boolean } | null>(
@@ -1180,12 +1182,13 @@ function RichTextEditor({
     [getHTML, setHTML, undo, redo],
   )
 
-  // The content belongs to the browser from here on; React never renders into it.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: the starting value is read once
+  // The content belongs to the browser from here on; React never renders into it. The starting
+  // value and focus are read once, on mount.
+  const [start] = React.useState(() => ({ html: defaultValue, autoFocus }))
   React.useLayoutEffect(() => {
     const root = rootRef.current
     if (!root) return
-    root.innerHTML = forEditing(sanitizeHtml(defaultValue))
+    root.innerHTML = forEditing(sanitizeHtml(start.html))
     root.toggleAttribute('data-empty', isEmptyDoc(root))
     history.current = {
       entries: [{ html: root.innerHTML, selection: null }],
@@ -1193,11 +1196,11 @@ function RichTextEditor({
       at: 0,
       kind: '',
     }
-    if (autoFocus) {
+    if (start.autoFocus) {
       root.focus()
       restoreSelection(root, null)
     }
-  }, [])
+  }, [start])
 
   const selectionRange = React.useCallback(() => {
     const root = rootRef.current
@@ -1285,10 +1288,12 @@ function RichTextEditor({
       )
     }
     const spot = place(slashRange)
+    // The 240px wide menu stays inside the editor.
+    const room = (wrapperRef.current?.clientWidth ?? 240) - 240
     setSlash((current) => ({
       query,
       at,
-      x: spot?.left ?? 0,
+      x: Math.max(0, Math.min(spot?.left ?? 0, room)),
       y: spot?.bottom ?? 0,
       index: current && current.at === at && current.query === query ? current.index : 0,
     }))
@@ -1930,7 +1935,7 @@ function RichTextEditor({
           className="fade-in-0 zoom-in-95 absolute z-(--z-popover,60) mt-1 max-h-72 w-60 animate-in overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md duration-(--duration-fast,150ms) motion-reduce:animate-none"
           style={{
             top: slash.y,
-            left: Math.max(0, Math.min(slash.x, (wrapperRef.current?.clientWidth ?? 240) - 240)),
+            left: slash.x,
           }}
         >
           {items.map((item, index) => (

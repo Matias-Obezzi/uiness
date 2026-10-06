@@ -48,7 +48,15 @@ function Typewriter({
   const [phase, setPhase] = React.useState<Phase>('typing')
   const [started, setStarted] = React.useState(delay === 0)
   const typedRef = React.useRef(onWordTyped)
-  typedRef.current = onWordTyped
+  React.useLayoutEffect(() => {
+    typedRef.current = onWordTyped
+  })
+
+  // A word deleted to the end gives way to the next one straight away, adjusted during render.
+  if (started && !reduced && phase === 'deleting' && length === 0) {
+    setIndex((i) => (i + 1) % list.length)
+    setPhase('typing')
+  }
 
   const word = list[index % list.length] ?? ''
   const last = index === list.length - 1
@@ -70,13 +78,8 @@ function Typewriter({
         if (list.length === 1 || (last && !loop)) return
         timer = setTimeout(() => setPhase('deleting'), pause)
       }
-    } else if (phase === 'deleting') {
-      if (length > 0) {
-        timer = setTimeout(() => setLength((l) => l - 1), deleteSpeed)
-      } else {
-        setIndex((i) => (i + 1) % list.length)
-        setPhase('typing')
-      }
+    } else if (phase === 'deleting' && length > 0) {
+      timer = setTimeout(() => setLength((l) => l - 1), deleteSpeed)
     }
     return () => clearTimeout(timer)
   }, [

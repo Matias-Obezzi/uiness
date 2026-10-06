@@ -34,7 +34,7 @@ export const defaultCarouselLabels: CarouselLabels = {
  * -----------------------------------------------------------------------------------------------*/
 
 interface CarouselContextValue {
-  scroller: React.RefObject<HTMLUListElement | null>
+  scrollerRef: React.RefObject<HTMLUListElement | null>
   active: number
   count: number
   atStart: boolean
@@ -92,14 +92,14 @@ export interface CarouselProps extends React.ComponentProps<'section'> {
 function Carousel({ label, labels: labelsProp, className, children, ...props }: CarouselProps) {
   const labels = useLabels('carousel', defaultCarouselLabels, labelsProp)
   const reduced = useReducedMotion()
-  const scroller = React.useRef<HTMLUListElement | null>(null)
+  const scrollerRef = React.useRef<HTMLUListElement | null>(null)
   const [active, setActive] = React.useState(0)
   const [count, setCount] = React.useState(0)
   const [atStart, setAtStart] = React.useState(true)
   const [atEnd, setAtEnd] = React.useState(false)
 
   const read = React.useCallback(() => {
-    const el = scroller.current
+    const el = scrollerRef.current
     if (!el) return
     const items = itemsOf(el)
     setCount(items.length)
@@ -109,7 +109,7 @@ function Carousel({ label, labels: labelsProp, className, children, ...props }: 
   }, [])
 
   React.useEffect(() => {
-    const el = scroller.current
+    const el = scrollerRef.current
     if (!el) return
     read()
 
@@ -137,7 +137,7 @@ function Carousel({ label, labels: labelsProp, className, children, ...props }: 
 
   const scrollToIndex = React.useCallback(
     (index: number) => {
-      const el = scroller.current
+      const el = scrollerRef.current
       if (!el) return
       const items = itemsOf(el)
       const target = items[Math.max(0, Math.min(index, items.length - 1))]
@@ -152,7 +152,7 @@ function Carousel({ label, labels: labelsProp, className, children, ...props }: 
 
   const step = React.useCallback(
     (delta: number) => {
-      const el = scroller.current
+      const el = scrollerRef.current
       if (!el) return
       scrollToIndex(nearestIndex(el) + delta)
     },
@@ -160,7 +160,7 @@ function Carousel({ label, labels: labelsProp, className, children, ...props }: 
   )
 
   const value = React.useMemo(
-    () => ({ scroller, active, count, atStart, atEnd, scrollToIndex, step, label, labels }),
+    () => ({ scrollerRef, active, count, atStart, atEnd, scrollToIndex, step, label, labels }),
     [active, count, atStart, atEnd, scrollToIndex, step, label, labels],
   )
 
@@ -198,7 +198,7 @@ function CarouselContent({
   children,
   ...props
 }: CarouselContentProps) {
-  const { scroller, label, labels } = useCarousel()
+  const { scrollerRef, label, labels } = useCarousel()
   const [dragging, setDragging] = React.useState(false)
   const origin = React.useRef({ x: 0, scroll: 0, moved: false })
 
@@ -206,7 +206,7 @@ function CarouselContent({
     // Mouse only. Touch and pen already scroll this natively, and taking those over would throw
     // away the momentum the platform gives for free.
     if (!draggable || event.pointerType !== 'mouse' || event.button !== 0) return
-    const el = scroller.current
+    const el = scrollerRef.current
     if (!el) return
     origin.current = { x: event.clientX, scroll: el.scrollLeft, moved: false }
     setDragging(true)
@@ -214,7 +214,7 @@ function CarouselContent({
 
   const onPointerMove = (event: React.PointerEvent<HTMLUListElement>) => {
     if (!dragging) return
-    const el = scroller.current
+    const el = scrollerRef.current
     if (!el) return
     const dx = event.clientX - origin.current.x
     if (Math.abs(dx) > 3) origin.current.moved = true
@@ -230,7 +230,7 @@ function CarouselContent({
 
   return (
     <ul
-      ref={scroller}
+      ref={scrollerRef}
       data-slot="carousel-content"
       data-dragging={dragging ? '' : undefined}
       // biome-ignore lint/a11y/noNoninteractiveTabindex: a region that scrolls has to be focusable, or everything past the first screenful is out of reach by keyboard

@@ -20,14 +20,16 @@ export function useInView<T extends Element = HTMLDivElement>(
   { once = true, amount = 0.2, margin }: UseInViewOptions = {},
 ) {
   const [inView, setInView] = React.useState(false)
+  // False on the server and while hydrating, like the observer before its first report.
+  const unobservable = React.useSyncExternalStore(
+    subscribeNever,
+    () => typeof IntersectionObserver === 'undefined',
+    () => false,
+  )
 
   React.useEffect(() => {
     const el = ref.current
-    if (!el) return
-    if (typeof IntersectionObserver === 'undefined') {
-      setInView(true)
-      return
-    }
+    if (!el || typeof IntersectionObserver === 'undefined') return
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (!entry) return
@@ -44,5 +46,7 @@ export function useInView<T extends Element = HTMLDivElement>(
     return () => observer.disconnect()
   }, [ref, once, amount, margin])
 
-  return inView
+  return inView || unobservable
 }
+
+const subscribeNever = () => () => {}

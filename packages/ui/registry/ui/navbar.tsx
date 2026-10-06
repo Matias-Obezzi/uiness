@@ -78,11 +78,9 @@ function useCloseAbove(breakpoint: NavbarBreakpoint, close: () => void) {
 
 function useHideOnScroll(enabled: boolean) {
   const [hidden, setHidden] = React.useState(false)
+  if (!enabled && hidden) setHidden(false)
   React.useEffect(() => {
-    if (!enabled) {
-      setHidden(false)
-      return
-    }
+    if (!enabled) return
     let last = window.scrollY
     const onScroll = () => {
       const y = window.scrollY

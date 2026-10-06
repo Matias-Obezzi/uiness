@@ -257,20 +257,26 @@ function ChatMessages({
   const [unseen, setUnseen] = React.useState(false)
   const reduced = useReducedMotion()
 
+  const jumpToBottom = React.useCallback(() => {
+    const el = scrollRef.current
+    if (!el) return
+    el.scrollTop = el.scrollHeight
+    atBottom.current = true
+    setAway(false)
+    setUnseen(false)
+  }, [])
+
   const toBottom = React.useCallback(
     (smooth: boolean) => {
       const el = scrollRef.current
       if (!el) return
-      if (smooth && !reduced && typeof el.scrollTo === 'function') {
-        el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
-      } else {
-        el.scrollTop = el.scrollHeight
-      }
+      if (!smooth || reduced || typeof el.scrollTo !== 'function') return jumpToBottom()
+      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
       atBottom.current = true
       setAway(false)
       setUnseen(false)
     },
-    [reduced],
+    [reduced, jumpToBottom],
   )
 
   // Content changed: follow it down, or note that there is something new below.
@@ -286,10 +292,9 @@ function ChatMessages({
   // biome-ignore lint/correctness/useExhaustiveDependencies: runs whenever the messages change
   React.useLayoutEffect(follow, [children, status, follow])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: scrollKey is the trigger
   React.useLayoutEffect(() => {
-    if (scrollKey !== undefined) toBottom(false)
-  }, [scrollKey])
+    if (scrollKey !== undefined) jumpToBottom()
+  }, [scrollKey, jumpToBottom])
 
   // Images that finish loading make the log taller after the render that added them.
   React.useEffect(() => {
@@ -765,8 +770,11 @@ function ChatComposer({
   const [files, setFiles] = React.useState<PendingFile[]>([])
   const fieldRef = React.useRef<HTMLTextAreaElement>(null)
   const inputRef = React.useRef<HTMLInputElement>(null)
+  // For the unmount cleanup, which only sees the first render's files otherwise.
   const filesRef = React.useRef(files)
-  filesRef.current = files
+  React.useLayoutEffect(() => {
+    filesRef.current = files
+  })
 
   // Grow with the content; the max height in the classes takes over from there.
   // biome-ignore lint/correctness/useExhaustiveDependencies: measures after every change of text
@@ -994,11 +1002,7 @@ function ChatThread({
   }, [messages, currentUserId, byId])
 
   // Messages that were already there when the thread mounted come in without an animation.
-  const fresh = React.useRef<Map<string, boolean> | null>(null)
-  if (fresh.current === null) fresh.current = new Map(messages.map((m) => [m.id, false]))
-  for (const message of messages) {
-    if (!fresh.current.has(message.id)) fresh.current.set(message.id, true)
-  }
+  const [mountedIds] = React.useState(() => new Set(messages.map((m) => m.id)))
 
   const ownLatest = React.useMemo(() => {
     for (let i = messages.length - 1; i >= 0; i--) {
@@ -1076,7 +1080,7 @@ function ChatThread({
                       className={cn(
                         'group/message flex max-w-full flex-col gap-1',
                         self ? 'items-end' : 'items-start',
-                        fresh.current?.get(message.id) &&
+                        !mountedIds.has(message.id) &&
                           'fade-in-0 slide-in-from-bottom-2 animate-in duration-(--duration-normal,200ms) motion-reduce:animate-none',
                       )}
                     >

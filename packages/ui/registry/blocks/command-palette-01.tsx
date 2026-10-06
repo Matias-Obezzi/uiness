@@ -226,6 +226,7 @@ function Keys({ keys, className }: { keys: string[]; className?: string }) {
 const isMac = () =>
   typeof navigator !== 'undefined' &&
   /mac|iphone|ipad/i.test(navigator.platform || navigator.userAgent)
+const subscribeNever = () => () => {}
 
 /**
  * A keyboard first action surface. ⌘K (Ctrl+K elsewhere) opens a search over pages and
@@ -255,8 +256,8 @@ function CommandPalette01({
   const [direction, setDirection] = React.useState<1 | -1>(1)
   const [recent, setRecent] = React.useState(defaultRecent.slice(0, maxRecent))
   const [ran, setRan] = React.useState<string | null>(null)
-  const [mac, setMac] = React.useState(true)
-  React.useEffect(() => setMac(isMac()), [])
+  // Assumed on the server and while hydrating, so the first render matches the HTML.
+  const mac = React.useSyncExternalStore(subscribeNever, isMac, () => true)
 
   const byId = React.useMemo(() => index(groups), [groups])
   const page = stack[stack.length - 1]

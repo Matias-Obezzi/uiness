@@ -202,7 +202,8 @@ function ExpandableCard({
   const wanted = openProp ?? uncontrolled
   // The dialog stays mounted while it folds back, so `shown` trails `wanted` on the way out.
   const [shown, setShown] = React.useState(wanted)
-  const [closing, setClosing] = React.useState(false)
+  // Folding back: still shown, no longer wanted.
+  const closing = shown && !wanted
   const phase = React.useRef<'closed' | 'open' | 'closing'>(wanted ? 'open' : 'closed')
   const triggerRef = React.useRef<HTMLButtonElement>(null)
   const contentRef = React.useRef<HTMLDivElement>(null)
@@ -433,7 +434,6 @@ function ExpandableCard({
       } else if (phase.current === 'closing') {
         // Opened again while folding back: grow again from wherever it is.
         phase.current = 'open'
-        setClosing(false)
         play(true)
       }
       return
@@ -445,7 +445,6 @@ function ExpandableCard({
       phase.current = 'closed'
       motion.current.animations = []
       motion.current.ghost = null
-      setClosing(false)
       setShown(false)
     }
     const folding = play(false)
@@ -453,7 +452,6 @@ function ExpandableCard({
       done()
       return
     }
-    setClosing(true)
     folding.then((finished) => {
       if (finished) done()
     })

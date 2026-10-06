@@ -116,10 +116,9 @@ function ActivityHeatmap({
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const cells = React.useRef(new Map<number, HTMLTableCellElement>())
 
-  const end = toDay(endDate ?? new Date())
-  const start = startDate ? toDay(startDate) : addDays(end, -364)
-  const startKey = keyOf(start)
-  const endKey = keyOf(end)
+  // The range by day keys, so new Date objects for the same days keep the model below.
+  const endKey = keyOf(toDay(endDate ?? new Date()))
+  const startKey = startDate ? keyOf(toDay(startDate)) : keyOf(addDays(toDay(endKey), -364))
 
   const model = React.useMemo(() => {
     const s = toDay(startKey)
@@ -137,7 +136,7 @@ function ActivityHeatmap({
     for (let i = first; i <= last; i++) {
       max = Math.max(max, values.get(keyOf(addDays(gridStart, i))) ?? 0)
     }
-    return { gridStart, first, last, weeks, values, max }
+    return { start: s, end: e, gridStart, first, last, weeks, values, max }
   }, [data, startKey, endKey, weekStart])
 
   const steps = Math.max(2, levels)
@@ -280,7 +279,8 @@ function ActivityHeatmap({
           // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: the ARIA grid pattern on a table, like the calendar
           role="grid"
           aria-label={
-            ariaLabel ?? labels.grid(formats.range.format(start), formats.range.format(end))
+            ariaLabel ??
+            labels.grid(formats.range.format(model.start), formats.range.format(model.end))
           }
           className="w-full table-fixed border-separate"
           style={{

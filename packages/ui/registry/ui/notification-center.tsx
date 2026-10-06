@@ -386,9 +386,7 @@ function NotificationPanel({
     ...tabs,
   ]
   // Items that were there when the panel opened come in still; the ones after slide in.
-  const fresh = React.useRef<Map<string, boolean> | null>(null)
-  if (fresh.current === null) fresh.current = new Map(notifications.map((n) => [n.id, false]))
-  for (const n of notifications) if (!fresh.current.has(n.id)) fresh.current.set(n.id, true)
+  const [openedIds] = React.useState(() => new Set(notifications.map((n) => n.id)))
 
   return (
     <div
@@ -471,7 +469,7 @@ function NotificationPanel({
                             locale={locale}
                             labels={labelsProp}
                             className={cn(
-                              fresh.current?.get(notification.id) &&
+                              !openedIds.has(notification.id) &&
                                 'fade-in-0 slide-in-from-top-2 animate-in duration-(--duration-slow,300ms) motion-reduce:animate-none',
                             )}
                           />

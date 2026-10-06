@@ -150,12 +150,18 @@ function formatBytes(bytes: number) {
   return `${value >= 10 || unit === 0 ? Math.round(value) : Math.round(value * 10) / 10} ${units[unit]}`
 }
 
-function iconFor(type: string, name: string) {
-  if (type.startsWith('image/')) return FileImageIcon
-  if (type.startsWith('video/')) return FileVideoIcon
-  if (/sheet|excel|csv/.test(type) || /\.(xlsx?|csv)$/i.test(name)) return FileSpreadsheetIcon
-  if (/pdf|text|word|document/.test(type)) return FileTextIcon
-  return FileIcon
+function FileTypeIcon({
+  type,
+  name,
+  ...props
+}: { type: string; name: string } & React.ComponentProps<typeof FileIcon>) {
+  if (type.startsWith('image/')) return <FileImageIcon {...props} />
+  if (type.startsWith('video/')) return <FileVideoIcon {...props} />
+  if (/sheet|excel|csv/.test(type) || /\.(xlsx?|csv)$/i.test(name)) {
+    return <FileSpreadsheetIcon {...props} />
+  }
+  if (/pdf|text|word|document/.test(type)) return <FileTextIcon {...props} />
+  return <FileIcon {...props} />
 }
 
 const isAsyncIterable = (value: unknown): value is AsyncIterable<number> =>
@@ -219,12 +225,15 @@ function FileUpload01({
   )
   const [announcement, setAnnouncement] = React.useState('')
   const controllers = React.useRef(new Map<string, AbortController>())
+  // The latest props for uploads already running, and the items for the mount effect.
   const itemsRef = React.useRef(items)
-  itemsRef.current = items
   const uploadRef = React.useRef(upload)
-  uploadRef.current = upload
   const onUploadedRef = React.useRef(onUploaded)
-  onUploadedRef.current = onUploaded
+  React.useLayoutEffect(() => {
+    itemsRef.current = items
+    uploadRef.current = upload
+    onUploadedRef.current = onUploaded
+  })
 
   const patch = React.useCallback((id: string, next: Partial<UploadItem>) => {
     setItems((list) => list.map((item) => (item.id === id ? { ...item, ...next } : item)))
@@ -275,10 +284,13 @@ function FileUpload01({
   )
 
   // Seeds that were mid upload carry on from where they were. Everything stops on unmount.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: only on mount
+  const startRef = React.useRef(start)
+  React.useLayoutEffect(() => {
+    startRef.current = start
+  })
   React.useEffect(() => {
     for (const item of itemsRef.current) {
-      if (item.status === 'uploading') void start(item, item.progress)
+      if (item.status === 'uploading') void startRef.current(item, item.progress)
     }
     const running = controllers.current
     return () => {
@@ -450,7 +462,6 @@ function FileRow({
   onRetry: () => void
   onRemove: () => void
 }) {
-  const Icon = iconFor(item.type, item.name)
   const failed = item.status === 'error' || item.status === 'rejected'
   const percent = Math.round(item.progress * 100)
   return (
@@ -467,7 +478,7 @@ function FileRow({
           failed && 'border-destructive/30 bg-destructive/10 text-destructive',
         )}
       >
-        <Icon aria-hidden className="size-4.5" />
+        <FileTypeIcon type={item.type} name={item.name} aria-hidden className="size-4.5" />
         {item.status === 'done' && (
           <CircleCheckIcon
             aria-hidden

@@ -38,7 +38,9 @@ function StickyScroll({
   const listRef = React.useRef<HTMLDivElement>(null)
   const active = useActiveSection(listRef, { anchor })
   const changeRef = React.useRef(onActiveChange)
-  changeRef.current = onActiveChange
+  React.useLayoutEffect(() => {
+    changeRef.current = onActiveChange
+  })
   React.useEffect(() => {
     changeRef.current?.(active)
   }, [active])

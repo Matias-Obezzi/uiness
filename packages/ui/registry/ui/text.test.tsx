@@ -99,6 +99,24 @@ describe('ScrambleText', () => {
     expect(done).toHaveBeenCalledTimes(1)
   })
 
+  it('plays again for a new text, and only once per text', () => {
+    vi.useFakeTimers()
+    const done = vi.fn()
+    const props = { trigger: 'mount', characters: '#', duration: 20, speed: 10 } as const
+    const { rerender } = render(<ScrambleText text="AB" onComplete={done} {...props} />)
+    act(() => vi.advanceTimersByTime(100))
+    expect(done).toHaveBeenCalledTimes(1)
+    rerender(<ScrambleText text="AB" onComplete={done} {...props} />)
+    act(() => vi.advanceTimersByTime(100))
+    expect(done).toHaveBeenCalledTimes(1)
+    rerender(<ScrambleText text="CD" onComplete={done} {...props} />)
+    act(() => vi.advanceTimersByTime(0))
+    expect(visible()).toBe('##')
+    act(() => vi.advanceTimersByTime(100))
+    expect(visible()).toBe('CD')
+    expect(done).toHaveBeenCalledTimes(2)
+  })
+
   it('keeps spaces and wraps each word whole', () => {
     vi.useFakeTimers()
     render(<ScrambleText text="AB CD" trigger="mount" characters="#" duration={100} speed={10} />)
@@ -171,6 +189,21 @@ describe('Odometer', () => {
     const symbols = document.querySelectorAll('[data-slot=odometer-symbol]')
     expect([...symbols].map((s) => s.textContent)).toEqual([','])
     expect(screen.getByText('1,047', { selector: '.sr-only' })).toBeTruthy()
+  })
+
+  it('rolls in a column that comes back after leaving, and only that one', () => {
+    frames()
+    const { rerender } = render(<Odometer value={100} locale="en-US" />)
+    // The first render shows the digits in place.
+    expect(strips()).toEqual(['translateY(-10%)', 'translateY(-0%)', 'translateY(-0%)'])
+    rerender(<Odometer value={9} locale="en-US" />)
+    act(() => vi.advanceTimersByTime(20))
+    expect(strips()).toEqual(['translateY(-90%)'])
+    rerender(<Odometer value={100} locale="en-US" />)
+    // The returning columns start from zero, the units column from where it was.
+    expect(strips()).toEqual(['translateY(-0%)', 'translateY(-0%)', 'translateY(-90%)'])
+    act(() => vi.advanceTimersByTime(20))
+    expect(strips()).toEqual(['translateY(-10%)', 'translateY(-0%)', 'translateY(-0%)'])
   })
 
   it('keeps the units column when the number grows, and staggers from the right', () => {
