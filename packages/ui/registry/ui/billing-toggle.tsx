@@ -1,10 +1,27 @@
 'use client'
 
 import * as React from 'react'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Odometer } from '@/ui/odometer'
 
 export type BillingPeriod = 'monthly' | 'yearly'
+
+export interface BillingToggleLabels {
+  /** Name of the radio group. */
+  group: string
+  monthly: string
+  yearly: string
+  /** The badge for a number `savings`. The percent comes formatted. */
+  save: (percent: string) => string
+}
+
+export const defaultBillingToggleLabels: BillingToggleLabels = {
+  group: 'Billing period',
+  monthly: 'Monthly',
+  yearly: 'Yearly',
+  save: (percent) => `Save ${percent}`,
+}
 
 export interface BillingToggleProps
   extends Omit<React.ComponentProps<'div'>, 'children' | 'defaultValue' | 'onChange'> {
@@ -22,6 +39,8 @@ export interface BillingToggleProps
   yearlyLabel?: React.ReactNode
   /** Locale of the savings percent. Defaults to the browser's. */
   locale?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<BillingToggleLabels>
 }
 
 const PERIODS: BillingPeriod[] = ['monthly', 'yearly']
@@ -35,13 +54,16 @@ function BillingToggle({
   defaultValue = 'monthly',
   onValueChange,
   savings,
-  monthlyLabel = 'Monthly',
-  yearlyLabel = 'Yearly',
-  locale,
+  monthlyLabel,
+  yearlyLabel,
+  locale: localeProp,
+  labels: labelsProp,
   className,
-  'aria-label': ariaLabel = 'Billing period',
+  'aria-label': ariaLabel,
   ...props
 }: BillingToggleProps) {
+  const labels = useLabels('billing-toggle', defaultBillingToggleLabels, labelsProp)
+  const locale = useLocale(localeProp)
   const [own, setOwn] = React.useState<BillingPeriod>(defaultValue)
   const value = valueProp ?? own
   const refs = React.useRef(new Map<BillingPeriod, HTMLButtonElement>())
@@ -67,13 +89,17 @@ function BillingToggle({
 
   const badge =
     typeof savings === 'number'
-      ? `Save ${new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 }).format(savings)}`
+      ? labels.save(
+          new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 0 }).format(
+            savings,
+          ),
+        )
       : savings
 
   return (
     <div
       role="radiogroup"
-      aria-label={ariaLabel}
+      aria-label={ariaLabel ?? labels.group}
       data-slot="billing-toggle"
       className={cn('relative inline-flex items-center rounded-full bg-muted p-1', className)}
       {...props}
@@ -114,7 +140,9 @@ function BillingToggle({
               checked && !thumb && 'bg-background shadow-sm',
             )}
           >
-            {period === 'monthly' ? monthlyLabel : yearlyLabel}
+            {period === 'monthly'
+              ? (monthlyLabel ?? labels.monthly)
+              : (yearlyLabel ?? labels.yearly)}
             {period === 'yearly' && badge && ' '}
             {period === 'yearly' && badge && (
               <span

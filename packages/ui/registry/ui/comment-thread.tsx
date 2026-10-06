@@ -11,6 +11,7 @@ import {
   Trash2Icon,
 } from 'lucide-react'
 import * as React from 'react'
+import { LabelsProvider, useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { confirm } from '@/ui/alert-dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
@@ -56,6 +57,82 @@ const DEFAULT_REACTIONS = ['👍', '❤️', '🎉', '👀', '🚀', '😄']
 
 function toDate(value: Date | string | number) {
   return value instanceof Date ? value : new Date(value)
+}
+
+export interface CommentThreadLabels {
+  /** Heading of the thread. */
+  title: string
+  /** Placeholder and name of the field for a new comment. */
+  placeholder: string
+  /** Submit button of a new comment. */
+  comment: string
+  cancel: string
+  addReaction: string
+  reactWith: (emoji: string) => string
+  /** How your own name reads in who reacted. */
+  you: string
+  /** Name of a comment, by its author. */
+  commentBy: (name?: string) => string
+  /** Shown for an author who is not in `users`. */
+  unknown: string
+  edited: string
+  moreActions: string
+  edit: string
+  delete: string
+  /** Placeholder and name of the field while editing. */
+  editPlaceholder: string
+  save: string
+  reply: string
+  /** Placeholder and name of the field of a reply. */
+  replyPlaceholder: string
+  showReplies: (count: number) => string
+  hideReplies: (count: number) => string
+  /** Name of the replies of a comment, by its author. */
+  repliesTo: (name?: string) => string
+  resolved: string
+  resolve: string
+  reopen: string
+  empty: string
+  /** Shown in place of the field on a resolved thread. */
+  resolvedNotice: string
+  /** Added to it when the thread can be reopened. */
+  reopenToReply: string
+  /** The confirm before a delete. */
+  deleteTitle: string
+  deleteDescription: string
+  deleteWithReplies: string
+}
+
+export const defaultCommentThreadLabels: CommentThreadLabels = {
+  title: 'Comments',
+  placeholder: 'Add a comment',
+  comment: 'Comment',
+  cancel: 'Cancel',
+  addReaction: 'Add reaction',
+  reactWith: (emoji) => `React with ${emoji}`,
+  you: 'You',
+  commentBy: (name) => `Comment by ${name ?? 'unknown'}`,
+  unknown: 'Unknown',
+  edited: '(edited)',
+  moreActions: 'More actions',
+  edit: 'Edit',
+  delete: 'Delete',
+  editPlaceholder: 'Edit comment',
+  save: 'Save',
+  reply: 'Reply',
+  replyPlaceholder: 'Write a reply',
+  showReplies: (count) => `Show ${count} ${count === 1 ? 'reply' : 'replies'}`,
+  hideReplies: (count) => `Hide ${count === 1 ? 'reply' : 'replies'}`,
+  repliesTo: (name) => `Replies to ${name ?? 'comment'}`,
+  resolved: 'Resolved',
+  resolve: 'Resolve',
+  reopen: 'Reopen',
+  empty: 'No comments yet.',
+  resolvedNotice: 'This thread is resolved.',
+  reopenToReply: 'Reopen it to reply.',
+  deleteTitle: 'Delete this comment?',
+  deleteDescription: 'This cannot be undone.',
+  deleteWithReplies: 'Its replies go with it. This cannot be undone.',
 }
 
 function initials(name: string) {
@@ -116,7 +193,8 @@ export interface RelativeTimeProps extends Omit<React.ComponentProps<'time'>, 'c
 }
 
 /** A `<time>` that reads "5 minutes ago", with the full date on hover. */
-function RelativeTime({ date, now, locale, className, ...props }: RelativeTimeProps) {
+function RelativeTime({ date, now, locale: localeProp, className, ...props }: RelativeTimeProps) {
+  const locale = useLocale(localeProp)
   const current = useNow(60_000, now)
   const value = toDate(date)
   return (
@@ -222,13 +300,15 @@ function CommentComposer({
   onSubmit,
   onCancel,
   defaultValue = '',
-  placeholder = 'Add a comment',
-  submitLabel = 'Comment',
+  placeholder: placeholderProp,
+  submitLabel,
   autoFocus,
   disabled,
   className,
   ...props
 }: CommentComposerProps) {
+  const labels = useLabels('comment-thread', defaultCommentThreadLabels)
+  const placeholder = placeholderProp ?? labels.placeholder
   const [value, setValue] = React.useState(defaultValue)
   const fieldRef = React.useRef<HTMLTextAreaElement>(null)
   const trimmed = value.trim()
@@ -278,11 +358,11 @@ function CommentComposer({
       <div className="flex items-center justify-end gap-2">
         {onCancel ? (
           <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
-            Cancel
+            {labels.cancel}
           </Button>
         ) : null}
         <Button type="submit" size="sm" disabled={!trimmed || disabled}>
-          {submitLabel}
+          {submitLabel ?? labels.comment}
         </Button>
       </div>
     </form>
@@ -305,6 +385,7 @@ function ReactionPicker({
   reactions: string[]
   onPick: (e: string) => void
 }) {
+  const labels = useLabels('comment-thread', defaultCommentThreadLabels)
   const [open, setOpen] = React.useState(false)
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -312,7 +393,7 @@ function ReactionPicker({
         <Button
           variant="ghost"
           size="sm"
-          aria-label="Add reaction"
+          aria-label={labels.addReaction}
           className="h-7 px-2 text-muted-foreground first:-ml-2"
         >
           <SmilePlusIcon />
@@ -323,7 +404,7 @@ function ReactionPicker({
           <button
             key={emoji}
             type="button"
-            aria-label={`React with ${emoji}`}
+            aria-label={labels.reactWith(emoji)}
             onClick={() => {
               onPick(emoji)
               setOpen(false)
@@ -375,6 +456,8 @@ export interface CommentThreadProps extends Omit<React.ComponentProps<'section'>
   now?: Date
   /** Locale for relative times. Default the reader's. */
   locale?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<CommentThreadLabels>
 }
 
 /**
@@ -385,7 +468,7 @@ function CommentThread({
   comments,
   users,
   currentUserId,
-  title = 'Comments',
+  title: titleProp,
   onComment,
   onEdit,
   onDelete,
@@ -397,9 +480,14 @@ function CommentThread({
   defaultCollapsed = false,
   now: nowProp,
   locale,
+  labels: labelsProp,
   className,
   ...props
 }: CommentThreadProps) {
+  const labels = useLabels('comment-thread', defaultCommentThreadLabels, labelsProp)
+  // The parts read their words from the provider, so the `labels` prop reaches them through one.
+  const pack = React.useMemo(() => ({ 'comment-thread': labels }), [labels])
+  const title = titleProp ?? labels.title
   const now = useNow(60_000, nowProp)
   const byId = React.useMemo(() => new Map(users.map((user) => [user.id, user])), [users])
   const [editing, setEditing] = React.useState<string | null>(null)
@@ -413,12 +501,12 @@ function CommentThread({
     if (!onDelete) return
     if (confirmDelete) {
       const ok = await confirm({
-        title: 'Delete this comment?',
+        title: labels.deleteTitle,
         description:
           comment.replies && comment.replies.length > 0
-            ? 'Its replies go with it. This cannot be undone.'
-            : 'This cannot be undone.',
-        confirmText: 'Delete',
+            ? labels.deleteWithReplies
+            : labels.deleteDescription,
+        confirmText: labels.delete,
         variant: 'destructive',
       })
       if (!ok) return
@@ -443,14 +531,14 @@ function CommentThread({
     return (
       <article
         data-slot="comment"
-        aria-label={`Comment by ${author?.name ?? 'unknown'}`}
+        aria-label={labels.commentBy(author?.name)}
         className="group/comment flex gap-3"
       >
         <UserAvatar user={author} className={parent ? 'size-6' : undefined} />
         <div className="min-w-0 flex-1">
           <div className="flex items-start gap-2">
             <p className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-2 text-sm">
-              <span className="font-medium">{author?.name ?? 'Unknown'}</span>
+              <span className="font-medium">{author?.name ?? labels.unknown}</span>
               <RelativeTime
                 date={comment.createdAt}
                 now={now}
@@ -458,7 +546,7 @@ function CommentThread({
                 className="text-muted-foreground text-xs"
               />
               {comment.editedAt ? (
-                <span className="text-muted-foreground text-xs">(edited)</span>
+                <span className="text-muted-foreground text-xs">{labels.edited}</span>
               ) : null}
             </p>
             {canEdit || canDelete ? (
@@ -467,7 +555,7 @@ function CommentThread({
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label="More actions"
+                    aria-label={labels.moreActions}
                     className="-my-1 size-7 text-muted-foreground opacity-0 focus-visible:opacity-100 group-hover/comment:opacity-100 data-[state=open]:opacity-100 pointer-coarse:opacity-100"
                   >
                     <EllipsisIcon />
@@ -477,13 +565,13 @@ function CommentThread({
                   {canEdit ? (
                     <DropdownMenuItem onSelect={() => setEditing(comment.id)}>
                       <PencilIcon />
-                      Edit
+                      {labels.edit}
                     </DropdownMenuItem>
                   ) : null}
                   {canDelete ? (
                     <DropdownMenuItem variant="destructive" onSelect={() => void remove(comment)}>
                       <Trash2Icon />
-                      Delete
+                      {labels.delete}
                     </DropdownMenuItem>
                   ) : null}
                 </DropdownMenuContent>
@@ -494,8 +582,8 @@ function CommentThread({
             <CommentComposer
               className="mt-2"
               defaultValue={comment.body}
-              placeholder="Edit comment"
-              submitLabel="Save"
+              placeholder={labels.editPlaceholder}
+              submitLabel={labels.save}
               autoFocus
               onCancel={() => setEditing(null)}
               onSubmit={(body) => {
@@ -517,7 +605,7 @@ function CommentThread({
                     aria-pressed={pressed}
                     aria-label={`${reaction.emoji} ${reaction.userIds.length}`}
                     title={reaction.userIds
-                      .map((id) => (id === currentUserId ? 'You' : (byId.get(id)?.name ?? id)))
+                      .map((id) => (id === currentUserId ? labels.you : (byId.get(id)?.name ?? id)))
                       .join(', ')}
                     disabled={!onReact || readOnly}
                     onClick={() => toggle(reaction.emoji)}
@@ -546,7 +634,7 @@ function CommentThread({
                   }}
                 >
                   <ReplyIcon />
-                  Reply
+                  {labels.reply}
                 </Button>
               ) : null}
             </div>
@@ -557,125 +645,129 @@ function CommentThread({
   }
 
   return (
-    <section
-      data-slot="comment-thread"
-      data-resolved={resolved || undefined}
-      aria-labelledby={titleId}
-      className={cn('rounded-xl border bg-card text-card-foreground shadow-xs', className)}
-      {...props}
-    >
-      <header className="flex items-center justify-between gap-3 border-b px-4 py-3">
-        <div className="flex min-w-0 items-center gap-2">
-          <h3 id={titleId} className="truncate font-semibold text-sm">
-            {title}
-          </h3>
-          <span className="text-muted-foreground text-xs tabular-nums">{total}</span>
-          {resolved ? (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 font-medium text-emerald-700 text-xs dark:text-emerald-400">
-              <CircleCheckIcon aria-hidden className="size-3" />
-              Resolved
-            </span>
+    <LabelsProvider labels={pack}>
+      <section
+        data-slot="comment-thread"
+        data-resolved={resolved || undefined}
+        aria-labelledby={titleId}
+        className={cn('rounded-xl border bg-card text-card-foreground shadow-xs', className)}
+        {...props}
+      >
+        <header className="flex items-center justify-between gap-3 border-b px-4 py-3">
+          <div className="flex min-w-0 items-center gap-2">
+            <h3 id={titleId} className="truncate font-semibold text-sm">
+              {title}
+            </h3>
+            <span className="text-muted-foreground text-xs tabular-nums">{total}</span>
+            {resolved ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 font-medium text-emerald-700 text-xs dark:text-emerald-400">
+                <CircleCheckIcon aria-hidden className="size-3" />
+                {labels.resolved}
+              </span>
+            ) : null}
+          </div>
+          {onResolvedChange ? (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setEditing(null)
+                setReplying(null)
+                onResolvedChange(!resolved)
+              }}
+            >
+              {resolved ? <RotateCcwIcon /> : <CircleCheckIcon />}
+              {resolved ? labels.reopen : labels.resolve}
+            </Button>
           ) : null}
-        </div>
-        {onResolvedChange ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setEditing(null)
-              setReplying(null)
-              onResolvedChange(!resolved)
-            }}
-          >
-            {resolved ? <RotateCcwIcon /> : <CircleCheckIcon />}
-            {resolved ? 'Reopen' : 'Resolve'}
-          </Button>
-        ) : null}
-      </header>
+        </header>
 
-      {comments.length === 0 ? (
-        <p className="px-4 pt-4 text-muted-foreground text-sm">No comments yet.</p>
-      ) : (
-        <ol className={cn('flex flex-col gap-5 p-4', resolved && 'opacity-75')}>
-          {comments.map((comment) => {
-            const replies = comment.replies ?? []
-            const isCollapsed = collapsed[comment.id] ?? defaultCollapsed
-            const repliesId = `${titleId}-${comment.id}-replies`
-            const replyingHere = replying?.id === comment.id && !readOnly
-            return (
-              <li key={comment.id} className="flex flex-col gap-3">
-                {renderComment(comment)}
-                {replies.length > 0 || replyingHere ? (
-                  <div className="ml-4 flex flex-col gap-3 border-l pl-4 sm:ml-[1.0625rem] sm:pl-5">
-                    {replies.length > 0 ? (
-                      <button
-                        type="button"
-                        aria-expanded={!isCollapsed}
-                        aria-controls={repliesId}
-                        onClick={() => setCollapsed((c) => ({ ...c, [comment.id]: !isCollapsed }))}
-                        className="inline-flex w-fit items-center gap-1 rounded-md font-medium text-muted-foreground text-xs outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
-                      >
-                        <ChevronDownIcon
-                          aria-hidden
-                          className={cn(
-                            'size-3.5 transition-transform duration-(--duration-fast,150ms)',
-                            isCollapsed && '-rotate-90',
-                          )}
+        {comments.length === 0 ? (
+          <p className="px-4 pt-4 text-muted-foreground text-sm">{labels.empty}</p>
+        ) : (
+          <ol className={cn('flex flex-col gap-5 p-4', resolved && 'opacity-75')}>
+            {comments.map((comment) => {
+              const replies = comment.replies ?? []
+              const isCollapsed = collapsed[comment.id] ?? defaultCollapsed
+              const repliesId = `${titleId}-${comment.id}-replies`
+              const replyingHere = replying?.id === comment.id && !readOnly
+              return (
+                <li key={comment.id} className="flex flex-col gap-3">
+                  {renderComment(comment)}
+                  {replies.length > 0 || replyingHere ? (
+                    <div className="ml-4 flex flex-col gap-3 border-l pl-4 sm:ml-[1.0625rem] sm:pl-5">
+                      {replies.length > 0 ? (
+                        <button
+                          type="button"
+                          aria-expanded={!isCollapsed}
+                          aria-controls={repliesId}
+                          onClick={() =>
+                            setCollapsed((c) => ({ ...c, [comment.id]: !isCollapsed }))
+                          }
+                          className="inline-flex w-fit items-center gap-1 rounded-md font-medium text-muted-foreground text-xs outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                        >
+                          <ChevronDownIcon
+                            aria-hidden
+                            className={cn(
+                              'size-3.5 transition-transform duration-(--duration-fast,150ms)',
+                              isCollapsed && '-rotate-90',
+                            )}
+                          />
+                          {isCollapsed
+                            ? labels.showReplies(replies.length)
+                            : labels.hideReplies(replies.length)}
+                        </button>
+                      ) : null}
+                      {replies.length > 0 && !isCollapsed ? (
+                        <ol
+                          id={repliesId}
+                          aria-label={labels.repliesTo(byId.get(comment.authorId)?.name)}
+                          className="flex flex-col gap-4"
+                        >
+                          {replies.map((reply) => (
+                            <li key={reply.id}>{renderComment(reply, comment)}</li>
+                          ))}
+                        </ol>
+                      ) : null}
+                      {replyingHere && onComment ? (
+                        <CommentComposer
+                          key={`${replying.id}-${replying.prefill}`}
+                          defaultValue={replying.prefill}
+                          placeholder={labels.replyPlaceholder}
+                          submitLabel={labels.reply}
+                          autoFocus
+                          onCancel={() => setReplying(null)}
+                          onSubmit={(body) => {
+                            onComment(body, comment.id)
+                            setReplying(null)
+                          }}
                         />
-                        {isCollapsed
-                          ? `Show ${replies.length} ${replies.length === 1 ? 'reply' : 'replies'}`
-                          : `Hide ${replies.length === 1 ? 'reply' : 'replies'}`}
-                      </button>
-                    ) : null}
-                    {replies.length > 0 && !isCollapsed ? (
-                      <ol
-                        id={repliesId}
-                        aria-label={`Replies to ${byId.get(comment.authorId)?.name ?? 'comment'}`}
-                        className="flex flex-col gap-4"
-                      >
-                        {replies.map((reply) => (
-                          <li key={reply.id}>{renderComment(reply, comment)}</li>
-                        ))}
-                      </ol>
-                    ) : null}
-                    {replyingHere && onComment ? (
-                      <CommentComposer
-                        key={`${replying.id}-${replying.prefill}`}
-                        defaultValue={replying.prefill}
-                        placeholder="Write a reply"
-                        submitLabel="Reply"
-                        autoFocus
-                        onCancel={() => setReplying(null)}
-                        onSubmit={(body) => {
-                          onComment(body, comment.id)
-                          setReplying(null)
-                        }}
-                      />
-                    ) : null}
-                  </div>
-                ) : null}
-              </li>
-            )
-          })}
-        </ol>
-      )}
+                      ) : null}
+                    </div>
+                  ) : null}
+                </li>
+              )
+            })}
+          </ol>
+        )}
 
-      {onComment ? (
-        <div className="border-t p-4">
-          {resolved ? (
-            <p className="text-muted-foreground text-sm">
-              This thread is resolved.
-              {onResolvedChange ? ' Reopen it to reply.' : ''}
-            </p>
-          ) : (
-            <div className="flex gap-3">
-              <UserAvatar user={byId.get(currentUserId)} />
-              <CommentComposer className="flex-1" onSubmit={(body) => onComment(body)} />
-            </div>
-          )}
-        </div>
-      ) : null}
-    </section>
+        {onComment ? (
+          <div className="border-t p-4">
+            {resolved ? (
+              <p className="text-muted-foreground text-sm">
+                {labels.resolvedNotice}
+                {onResolvedChange ? ` ${labels.reopenToReply}` : ''}
+              </p>
+            ) : (
+              <div className="flex gap-3">
+                <UserAvatar user={byId.get(currentUserId)} />
+                <CommentComposer className="flex-1" onSubmit={(body) => onComment(body)} />
+              </div>
+            )}
+          </div>
+        ) : null}
+      </section>
+    </LabelsProvider>
   )
 }
 

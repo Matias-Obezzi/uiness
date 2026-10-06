@@ -1,7 +1,29 @@
 'use client'
 
 import * as React from 'react'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface ActivityHeatmapLabels {
+  /** Name of the grid. The dates come formatted. */
+  grid: (from: string, to: string) => string
+  /** A day, in the tooltip and for screen readers. The value and the date come formatted. */
+  day: (value: string, date: string) => string
+  /** Used as the value of a day with nothing. */
+  none: string
+  /** The start of the legend. */
+  less: string
+  /** The end of the legend. */
+  more: string
+}
+
+export const defaultActivityHeatmapLabels: ActivityHeatmapLabels = {
+  grid: (from, to) => `Activity from ${from} to ${to}`,
+  day: (value, date) => `${value} on ${date}`,
+  none: 'Nothing',
+  less: 'Less',
+  more: 'More',
+}
 
 export interface ActivityDay {
   /** The day, as a `Date` or an ISO date like `2026-09-01`. */
@@ -36,6 +58,8 @@ export interface ActivityHeatmapProps
   onSelect?: (day: { date: Date; value: number }) => void
   /** "Less … More" legend under the grid. Default true. */
   showLegend?: boolean
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<ActivityHeatmapLabels>
 }
 
 const DAY = 24 * 60 * 60 * 1000
@@ -77,7 +101,8 @@ function ActivityHeatmap({
   color = 'var(--chart-2)',
   cellSize = 12,
   formatDay,
-  locale,
+  locale: localeProp,
+  labels: labelsProp,
   onSelect,
   showLegend = true,
   className,
@@ -85,6 +110,8 @@ function ActivityHeatmap({
   'aria-label': ariaLabel,
   ...props
 }: ActivityHeatmapProps) {
+  const labels = useLabels('activity-heatmap', defaultActivityHeatmapLabels, labelsProp)
+  const locale = useLocale(localeProp)
   const rootRef = React.useRef<HTMLDivElement>(null)
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const cells = React.useRef(new Map<number, HTMLTableCellElement>())
@@ -147,7 +174,7 @@ function ActivityHeatmap({
   const describe = (date: Date, value: number) =>
     formatDay
       ? formatDay({ date, value })
-      : `${value > 0 ? formats.number.format(value) : 'Nothing'} on ${formats.day.format(date)}`
+      : labels.day(value > 0 ? formats.number.format(value) : labels.none, formats.day.format(date))
 
   const [focus, setFocus] = React.useState(model.last)
   const [tip, setTip] = React.useState<{
@@ -253,8 +280,7 @@ function ActivityHeatmap({
           // biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: the ARIA grid pattern on a table, like the calendar
           role="grid"
           aria-label={
-            ariaLabel ??
-            `Activity from ${formats.range.format(start)} to ${formats.range.format(end)}`
+            ariaLabel ?? labels.grid(formats.range.format(start), formats.range.format(end))
           }
           className="w-full table-fixed border-separate"
           style={{
@@ -359,7 +385,7 @@ function ActivityHeatmap({
           data-slot="activity-heatmap-legend"
           className="flex items-center justify-end gap-1 text-muted-foreground text-xs"
         >
-          <span className="mr-1">Less</span>
+          <span className="mr-1">{labels.less}</span>
           {Array.from({ length: steps }, (_, level) => (
             <span
               // biome-ignore lint/suspicious/noArrayIndexKey: levels are positional
@@ -368,7 +394,7 @@ function ActivityHeatmap({
               style={{ background: fill(level) }}
             />
           ))}
-          <span className="ml-1">More</span>
+          <span className="ml-1">{labels.more}</span>
         </div>
       )}
     </div>

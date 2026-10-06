@@ -1,6 +1,7 @@
 'use client'
 
 import type * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
@@ -17,6 +18,29 @@ export interface AvatarGroupItem {
   description?: string
 }
 
+export interface AvatarGroupLabels {
+  /** Name of the group: the people shown, and how many more there are. */
+  group: (names: string[], more: number) => string
+  /** Name of the "+N" counter. */
+  showMore: (count: number) => string
+  /** Heading of the overflow list. */
+  overflow: string
+  /** Last line of the overflow list, for people counted in `total` but not in `items`. */
+  andMore: (count: number) => string
+}
+
+export const defaultAvatarGroupLabels: AvatarGroupLabels = {
+  group: (names, more) =>
+    more > 0
+      ? `${names.join(', ')} and ${more} more`
+      : names.length > 1
+        ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
+        : (names[0] ?? 'Nobody'),
+  showMore: (count) => `Show ${count} more`,
+  overflow: 'More people',
+  andMore: (count) => `and ${count} more`,
+}
+
 export interface AvatarGroupProps extends Omit<React.ComponentProps<'div'>, 'children'> {
   /** The people, in order of importance. */
   items: AvatarGroupItem[]
@@ -30,6 +54,8 @@ export interface AvatarGroupProps extends Omit<React.ComponentProps<'div'>, 'chi
   tooltips?: boolean
   /** Heading of the overflow list. Default "More people". */
   overflowLabel?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<AvatarGroupLabels>
 }
 
 const sizes = {
@@ -98,10 +124,12 @@ function AvatarGroup({
   total,
   size = 'md',
   tooltips = true,
-  overflowLabel = 'More people',
+  overflowLabel,
+  labels: labelsProp,
   className,
   ...props
 }: AvatarGroupProps) {
+  const labels = useLabels('avatar-group', defaultAvatarGroupLabels, labelsProp)
   const count = Math.max(total ?? items.length, items.length)
   // A "+1" counter takes the room of an avatar, so show the avatar instead.
   const shown = count - max === 1 && items.length === count ? items : items.slice(0, max)
@@ -110,13 +138,10 @@ function AvatarGroup({
   const s = sizes[size]
   const ring = 'ring-2 ring-[color:var(--avatar-group-ring,var(--background))]'
 
-  const names = shown.map((item) => item.name)
-  const groupLabel =
-    hiddenCount > 0
-      ? `${names.join(', ')} and ${hiddenCount} more`
-      : names.length > 1
-        ? `${names.slice(0, -1).join(', ')} and ${names[names.length - 1]}`
-        : (names[0] ?? 'Nobody')
+  const groupLabel = labels.group(
+    shown.map((item) => item.name),
+    hiddenCount,
+  )
 
   return (
     // biome-ignore lint/a11y/useSemanticElements: a fieldset would bring its own box model
@@ -141,7 +166,7 @@ function AvatarGroup({
         <Popover>
           <PopoverTrigger
             data-slot="avatar-group-counter"
-            aria-label={`Show ${hiddenCount} more`}
+            aria-label={labels.showMore(hiddenCount)}
             className={cn(
               'relative inline-flex items-center justify-center rounded-full bg-muted px-1.5 font-medium text-muted-foreground tabular-nums outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=open]:bg-accent data-[state=open]:text-foreground',
               s.counter,
@@ -153,7 +178,7 @@ function AvatarGroup({
           </PopoverTrigger>
           <PopoverContent align="start" className="w-64 p-0">
             <div className="border-b px-3 py-2 font-medium text-muted-foreground text-xs">
-              {overflowLabel}
+              {overflowLabel ?? labels.overflow}
             </div>
             <ul className="max-h-64 overflow-y-auto p-1">
               {rest.map((item, i) => (
@@ -175,7 +200,7 @@ function AvatarGroup({
               ))}
               {count > items.length && (
                 <li className="px-2 py-1.5 text-muted-foreground text-xs">
-                  and {count - items.length} more
+                  {labels.andMore(count - items.length)}
                 </li>
               )}
             </ul>

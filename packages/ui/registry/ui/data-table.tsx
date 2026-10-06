@@ -11,6 +11,7 @@ import {
   XIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import { Checkbox } from '@/ui/checkbox'
@@ -63,6 +64,51 @@ export interface DataTableSort {
   desc: boolean
 }
 
+export interface DataTableLabels {
+  /** Placeholder of the search field, also its name without the ellipsis. */
+  search: string
+  reset: string
+  resetFilters: string
+  /** Shown when nothing matches. */
+  empty: string
+  selectAll: string
+  /** Name of a row's checkbox, from the text of its first column. */
+  selectRow: (name?: string) => string
+  /** Tooltip of a sortable header. */
+  sortHint: string
+  /** The count under the table. `total` is there while filtering. */
+  results: (count: number, total?: number) => string
+  /** The count under the table while rows are selected. */
+  selected: (count: number, total: number) => string
+  /** Name of the page controls. */
+  pages: string
+  pageOf: (page: number, count: number) => string
+  previousPage: string
+  nextPage: string
+  /** On a filter button with more than two values picked. */
+  filterSelected: (count: number) => string
+  clearFilter: string
+}
+
+export const defaultDataTableLabels: DataTableLabels = {
+  search: 'Search…',
+  reset: 'Reset',
+  resetFilters: 'Reset filters',
+  empty: 'No results.',
+  selectAll: 'Select all rows',
+  selectRow: (name) => `Select ${name || 'row'}`,
+  sortHint: 'Click to sort, shift click to sort by several columns',
+  results: (count, total) =>
+    `${count} ${count === 1 ? 'result' : 'results'}${total === undefined ? '' : ` of ${total}`}`,
+  selected: (count, total) => `${count} of ${total} selected`,
+  pages: 'Pages',
+  pageOf: (page, count) => `Page ${page} of ${count}`,
+  previousPage: 'Previous page',
+  nextPage: 'Next page',
+  filterSelected: (count) => `${count} selected`,
+  clearFilter: 'Clear filter',
+}
+
 export interface DataTableProps<T> extends Omit<React.ComponentProps<'div'>, 'children'> {
   /** The rows. */
   data: T[]
@@ -96,6 +142,8 @@ export interface DataTableProps<T> extends Omit<React.ComponentProps<'div'>, 'ch
   toolbar?: React.ReactNode
   /** Names the table for screen readers, and shows under it. */
   caption?: React.ReactNode
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<DataTableLabels>
 }
 
 const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' })
@@ -134,7 +182,7 @@ function DataTable<T>({
   getRowId,
   filters = [],
   searchable = true,
-  searchPlaceholder = 'Search…',
+  searchPlaceholder: searchProp,
   defaultSort = [],
   selectable = false,
   selection: selectionProp,
@@ -145,9 +193,12 @@ function DataTable<T>({
   empty,
   toolbar,
   caption,
+  labels: labelsProp,
   className,
   ...props
 }: DataTableProps<T>) {
+  const labels = useLabels('data-table', defaultDataTableLabels, labelsProp)
+  const searchPlaceholder = searchProp ?? labels.search
   const [query, setQuery] = React.useState('')
   const [facets, setFacets] = React.useState<Record<string, ReadonlySet<string>>>({})
   const [sort, setSort] = React.useState<DataTableSort[]>(defaultSort)
@@ -279,7 +330,6 @@ function DataTable<T>({
 
   const colSpan = columns.length + (selectable ? 1 : 0)
   const showToolbar = searchable || filters.length > 0 || toolbar
-  const resultText = `${filtered.length} ${filtered.length === 1 ? 'result' : 'results'}`
 
   return (
     <div data-slot="data-table" className={cn('grid w-full min-w-0 gap-3', className)} {...props}>
@@ -312,12 +362,13 @@ function DataTable<T>({
               column={byId.get(filter.column)}
               passes={(row) => passes(row, filter.column)}
               selected={facets[filter.column] ?? new Set()}
+              labels={labels}
               onChange={(values) => setFacet(filter.column, values)}
             />
           ))}
           {filtering && (
             <Button type="button" variant="ghost" size="sm" onClick={reset}>
-              Reset
+              {labels.reset}
               <XIcon aria-hidden />
             </Button>
           )}
@@ -334,7 +385,7 @@ function DataTable<T>({
                 <SelectBox
                   checked={allState}
                   onCheckedChange={toggleAll}
-                  aria-label="Select all rows"
+                  aria-label={labels.selectAll}
                   disabled={filteredIds.length === 0}
                 />
               </TableHead>
@@ -361,7 +412,7 @@ function DataTable<T>({
                     <button
                       type="button"
                       onClick={(e) => onSort(col.id, e.shiftKey)}
-                      title="Click to sort, shift click to sort by several columns"
+                      title={labels.sortHint}
                       className={cn(
                         '-mx-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-1 outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50',
                         align === 'right' && 'flex-row-reverse',
@@ -396,10 +447,10 @@ function DataTable<T>({
             <TableRow className="hover:bg-transparent">
               <TableCell colSpan={colSpan} className="h-32 text-center text-muted-foreground">
                 <div className="grid justify-items-center gap-2">
-                  {empty ?? 'No results.'}
+                  {empty ?? labels.empty}
                   {filtering && (
                     <Button type="button" variant="outline" size="sm" onClick={reset}>
-                      Reset filters
+                      {labels.resetFilters}
                     </Button>
                   )}
                 </div>
@@ -416,7 +467,9 @@ function DataTable<T>({
                       <SelectBox
                         checked={on}
                         onCheckedChange={() => toggleRow(id)}
-                        aria-label={`Select ${first ? asText(readValue(row, first)) || 'row' : 'row'}`}
+                        aria-label={labels.selectRow(
+                          first ? asText(readValue(row, first)) || undefined : undefined,
+                        )}
                       />
                     </TableCell>
                   )}
@@ -448,22 +501,18 @@ function DataTable<T>({
       >
         <div aria-live="polite">
           {selectable && selection.size > 0
-            ? `${selection.size} of ${data.length} selected`
-            : filtering
-              ? `${resultText} of ${data.length}`
-              : resultText}
+            ? labels.selected(selection.size, data.length)
+            : labels.results(filtered.length, filtering ? data.length : undefined)}
         </div>
         {pageSize !== false && pageCount > 1 && (
-          <nav aria-label="Pages" className="flex items-center gap-2">
-            <span className="tabular-nums">
-              Page {current + 1} of {pageCount}
-            </span>
+          <nav aria-label={labels.pages} className="flex items-center gap-2">
+            <span className="tabular-nums">{labels.pageOf(current + 1, pageCount)}</span>
             <Button
               type="button"
               variant="outline"
               size="icon"
               className="size-8"
-              aria-label="Previous page"
+              aria-label={labels.previousPage}
               disabled={current === 0}
               onClick={() => setPage(current - 1)}
             >
@@ -474,7 +523,7 @@ function DataTable<T>({
               variant="outline"
               size="icon"
               className="size-8"
-              aria-label="Next page"
+              aria-label={labels.nextPage}
               disabled={current >= pageCount - 1}
               onClick={() => setPage(current + 1)}
             >
@@ -503,6 +552,7 @@ function FacetFilter<T>({
   column,
   passes,
   selected,
+  labels,
   onChange,
 }: {
   filter: DataTableFilter
@@ -510,6 +560,7 @@ function FacetFilter<T>({
   column: DataTableColumn<T> | undefined
   passes: (row: T) => boolean
   selected: ReadonlySet<string>
+  labels: DataTableLabels
   onChange: (values: ReadonlySet<string>) => void
 }) {
   const counts = new Map<string, number>()
@@ -544,7 +595,7 @@ function FacetFilter<T>({
               <span aria-hidden className="mx-0.5 h-4 w-px bg-border" />
               <span className="rounded-sm bg-secondary px-1 font-normal text-secondary-foreground">
                 {selected.size > 2 ? (
-                  `${selected.size} selected`
+                  labels.filterSelected(selected.size)
                 ) : (
                   <>
                     <span className="sr-only">: </span>
@@ -589,7 +640,7 @@ function FacetFilter<T>({
               onClick={() => onChange(new Set())}
               className="w-full rounded-md px-2 py-1.5 text-center text-sm hover:bg-accent"
             >
-              Clear filter
+              {labels.clearFilter}
             </button>
           </>
         )}

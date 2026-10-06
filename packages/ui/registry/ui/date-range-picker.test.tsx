@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
+import { LabelsProvider } from '@/lib/labels'
 import { dateKey } from './calendar'
 import { DateRangePicker } from './date-range-picker'
 
@@ -96,5 +97,36 @@ describe('DateRangePicker', () => {
     expect(container.querySelector<HTMLInputElement>('input[name="stay.to"]')?.value).toBe(
       '2024-03-05',
     )
+  })
+})
+
+describe('DateRangePicker labels', () => {
+  it('translates the default presets and takes the provider locale', async () => {
+    render(
+      <LabelsProvider
+        labels={{
+          'date-range-picker': { placeholder: 'Elegir un rango', last7Days: 'Últimos 7 días' },
+        }}
+        locale="es"
+      >
+        <DateRangePicker today={today} />
+      </LabelsProvider>,
+    )
+    await userEvent.click(screen.getByRole('button', { name: 'Elegir un rango' }))
+    expect(await screen.findByRole('button', { name: 'Últimos 7 días' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Today' })).toBeTruthy()
+    expect(screen.getAllByRole('grid')[0]?.getAttribute('aria-label')).toBe('febrero de 2024')
+  })
+
+  it('leaves custom presets as they are', async () => {
+    render(
+      <DateRangePicker
+        today={today}
+        labels={{ today: 'Hoy' }}
+        presets={[{ label: 'Today', range: (t) => ({ from: t, to: t }) }]}
+      />,
+    )
+    await userEvent.click(screen.getByRole('button', { name: /pick a range/i }))
+    expect(await screen.findByRole('button', { name: 'Today' })).toBeTruthy()
   })
 })

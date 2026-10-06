@@ -2,7 +2,47 @@
 
 import { UploadCloudIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+const fileCount = (count: number) => `${count} file${count === 1 ? '' : 's'}`
+
+export interface DropzoneLabels {
+  /** The prompt in the middle, when there are no children. */
+  prompt: (multiple: boolean) => string
+  /** Hint part for `maxSize`. The size comes formatted. */
+  maxSize: (size: string) => string
+  /** Hint part for `maxFiles`. */
+  maxFiles: (count: number) => string
+  /** The hint when nothing limits the files. */
+  anyFile: string
+  /** Rejection messages, also passed to `onRejected`. */
+  notAccepted: (name: string) => string
+  tooLarge: (name: string, size: string) => string
+  tooMany: (name: string, limit: number) => string
+  /** Read after a drop or a pick. */
+  added: (count: number) => string
+  /** Read after a drop or a pick, followed by each rejection message. */
+  rejected: (count: number) => string
+  /** Read when a drop held no files. */
+  noFiles: string
+}
+
+export const defaultDropzoneLabels: DropzoneLabels = {
+  prompt: (multiple) => `Drop ${multiple ? 'files' : 'a file'} here, or press to choose`,
+  maxSize: (size) => `up to ${size} each`,
+  maxFiles: (count) => `at most ${count} files`,
+  anyFile: 'Any file',
+  notAccepted: (name) => `${name} is not an accepted type.`,
+  tooLarge: (name, size) => `${name} is larger than ${size}.`,
+  tooMany: (name, limit) =>
+    limit === 1
+      ? `${name} was not taken: only one file at a time.`
+      : `${name} was not taken: at most ${limit} files at a time.`,
+  added: (count) => `${fileCount(count)} added.`,
+  rejected: (count) => `${fileCount(count)} rejected:`,
+  noFiles: 'No files.',
+}
 
 /** Why a file was turned away. */
 export type DropzoneRejectionReason = 'type' | 'size' | 'count'
@@ -84,6 +124,8 @@ export interface DropzoneProps
   preview?: boolean
   /** Shown in the middle instead of the default prompt. */
   children?: React.ReactNode
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<DropzoneLabels>
 }
 
 /**
@@ -104,10 +146,12 @@ function Dropzone({
   maxFiles,
   disabled,
   preview = true,
+  labels: labelsProp,
   className,
   children,
   ...props
 }: DropzoneProps) {
+  const labels = useLabels('dropzone', defaultDropzoneLabels, labelsProp)
   const input = React.useRef<HTMLInputElement>(null)
   const [isOver, setIsOver] = React.useState(false)
   const [accepted, setAccepted] = React.useState<File[]>([])
@@ -128,14 +172,14 @@ function Dropzone({
 
     for (const file of Array.from(list)) {
       if (!matchesAccept(file, accept)) {
-        rejections.push({ file, reason: 'type', message: `${file.name} is not an accepted type.` })
+        rejections.push({ file, reason: 'type', message: labels.notAccepted(file.name) })
         continue
       }
       if (maxSize !== undefined && file.size > maxSize) {
         rejections.push({
           file,
           reason: 'size',
-          message: `${file.name} is larger than ${formatBytes(maxSize)}.`,
+          message: labels.tooLarge(file.name, formatBytes(maxSize)),
         })
         continue
       }
@@ -143,10 +187,7 @@ function Dropzone({
         rejections.push({
           file,
           reason: 'count',
-          message:
-            limit === 1
-              ? `${file.name} was not taken: only one file at a time.`
-              : `${file.name} was not taken: at most ${limit} files at a time.`,
+          message: labels.tooMany(file.name, limit),
         })
         continue
       }
@@ -159,15 +200,14 @@ function Dropzone({
     }
     if (rejections.length > 0) onRejected?.(rejections)
 
-    const taken =
-      files.length > 0 ? `${files.length} file${files.length === 1 ? '' : 's'} added.` : ''
+    const taken = files.length > 0 ? labels.added(files.length) : ''
     const turned =
       rejections.length > 0
-        ? `${rejections.length} file${rejections.length === 1 ? '' : 's'} rejected: ${rejections
+        ? `${labels.rejected(rejections.length)} ${rejections
             .map((rejection) => rejection.message)
             .join(' ')}`
         : ''
-    setAnnouncement([taken, turned].filter(Boolean).join(' ') || 'No files.')
+    setAnnouncement([taken, turned].filter(Boolean).join(' ') || labels.noFiles)
   }
 
   const open = () => {
@@ -252,9 +292,7 @@ function Dropzone({
       {children ?? (
         <>
           <UploadCloudIcon className="size-6 text-muted-foreground" aria-hidden="true" />
-          <span className="font-medium text-sm">
-            Drop {multiple ? 'files' : 'a file'} here, or press to choose
-          </span>
+          <span className="font-medium text-sm">{labels.prompt(multiple)}</span>
         </>
       )}
       <span id={descriptionId} data-slot="dropzone-hint" className="text-muted-foreground text-xs">
@@ -265,11 +303,11 @@ function Dropzone({
                 .map((entry) => entry.trim())
                 .join(', ')
             : null,
-          maxSize !== undefined ? `up to ${formatBytes(maxSize)} each` : null,
-          multiple && maxFiles !== undefined ? `at most ${maxFiles} files` : null,
+          maxSize !== undefined ? labels.maxSize(formatBytes(maxSize)) : null,
+          multiple && maxFiles !== undefined ? labels.maxFiles(maxFiles) : null,
         ]
           .filter(Boolean)
-          .join(' · ') || 'Any file'}
+          .join(' · ') || labels.anyFile}
       </span>
       {preview && accepted.length > 0 ? <DropzonePreview files={accepted} urls={urls} /> : null}
       <div

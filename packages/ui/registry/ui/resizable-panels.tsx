@@ -2,7 +2,17 @@
 
 import { GripVerticalIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface ResizablePanelsLabels {
+  /** Name of a handle without an `aria-label`. */
+  handle: string
+}
+
+export const defaultResizablePanelsLabels: ResizablePanelsLabels = {
+  handle: 'Resize panels',
+}
 
 export type ResizableDirection = 'horizontal' | 'vertical'
 
@@ -395,6 +405,8 @@ export interface ResizableHandleProps extends React.ComponentProps<'div'> {
   withHandle?: boolean
   /** Stops the handle from moving. */
   disabled?: boolean
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<ResizablePanelsLabels>
 }
 
 /**
@@ -410,8 +422,10 @@ function ResizableHandle({
   onPointerDown,
   onDoubleClick,
   'aria-label': label,
+  labels: labelsProp,
   ...props
 }: ResizableHandleProps) {
+  const labels = useLabels('resizable-panels', defaultResizablePanelsLabels, labelsProp)
   const group = useGroup('ResizableHandle')
   const index = React.useContext(HandleIndexContext)
   const before = group.configs[index]
@@ -447,7 +461,7 @@ function ResizableHandle({
         before?.collapsible ? before.collapsedSize : (before?.minSize ?? 0),
       )}
       aria-valuemax={Math.round(before?.maxSize ?? 100)}
-      aria-label={label ?? 'Resize panels'}
+      aria-label={label ?? labels.handle}
       aria-disabled={disabled || undefined}
       data-slot="resizable-handle"
       data-direction={group.direction}

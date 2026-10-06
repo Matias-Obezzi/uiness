@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 export interface GaugeThreshold {
@@ -90,7 +91,7 @@ function Gauge({
   size = 180,
   thickness = 14,
   formatValue,
-  locale,
+  locale: localeProp,
   showRange,
   duration = 900,
   className,
@@ -98,6 +99,7 @@ function Gauge({
   'aria-label': ariaLabel,
   ...props
 }: GaugeProps) {
+  const locale = useLocale(localeProp)
   const reduced = useReducedMotion()
   const labelId = React.useId()
   const lo = Math.min(min, max)

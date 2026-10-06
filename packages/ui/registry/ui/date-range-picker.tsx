@@ -2,6 +2,7 @@
 
 import { CalendarRangeIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import {
@@ -38,19 +39,42 @@ export const defaultDateRangePresets: DateRangePreset[] = [
   { label: 'This year', range: (t) => ({ from: new Date(t.getFullYear(), 0, 1), to: t }) },
 ]
 
+/** The label key of each default preset, so the default list follows the labels. */
+const presetKeys = new Map<DateRangePreset, keyof DateRangePickerLabels>(
+  (
+    ['today', 'yesterday', 'last7Days', 'last30Days', 'thisMonth', 'lastMonth', 'thisYear'] as const
+  ).map((key, i) => [defaultDateRangePresets[i] as DateRangePreset, key]),
+)
+
 export interface DateRangePickerLabels {
+  /** Shown in the button before a range is picked. */
   placeholder: string
   apply: string
   cancel: string
   /** Accessible name of the presets column. */
   presets: string
+  /** The default presets. Your own presets keep their own `label`. */
+  today: string
+  yesterday: string
+  last7Days: string
+  last30Days: string
+  thisMonth: string
+  lastMonth: string
+  thisYear: string
 }
 
-const DEFAULT_LABELS: DateRangePickerLabels = {
+export const defaultDateRangePickerLabels: DateRangePickerLabels = {
   placeholder: 'Pick a range',
   apply: 'Apply',
   cancel: 'Cancel',
   presets: 'Presets',
+  today: 'Today',
+  yesterday: 'Yesterday',
+  last7Days: 'Last 7 days',
+  last30Days: 'Last 30 days',
+  thisMonth: 'This month',
+  lastMonth: 'Last month',
+  thisYear: 'This year',
 }
 
 export interface DateRangePickerProps
@@ -81,7 +105,7 @@ export interface DateRangePickerProps
   today?: Date
   /** With a name, hidden inputs `name.from` and `name.to` carry ISO dates in a form. */
   name?: string
-  /** Texts, for other languages. */
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
   labels?: Partial<DateRangePickerLabels>
   /** Classes for the popover panel. */
   contentClassName?: string
@@ -118,7 +142,7 @@ function DateRangePicker({
   presets = defaultDateRangePresets,
   confirm = false,
   numberOfMonths = 2,
-  locale,
+  locale: localeProp,
   format = { dateStyle: 'medium' },
   min,
   max,
@@ -132,7 +156,12 @@ function DateRangePicker({
   disabled,
   ...props
 }: DateRangePickerProps) {
-  const labels = { ...DEFAULT_LABELS, ...labelsProp }
+  const labels = useLabels('date-range-picker', defaultDateRangePickerLabels, labelsProp)
+  const locale = useLocale(localeProp)
+  const presetLabel = (preset: DateRangePreset) => {
+    const key = presetKeys.get(preset)
+    return key ? labels[key] : preset.label
+  }
   const [internal, setInternal] = React.useState<DateRange>(defaultValue ?? {})
   const value = valueProp ?? internal
   const [open, setOpen] = React.useState(false)
@@ -246,7 +275,7 @@ function DateRangePicker({
                     }}
                     className="shrink-0 whitespace-nowrap rounded-md px-2.5 py-1.5 text-left text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[active]:bg-accent data-[active]:font-medium data-[active]:text-accent-foreground"
                   >
-                    {preset.label}
+                    {presetLabel(preset)}
                   </button>
                 )
               })}

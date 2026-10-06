@@ -3,6 +3,7 @@
 import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Spinner } from '@/ui/spinner'
 
@@ -32,6 +33,18 @@ const fillVariants = {
 
 type HoldState = 'idle' | 'holding' | 'pending' | 'confirmed'
 
+export interface HoldToConfirmLabels {
+  /** How to use it, read by screen readers. */
+  hint: string
+  /** Announced once the hold completes, when there is no `confirmedLabel`. */
+  confirmed: string
+}
+
+export const defaultHoldToConfirmLabels: HoldToConfirmLabels = {
+  hint: 'Press and hold to confirm.',
+  confirmed: 'Confirmed',
+}
+
 export interface HoldToConfirmProps
   extends Omit<React.ComponentProps<'button'>, 'onClick'>,
     VariantProps<typeof holdVariants> {
@@ -45,6 +58,8 @@ export interface HoldToConfirmProps
   resetAfter?: number | false
   /** How to use it, read by screen readers. Default "Press and hold to confirm." */
   hint?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<HoldToConfirmLabels>
 }
 
 /**
@@ -57,7 +72,8 @@ function HoldToConfirm({
   duration = 1200,
   confirmedLabel,
   resetAfter = 2000,
-  hint = 'Press and hold to confirm.',
+  hint: hintProp,
+  labels: labelsProp,
   variant = 'destructive',
   size,
   disabled,
@@ -80,6 +96,8 @@ function HoldToConfirm({
   const progress = React.useRef(0)
   const frame = React.useRef(0)
   const timer = React.useRef<ReturnType<typeof setTimeout>>(undefined)
+  const labels = useLabels('hold-to-confirm', defaultHoldToConfirmLabels, labelsProp)
+  const hint = hintProp ?? labels.hint
   const hintId = React.useId()
 
   const go = React.useCallback((next: HoldState) => {
@@ -236,7 +254,7 @@ function HoldToConfirm({
         {hint}
       </span>
       <span role="status" className="sr-only">
-        {state === 'confirmed' ? (confirmedLabel ?? 'Confirmed') : ''}
+        {state === 'confirmed' ? (confirmedLabel ?? labels.confirmed) : ''}
       </span>
     </>
   )

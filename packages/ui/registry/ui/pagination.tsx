@@ -3,18 +3,46 @@
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
 import { Slot } from 'radix-ui'
 import type * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { type Button, buttonVariants } from '@/ui/button'
 
-function Pagination({
-  className,
-  'aria-label': label = 'Pagination',
-  ...props
-}: React.ComponentProps<'nav'>) {
+export interface PaginationLabels {
+  /** Name of the navigation landmark. */
+  nav: string
+  /** Text of the previous button, shown on wider screens. */
+  previous: string
+  /** Text of the next button, shown on wider screens. */
+  next: string
+  /** Accessible name of the previous button. */
+  previousPage: string
+  /** Accessible name of the next button. */
+  nextPage: string
+  /** Accessible name of a page button. */
+  page: (page: number) => string
+  /** Read out for an ellipsis. */
+  morePages: string
+  /** The compact counter of `Paginator`. Its numbers are drawn bolder. */
+  pageOf: (page: number, count: number) => string
+}
+
+export const defaultPaginationLabels: PaginationLabels = {
+  nav: 'Pagination',
+  previous: 'Previous',
+  next: 'Next',
+  previousPage: 'Go to previous page',
+  nextPage: 'Go to next page',
+  page: (page) => `Page ${page}`,
+  morePages: 'More pages',
+  pageOf: (page, count) => `Page ${page} of ${count}`,
+}
+
+function Pagination({ className, 'aria-label': ariaLabel, ...props }: React.ComponentProps<'nav'>) {
+  const labels = useLabels('pagination', defaultPaginationLabels)
   return (
     <nav
       data-slot="pagination"
-      aria-label={label}
+      aria-label={ariaLabel ?? labels.nav}
       className={cn('mx-auto flex w-full justify-center', className)}
       {...props}
     />
@@ -68,9 +96,10 @@ function PaginationLink({
 }
 
 function PaginationPrevious({ className, children, ...props }: PaginationLinkProps) {
+  const labels = useLabels('pagination', defaultPaginationLabels)
   return (
     <PaginationLink
-      aria-label="Go to previous page"
+      aria-label={labels.previousPage}
       size="default"
       className={cn('gap-1 px-2.5 sm:pl-2.5', className)}
       {...props}
@@ -78,7 +107,7 @@ function PaginationPrevious({ className, children, ...props }: PaginationLinkPro
       {children ?? (
         <>
           <ChevronLeftIcon />
-          <span className="hidden sm:block">Previous</span>
+          <span className="hidden sm:block">{labels.previous}</span>
         </>
       )}
     </PaginationLink>
@@ -86,16 +115,17 @@ function PaginationPrevious({ className, children, ...props }: PaginationLinkPro
 }
 
 function PaginationNext({ className, children, ...props }: PaginationLinkProps) {
+  const labels = useLabels('pagination', defaultPaginationLabels)
   return (
     <PaginationLink
-      aria-label="Go to next page"
+      aria-label={labels.nextPage}
       size="default"
       className={cn('gap-1 px-2.5 sm:pr-2.5', className)}
       {...props}
     >
       {children ?? (
         <>
-          <span className="hidden sm:block">Next</span>
+          <span className="hidden sm:block">{labels.next}</span>
           <ChevronRightIcon />
         </>
       )}
@@ -103,7 +133,15 @@ function PaginationNext({ className, children, ...props }: PaginationLinkProps) 
   )
 }
 
-function PaginationEllipsis({ className, ...props }: React.ComponentProps<'span'>) {
+function PaginationEllipsis({
+  className,
+  label,
+  ...props
+}: React.ComponentProps<'span'> & {
+  /** Read out instead of the dots. Default "More pages". */
+  label?: string
+}) {
+  const labels = useLabels('pagination', defaultPaginationLabels)
   return (
     <span
       data-slot="pagination-ellipsis"
@@ -112,7 +150,7 @@ function PaginationEllipsis({ className, ...props }: React.ComponentProps<'span'
       {...props}
     >
       <MoreHorizontalIcon className="size-4" />
-      <span className="sr-only">More pages</span>
+      <span className="sr-only">{label ?? labels.morePages}</span>
     </span>
   )
 }
@@ -177,9 +215,24 @@ export interface PaginatorProps extends Omit<React.ComponentProps<'nav'>, 'onCha
    * and can be crawled; `onPageChange` still runs on click.
    */
   getPageHref?: (page: number) => string
-  /** The words around the compact counter. Default "Page {page} of {count}". */
+  /** The compact counter. Default `labels.pageOf`, with the numbers drawn bolder. */
   formatCompact?: (page: number, count: number) => React.ReactNode
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<PaginationLabels>
 }
+
+/** A string with its numbers drawn in the foreground color. */
+const emphasizeNumbers = (text: string) =>
+  text.split(/(\d+)/).map((part, i) =>
+    /^\d+$/.test(part) ? (
+      // biome-ignore lint/suspicious/noArrayIndexKey: the parts of one fixed string
+      <span key={i} className="font-medium text-foreground">
+        {part}
+      </span>
+    ) : (
+      part
+    ),
+  )
 
 /**
  * Ready-made pagination: works out the pages to list, with ellipses, from `page`, `total` and
@@ -194,15 +247,12 @@ function Paginator({
   boundaries = 1,
   compact = 'auto',
   getPageHref,
-  formatCompact = (current, count) => (
-    <>
-      Page <span className="font-medium text-foreground">{current}</span> of{' '}
-      <span className="font-medium text-foreground">{count}</span>
-    </>
-  ),
+  formatCompact,
+  labels: labelsProp,
   className,
   ...props
 }: PaginatorProps) {
+  const labels = useLabels('pagination', defaultPaginationLabels, labelsProp)
   const pageCount = Math.max(1, Math.ceil(total / Math.max(1, pageSize)))
   const current = Math.min(Math.max(1, page), pageCount)
 
@@ -238,12 +288,12 @@ function Paginator({
 
   const previous = (
     <PaginationItem>
-      <PaginationPrevious asChild>
+      <PaginationPrevious asChild aria-label={labels.previousPage}>
         {control(
           current - 1,
           <>
             <ChevronLeftIcon />
-            <span className="hidden @md:block">Previous</span>
+            <span className="hidden @md:block">{labels.previous}</span>
           </>,
           current <= 1,
         )}
@@ -252,11 +302,11 @@ function Paginator({
   )
   const next = (
     <PaginationItem>
-      <PaginationNext asChild>
+      <PaginationNext asChild aria-label={labels.nextPage}>
         {control(
           current + 1,
           <>
-            <span className="hidden @md:block">Next</span>
+            <span className="hidden @md:block">{labels.next}</span>
             <ChevronRightIcon />
           </>,
           current >= pageCount,
@@ -277,7 +327,7 @@ function Paginator({
             <PaginationLink
               asChild
               isActive={item === current}
-              aria-label={`Page ${item}`}
+              aria-label={labels.page(item)}
               className="min-w-9 px-2"
             >
               {control(item, item)}
@@ -285,7 +335,7 @@ function Paginator({
           </PaginationItem>
         ) : (
           <PaginationItem key={item}>
-            <PaginationEllipsis />
+            <PaginationEllipsis label={labels.morePages} />
           </PaginationItem>
         ),
       )}
@@ -303,7 +353,9 @@ function Paginator({
         aria-live="polite"
         className="px-2 text-muted-foreground text-sm tabular-nums"
       >
-        {formatCompact(current, pageCount)}
+        {formatCompact
+          ? formatCompact(current, pageCount)
+          : emphasizeNumbers(labels.pageOf(current, pageCount))}
       </PaginationItem>
       {next}
     </PaginationContent>
@@ -311,7 +363,12 @@ function Paginator({
 
   return (
     // The container query, rather than a screen one, lets it go compact in a narrow column too.
-    <Pagination data-slot="paginator" className={cn('@container', className)} {...props}>
+    <Pagination
+      data-slot="paginator"
+      aria-label={labels.nav}
+      className={cn('@container', className)}
+      {...props}
+    >
       <div className="flex justify-center">
         {compact !== true && full}
         {compact !== false && short}

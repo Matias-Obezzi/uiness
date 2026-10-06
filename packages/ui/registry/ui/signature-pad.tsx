@@ -3,6 +3,7 @@
 import { PlayIcon, Trash2Icon, Undo2Icon } from 'lucide-react'
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 
@@ -171,15 +172,22 @@ export interface SignaturePadHandle {
 }
 
 export interface SignaturePadLabels {
+  /** Name of the drawing surface. */
   pad: string
+  /** Read after the name when something is drawn. */
+  strokes: (count: number) => string
+  /** Read after the name when nothing is drawn. */
+  empty: string
   undo: string
   clear: string
   replay: string
   placeholder: string
 }
 
-const DEFAULT_LABELS: SignaturePadLabels = {
+export const defaultSignaturePadLabels: SignaturePadLabels = {
   pad: 'Signature',
+  strokes: (count) => `${count} ${count === 1 ? 'stroke' : 'strokes'}`,
+  empty: 'empty',
   undo: 'Undo',
   clear: 'Clear',
   replay: 'Replay',
@@ -207,7 +215,7 @@ export interface SignaturePadProps
   disabled?: boolean
   /** With a name, a hidden input carries the signature as a PNG data URL in a form. */
   name?: string
-  /** Texts, for other languages. */
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
   labels?: Partial<SignaturePadLabels>
   /** Classes for the drawing surface. `className` goes on the wrapper. */
   canvasClassName?: string
@@ -239,7 +247,7 @@ function SignaturePad({
   onKeyDown,
   ...props
 }: SignaturePadProps) {
-  const labels = { ...DEFAULT_LABELS, ...labelsProp }
+  const labels = useLabels('signature-pad', defaultSignaturePadLabels, labelsProp)
   const [internal, setInternal] = React.useState<SignatureStroke[]>(defaultValue ?? [])
   const strokes = valueProp ?? internal
   const strokesRef = React.useRef(strokes)
@@ -513,11 +521,9 @@ function SignaturePad({
         <canvas
           ref={canvasRef}
           role="img"
-          aria-label={
-            strokes.length
-              ? `${labels.pad}, ${strokes.length} ${strokes.length === 1 ? 'stroke' : 'strokes'}`
-              : `${labels.pad}, empty`
-          }
+          aria-label={`${labels.pad}, ${
+            strokes.length ? labels.strokes(strokes.length) : labels.empty
+          }`}
           data-slot="signature-pad-canvas"
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}

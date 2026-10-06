@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { LabelsProvider } from '@/lib/labels'
 import { CopyButton } from './copy-button'
 
 const clipboard = (writeText: (text: string) => Promise<void>) =>
@@ -78,5 +79,29 @@ describe('CopyButton', () => {
     render(<CopyButton value="x" tooltip />)
     await press(screen.getByRole('button', { name: 'Copy' }))
     expect((await screen.findByRole('tooltip')).textContent).toBe('Copied')
+  })
+})
+
+describe('CopyButton labels', () => {
+  it('takes its words from the labels prop and the provider', async () => {
+    clipboard(vi.fn().mockResolvedValue(undefined))
+    render(
+      <LabelsProvider labels={{ 'copy-button': { copy: 'Copiar', copied: 'Copiado' } }}>
+        <CopyButton value="x" />
+        <CopyButton value="y" labels={{ copy: 'Copiar enlace' }} />
+      </LabelsProvider>,
+    )
+    expect(screen.getByRole('button', { name: 'Copiar enlace' })).toBeTruthy()
+    await press(screen.getByRole('button', { name: 'Copiar' }))
+    expect(screen.getAllByRole('status').map((s) => s.textContent)).toContain('Copiado')
+  })
+
+  it('still prefers the single label props', () => {
+    render(
+      <LabelsProvider labels={{ 'copy-button': { copy: 'Copiar' } }}>
+        <CopyButton value="x" label="Copy the id" />
+      </LabelsProvider>,
+    )
+    expect(screen.getByRole('button', { name: 'Copy the id' })).toBeTruthy()
   })
 })

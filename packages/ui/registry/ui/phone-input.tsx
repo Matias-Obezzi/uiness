@@ -2,6 +2,7 @@
 
 import { CheckIcon, ChevronDownIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/ui/command'
@@ -176,12 +177,15 @@ export interface PhoneValueDetails {
 }
 
 export interface PhoneInputLabels {
+  /** Name of the country button, before the picked country. */
   country: string
+  /** Placeholder of the country search. */
   search: string
+  /** Shown when no country matches the search. */
   empty: string
 }
 
-const DEFAULT_LABELS: PhoneInputLabels = {
+export const defaultPhoneInputLabels: PhoneInputLabels = {
   country: 'Country',
   search: 'Search countries…',
   empty: 'No country found.',
@@ -207,7 +211,7 @@ export interface PhoneInputProps
   countries?: string[]
   /** BCP 47 locale for the country names. Default the browser's. */
   locale?: string
-  /** Texts, for other languages. */
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
   labels?: Partial<PhoneInputLabels>
   /** Classes for the input. `className` goes on the wrapper. */
   inputClassName?: string
@@ -229,7 +233,7 @@ function PhoneInput({
   defaultCountry,
   onCountryChange,
   countries: countryCodes,
-  locale,
+  locale: localeProp,
   labels: labelsProp,
   className,
   inputClassName,
@@ -239,7 +243,8 @@ function PhoneInput({
   onKeyDown,
   ...props
 }: PhoneInputProps) {
-  const labels = { ...DEFAULT_LABELS, ...labelsProp }
+  const labels = useLabels('phone-input', defaultPhoneInputLabels, labelsProp)
+  const locale = useLocale(localeProp)
   const list = React.useMemo(() => {
     if (!countryCodes) return phoneCountries
     return countryCodes

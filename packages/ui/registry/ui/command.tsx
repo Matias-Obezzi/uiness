@@ -2,7 +2,21 @@
 
 import { SearchIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface CommandLabels {
+  /** Name of the menu, and title of `CommandDialog`. */
+  title: string
+  /** Description of `CommandDialog`, read by screen readers. */
+  description: string
+}
+
+export const defaultCommandLabels: CommandLabels = {
+  title: 'Command menu',
+  description: 'Search for a command or a page',
+}
+
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/ui/dialog'
 
 /* -------------------------------------------------------------------------------------------------
@@ -116,6 +130,8 @@ export interface CommandProps extends Omit<React.ComponentProps<'div'>, 'onSelec
   loop?: boolean
   /** Accessible name when there is no visible label. */
   label?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<CommandLabels>
 }
 
 function Command({
@@ -125,12 +141,15 @@ function Command({
   shouldFilter = true,
   filter = commandScore,
   loop = true,
-  label = 'Command menu',
+  label: labelProp,
+  labels: labelsProp,
   className,
   onKeyDown,
   children,
   ...props
 }: CommandProps) {
+  const labels = useLabels('command', defaultCommandLabels, labelsProp)
+  const label = labelProp ?? labels.title
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue)
   const search = valueProp ?? uncontrolled
   const setSearch = React.useCallback(
@@ -521,12 +540,15 @@ export interface CommandDialogProps extends CommandProps {
 function CommandDialog({
   open,
   onOpenChange,
-  title = 'Command menu',
-  description = 'Search for a command or a page',
+  title: titleProp,
+  description: descriptionProp,
   contentClassName,
   children,
   ...props
 }: CommandDialogProps) {
+  const labels = useLabels('command', defaultCommandLabels, props.labels)
+  const title = titleProp ?? labels.title
+  const description = descriptionProp ?? labels.description
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent

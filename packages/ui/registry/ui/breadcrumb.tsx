@@ -3,6 +3,7 @@
 import { ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
 import { Slot } from 'radix-ui'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
@@ -11,8 +12,24 @@ import {
   DropdownMenuTrigger,
 } from '@/ui/dropdown-menu'
 
-function Breadcrumb({ 'aria-label': label = 'Breadcrumb', ...props }: React.ComponentProps<'nav'>) {
-  return <nav data-slot="breadcrumb" aria-label={label} {...props} />
+export interface BreadcrumbLabels {
+  /** Name of the navigation landmark. */
+  nav: string
+  /** Read out for a `BreadcrumbEllipsis`. */
+  more: string
+  /** Name of the button that opens the folded crumbs of `BreadcrumbTrail`. */
+  showMore: (count: number) => string
+}
+
+export const defaultBreadcrumbLabels: BreadcrumbLabels = {
+  nav: 'Breadcrumb',
+  more: 'More',
+  showMore: (count) => `Show ${count} more`,
+}
+
+function Breadcrumb({ 'aria-label': ariaLabel, ...props }: React.ComponentProps<'nav'>) {
+  const labels = useLabels('breadcrumb', defaultBreadcrumbLabels)
+  return <nav data-slot="breadcrumb" aria-label={ariaLabel ?? labels.nav} {...props} />
 }
 
 function BreadcrumbList({ className, ...props }: React.ComponentProps<'ol'>) {
@@ -84,6 +101,7 @@ function BreadcrumbSeparator({ children, className, ...props }: React.ComponentP
 }
 
 function BreadcrumbEllipsis({ className, ...props }: React.ComponentProps<'span'>) {
+  const labels = useLabels('breadcrumb', defaultBreadcrumbLabels)
   return (
     <span
       data-slot="breadcrumb-ellipsis"
@@ -93,7 +111,7 @@ function BreadcrumbEllipsis({ className, ...props }: React.ComponentProps<'span'
       {...props}
     >
       <MoreHorizontalIcon className="size-4" />
-      <span className="sr-only">More</span>
+      <span className="sr-only">{labels.more}</span>
     </span>
   )
 }
@@ -132,6 +150,8 @@ export interface BreadcrumbTrailProps extends Omit<React.ComponentProps<'nav'>, 
   renderLink?: (link: { href: string; children: React.ReactNode }) => React.ReactElement
   /** Names the folded crumbs menu button. Default "Show {n} more". */
   moreLabel?: (count: number) => string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<BreadcrumbLabels>
 }
 
 const defaultRenderLink = ({ href, children }: { href: string; children: React.ReactNode }) => (
@@ -163,10 +183,12 @@ function BreadcrumbTrail({
   fit = true,
   separator,
   renderLink = defaultRenderLink,
-  moreLabel = (count) => `Show ${count} more`,
+  moreLabel,
+  labels: labelsProp,
   className,
   ...props
 }: BreadcrumbTrailProps) {
+  const labels = useLabels('breadcrumb', defaultBreadcrumbLabels, labelsProp)
   const listRef = React.useRef<HTMLOListElement>(null)
   const measureRef = React.useRef<HTMLOListElement>(null)
   // How many more crumbs to fold, past what `maxItems` already folds, to fit the width.
@@ -239,6 +261,7 @@ function BreadcrumbTrail({
   return (
     <Breadcrumb
       data-slot="breadcrumb-trail"
+      aria-label={labels.nav}
       className={cn('relative min-w-0', className)}
       {...props}
     >
@@ -252,7 +275,7 @@ function BreadcrumbTrail({
               ) : (
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    aria-label={moreLabel(hidden.length)}
+                    aria-label={(moreLabel ?? labels.showMore)(hidden.length)}
                     className="flex size-7 items-center justify-center rounded-md outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=open]:bg-accent data-[state=open]:text-foreground"
                   >
                     <MoreHorizontalIcon className="size-4" />

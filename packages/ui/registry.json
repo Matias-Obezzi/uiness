@@ -171,6 +171,33 @@
       ]
     },
     {
+      "name": "labels",
+      "type": "registry:lib",
+      "title": "Labels",
+      "description": "LabelsProvider and useLabels: translate the words of every component in one place, and set the locale they format with.",
+      "files": [
+        {
+          "path": "registry/lib/labels.tsx",
+          "type": "registry:lib",
+          "target": "lib/labels.tsx"
+        }
+      ]
+    },
+    {
+      "name": "labels-es",
+      "type": "registry:lib",
+      "title": "Spanish labels",
+      "description": "Every component in Spanish, ready for LabelsProvider.",
+      "registryDependencies": ["@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/lib/labels-es.ts",
+          "type": "registry:lib",
+          "target": "lib/labels-es.ts"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",
@@ -190,7 +217,7 @@
       "title": "Spinner",
       "description": "An accessible loading indicator in the current text color.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/spinner.tsx",
@@ -304,7 +331,7 @@
       "type": "registry:ui",
       "title": "Dialog",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/dialog.tsx",
@@ -318,7 +345,7 @@
       "title": "Alert Dialog",
       "description": "A dialog that asks for a decision, plus a confirm() you can await from anywhere.",
       "dependencies": ["radix-ui", "class-variance-authority"],
-      "registryDependencies": ["@uiness/utils", "@uiness/button"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/alert-dialog.tsx",
@@ -363,7 +390,8 @@
         "@uiness/utils",
         "@uiness/button",
         "@uiness/popover",
-        "@uiness/use-reduced-motion"
+        "@uiness/use-reduced-motion",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -383,7 +411,8 @@
         "@uiness/avatar",
         "@uiness/button",
         "@uiness/popover",
-        "@uiness/use-reduced-motion"
+        "@uiness/use-reduced-motion",
+        "@uiness/labels"
       ],
       "css": {
         "@keyframes chat-typing": {
@@ -417,7 +446,8 @@
         "@uiness/button",
         "@uiness/dropdown-menu",
         "@uiness/popover",
-        "@uiness/textarea"
+        "@uiness/textarea",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -438,7 +468,8 @@
         "@uiness/button",
         "@uiness/popover",
         "@uiness/tabs",
-        "@uiness/use-reduced-motion"
+        "@uiness/use-reduced-motion",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -453,7 +484,7 @@
       "title": "Rich Text Editor",
       "description": "A lightweight contenteditable editor: Markdown shortcuts, a selection toolbar, a slash menu, undo, clean pastes, and HTML and Markdown out.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/rich-text-editor.tsx",
@@ -628,7 +659,7 @@
       "title": "Chart",
       "description": "The shadcn/ui chart API on recharts: ChartContainer with a config of labels and colors, tooltip and legend contents in the theme. Installs over an existing shadcn chart.tsx.",
       "dependencies": ["recharts"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/chart.tsx",
@@ -682,6 +713,7 @@
       "title": "Toast",
       "description": "Toaster wired to the theme tokens. Installs @uiness/toast.",
       "dependencies": ["@uiness/toast"],
+      "registryDependencies": ["@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/toast.tsx",
@@ -708,7 +740,7 @@
       "title": "Gallery",
       "description": "Image grid with a full screen lightbox that flies from the thumbnail.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/image"],
+      "registryDependencies": ["@uiness/utils", "@uiness/image", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/gallery.tsx",
@@ -764,7 +796,7 @@
       "title": "Drawer",
       "description": "Panel from any edge with drag to close, snap points and a check before it closes. Bottom sheet by default.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/drawer.tsx",
@@ -778,7 +810,7 @@
       "title": "Navbar",
       "description": "Site navigation that collapses into a menu or a bottom bar on small screens.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/drawer"],
+      "registryDependencies": ["@uiness/utils", "@uiness/drawer", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/navbar.tsx",
@@ -792,7 +824,7 @@
       "title": "Command",
       "description": "Command palette and searchable lists, with a dialog and a keyboard shortcut hook.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/dialog"],
+      "registryDependencies": ["@uiness/utils", "@uiness/dialog", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/command.tsx",
@@ -810,7 +842,8 @@
         "@uiness/utils",
         "@uiness/button",
         "@uiness/command",
-        "@uiness/popover"
+        "@uiness/popover",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -1065,7 +1098,8 @@
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/use-in-view",
-        "@uiness/use-reduced-motion"
+        "@uiness/use-reduced-motion",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -1183,7 +1217,7 @@
       "type": "registry:ui",
       "title": "Compare",
       "description": "Two layers with a divider you drag, keyboard accessible.",
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/compare.tsx",
@@ -1292,7 +1326,12 @@
       "title": "Sidebar",
       "description": "A collapsible sidebar with groups, menus, stacked views and a remembered state. Becomes a drawer on phones.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/drawer", "@uiness/tooltip"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/drawer",
+        "@uiness/tooltip",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/sidebar.tsx",
@@ -1306,7 +1345,7 @@
       "title": "Calendar",
       "description": "A month grid to pick a day, several days or a range. No date library.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/calendar.tsx",
@@ -1324,7 +1363,8 @@
         "@uiness/utils",
         "@uiness/button",
         "@uiness/popover",
-        "@uiness/calendar"
+        "@uiness/calendar",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -1430,7 +1470,7 @@
       "title": "Number Field",
       "description": "A bounded number entry with minus and plus buttons, held to repeat, arrow and page keys, and Intl formatting for percent, currency and units.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/number-field.tsx",
@@ -1444,7 +1484,7 @@
       "title": "Password Field",
       "description": "A password input with a reveal toggle, an optional strength meter with a built in scorer, and a checklist of rules.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/password-field.tsx",
@@ -1458,7 +1498,7 @@
       "title": "Search Field",
       "description": "A search input with a clear button, a loading state and a shortcut that focuses it. Can start as an icon button that grows into the field.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/search-field.tsx",
@@ -1472,7 +1512,7 @@
       "title": "Tag Input",
       "description": "Typed values become removable tags on Enter, a comma or a pasted list, with a limit, validation and keyboard navigation between tags.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/tag-input.tsx",
@@ -1486,7 +1526,12 @@
       "title": "Multi Select",
       "description": "Pick several options from a searchable list, shown as tags in the trigger with a +N overflow, select all, clear and groups.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/command", "@uiness/popover"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/command",
+        "@uiness/popover",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/multi-select.tsx",
@@ -1514,7 +1559,7 @@
       "title": "Inline Edit",
       "description": "Text that becomes a field where it stands, with no layout shift. Enter or blur saves, Escape cancels, with validation and async saves.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/inline-edit.tsx",
@@ -1542,7 +1587,7 @@
       "title": "Time Picker",
       "description": "A time field in segments you type into or step with the arrows, with an optional list of times.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/popover"],
+      "registryDependencies": ["@uiness/utils", "@uiness/popover", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/time-picker.tsx",
@@ -1560,7 +1605,8 @@
         "@uiness/utils",
         "@uiness/button",
         "@uiness/calendar",
-        "@uiness/popover"
+        "@uiness/popover",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -1575,7 +1621,12 @@
       "title": "Color Picker",
       "description": "A swatch that opens a picker: area, hue and opacity, hex, rgb, hsl and oklch, eye dropper, saved colors and a contrast check.",
       "dependencies": ["lucide-react", "radix-ui"],
-      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/popover"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/popover",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/color-picker.tsx",
@@ -1593,7 +1644,8 @@
         "@uiness/utils",
         "@uiness/button",
         "@uiness/command",
-        "@uiness/popover"
+        "@uiness/popover",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -1607,7 +1659,7 @@
       "type": "registry:ui",
       "title": "Money Input",
       "description": "A currency field that groups as you type and hands back integer minor units.",
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/money-input.tsx",
@@ -1620,7 +1672,7 @@
       "type": "registry:ui",
       "title": "Mention Input",
       "description": "A textarea where @ and # open suggestions at the caret, and mentions act as single tokens.",
-      "registryDependencies": ["@uiness/utils", "@uiness/popover"],
+      "registryDependencies": ["@uiness/utils", "@uiness/popover", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/mention-input.tsx",
@@ -1634,7 +1686,12 @@
       "title": "Signature Pad",
       "description": "Ink that thins with speed, with undo, clear, replay and PNG or SVG export.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/use-reduced-motion"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/use-reduced-motion",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/signature-pad.tsx",
@@ -1648,7 +1705,7 @@
       "title": "Carousel",
       "description": "A horizontal run of items of any width and any content, snapped as you scroll.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/carousel.tsx",
@@ -1662,7 +1719,7 @@
       "title": "Sortable",
       "description": "A list you reorder by dragging or with the keyboard. Installs @uiness/dnd.",
       "dependencies": ["@uiness/dnd", "lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/sortable.tsx",
@@ -1676,7 +1733,7 @@
       "title": "Kanban",
       "description": "Columns of cards, moved inside a column or across them. Installs @uiness/dnd.",
       "dependencies": ["@uiness/dnd", "lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/kanban.tsx",
@@ -1690,7 +1747,7 @@
       "title": "Reorderable Grid",
       "description": "A grid rearranged in two directions, the way app icons move. Installs @uiness/dnd.",
       "dependencies": ["@uiness/dnd"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/reorderable-grid.tsx",
@@ -1704,7 +1761,7 @@
       "title": "Draggable",
       "description": "Anything you can pick up and move, optionally kept inside its parent. Installs @uiness/dnd.",
       "dependencies": ["@uiness/dnd", "lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/draggable.tsx",
@@ -1718,7 +1775,7 @@
       "title": "Dropzone",
       "description": "Files dropped in from the desktop, checked by type, size and count.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/dropzone.tsx",
@@ -1768,7 +1825,7 @@
       "type": "registry:ui",
       "title": "Odometer",
       "description": "A number whose digits roll to their new value.",
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/odometer.tsx",
@@ -1912,7 +1969,8 @@
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/use-in-view",
-        "@uiness/use-reduced-motion"
+        "@uiness/use-reduced-motion",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -1948,7 +2006,8 @@
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/use-in-view",
-        "@uiness/use-reduced-motion"
+        "@uiness/use-reduced-motion",
+        "@uiness/labels"
       ],
       "css": {
         "@keyframes blink": {
@@ -2045,7 +2104,12 @@
       "title": "Split Button",
       "description": "A primary action joined to a chevron that opens a menu of related actions.",
       "dependencies": ["radix-ui", "lucide-react", "class-variance-authority"],
-      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/dropdown-menu"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/dropdown-menu",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/split-button.tsx",
@@ -2087,7 +2151,12 @@
       "title": "Copy Button",
       "description": "Copies a value with an icon that turns into a check, an optional tooltip and an announcement.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/tooltip"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/tooltip",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/copy-button.tsx",
@@ -2101,7 +2170,12 @@
       "title": "Hold to Confirm",
       "description": "A button that acts only after being held down, with a fill that sweeps across and rewinds on release.",
       "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/spinner"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-reduced-motion",
+        "@uiness/spinner",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/hold-to-confirm.tsx",
@@ -2115,7 +2189,12 @@
       "title": "Confirm Morph",
       "description": "A button that asks to confirm in place, shows a spinner while the action runs and offers Undo.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/spinner"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/spinner",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/confirm-morph.tsx",
@@ -2143,7 +2222,12 @@
       "title": "Theme Switch",
       "description": "A light and dark switch that sweeps the new theme over the page with the View Transitions API.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/use-reduced-motion"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/use-reduced-motion",
+        "@uiness/labels"
+      ],
       "css": {
         "html[data-theme-transition]::view-transition-old(root), html[data-theme-transition]::view-transition-new(root)": {
           "animation": "none",
@@ -2165,7 +2249,7 @@
       "type": "registry:ui",
       "title": "Kbd",
       "description": "Keyboard key caps and shortcuts, with ⌘ on a Mac and Ctrl elsewhere.",
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/kbd.tsx",
@@ -2179,7 +2263,7 @@
       "title": "Breadcrumb",
       "description": "Where a page sits in the hierarchy. A trail that folds its middle crumbs into a menu when there are too many or they do not fit.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/dropdown-menu"],
+      "registryDependencies": ["@uiness/utils", "@uiness/dropdown-menu", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/breadcrumb.tsx",
@@ -2193,7 +2277,7 @@
       "title": "Pagination",
       "description": "Page links in the shadcn shape, plus a Paginator that works out the pages and ellipses and turns into \"Page 2 of 10\" on phones.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/button"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/pagination.tsx",
@@ -2207,7 +2291,7 @@
       "title": "Tree View",
       "description": "Nested folders and items with the full tree keyboard, single or multiple selection, checkboxes with mixed folders and children loaded on demand.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/spinner"],
+      "registryDependencies": ["@uiness/utils", "@uiness/spinner", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/tree-view.tsx",
@@ -2221,7 +2305,7 @@
       "title": "Stepper",
       "description": "Steps of a flow, done, current, upcoming or failed, with lines that fill as you advance. Horizontal or vertical.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/stepper.tsx",
@@ -2249,7 +2333,7 @@
       "title": "Resizable Panels",
       "description": "Panels with handles between them to trade space, by pointer or keyboard. Limits, folding, double click to reset and a remembered layout, without a library.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/resizable-panels.tsx",
@@ -2263,7 +2347,7 @@
       "title": "Expandable Card",
       "description": "A card that grows out of its place in a grid into a larger view, and folds back into it when closed.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/expandable-card.tsx",
@@ -2291,7 +2375,7 @@
       "title": "Announcement Bar",
       "description": "A banner across the top that rotates messages, counts down to a date and folds away when dismissed, remembered.",
       "dependencies": ["class-variance-authority", "lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/announcement-bar.tsx",
@@ -2308,7 +2392,8 @@
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/dropdown-menu",
-        "@uiness/use-reduced-motion"
+        "@uiness/use-reduced-motion",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -2323,7 +2408,12 @@
       "title": "Metric Card",
       "description": "A compact KPI: label, a value that counts to each new figure, a colored delta with an arrow, a comparison, a sparkline slot and a loading state.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/number-ticker", "@uiness/skeleton"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/number-ticker",
+        "@uiness/skeleton",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/metric-card.tsx",
@@ -2336,7 +2426,7 @@
       "type": "registry:ui",
       "title": "Sparkline",
       "description": "A word sized trend as a line, an area or bars in inline SVG, with dots on the last, lowest and highest values and an optional tooltip.",
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/sparkline.tsx",
@@ -2349,7 +2439,7 @@
       "type": "registry:ui",
       "title": "Gauge",
       "description": "A value against a range as a half or full circle, with colored threshold bands, an optional needle and the value in the centre. Read as a meter.",
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/gauge.tsx",
@@ -2363,7 +2453,7 @@
       "title": "Usage Meter",
       "description": "What fills an allowance as one stacked bar with a legend, \"x of y used\", and warning and over limit states.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/usage-meter.tsx",
@@ -2376,7 +2466,7 @@
       "type": "registry:ui",
       "title": "Activity Heatmap",
       "description": "A year of days in weekly columns shaded by activity, with month and day labels, a legend, a tooltip per day and arrow key navigation.",
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/activity-heatmap.tsx",
@@ -2394,7 +2484,8 @@
         "@uiness/chart",
         "@uiness/utils",
         "@uiness/use-reduced-motion",
-        "@uiness/odometer"
+        "@uiness/odometer",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -2412,7 +2503,8 @@
         "@uiness/utils",
         "@uiness/avatar",
         "@uiness/popover",
-        "@uiness/tooltip"
+        "@uiness/tooltip",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -2427,7 +2519,12 @@
       "title": "JSON Viewer",
       "description": "A collapsible JSON tree with type colors, search that opens and highlights matches, paging for long arrays, copy value or path, and the tree keyboard pattern.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/input"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/input",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/json-viewer.tsx",
@@ -2441,7 +2538,7 @@
       "title": "Code Block",
       "description": "Code with a header, line numbers, highlighted lines, a wrap switch, a copy button and a collapsed state. Takes plain text or HTML from any highlighter.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/code-block.tsx",
@@ -2461,7 +2558,8 @@
         "@uiness/checkbox",
         "@uiness/input",
         "@uiness/popover",
-        "@uiness/table"
+        "@uiness/table",
+        "@uiness/labels"
       ],
       "files": [
         {
@@ -2475,7 +2573,7 @@
       "type": "registry:ui",
       "title": "Billing Toggle",
       "description": "A monthly and yearly switch with a savings badge, plus a Price whose digits roll to the new amount.",
-      "registryDependencies": ["@uiness/utils", "@uiness/odometer"],
+      "registryDependencies": ["@uiness/utils", "@uiness/odometer", "@uiness/labels"],
       "files": [
         {
           "path": "registry/ui/billing-toggle.tsx",

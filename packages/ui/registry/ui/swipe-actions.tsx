@@ -3,6 +3,7 @@
 import { MoreHorizontalIcon } from 'lucide-react'
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
@@ -70,6 +71,15 @@ function SwipeActions({ className, ...props }: SwipeActionsProps) {
   )
 }
 
+export interface SwipeActionsLabels {
+  /** Name of a row's menu button, from the row's `label`. */
+  moreActions: (label: string) => string
+}
+
+export const defaultSwipeActionsLabels: SwipeActionsLabels = {
+  moreActions: (label) => `More actions for ${label}`,
+}
+
 export interface SwipeActionsRowProps extends Omit<React.ComponentProps<'li'>, 'children'> {
   /** Names the row in its menu button, like the subject of a message. */
   label: string
@@ -84,6 +94,8 @@ export interface SwipeActionsRowProps extends Omit<React.ComponentProps<'li'>, '
   /** Classes for the sliding layer that holds the content. */
   contentClassName?: string
   children?: React.ReactNode
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<SwipeActionsLabels>
 }
 
 /**
@@ -100,8 +112,10 @@ function SwipeActionsRow({
   className,
   contentClassName,
   children,
+  labels: labelsProp,
   ...props
 }: SwipeActionsRowProps) {
+  const labels = useLabels('swipe-actions', defaultSwipeActionsLabels, labelsProp)
   const id = React.useId()
   const group = React.useContext(GroupContext)
   const reduced = useReducedMotion()
@@ -355,7 +369,7 @@ function SwipeActionsRow({
           <DropdownMenu>
             <DropdownMenuTrigger
               data-swipe-ignore=""
-              aria-label={`More actions for ${label}`}
+              aria-label={labels.moreActions(label)}
               className="mr-2 flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=open]:bg-accent data-[state=open]:text-foreground"
             >
               <MoreHorizontalIcon className="size-4" />

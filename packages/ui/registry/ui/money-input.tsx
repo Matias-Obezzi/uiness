@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 /* -------------------------------------------------------------------------------------------------
@@ -122,7 +123,7 @@ function MoneyInput({
   defaultValue = null,
   onValueChange,
   currency = 'USD',
-  locale,
+  locale: localeProp,
   currencyDisplay = 'narrowSymbol',
   allowNegative = false,
   min,
@@ -136,6 +137,7 @@ function MoneyInput({
   onKeyDown,
   ...props
 }: MoneyInputProps) {
+  const locale = useLocale(localeProp)
   const f = React.useMemo(
     () => moneyFormat(locale, currency, currencyDisplay),
     [locale, currency, currencyDisplay],

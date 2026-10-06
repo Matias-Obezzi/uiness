@@ -62,17 +62,18 @@ function BarChart({
   showGrid = true,
   showLegend,
   empty,
+  labels,
   className,
   'aria-label': ariaLabel,
   ...props
 }: BarChartProps) {
   const reduced = useReducedMotion()
-  const chart = useSeriesChart({ data, x, series, xFormat, yFormat, locale })
+  const chart = useSeriesChart({ data, x, series, xFormat, yFormat, locale, labels })
 
   if (chart.isEmpty) {
     return (
       <ChartEmpty height={height} className={className} {...props}>
-        {empty}
+        {empty ?? chart.labels.empty}
       </ChartEmpty>
     )
   }
@@ -111,7 +112,7 @@ function BarChart({
       <ChartContainer
         config={chart.config}
         role="figure"
-        aria-label={ariaLabel ?? `Bar chart of ${chart.summary}`}
+        aria-label={ariaLabel ?? chart.labels.barChart(chart.summary)}
         className="aspect-auto w-full"
         style={{ height }}
       >

@@ -43,6 +43,10 @@ export interface ToasterProps {
   style?: CSSProperties
   /** Pause timers while the page is not focused. Default true. */
   pauseWhenPageIsHidden?: boolean
+  /** Name of the region that holds the toasts. Default "Notifications". */
+  label?: string
+  /** Name of the close button. Default "Close". */
+  closeLabel?: string
 }
 
 const STYLE_ID = 'uiness-toast-styles'
@@ -141,6 +145,7 @@ interface ToastCardProps {
   offsetPx: number
   richColors: boolean
   closeButton: boolean
+  closeLabel: string
   icons: Partial<Record<ToastType, ReactNode>>
   className?: string
   style?: CSSProperties
@@ -158,6 +163,7 @@ function ToastCard({
   offsetPx,
   richColors,
   closeButton,
+  closeLabel,
   icons,
   className,
   style,
@@ -341,7 +347,7 @@ function ToastCard({
       {showClose && toast.dismissible && (
         <button
           type="button"
-          aria-label="Close"
+          aria-label={closeLabel}
           data-toast-close=""
           onClick={() => store.dismiss(toast.id)}
           style={{
@@ -421,6 +427,8 @@ export function Toaster({
   className,
   style,
   pauseWhenPageIsHidden = true,
+  label = 'Notifications',
+  closeLabel = 'Close',
 }: ToasterProps) {
   useInjectStyles()
   const toasts = useSyncExternalStore(store.subscribe, store.getToasts, getServerToasts)
@@ -491,7 +499,7 @@ export function Toaster({
             data-uiness-toaster=""
             data-position={pos}
             data-expanded={expanded ? '' : undefined}
-            aria-label="Notifications"
+            aria-label={label}
             tabIndex={-1}
             className={className}
             onPointerEnter={() => setHovered(true)}
@@ -528,6 +536,7 @@ export function Toaster({
                 offsetPx={offsets[i] ?? 0}
                 richColors={richColors}
                 closeButton={closeButton}
+                closeLabel={closeLabel}
                 icons={icons}
                 className={toastClassName}
                 style={toastStyle}

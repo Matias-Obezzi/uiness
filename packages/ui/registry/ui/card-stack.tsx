@@ -3,7 +3,26 @@
 import * as React from 'react'
 import { useInView } from '@/hooks/use-in-view'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface CardStackLabels {
+  /** Name of the stack when no `aria-label` is given. */
+  region: string
+  /** What the stack is announced as. */
+  carousel: string
+  /** What each card is announced as. */
+  slide: string
+  /** Name of each card. */
+  position: (index: number, count: number) => string
+}
+
+export const defaultCardStackLabels: CardStackLabels = {
+  region: 'Cards',
+  carousel: 'carousel',
+  slide: 'slide',
+  position: (index, count) => `${index} of ${count}`,
+}
 
 export interface CardStackProps extends React.ComponentProps<'section'> {
   /** Send the front card to the back on its own. Default true. */
@@ -24,6 +43,8 @@ export interface CardStackProps extends React.ComponentProps<'section'> {
   threshold?: number
   /** Called with the index of the card that comes to the front. */
   onIndexChange?: (index: number) => void
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<CardStackLabels>
 }
 
 /** A card on its way round. `back` is the previous card coming to the front. */
@@ -44,6 +65,7 @@ function CardStack({
   duration = 600,
   threshold = 80,
   onIndexChange,
+  labels: labelsProp,
   className,
   style,
   children,
@@ -67,6 +89,7 @@ function CardStack({
   const [drag, setDrag] = React.useState<number | null>(null)
   const start = React.useRef<{ x: number; id: number } | null>(null)
   const moved = React.useRef(false)
+  const labels = useLabels('card-stack', defaultCardStackLabels, labelsProp)
   const pointerFocus = React.useRef(false)
   const changeRef = React.useRef(onIndexChange)
   changeRef.current = onIndexChange
@@ -159,8 +182,8 @@ function CardStack({
   return (
     <section
       ref={ref}
-      aria-roledescription="carousel"
-      aria-label={props['aria-label'] ?? 'Cards'}
+      aria-roledescription={labels.carousel}
+      aria-label={props['aria-label'] ?? labels.region}
       // biome-ignore lint/a11y/noNoninteractiveTabindex: the stack takes focus so the arrow keys can move it
       tabIndex={0}
       data-slot="card-stack"
@@ -224,8 +247,8 @@ function CardStack({
               // biome-ignore lint/suspicious/noArrayIndexKey: cards are positional
               key={id}
               role="group"
-              aria-roledescription="slide"
-              aria-label={`${id + 1} of ${count}`}
+              aria-roledescription={labels.slide}
+              aria-label={labels.position(id + 1, count)}
               aria-hidden={!front || undefined}
               inert={!front || undefined}
               data-slot="card-stack-item"

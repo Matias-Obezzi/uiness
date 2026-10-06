@@ -2,7 +2,18 @@
 
 import { AlertCircleIcon, CheckIcon, ChevronRightIcon, MinusIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface TreeViewLabels {
+  /** Read after a node whose children failed to load. */
+  loadFailed: string
+}
+
+export const defaultTreeViewLabels: TreeViewLabels = {
+  loadFailed: 'could not load, open to retry',
+}
+
 import { Spinner } from '@/ui/spinner'
 
 export interface TreeNode {
@@ -65,6 +76,8 @@ export interface TreeViewProps
   renderIcon?: (node: TreeNode, state: TreeIconState) => React.ReactNode
   /** Runs on Enter, and on a click, for a node that is not disabled. */
   onAction?: (node: TreeNode) => void
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<TreeViewLabels>
 }
 
 interface Entry {
@@ -132,10 +145,12 @@ function TreeView({
   loadChildren,
   renderIcon,
   onAction,
+  labels: labelsProp,
   className,
   onKeyDown,
   ...props
 }: TreeViewProps) {
+  const labels = useLabels('tree-view', defaultTreeViewLabels, labelsProp)
   const [expandedIds, setExpandedIds] = useControllable(
     expandedProp,
     defaultExpanded,
@@ -533,9 +548,7 @@ function TreeView({
               </span>
             )}
             <span className="min-w-0 flex-1 truncate">{node.label}</span>
-            {failed.has(node.id) && (
-              <span className="sr-only">, could not load, open to retry</span>
-            )}
+            {failed.has(node.id) && <span className="sr-only">, {labels.loadFailed}</span>}
           </div>
           {branch && (open || opened.current.has(node.id)) && (
             <div

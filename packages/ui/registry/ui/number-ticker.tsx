@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { useInView } from '@/hooks/use-in-view'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 export interface NumberTickerProps extends Omit<React.ComponentProps<'span'>, 'children'> {
@@ -36,12 +37,13 @@ function NumberTicker({
   duration = 1500,
   delay = 0,
   decimals = 0,
-  locale,
+  locale: localeProp,
   format,
   whenVisible = true,
   className,
   ...props
 }: NumberTickerProps) {
+  const locale = useLocale(localeProp)
   const ref = React.useRef<HTMLSpanElement>(null)
   const inView = useInView(ref)
   const reduced = useReducedMotion()

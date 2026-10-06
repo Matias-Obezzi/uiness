@@ -144,3 +144,27 @@ describe('formatBytes', () => {
     expect(formatBytes(512, 'en-US')).toBe('512 byte')
   })
 })
+
+describe('ChatThread labels', () => {
+  it('reaches every part with the labels prop', () => {
+    render(
+      <ChatThread
+        messages={messages}
+        users={users}
+        currentUserId="me"
+        typing={['grace']}
+        onSend={() => {}}
+        labels={{
+          messages: 'Mensajes',
+          send: 'Enviar',
+          message: 'Mensaje',
+          typing: (names) => `${names} está escribiendo`,
+        }}
+      />,
+    )
+    expect(screen.getByRole('log', { name: 'Mensajes' })).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'Enviar' })).toBeTruthy()
+    expect(screen.getByRole('textbox', { name: 'Mensaje' })).toBeTruthy()
+    expect(screen.getByRole('status').textContent).toContain('Grace Hopper está escribiendo')
+  })
+})

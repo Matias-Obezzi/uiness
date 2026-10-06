@@ -4,7 +4,39 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
+
+export interface AnnouncementBarLabels {
+  /** Name of the region. */
+  region: string
+  previous: string
+  next: string
+  play: string
+  pause: string
+  dismiss: string
+  /** Read before a message when there are several. */
+  position: (current: number, count: number) => string
+  /** What the countdown reads as. */
+  endsIn: (days: number, hours: number, minutes: number) => string
+  /** The days of the countdown, shown before the clock. */
+  days: (days: number) => string
+}
+
+export const defaultAnnouncementBarLabels: AnnouncementBarLabels = {
+  region: 'Announcements',
+  previous: 'Previous message',
+  next: 'Next message',
+  play: 'Play messages',
+  pause: 'Pause messages',
+  dismiss: 'Dismiss',
+  position: (current, count) => `${current} of ${count}:`,
+  endsIn: (days, hours, minutes) =>
+    `Ends in ${[days > 0 && plural(days, 'day'), hours > 0 && plural(hours, 'hour'), plural(minutes, 'minute')].filter(Boolean).join(' ')}`,
+  days: (days) => `${days}d`,
+}
 
 const STORAGE_PREFIX = 'uiness-announcement:'
 
@@ -70,6 +102,8 @@ export interface AnnouncementBarProps
   onDismiss?: () => void
   /** Names the region for assistive tech. Default "Announcements". */
   label?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<AnnouncementBarLabels>
 }
 
 /**
@@ -86,11 +120,14 @@ function AnnouncementBar({
   dismissible = true,
   storageKey,
   onDismiss,
-  label = 'Announcements',
+  label: labelProp,
+  labels: labelsProp,
   variant,
   className,
   ...props
 }: AnnouncementBarProps) {
+  const labels = useLabels('announcement-bar', defaultAnnouncementBarLabels, labelsProp)
+  const label = labelProp ?? labels.region
   const reduced = useReducedMotion()
   const [index, setIndex] = React.useState(0)
   const [paused, setPaused] = React.useState(false)
@@ -168,7 +205,7 @@ function AnnouncementBar({
       <div className="min-h-0">
         <div className="flex min-h-10 items-center gap-1 px-2 py-1.5 text-sm sm:px-4">
           {count > 1 && (
-            <BarButton label="Previous message" onClick={() => step(-1)} className="max-sm:hidden">
+            <BarButton label={labels.previous} onClick={() => step(-1)} className="max-sm:hidden">
               <ChevronLeftIcon />
             </BarButton>
           )}
@@ -183,24 +220,25 @@ function AnnouncementBar({
               data-slot="announcement-bar-message"
               className="min-w-0 text-balance duration-(--duration-slow,300ms) ease-(--easing-emphasized,cubic-bezier(0.16,1,0.3,1)) motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:animate-in [&_a]:font-medium [&_a]:underline [&_a]:underline-offset-4"
             >
-              {count > 1 && (
-                <span className="sr-only">
-                  {current + 1} of {count}:{' '}
-                </span>
-              )}
+              {count > 1 && <span className="sr-only">{labels.position(current + 1, count)} </span>}
               {messages[current]}
             </p>
             {countdownTo !== undefined && (
-              <Countdown to={countdownTo} done={countdownDone} onEnd={onCountdownEnd} />
+              <Countdown
+                to={countdownTo}
+                done={countdownDone}
+                onEnd={onCountdownEnd}
+                labels={labels}
+              />
             )}
           </div>
           {count > 1 && (
             <>
-              <BarButton label="Next message" onClick={() => step(1)} className="max-sm:hidden">
+              <BarButton label={labels.next} onClick={() => step(1)} className="max-sm:hidden">
                 <ChevronRightIcon />
               </BarButton>
               <BarButton
-                label={paused ? 'Play messages' : 'Pause messages'}
+                label={paused ? labels.play : labels.pause}
                 onClick={() => setPaused((p) => !p)}
               >
                 {paused ? <PlayIcon /> : <PauseIcon />}
@@ -208,7 +246,7 @@ function AnnouncementBar({
             </>
           )}
           {dismissible && (
-            <BarButton label="Dismiss" onClick={dismiss}>
+            <BarButton label={labels.dismiss} onClick={dismiss}>
               <XIcon />
             </BarButton>
           )}
@@ -240,10 +278,12 @@ function Countdown({
   to,
   done,
   onEnd,
+  labels,
 }: {
   to: Date | string | number
   done?: React.ReactNode
   onEnd?: () => void
+  labels: AnnouncementBarLabels
 }) {
   const target = new Date(to).getTime()
   // Nothing time based on the server, so the markup matches when the page hydrates.
@@ -272,23 +312,14 @@ function Countdown({
   if (now >= target) return done ? <span data-slot="announcement-bar-countdown">{done}</span> : null
 
   const { days, hours, minutes, seconds } = parts(target - now)
-  const unit = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`
-  const spoken = [
-    days > 0 && unit(days, 'day'),
-    hours > 0 && unit(hours, 'hour'),
-    unit(minutes, 'minute'),
-  ]
-    .filter(Boolean)
-    .join(' ')
-
   return (
     <span
       role="timer"
       data-slot="announcement-bar-countdown"
-      aria-label={`Ends in ${spoken}`}
+      aria-label={labels.endsIn(days, hours, minutes)}
       className="inline-flex shrink-0 items-center gap-1 rounded-md bg-current/10 px-2 py-0.5 font-medium font-mono text-xs tabular-nums"
     >
-      {days > 0 && <span>{days}d</span>}
+      {days > 0 && <span>{labels.days(days)}</span>}
       <span>
         {pad(hours)}:{pad(minutes)}:{pad(seconds)}
       </span>

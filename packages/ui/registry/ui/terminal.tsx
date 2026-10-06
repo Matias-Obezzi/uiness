@@ -4,6 +4,7 @@ import { Check, LoaderCircle, RotateCcw } from 'lucide-react'
 import * as React from 'react'
 import { useInView } from '@/hooks/use-in-view'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 type StepState = 'pending' | 'active' | 'done'
@@ -40,6 +41,15 @@ function useTimeout(when: boolean, ms: number, fn: () => void) {
   }, [when, ms])
 }
 
+export interface TerminalLabels {
+  /** Name of the replay button. */
+  replay: string
+}
+
+export const defaultTerminalLabels: TerminalLabels = {
+  replay: 'Replay',
+}
+
 export interface TerminalProps extends React.ComponentProps<'div'> {
   /** Text in the title bar. */
   title?: string
@@ -51,6 +61,8 @@ export interface TerminalProps extends React.ComponentProps<'div'> {
   replay?: boolean
   /** Wait for it to scroll into view before playing. Default true. */
   whenVisible?: boolean
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<TerminalLabels>
 }
 
 /**
@@ -64,10 +76,12 @@ function Terminal({
   loopDelay = 3000,
   replay = true,
   whenVisible = true,
+  labels: labelsProp,
   className,
   children,
   ...props
 }: TerminalProps) {
+  const labels = useLabels('terminal', defaultTerminalLabels, labelsProp)
   const ref = React.useRef<HTMLDivElement>(null)
   const body = React.useRef<HTMLDivElement>(null)
   const inView = useInView(ref)
@@ -132,7 +146,7 @@ function Terminal({
         {replay && !reduced && (
           <button
             type="button"
-            aria-label="Replay"
+            aria-label={labels.replay}
             data-slot="terminal-replay"
             onClick={restart}
             className={cn(

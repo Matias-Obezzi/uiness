@@ -3,6 +3,7 @@
 import * as React from 'react'
 import { matchByDataKey, Pie, PieChart, type PieSectorShapeProps, Sector } from 'recharts'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { type ChartConfig, ChartContainer, ChartEmpty, seriesColor } from '@/ui/chart'
 import { Odometer } from '@/ui/odometer'
@@ -16,6 +17,18 @@ export interface DonutChartDatum {
   value: number
   /** Any CSS color. Defaults to `var(--chart-1)` to `var(--chart-5)`, in order. */
   color?: string
+}
+
+export interface DonutChartLabels {
+  /** Caption of the total in the centre. */
+  total: string
+  /** Name of the chart. Each slice comes as "Name: 40%", then the caption and the formatted total. */
+  summary: (slices: string[], caption: string, total: string) => string
+}
+
+export const defaultDonutChartLabels: DonutChartLabels = {
+  total: 'Total',
+  summary: (slices, caption, total) => `Donut chart, ${slices.join(', ')}. ${caption} ${total}.`,
 }
 
 export interface DonutChartProps extends Omit<React.ComponentProps<'div'>, 'children'> {
@@ -35,6 +48,8 @@ export interface DonutChartProps extends Omit<React.ComponentProps<'div'>, 'chil
   showLegend?: boolean
   /** Shown in place of the chart when every value is zero or missing. Default "No data". */
   empty?: React.ReactNode
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<DonutChartLabels>
 }
 
 // How far the slice under the pointer grows out of the ring.
@@ -49,15 +64,19 @@ function DonutChart({
   data,
   size = 200,
   thickness = 28,
-  label = 'Total',
+  label: labelProp,
   format,
-  locale,
+  locale: localeProp,
   showLegend = true,
   empty,
+  labels: labelsProp,
   className,
   'aria-label': ariaLabel,
   ...props
 }: DonutChartProps) {
+  const labels = useLabels('donut-chart', defaultDonutChartLabels, labelsProp)
+  const locale = useLocale(localeProp)
+  const label = labelProp ?? labels.total
   const reduced = useReducedMotion()
   const [hidden, setHidden] = React.useState<ReadonlySet<string>>(() => new Set())
   const [active, setActive] = React.useState<string | null>(null)
@@ -114,9 +133,13 @@ function DonutChart({
   const inner = Math.max(0, outer - thickness)
   const summary =
     ariaLabel ??
-    `Donut chart, ${visible
-      .map((d) => `${config[d.key]?.label}: ${percentFormat.format(d.value / (total || 1))}`)
-      .join(', ')}. ${typeof label === 'string' ? label : 'Total'} ${numberFormat.format(total)}.`
+    labels.summary(
+      visible.map(
+        (d) => `${config[d.key]?.label}: ${percentFormat.format(d.value / (total || 1))}`,
+      ),
+      typeof label === 'string' ? label : labels.total,
+      numberFormat.format(total),
+    )
 
   const shape = (props: PieSectorShapeProps) => {
     // Recharts hands the React key in with the props; it cannot be spread into JSX.

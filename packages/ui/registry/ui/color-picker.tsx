@@ -3,6 +3,7 @@
 import { PipetteIcon, PlusIcon } from 'lucide-react'
 import { Slider as SliderPrimitive } from 'radix-ui'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
@@ -232,7 +233,12 @@ export function contrastRatio(foreground: RGBA, background: RGBA): number {
  * -----------------------------------------------------------------------------------------------*/
 
 export interface ColorPickerLabels {
+  /** Name of the saturation and brightness area. */
   area: string
+  /** What the area is announced as, in place of "slider". */
+  areaRole: string
+  /** How the area reads its position, in percents. */
+  areaValue: (saturation: number, brightness: number) => string
   hue: string
   alpha: string
   format: string
@@ -241,10 +247,16 @@ export interface ColorPickerLabels {
   swatches: string
   addSwatch: string
   contrast: string
+  /** Read before a contrast level the colors pass. */
+  passes: string
+  /** Read before a contrast level the colors fail. */
+  fails: string
 }
 
-const DEFAULT_LABELS: ColorPickerLabels = {
+export const defaultColorPickerLabels: ColorPickerLabels = {
   area: 'Saturation and brightness',
+  areaRole: '2D slider',
+  areaValue: (saturation, brightness) => `Saturation ${saturation}%, brightness ${brightness}%`,
   hue: 'Hue',
   alpha: 'Opacity',
   format: 'Color format',
@@ -253,6 +265,8 @@ const DEFAULT_LABELS: ColorPickerLabels = {
   swatches: 'Saved colors',
   addSwatch: 'Save this color',
   contrast: 'Contrast',
+  passes: 'Passes',
+  fails: 'Fails',
 }
 
 const FORMATS: ColorFormat[] = ['hex', 'rgb', 'hsl', 'oklch']
@@ -287,7 +301,7 @@ export interface ColorPickerProps
   showValue?: boolean
   /** With a name, a hidden input carries the value in a form. */
   name?: string
-  /** Accessible names, for other languages. */
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
   labels?: Partial<ColorPickerLabels>
   /** Classes for the popover panel. */
   contentClassName?: string
@@ -322,7 +336,7 @@ function ColorPicker({
   disabled,
   ...props
 }: ColorPickerProps) {
-  const labels = { ...DEFAULT_LABELS, ...labelsProp }
+  const labels = useLabels('color-picker', defaultColorPickerLabels, labelsProp)
   const initial = valueProp ?? defaultValue
 
   const [formatState, setFormatState] = React.useState<ColorFormat>(
@@ -438,7 +452,7 @@ function ColorPicker({
         data-slot="color-picker-content"
         className={cn('flex w-64 flex-col gap-3 p-3 motion-reduce:animate-none', contentClassName)}
       >
-        <SaturationArea hsva={hsva} onChange={update} label={labels.area} />
+        <SaturationArea hsva={hsva} onChange={update} labels={labels} />
 
         <div className="flex items-center gap-3">
           <div className="flex flex-1 flex-col gap-3">
@@ -544,9 +558,7 @@ function ColorPicker({
           </div>
         </div>
 
-        {contrastWith && (
-          <ContrastReadout color={rgba} against={contrastWith} label={labels.contrast} />
-        )}
+        {contrastWith && <ContrastReadout color={rgba} against={contrastWith} labels={labels} />}
       </PopoverContent>
     </Popover>
   )
@@ -559,11 +571,11 @@ function ColorPicker({
 function SaturationArea({
   hsva,
   onChange,
-  label,
+  labels,
 }: {
   hsva: HSVA
   onChange: (patch: Partial<HSVA>) => void
-  label: string
+  labels: ColorPickerLabels
 }) {
   const ref = React.useRef<HTMLDivElement>(null)
 
@@ -602,12 +614,12 @@ function SaturationArea({
       ref={ref}
       role="slider"
       tabIndex={0}
-      aria-label={label}
-      aria-roledescription="2D slider"
+      aria-label={labels.area}
+      aria-roledescription={labels.areaRole}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-valuenow={s}
-      aria-valuetext={`Saturation ${s}%, brightness ${v}%`}
+      aria-valuetext={labels.areaValue(s, v)}
       data-slot="color-picker-area"
       onKeyDown={handleKey}
       onPointerDown={(e) => {
@@ -723,11 +735,11 @@ function ColorText({
 function ContrastReadout({
   color,
   against,
-  label,
+  labels,
 }: {
   color: RGBA
   against: string
-  label: string
+  labels: ColorPickerLabels
 }) {
   const bg = parseColor(against)
   if (!bg) return null
@@ -747,7 +759,7 @@ function ContrastReadout({
         Aa
       </span>
       <div className="flex min-w-0 flex-col">
-        <span className="text-muted-foreground text-xs">{label}</span>
+        <span className="text-muted-foreground text-xs">{labels.contrast}</span>
         <span className="font-medium text-sm tabular-nums">{ratio.toFixed(2)}:1</span>
       </div>
       <ul className="ml-auto flex flex-wrap justify-end gap-1">
@@ -757,7 +769,7 @@ function ContrastReadout({
             data-pass={c.pass ? '' : undefined}
             className="rounded-sm bg-muted px-1.5 py-0.5 font-medium text-[0.65rem] text-muted-foreground line-through data-[pass]:bg-primary data-[pass]:text-primary-foreground data-[pass]:no-underline"
           >
-            <span className="sr-only">{c.pass ? 'Passes ' : 'Fails '}</span>
+            <span className="sr-only">{c.pass ? labels.passes : labels.fails} </span>
             {c.name}
           </li>
         ))}

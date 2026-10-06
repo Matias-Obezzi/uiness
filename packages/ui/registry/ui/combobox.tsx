@@ -2,6 +2,7 @@
 
 import { CheckIcon, ChevronsUpDownIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import {
@@ -26,11 +27,28 @@ export interface ComboboxOption {
   icon?: React.ReactNode
 }
 
+export interface ComboboxLabels {
+  /** Shown in the button when nothing is picked. */
+  placeholder: string
+  /** Placeholder of the search field. */
+  search: string
+  /** Shown when nothing matches the search. */
+  empty: string
+}
+
+export const defaultComboboxLabels: ComboboxLabels = {
+  placeholder: 'Select…',
+  search: 'Search…',
+  empty: 'No results.',
+}
+
 interface ComboboxBaseProps {
   options: ComboboxOption[]
   placeholder?: string
   searchPlaceholder?: string
   emptyText?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<ComboboxLabels>
   disabled?: boolean
   /** Classes for the trigger button. */
   className?: string
@@ -73,9 +91,10 @@ function toArray(value: string | string[] | null | undefined): string[] {
 function Combobox(props: ComboboxProps) {
   const {
     options,
-    placeholder = 'Select…',
-    searchPlaceholder = 'Search…',
-    emptyText = 'No results.',
+    placeholder: placeholderProp,
+    searchPlaceholder: searchProp,
+    emptyText: emptyProp,
+    labels: labelsProp,
     disabled,
     className,
     contentClassName,
@@ -87,6 +106,10 @@ function Combobox(props: ComboboxProps) {
     name,
     multiple,
   } = props
+  const labels = useLabels('combobox', defaultComboboxLabels, labelsProp)
+  const placeholder = placeholderProp ?? labels.placeholder
+  const searchPlaceholder = searchProp ?? labels.search
+  const emptyText = emptyProp ?? labels.empty
   const [open, setOpen] = React.useState(false)
   const [uncontrolled, setUncontrolled] = React.useState<string[]>(() =>
     toArray(props.defaultValue),

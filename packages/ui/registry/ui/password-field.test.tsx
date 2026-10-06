@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 import { FormControl, FormDescription, FormField, FormLabel } from './form'
-import { getPasswordStrength, PasswordField } from './password-field'
+import { defaultPasswordFieldLabels, getPasswordStrength, PasswordField } from './password-field'
 
 describe('getPasswordStrength', () => {
   it('is empty for no password', () => {
@@ -100,5 +100,31 @@ describe('PasswordField', () => {
     await userEvent.type(screen.getByLabelText('P'), 'a')
     expect(onValueChange).toHaveBeenCalledWith('a')
     expect((screen.getByLabelText('P') as HTMLInputElement).value).toBe('')
+  })
+})
+
+describe('PasswordField labels', () => {
+  it('scores in another language', () => {
+    const strength = getPasswordStrength('password', {
+      ...defaultPasswordFieldLabels,
+      weak: 'Débil',
+      avoidCommon: 'Evita palabras comunes.',
+    })
+    expect(strength).toMatchObject({ score: 1, label: 'Débil', hint: 'Evita palabras comunes.' })
+  })
+
+  it('translates the default rules and the meter', async () => {
+    render(
+      <PasswordField
+        aria-label="P"
+        strength
+        rules
+        labels={{ ruleNumber: 'Un número', strength: 'Seguridad', weak: 'Débil' }}
+      />,
+    )
+    expect(screen.getByText('Un número')).toBeTruthy()
+    await userEvent.type(screen.getByLabelText('P'), 'abc')
+    const meter = screen.getByRole('meter', { name: 'Seguridad' })
+    expect(meter.getAttribute('aria-valuetext')).toBe('Débil')
   })
 })

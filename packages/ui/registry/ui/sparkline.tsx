@@ -2,7 +2,31 @@
 
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+/**
+ * Set through a `LabelsProvider` under `sparkline`. The `labels` prop of this component names
+ * the points, so it keeps that meaning; `aria-label` replaces the whole summary.
+ */
+export interface SparklineLabels {
+  /** The summary screen readers get. The values come formatted. */
+  summary: (trend: {
+    count: number
+    first?: string
+    last?: string
+    low: string
+    high: string
+  }) => string
+  /** The summary when there are no values. */
+  empty: string
+}
+
+export const defaultSparklineLabels: SparklineLabels = {
+  summary: ({ count, first, last, low, high }) =>
+    `Trend of ${count} values${first !== undefined && last !== undefined ? `, from ${first} to ${last}` : ''}, low ${low}, high ${high}`,
+  empty: 'No data',
+}
 
 export type SparklineMarker = 'first' | 'last' | 'min' | 'max'
 
@@ -89,13 +113,15 @@ function Sparkline({
   tooltip = false,
   labels,
   format,
-  locale,
+  locale: localeProp,
   animate = true,
   className,
   style,
   'aria-label': ariaLabel,
   ...props
 }: SparklineProps) {
+  const words = useLabels('sparkline', defaultSparklineLabels)
+  const locale = useLocale(localeProp)
   const rootRef = React.useRef<HTMLSpanElement>(null)
   const svgRef = React.useRef<SVGSVGElement>(null)
   const reduced = useReducedMotion()
@@ -178,10 +204,14 @@ function Sparkline({
   const summary =
     ariaLabel ??
     (points.length
-      ? `Trend of ${points.length} values${
-          firstPoint && lastPoint ? `, from ${fmt(firstPoint.v)} to ${fmt(lastPoint.v)}` : ''
-        }, low ${fmt(dataMin)}, high ${fmt(dataMax)}`
-      : 'No data')
+      ? words.summary({
+          count: points.length,
+          first: firstPoint && lastPoint ? fmt(firstPoint.v) : undefined,
+          last: firstPoint && lastPoint ? fmt(lastPoint.v) : undefined,
+          low: fmt(dataMin),
+          high: fmt(dataMax),
+        })
+      : words.empty)
 
   // Draw-in on mount only: later updates swap in place, which reads as a live value changing.
   // biome-ignore lint/correctness/useExhaustiveDependencies: on mount only, see above

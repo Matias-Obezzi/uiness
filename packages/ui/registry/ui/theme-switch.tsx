@@ -4,6 +4,7 @@ import { MoonIcon, SunIcon } from 'lucide-react'
 import * as React from 'react'
 import { flushSync } from 'react-dom'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button, type ButtonProps } from '@/ui/button'
 
@@ -92,6 +93,15 @@ function useThemeTransition() {
   )
 }
 
+export interface ThemeSwitchLabels {
+  /** Name of the switch, which is on in the dark theme. */
+  darkMode: string
+}
+
+export const defaultThemeSwitchLabels: ThemeSwitchLabels = {
+  darkMode: 'Dark mode',
+}
+
 export interface ThemeSwitchProps
   extends Omit<ButtonProps, 'onClick' | 'role' | 'aria-checked' | 'asChild' | 'variant'> {
   /** The theme now. */
@@ -106,6 +116,8 @@ export interface ThemeSwitchProps
   label?: string
   /** The Button variant of the switch itself. Default `ghost`. */
   buttonVariant?: ButtonProps['variant']
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<ThemeSwitchLabels>
 }
 
 /**
@@ -117,13 +129,16 @@ function ThemeSwitch({
   onThemeChange,
   variant = 'eclipse',
   duration,
-  label = 'Dark mode',
+  label: labelProp,
+  labels: labelsProp,
   buttonVariant = 'ghost',
   size,
   className,
   children,
   ...props
 }: ThemeSwitchProps) {
+  const labels = useLabels('theme-switch', defaultThemeSwitchLabels, labelsProp)
+  const label = labelProp ?? labels.darkMode
   const transition = useThemeTransition()
   const dark = theme === 'dark'
   return (

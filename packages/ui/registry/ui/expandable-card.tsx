@@ -4,7 +4,17 @@ import { XIcon } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface ExpandableCardLabels {
+  /** Read out for the close button. */
+  close: string
+}
+
+export const defaultExpandableCardLabels: ExpandableCardLabels = {
+  close: 'Close',
+}
 
 /** Runs one opening or folding animation. Null when the browser cannot animate it. */
 type Play = (opening: boolean) => Promise<boolean> | null
@@ -518,6 +528,8 @@ export interface ExpandableCardContentProps
   showCloseButton?: boolean
   /** Classes for the dimmed backdrop. */
   overlayClassName?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<ExpandableCardLabels>
 }
 
 /** The larger view. Give it an `ExpandableCardTitle` so it is named for assistive tech. */
@@ -525,10 +537,12 @@ function ExpandableCardContent({
   className,
   overlayClassName,
   showCloseButton = true,
+  labels: labelsProp,
   onOpenAutoFocus,
   children,
   ...props
 }: ExpandableCardContentProps) {
+  const labels = useLabels('expandable-card', defaultExpandableCardLabels, labelsProp)
   const { closing, play, contentRef, overlayRef, bodyRef } =
     useExpandableCard('ExpandableCardContent')
 
@@ -586,7 +600,7 @@ function ExpandableCardContent({
             className="absolute top-3 right-3 flex size-8 items-center justify-center rounded-full bg-background/80 text-foreground shadow-sm outline-none backdrop-blur transition-colors hover:bg-background focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4"
           >
             <XIcon />
-            <span className="sr-only">Close</span>
+            <span className="sr-only">{labels.close}</span>
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>

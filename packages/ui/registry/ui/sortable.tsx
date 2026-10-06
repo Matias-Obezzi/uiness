@@ -1,14 +1,35 @@
 'use client'
 
 import {
+  type AnnouncementContext,
   type DragAnnouncements,
+  defaultAnnouncements,
   type SortableChange,
   type SortableResult,
   useSortable,
 } from '@uiness/dnd'
 import { GripVerticalIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface SortableLabels {
+  /** What a screen reader calls an item. */
+  item: string
+  /** Read when an item is picked up. */
+  start: (context: AnnouncementContext) => string
+  /** Read when it moves to another place. */
+  move: (context: AnnouncementContext) => string
+  /** Read when it is dropped. */
+  drop: (context: AnnouncementContext) => string
+  /** Read when the drag is cancelled. */
+  cancel: (context: AnnouncementContext) => string
+}
+
+export const defaultSortableLabels: SortableLabels = {
+  item: 'sortable item',
+  ...defaultAnnouncements,
+}
 
 export type { SortableChange } from '@uiness/dnd'
 
@@ -63,6 +84,8 @@ export interface SortableProps extends Omit<React.ComponentProps<'ul'>, 'childre
   announcements?: DragAnnouncements
   /** What a screen reader calls an item. Default `sortable item`. */
   roleDescription?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<SortableLabels>
   /** One item per id, in the order the drag is currently leaving them. Keyed by you. */
   children: (id: string, index: number) => React.ReactNode
   /**
@@ -88,19 +111,27 @@ function Sortable({
   activationDistance,
   announcements,
   roleDescription,
+  labels: labelsProp,
   className,
   children,
   overlay,
   ...props
 }: SortableProps) {
+  const labels = useLabels('sortable', defaultSortableLabels, labelsProp)
   const sortable = useSortable({
     items,
     onReorder,
     axis,
     disabled,
     activationDistance,
-    announcements,
-    roleDescription,
+    announcements: {
+      start: labels.start,
+      move: labels.move,
+      drop: labels.drop,
+      cancel: labels.cancel,
+      ...announcements,
+    },
+    roleDescription: roleDescription ?? labels.item,
   })
   const context = React.useMemo<SortableContextValue>(
     () => ({ sortable, withHandle }),

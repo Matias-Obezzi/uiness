@@ -2,6 +2,7 @@
 
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 /* -------------------------------------------------------------------------------------------------
@@ -50,6 +51,18 @@ function weekStartFor(locale?: string): number {
  * Props
  * -----------------------------------------------------------------------------------------------*/
 
+export interface CalendarLabels {
+  /** Name of the button that shows the month before. */
+  previousMonth: string
+  /** Name of the button that shows the month after. */
+  nextMonth: string
+}
+
+export const defaultCalendarLabels: CalendarLabels = {
+  previousMonth: 'Previous month',
+  nextMonth: 'Next month',
+}
+
 interface CalendarBaseProps extends Omit<React.ComponentProps<'div'>, 'onSelect'> {
   /** Month shown. Controlled. */
   month?: Date
@@ -74,6 +87,8 @@ interface CalendarBaseProps extends Omit<React.ComponentProps<'div'>, 'onSelect'
   /** The day marked as today. Default now. */
   today?: Date
   footer?: React.ReactNode
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<CalendarLabels>
 }
 
 export interface CalendarSingleProps extends CalendarBaseProps {
@@ -114,7 +129,8 @@ function Calendar(props: CalendarProps) {
     min,
     max,
     disabled,
-    locale,
+    locale: localeProp,
+    labels: labelsProp,
     weekStartsOn,
     numberOfMonths = 1,
     showOutsideDays = true,
@@ -135,6 +151,8 @@ function Calendar(props: CalendarProps) {
     onSelect?: unknown
   }
 
+  const labels = useLabels('calendar', defaultCalendarLabels, labelsProp)
+  const locale = useLocale(localeProp)
   const today = React.useMemo(() => startOfDay(todayProp ?? new Date()), [todayProp])
   const firstSelected = React.useMemo(() => {
     const s = props.selected
@@ -284,7 +302,7 @@ function Calendar(props: CalendarProps) {
           {offset === 0 && (
             <button
               type="button"
-              aria-label="Previous month"
+              aria-label={labels.previousMonth}
               onClick={() => setMonth(addMonths(month, -1))}
               className="absolute left-0 inline-flex size-8 items-center justify-center rounded-lg border bg-transparent text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4"
             >
@@ -297,7 +315,7 @@ function Calendar(props: CalendarProps) {
           {offset === numberOfMonths - 1 && (
             <button
               type="button"
-              aria-label="Next month"
+              aria-label={labels.nextMonth}
               onClick={() => setMonth(addMonths(month, 1))}
               className="absolute right-0 inline-flex size-8 items-center justify-center rounded-lg border bg-transparent text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4"
             >

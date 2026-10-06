@@ -53,18 +53,19 @@ function LineChart({
   showGrid = true,
   showLegend,
   empty,
+  labels,
   className,
   'aria-label': ariaLabel,
   ...props
 }: LineChartProps) {
   const reduced = useReducedMotion()
   const id = `line-chart${React.useId().replace(/[^a-zA-Z0-9_-]/g, '')}`
-  const chart = useSeriesChart({ data, x, series, xFormat, yFormat, locale })
+  const chart = useSeriesChart({ data, x, series, xFormat, yFormat, locale, labels })
 
   if (chart.isEmpty) {
     return (
       <ChartEmpty height={height} className={className} {...props}>
-        {empty}
+        {empty ?? chart.labels.empty}
       </ChartEmpty>
     )
   }
@@ -138,7 +139,7 @@ function LineChart({
       <ChartContainer
         config={chart.config}
         role="figure"
-        aria-label={ariaLabel ?? `Line chart of ${chart.summary}`}
+        aria-label={ariaLabel ?? chart.labels.lineChart(chart.summary)}
         className="aspect-auto w-full"
         style={{ height }}
       >

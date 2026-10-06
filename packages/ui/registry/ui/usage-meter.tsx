@@ -2,7 +2,38 @@
 
 import { CircleAlertIcon, TriangleAlertIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface UsageMeterLabels {
+  /** Shown near the limit. */
+  warning: string
+  /** Shown past the limit, with the formatted overage. */
+  over: (overage: string) => string
+  /** The total next to the label. The used amount is drawn bolder. */
+  amount: (used: string, limit: string) => string
+  /** What the meter reads as. */
+  valueText: (used: string, limit: string) => string
+  /** Added to it near the limit. */
+  almostFull: string
+  /** Added to it past the limit. */
+  overLimit: (overage: string) => string
+  /** The legend entry for what is left. */
+  free: string
+}
+
+export const defaultUsageMeterLabels: UsageMeterLabels = {
+  warning: 'Almost full',
+  over: (overage) => `Over by ${overage}`,
+  amount: (used, limit) => `${used} of ${limit}`,
+  valueText: (used, limit) => `${used} of ${limit} used`,
+  almostFull: 'almost full',
+  overLimit: (overage) => `over the limit by ${overage}`,
+  free: 'Free',
+}
+
+/** Stands in for the used amount, so it can be drawn as its own element inside the sentence. */
+const SLOT = '\u0000'
 
 export interface UsageMeterSegment {
   /** Stable identity, kept while the value changes so the segment resizes instead of being replaced. */
@@ -34,6 +65,8 @@ export interface UsageMeterProps extends Omit<React.ComponentProps<'div'>, 'chil
   warningLabel?: React.ReactNode
   /** Text for the over limit state. Receives the formatted overage. Default "Over by …". */
   overLabel?: (overage: string) => React.ReactNode
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<UsageMeterLabels>
 }
 
 /** The color of the segment at `index` when it brings none. */
@@ -49,14 +82,17 @@ function UsageMeter({
   segments,
   limit,
   format,
-  locale,
+  locale: localeProp,
   warnAt = 0.8,
   showLegend = true,
-  warningLabel = 'Almost full',
-  overLabel = (overage) => `Over by ${overage}`,
+  warningLabel,
+  overLabel,
+  labels: labelsProp,
   className,
   ...props
 }: UsageMeterProps) {
+  const labels = useLabels('usage-meter', defaultUsageMeterLabels, labelsProp)
+  const locale = useLocale(localeProp)
   const labelId = React.useId()
   const numberFormat = React.useMemo(
     () => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }),
@@ -77,7 +113,8 @@ function UsageMeter({
   // Past the limit the bar spans the total, and a mark shows where the limit falls.
   const scale = Math.max(limit, used) || 1
   const limitAt = Math.min(100, (limit / scale) * 100)
-  const usedText = `${fmt(used)} of ${fmt(limit)} used`
+  const usedText = labels.valueText(fmt(used), fmt(limit))
+  const [beforeUsed = '', afterUsed = ''] = labels.amount(SLOT, fmt(limit)).split(SLOT)
 
   return (
     <div
@@ -94,7 +131,7 @@ function UsageMeter({
           {state === 'warning' && (
             <span className="inline-flex items-center gap-1 font-medium text-amber-700 dark:text-amber-400">
               <TriangleAlertIcon aria-hidden className="size-3.5" />
-              {warningLabel}
+              {warningLabel ?? labels.warning}
               <span aria-hidden className="text-muted-foreground">
                 ·
               </span>
@@ -103,14 +140,16 @@ function UsageMeter({
           {state === 'over' && (
             <span className="inline-flex items-center gap-1 font-medium text-destructive">
               <CircleAlertIcon aria-hidden className="size-3.5" />
-              {overLabel(fmt(used - limit))}
+              {(overLabel ?? labels.over)(fmt(used - limit))}
               <span aria-hidden className="text-muted-foreground">
                 ·
               </span>
             </span>
           )}
           <span className="text-muted-foreground tabular-nums">
-            <span className="font-medium text-foreground">{fmt(used)}</span> of {fmt(limit)}
+            {beforeUsed}
+            <span className="font-medium text-foreground">{fmt(used)}</span>
+            {afterUsed}
           </span>
         </div>
       </div>
@@ -124,9 +163,9 @@ function UsageMeter({
         aria-valuenow={Math.min(used, limit)}
         aria-valuetext={
           state === 'over'
-            ? `${usedText}, over the limit by ${fmt(used - limit)}`
+            ? `${usedText}, ${labels.overLimit(fmt(used - limit))}`
             : state === 'warning'
-              ? `${usedText}, almost full`
+              ? `${usedText}, ${labels.almostFull}`
               : usedText
         }
         data-slot="usage-meter-bar"
@@ -183,7 +222,7 @@ function UsageMeter({
                 aria-hidden
                 className="size-2.5 shrink-0 rounded-[3px] bg-muted ring-1 ring-border ring-inset"
               />
-              Free
+              {labels.free}
               <span className="font-medium text-foreground tabular-nums">
                 {fmt(Math.max(0, limit - used))}
               </span>

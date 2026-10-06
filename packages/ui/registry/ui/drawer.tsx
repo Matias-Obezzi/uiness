@@ -3,7 +3,23 @@
 import { XIcon } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface DrawerLabels {
+  /** Read out for the close button. */
+  close: string
+  /** Name of the handle of a drawer with snap points. */
+  resize: string
+  /** Name of the handle of a drawer without snap points. */
+  dragToClose: string
+}
+
+export const defaultDrawerLabels: DrawerLabels = {
+  close: 'Close',
+  resize: 'Resize drawer',
+  dragToClose: 'Drag to close',
+}
 
 export type DrawerSide = 'top' | 'bottom' | 'left' | 'right'
 
@@ -244,6 +260,8 @@ export interface DrawerContentProps extends React.ComponentProps<typeof DialogPr
   showCloseButton?: boolean
   /** Render the overlay. Default true. */
   overlay?: boolean
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<DrawerLabels>
 }
 
 function DrawerContent({
@@ -257,6 +275,7 @@ function DrawerContent({
   handle = side === 'bottom',
   showCloseButton = side !== 'bottom',
   overlay = true,
+  labels: labelsProp,
   ref: forwardedRef,
   className,
   style,
@@ -270,6 +289,7 @@ function DrawerContent({
   onInteractOutside,
   ...props
 }: DrawerContentProps) {
+  const labels = useLabels('drawer', defaultDrawerLabels, labelsProp)
   const drawer = React.useContext(DrawerContext)
   if (!drawer) throw new Error('<DrawerContent> must be rendered inside <Drawer>')
   const { setOpen, guard, mayDismiss } = drawer
@@ -535,7 +555,7 @@ function DrawerContent({
           }}
           {...props}
         >
-          {handle && <DrawerHandle />}
+          {handle && <DrawerHandle aria-label={snapPoints ? labels.resize : labels.dragToClose} />}
           {children}
           {showCloseButton && (
             <DialogPrimitive.Close
@@ -543,7 +563,7 @@ function DrawerContent({
               className="absolute top-4 right-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 [&_svg]:size-4"
             >
               <XIcon />
-              <span className="sr-only">Close</span>
+              <span className="sr-only">{labels.close}</span>
             </DialogPrimitive.Close>
           )}
         </DialogPrimitive.Content>
@@ -555,11 +575,12 @@ function DrawerContent({
 /** Drag handle. Clicking it cycles through the snap points. */
 function DrawerHandle({ className, ...props }: React.ComponentProps<'button'>) {
   const { snapPoints, activeSnap, setActiveSnap } = useDrawerContent()
+  const labels = useLabels('drawer', defaultDrawerLabels)
   return (
     <button
       type="button"
       data-slot="drawer-handle"
-      aria-label={snapPoints ? 'Resize drawer' : 'Drag to close'}
+      aria-label={snapPoints ? labels.resize : labels.dragToClose}
       tabIndex={-1}
       onClick={() => {
         if (!snapPoints?.length) return

@@ -10,6 +10,7 @@ import {
   SearchIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import { Input } from '@/ui/input'
@@ -23,6 +24,56 @@ export interface JsonCopyDetail {
   path: string
   /** The text put on the clipboard. */
   text: string
+}
+
+export interface JsonViewerLabels {
+  /** Placeholder and name of the search field. */
+  search: string
+  /** Where the current match is among all of them. */
+  match: (current: number, total: number) => string
+  noMatches: string
+  expandAll: string
+  collapseAll: string
+  /** Name of the tree when no `aria-label` is given. */
+  tree: string
+  /** How many children a branch holds. */
+  size: (count: number, type: 'array' | 'object') => string
+  /** The type of a branch, read with its name. */
+  array: string
+  object: string
+  /** The row that loads the next page of a long branch. */
+  showMore: (count: number) => string
+  /** After it, how many are still hidden. */
+  left: (count: number) => string
+  copyValue: (path: string) => string
+  copyPath: (path: string) => string
+  /** Tooltips of the copy buttons, with their key. */
+  copyValueHint: string
+  copyPathHint: string
+  /** Announced after a copy. */
+  valueCopied: string
+  pathCopied: string
+}
+
+export const defaultJsonViewerLabels: JsonViewerLabels = {
+  search: 'Search keys and values',
+  match: (current, total) => `${current} of ${total}`,
+  noMatches: 'No matches',
+  expandAll: 'Expand all',
+  collapseAll: 'Collapse all',
+  tree: 'JSON',
+  size: (count, type) =>
+    `${count} ${type === 'array' ? (count === 1 ? 'item' : 'items') : count === 1 ? 'key' : 'keys'}`,
+  array: 'array',
+  object: 'object',
+  showMore: (count) => `Show ${count} more`,
+  left: (count) => `${count} left`,
+  copyValue: (path) => `Copy value of ${path}`,
+  copyPath: (path) => `Copy path ${path}`,
+  copyValueHint: 'Copy value (c)',
+  copyPathHint: 'Copy path (p)',
+  valueCopied: 'Value copied',
+  pathCopied: 'Path copied',
 }
 
 export interface JsonViewerProps extends Omit<React.ComponentProps<'div'>, 'children' | 'onCopy'> {
@@ -42,6 +93,8 @@ export interface JsonViewerProps extends Omit<React.ComponentProps<'div'>, 'chil
   onCopy?: (detail: JsonCopyDetail) => void
   /** Height the tree scrolls past, in pixels or any CSS length. Default 384. */
   maxHeight?: number | string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<JsonViewerLabels>
 }
 
 interface NodeRow {
@@ -155,10 +208,12 @@ function JsonViewer({
   copyable = true,
   onCopy,
   maxHeight = 384,
+  labels: labelsProp,
   className,
   'aria-label': ariaLabel,
   ...props
 }: JsonViewerProps) {
+  const labels = useLabels('json-viewer', defaultJsonViewerLabels, labelsProp)
   const [expanded, setExpanded] = React.useState<ReadonlySet<string>>(() => {
     const open = new Set<string>()
     const walk = (value: unknown, path: string, depth: number) => {
@@ -419,16 +474,16 @@ function JsonViewer({
                   goToMatch(e.shiftKey ? -1 : posInMatches === -1 ? 0 : 1)
                 }
               }}
-              placeholder="Search keys and values"
-              aria-label="Search keys and values"
+              placeholder={labels.search}
+              aria-label={labels.search}
               className="h-8 pl-8"
             />
           </div>
           {q && (
             <span role="status" className="shrink-0 text-muted-foreground text-xs tabular-nums">
               {search.matches.length
-                ? `${posInMatches === -1 ? 0 : posInMatches + 1} of ${search.matches.length}`
-                : 'No matches'}
+                ? labels.match(posInMatches === -1 ? 0 : posInMatches + 1, search.matches.length)
+                : labels.noMatches}
             </span>
           )}
           <Button
@@ -436,7 +491,7 @@ function JsonViewer({
             variant="ghost"
             size="icon"
             className="size-8"
-            aria-label="Expand all"
+            aria-label={labels.expandAll}
             onClick={() => setAll(true)}
           >
             <ChevronsUpDownIcon />
@@ -446,7 +501,7 @@ function JsonViewer({
             variant="ghost"
             size="icon"
             className="size-8"
-            aria-label="Collapse all"
+            aria-label={labels.collapseAll}
             onClick={() => setAll(false)}
           >
             <ChevronsDownUpIcon />
@@ -455,7 +510,7 @@ function JsonViewer({
       )}
       <div
         role="tree"
-        aria-label={ariaLabel ?? 'JSON'}
+        aria-label={ariaLabel ?? labels.tree}
         className="overflow-auto py-1 font-mono text-[13px] leading-6"
         style={{ maxHeight }}
       >
@@ -483,8 +538,8 @@ function JsonViewer({
                 onClick={() => loadMore(row.parent)}
               >
                 <span className="ml-5 font-sans text-xs underline-offset-4 hover:underline">
-                  Show {Math.min(pageSize, row.remaining)} more
-                  <span className="text-muted-foreground/80"> · {row.remaining} left</span>
+                  {labels.showMore(Math.min(pageSize, row.remaining))}
+                  <span className="text-muted-foreground/80"> · {labels.left(row.remaining)}</span>
                 </span>
               </div>
             )
@@ -498,7 +553,7 @@ function JsonViewer({
               : typeof row.name === 'number'
                 ? String(row.name)
                 : row.name
-          const count = `${row.size} ${row.type === 'array' ? (row.size === 1 ? 'item' : 'items') : row.size === 1 ? 'key' : 'keys'}`
+          const count = labels.size(row.size, row.type === 'array' ? 'array' : 'object')
           return (
             <div
               key={row.id}
@@ -514,7 +569,7 @@ function JsonViewer({
               // The row's own name, without the labels of its copy buttons.
               aria-label={
                 branch
-                  ? `${name}, ${row.type === 'array' ? 'array' : 'object'}, ${count}`
+                  ? `${name}, ${row.type === 'array' ? labels.array : labels.object}, ${count}`
                   : `${name}: ${primitiveText(row.value, row.type)}`
               }
               data-slot="json-viewer-row"
@@ -572,9 +627,9 @@ function JsonViewer({
                         type="button"
                         tabIndex={-1}
                         aria-label={
-                          kind === 'value' ? `Copy value of ${row.id}` : `Copy path ${row.id}`
+                          kind === 'value' ? labels.copyValue(row.id) : labels.copyPath(row.id)
                         }
-                        title={kind === 'value' ? 'Copy value (c)' : 'Copy path (p)'}
+                        title={kind === 'value' ? labels.copyValueHint : labels.copyPathHint}
                         onClick={() => copy(row, kind)}
                         className="inline-flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground"
                       >
@@ -589,7 +644,7 @@ function JsonViewer({
         })}
       </div>
       <div aria-live="polite" className="sr-only">
-        {copied ? (copied.kind === 'value' ? 'Value copied' : 'Path copied') : ''}
+        {copied ? (copied.kind === 'value' ? labels.valueCopied : labels.pathCopied) : ''}
       </div>
     </div>
   )

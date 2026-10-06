@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Popover, PopoverAnchor, PopoverContent } from '@/ui/popover'
 
@@ -102,6 +103,21 @@ function findQuery(
  * Props
  * -----------------------------------------------------------------------------------------------*/
 
+export interface MentionInputLabels {
+  /** Shown when nothing matches. */
+  empty: string
+  /** Name of the list, when the trigger has no `label`. */
+  suggestions: string
+  /** Announced while the list is open, with the trigger's `label` when it has one. */
+  count: (count: number, label?: string) => string
+}
+
+export const defaultMentionInputLabels: MentionInputLabels = {
+  empty: 'No matches',
+  suggestions: 'Suggestions',
+  count: (count, label) => `${count} ${label ?? 'suggestions'}`,
+}
+
 export interface MentionInputProps
   extends Omit<React.ComponentProps<'textarea'>, 'value' | 'defaultValue' | 'onChange'> {
   /** Text and mentions. Controlled. */
@@ -118,6 +134,8 @@ export interface MentionInputProps
   emptyText?: string
   /** Classes for the textarea. `className` goes on the wrapper. */
   textareaClassName?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<MentionInputLabels>
 }
 
 /* -------------------------------------------------------------------------------------------------
@@ -134,7 +152,8 @@ function MentionInput({
   onValueChange,
   triggers,
   maxSuggestions = 8,
-  emptyText = 'No matches',
+  emptyText: emptyProp,
+  labels: labelsProp,
   className,
   textareaClassName,
   name,
@@ -145,6 +164,8 @@ function MentionInput({
   onBlur,
   ...props
 }: MentionInputProps) {
+  const labels = useLabels('mention-input', defaultMentionInputLabels, labelsProp)
+  const emptyText = emptyProp ?? labels.empty
   const [internal, setInternal] = React.useState<MentionValue>(() =>
     typeof defaultValue === 'string'
       ? { text: defaultValue, mentions: [] }
@@ -449,7 +470,7 @@ function MentionInput({
         </>
       )}
       <span aria-live="polite" className="sr-only">
-        {open ? `${suggestions.length} ${query?.trigger.label ?? 'suggestions'}` : ''}
+        {open ? labels.count(suggestions.length, query?.trigger.label) : ''}
       </span>
       <Popover open={open} onOpenChange={(next) => !next && query && setDismissed(query.start)}>
         <PopoverAnchor asChild>
@@ -475,7 +496,7 @@ function MentionInput({
           <div
             id={listId}
             role="listbox"
-            aria-label={query?.trigger.label ?? 'Suggestions'}
+            aria-label={query?.trigger.label ?? labels.suggestions}
             className="max-h-64 overflow-y-auto"
           >
             {suggestions.length === 0 ? (

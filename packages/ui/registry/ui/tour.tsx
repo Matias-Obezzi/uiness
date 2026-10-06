@@ -4,6 +4,7 @@ import { XIcon } from 'lucide-react'
 import { Popover as PopoverPrimitive, Portal } from 'radix-ui'
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import { Popover, PopoverAnchor, PopoverContent } from '@/ui/popover'
@@ -67,13 +68,22 @@ export interface TourOptions extends TourEvents {
 }
 
 export interface TourLabels {
-  next?: string
-  back?: string
-  done?: string
+  next: string
+  back: string
+  /** The next button on the last step. */
+  done: string
   /** Accessible name of the close button. */
-  skip?: string
-  /** The step counter, `2 of 5` by default. */
-  progress?: (current: number, total: number) => string
+  skip: string
+  /** The step counter. */
+  progress: (current: number, total: number) => string
+}
+
+export const defaultTourLabels: TourLabels = {
+  next: 'Next',
+  back: 'Back',
+  done: 'Done',
+  skip: 'Skip tour',
+  progress: (current, total) => `${current} of ${total}`,
 }
 
 interface Run {
@@ -231,8 +241,8 @@ export interface TourProviderProps extends TourEvents {
   radius?: number
   /** Draw an arrow from the card to the target. */
   arrow?: boolean
-  /** Text of the buttons and the counter. */
-  labels?: TourLabels
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<TourLabels>
   /** Class for the card. */
   className?: string
   /** Class for the highlight, which draws the dimmed page with its shadow. */
@@ -434,7 +444,7 @@ interface TourLayerProps {
   radius: number
   allowInteraction: boolean
   arrow: boolean
-  labels?: TourLabels
+  labels?: Partial<TourLabels>
   className?: string
   spotlightClassName?: string
   onNext: () => void
@@ -455,7 +465,7 @@ function TourLayer({
   radius,
   allowInteraction,
   arrow,
-  labels,
+  labels: labelsProp,
   className,
   spotlightClassName,
   onNext,
@@ -463,6 +473,7 @@ function TourLayer({
   onSkip,
   onCardClosed,
 }: TourLayerProps) {
+  const labels = useLabels('tour', defaultTourLabels, labelsProp)
   const reduced = useReducedMotion()
   // biome-ignore lint/correctness/useExhaustiveDependencies: looked up again for every step, not on every render
   const element = React.useMemo(() => resolveTarget(step), [stepKey])
@@ -654,23 +665,23 @@ function TourLayer({
                 data-slot="tour-progress"
                 className="text-muted-foreground text-xs tabular-nums"
               >
-                {labels?.progress?.(index + 1, total) ?? `${index + 1} of ${total}`}
+                {labels.progress(index + 1, total)}
               </span>
               <div className="flex gap-2">
                 {index > 0 && (
                   <Button variant="outline" size="sm" onClick={onPrev}>
-                    {labels?.back ?? 'Back'}
+                    {labels.back}
                   </Button>
                 )}
                 <Button ref={primary} size="sm" onClick={onNext}>
-                  {last ? (labels?.done ?? 'Done') : (labels?.next ?? 'Next')}
+                  {last ? labels.done : labels.next}
                 </Button>
               </div>
             </div>
             <button
               type="button"
               onClick={onSkip}
-              aria-label={labels?.skip ?? 'Skip tour'}
+              aria-label={labels.skip}
               className="absolute top-3 right-3 rounded-sm p-0.5 text-muted-foreground opacity-70 outline-none transition-opacity hover:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4"
             >
               <XIcon />

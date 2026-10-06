@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import { useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 export interface OdometerProps extends Omit<React.ComponentProps<'span'>, 'children'> {
@@ -115,13 +116,14 @@ function OdometerDigit({
 function Odometer({
   value,
   decimals = 0,
-  locale,
+  locale: localeProp,
   format,
   duration = 900,
   stagger = 60,
   className,
   ...props
 }: OdometerProps) {
+  const locale = useLocale(localeProp)
   const [ready, setReady] = React.useState(false)
   React.useEffect(() => setReady(true), [])
 

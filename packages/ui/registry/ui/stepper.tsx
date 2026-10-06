@@ -2,9 +2,28 @@
 
 import { CheckIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 export type StepStatus = 'complete' | 'current' | 'upcoming' | 'error'
+
+export interface StepperLabels {
+  /** Read after the title of each step, by its status. */
+  complete: string
+  current: string
+  upcoming: string
+  error: string
+  /** Under a narrow horizontal stepper, next to the current title. */
+  stepOf: (step: number, count: number) => string
+}
+
+export const defaultStepperLabels: StepperLabels = {
+  complete: 'completed',
+  current: 'current step',
+  upcoming: 'not started',
+  error: 'has an error',
+  stepOf: (step, count) => `Step ${step} of ${count}`,
+}
 
 interface StepperContextValue {
   value: number
@@ -12,6 +31,7 @@ interface StepperContextValue {
   orientation: 'horizontal' | 'vertical'
   clickable: 'complete' | 'all' | false
   onValueChange?: (value: number) => void
+  labels: StepperLabels
 }
 
 const StepperContext = React.createContext<StepperContextValue | null>(null)
@@ -50,6 +70,8 @@ export interface StepperProps extends Omit<React.ComponentProps<'div'>, 'childre
   steps?: StepperStep[]
   /** `StepperItem` elements, one per step. */
   children?: React.ReactNode
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<StepperLabels>
 }
 
 /**
@@ -63,9 +85,11 @@ function Stepper({
   clickable = 'complete',
   steps,
   children,
+  labels: labelsProp,
   className,
   ...props
 }: StepperProps) {
+  const labels = useLabels('stepper', defaultStepperLabels, labelsProp)
   const items = steps
     ? steps.map((step, i) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: steps are positions in a flow
@@ -74,8 +98,8 @@ function Stepper({
     : React.Children.toArray(children).filter(React.isValidElement)
 
   const context = React.useMemo(
-    () => ({ value, count: items.length, orientation, clickable, onValueChange }),
-    [value, items.length, orientation, clickable, onValueChange],
+    () => ({ value, count: items.length, orientation, clickable, onValueChange, labels }),
+    [value, items.length, orientation, clickable, onValueChange, labels],
   )
 
   const horizontal = orientation === 'horizontal'
@@ -110,7 +134,7 @@ function Stepper({
           >
             <span className="truncate font-medium">{currentTitle}</span>
             <span className="shrink-0 text-muted-foreground text-xs tabular-nums">
-              Step {shown + 1} of {items.length}
+              {labels.stepOf(shown + 1, items.length)}
             </span>
           </p>
         )}
@@ -126,13 +150,6 @@ export interface StepperItemProps extends Omit<React.ComponentProps<'li'>, 'titl
   children?: React.ReactNode
 }
 
-const statusLabel: Record<StepStatus, string> = {
-  complete: 'completed',
-  current: 'current step',
-  upcoming: 'not started',
-  error: 'has an error',
-}
-
 function StepperItem({
   title,
   description,
@@ -143,7 +160,7 @@ function StepperItem({
   children,
   ...props
 }: StepperItemProps) {
-  const { value, count, orientation, clickable, onValueChange } = useStepper()
+  const { value, count, orientation, clickable, onValueChange, labels } = useStepper()
   const index = React.useContext(StepIndexContext)
   const status: StepStatus =
     statusProp ??
@@ -214,7 +231,7 @@ function StepperItem({
     <>
       {indicator}
       {text}
-      <span className="sr-only">, {statusLabel[status]}</span>
+      <span className="sr-only">, {labels[status]}</span>
     </>
   )
 

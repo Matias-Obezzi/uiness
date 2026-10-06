@@ -2,11 +2,32 @@
 
 import { CheckIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import { Spinner } from '@/ui/spinner'
 
 type MorphState = 'idle' | 'confirming' | 'pending' | 'done' | 'error'
+
+export interface ConfirmMorphLabels {
+  question: string
+  confirm: string
+  cancel: string
+  pending: string
+  success: string
+  error: string
+  undo: string
+}
+
+export const defaultConfirmMorphLabels: ConfirmMorphLabels = {
+  question: 'Are you sure?',
+  confirm: 'Confirm',
+  cancel: 'Cancel',
+  pending: 'Working…',
+  success: 'Done',
+  error: 'Something went wrong',
+  undo: 'Undo',
+}
 
 export interface ConfirmMorphProps
   extends Omit<React.ComponentProps<'div'>, 'children' | 'onError'> {
@@ -38,6 +59,8 @@ export interface ConfirmMorphProps
   resetAfter?: number
   /** Stop the button from being pressed. */
   disabled?: boolean
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<ConfirmMorphLabels>
 }
 
 /**
@@ -50,13 +73,14 @@ function ConfirmMorph({
   onUndo,
   variant = 'destructive',
   size = 'default',
-  question = 'Are you sure?',
-  confirmLabel = 'Confirm',
-  cancelLabel = 'Cancel',
-  pendingLabel = 'Working…',
-  successLabel = 'Done',
-  errorLabel = 'Something went wrong',
-  undoLabel = 'Undo',
+  question: questionProp,
+  confirmLabel: confirmProp,
+  cancelLabel: cancelProp,
+  pendingLabel: pendingProp,
+  successLabel: successProp,
+  errorLabel: errorProp,
+  undoLabel: undoProp,
+  labels: labelsProp,
   resetAfter = 4000,
   disabled = false,
   className,
@@ -65,6 +89,14 @@ function ConfirmMorph({
   onPointerLeave,
   ...props
 }: ConfirmMorphProps) {
+  const labels = useLabels('confirm-morph', defaultConfirmMorphLabels, labelsProp)
+  const question = questionProp ?? labels.question
+  const confirmLabel = confirmProp ?? labels.confirm
+  const cancelLabel = cancelProp ?? labels.cancel
+  const pendingLabel = pendingProp ?? labels.pending
+  const successLabel = successProp ?? labels.success
+  const errorLabel = errorProp ?? labels.error
+  const undoLabel = undoProp ?? labels.undo
   const [state, setState] = React.useState<MorphState>('idle')
   const [undoing, setUndoing] = React.useState(false)
   const outer = React.useRef<HTMLDivElement>(null)

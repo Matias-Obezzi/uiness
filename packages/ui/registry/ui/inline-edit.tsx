@@ -2,6 +2,7 @@
 
 import { CheckIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Spinner } from '@/ui/spinner'
 
@@ -35,6 +36,26 @@ export interface InlineEditProps
   saveErrorMessage?: string
   /** Classes for the text and the field, which share them so nothing moves. */
   textClassName?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<InlineEditLabels>
+}
+
+export interface InlineEditLabels {
+  /** Shown, muted, when the value is empty. */
+  placeholder: string
+  /** Shown when `onSave` rejects with no message of its own. */
+  saveError: string
+  /** Announced while saving. */
+  saving: string
+  /** Announced once saved. */
+  saved: string
+}
+
+export const defaultInlineEditLabels: InlineEditLabels = {
+  placeholder: 'Empty',
+  saveError: 'Could not save. Try again.',
+  saving: 'Saving…',
+  saved: 'Saved',
 }
 
 /**
@@ -50,9 +71,10 @@ function InlineEdit({
   validate,
   editing: editingProp,
   onEditingChange,
-  placeholder = 'Empty',
+  placeholder: placeholderProp,
   selectOnEdit = true,
-  saveErrorMessage = 'Could not save. Try again.',
+  saveErrorMessage: saveErrorProp,
+  labels: labelsProp,
   className,
   textClassName,
   id,
@@ -68,6 +90,9 @@ function InlineEdit({
   'aria-invalid': ariaInvalid,
   ...props
 }: InlineEditProps) {
+  const labels = useLabels('inline-edit', defaultInlineEditLabels, labelsProp)
+  const placeholder = placeholderProp ?? labels.placeholder
+  const saveErrorMessage = saveErrorProp ?? labels.saveError
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue)
   const value = valueProp ?? uncontrolled
   const [editingState, setEditingState] = React.useState(false)
@@ -293,7 +318,7 @@ function InlineEdit({
         </span>
       )}
       <span aria-live="polite" className="sr-only">
-        {pending ? 'Saving…' : saved ? 'Saved' : ''}
+        {pending ? labels.saving : saved ? labels.saved : ''}
       </span>
       {error && editing && (
         <span

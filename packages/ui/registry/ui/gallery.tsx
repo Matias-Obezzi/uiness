@@ -3,6 +3,7 @@
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Image } from '@/ui/image'
 
@@ -17,6 +18,30 @@ export interface GalleryImage {
   /** Smaller file for the grid; `src` is used in the lightbox. */
   thumbnail?: string
   caption?: React.ReactNode
+}
+
+export interface GalleryLabels {
+  /** Name of a thumbnail in the grid, from the image's `alt` when it has one. */
+  open: (index: number, alt?: string) => string
+  /** Title of the lightbox for an image without `alt`. */
+  image: (index: number, count: number) => string
+  /** How to use the lightbox, read by screen readers. */
+  help: string
+  close: string
+  previous: string
+  next: string
+  /** Name of a thumbnail in the lightbox strip. */
+  show: (index: number) => string
+}
+
+export const defaultGalleryLabels: GalleryLabels = {
+  open: (index, alt) => (alt ? `Open ${alt}` : `Open image ${index}`),
+  image: (index, count) => `Image ${index} of ${count}`,
+  help: 'Use the arrow keys to move between images and Escape to close.',
+  close: 'Close',
+  previous: 'Previous image',
+  next: 'Next image',
+  show: (index) => `Show image ${index}`,
 }
 
 interface Origin {
@@ -59,6 +84,8 @@ export interface LightboxProps {
   thumbnails?: boolean
   /** Wrap around at the ends. Default true. */
   loop?: boolean
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<GalleryLabels>
 }
 
 /** Full screen viewer with keyboard, swipe and a fly-in from the thumbnail. */
@@ -72,7 +99,9 @@ function Lightbox({
   getOrigin,
   thumbnails = true,
   loop = true,
+  labels: labelsProp,
 }: LightboxProps) {
+  const labels = useLabels('gallery', defaultGalleryLabels, labelsProp)
   const imgRef = React.useRef<HTMLImageElement | null>(null)
   const overlayRef = React.useRef<HTMLDivElement | null>(null)
   const chromeRef = React.useRef<HTMLDivElement | null>(null)
@@ -196,10 +225,10 @@ function Lightbox({
           }}
         >
           <DialogPrimitive.Title className="sr-only">
-            {current?.alt || `Image ${index + 1} of ${count}`}
+            {current?.alt || labels.image(index + 1, count)}
           </DialogPrimitive.Title>
           <DialogPrimitive.Description className="sr-only">
-            Use the arrow keys to move between images and Escape to close.
+            {labels.help}
           </DialogPrimitive.Description>
 
           <div ref={chromeRef} className="contents">
@@ -210,7 +239,7 @@ function Lightbox({
               <button
                 type="button"
                 onClick={close}
-                aria-label="Close"
+                aria-label={labels.close}
                 className="rounded-full p-2 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
               >
                 <XIcon className="size-5" />
@@ -221,7 +250,7 @@ function Lightbox({
                 <button
                   type="button"
                   onClick={() => go(-1)}
-                  aria-label="Previous image"
+                  aria-label={labels.previous}
                   className="absolute top-1/2 left-2 z-(--z-raised,10) hidden -translate-y-1/2 rounded-full p-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:block"
                 >
                   <ChevronLeftIcon className="size-6" />
@@ -229,7 +258,7 @@ function Lightbox({
                 <button
                   type="button"
                   onClick={() => go(1)}
-                  aria-label="Next image"
+                  aria-label={labels.next}
                   className="absolute top-1/2 right-2 z-(--z-raised,10) hidden -translate-y-1/2 rounded-full p-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:block"
                 >
                   <ChevronRightIcon className="size-6" />
@@ -266,7 +295,7 @@ function Lightbox({
                       <button
                         key={image.src}
                         type="button"
-                        aria-label={`Show image ${i + 1}`}
+                        aria-label={labels.show(i + 1)}
                         aria-current={i === index}
                         onClick={() => {
                           setDirection(i > index ? 1 : -1)
@@ -305,6 +334,8 @@ export interface GalleryProps extends Omit<React.ComponentProps<'div'>, 'childre
   aspect?: string
   /** Show the thumbnail strip in the lightbox. Default true. */
   thumbnails?: boolean
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<GalleryLabels>
 }
 
 const columnClass = {
@@ -323,9 +354,11 @@ function Gallery({
   columns = 3,
   aspect = '1 / 1',
   thumbnails,
+  labels: labelsProp,
   className,
   ...props
 }: GalleryProps) {
+  const labels = useLabels('gallery', defaultGalleryLabels, labelsProp)
   const [open, setOpen] = React.useState(false)
   const [index, setIndex] = React.useState(0)
   const [origin, setOrigin] = React.useState<Origin | null>(null)
@@ -352,7 +385,7 @@ function Gallery({
             else thumbs.current.delete(i)
           }}
           onClick={(event) => openAt(i, event.currentTarget)}
-          aria-label={image.alt ? `Open ${image.alt}` : `Open image ${i + 1}`}
+          aria-label={labels.open(i + 1, image.alt)}
           className="group relative overflow-hidden rounded-lg bg-muted outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
           style={{ aspectRatio: aspect }}
         >
@@ -378,6 +411,7 @@ function Gallery({
         origin={origin}
         getOrigin={(i) => thumbs.current.get(i)?.getBoundingClientRect()}
         thumbnails={thumbnails}
+        labels={labelsProp}
       />
     </div>
   )

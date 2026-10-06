@@ -1,14 +1,35 @@
 'use client'
 
 import {
+  type AnnouncementContext,
   type DragAnnouncements,
+  defaultAnnouncements,
   type GroupsChange,
   type SortableGroupsResult,
   useSortableGroups,
 } from '@uiness/dnd'
 import { GripVerticalIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface KanbanLabels {
+  /** What a screen reader calls a card. */
+  card: string
+  /** Read when a card is picked up. */
+  start: (context: AnnouncementContext) => string
+  /** Read when it moves to another place. */
+  move: (context: AnnouncementContext) => string
+  /** Read when it is dropped. */
+  drop: (context: AnnouncementContext) => string
+  /** Read when the drag is cancelled. */
+  cancel: (context: AnnouncementContext) => string
+}
+
+export const defaultKanbanLabels: KanbanLabels = {
+  card: 'sortable item',
+  ...defaultAnnouncements,
+}
 
 export type { DragLocation, GroupsChange } from '@uiness/dnd'
 
@@ -63,6 +84,8 @@ export interface KanbanProps extends Omit<React.ComponentProps<'div'>, 'children
   announcements?: DragAnnouncements
   /** What a screen reader calls a card. Default `sortable item`. */
   roleDescription?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<KanbanLabels>
   /** One column per id, with the cards it holds right now. Keyed by you. */
   children: (columnId: string, cards: string[]) => React.ReactNode
   /**
@@ -88,19 +111,27 @@ function Kanban({
   activationDistance,
   announcements,
   roleDescription,
+  labels: labelsProp,
   className,
   children,
   overlay,
   ...props
 }: KanbanProps) {
+  const labels = useLabels('kanban', defaultKanbanLabels, labelsProp)
   const board = useSortableGroups({
     groups,
     onChange,
     order,
     disabled,
     activationDistance,
-    announcements,
-    roleDescription,
+    announcements: {
+      start: labels.start,
+      move: labels.move,
+      drop: labels.drop,
+      cancel: labels.cancel,
+      ...announcements,
+    },
+    roleDescription: roleDescription ?? labels.card,
   })
   const columns = order ?? Object.keys(groups)
   const context = React.useMemo<KanbanContextValue>(

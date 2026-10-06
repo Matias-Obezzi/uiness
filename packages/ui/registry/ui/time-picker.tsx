@@ -2,6 +2,7 @@
 
 import { ClockIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
 
@@ -88,7 +89,7 @@ export interface TimePickerLabels {
   empty: string
 }
 
-const DEFAULT_LABELS: TimePickerLabels = {
+export const defaultTimePickerLabels: TimePickerLabels = {
   hour: 'Hours',
   minute: 'Minutes',
   second: 'Seconds',
@@ -121,7 +122,7 @@ export interface TimePickerProps
   /** With a name, a hidden input carries the "HH:mm" value in a form. */
   name?: string
   required?: boolean
-  /** Accessible names for the segments and the list button, for other languages. */
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
   labels?: Partial<TimePickerLabels>
 }
 
@@ -140,7 +141,7 @@ function TimePicker({
   onValueChange,
   seconds = false,
   hourCycle,
-  locale,
+  locale: localeProp,
   step,
   min,
   max,
@@ -153,7 +154,8 @@ function TimePicker({
   'aria-invalid': ariaInvalid,
   ...props
 }: TimePickerProps) {
-  const labels = { ...DEFAULT_LABELS, ...labelsProp }
+  const labels = useLabels('time-picker', defaultTimePickerLabels, labelsProp)
+  const locale = useLocale(localeProp)
   const twelve = (hourCycle ?? localeHourCycle(locale)) === 12
   const controlled = valueProp !== undefined
 

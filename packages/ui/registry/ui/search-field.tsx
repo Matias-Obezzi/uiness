@@ -2,6 +2,7 @@
 
 import { SearchIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Spinner } from '@/ui/spinner'
 
@@ -31,6 +32,20 @@ export interface SearchFieldProps
   clearLabel?: string
   /** Classes for the input itself. `className` goes on the outer box. */
   inputClassName?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<SearchFieldLabels>
+}
+
+export interface SearchFieldLabels {
+  /** Placeholder, and without the ellipsis the name of the folded button. */
+  placeholder: string
+  /** Name of the clear button. */
+  clear: string
+}
+
+export const defaultSearchFieldLabels: SearchFieldLabels = {
+  placeholder: 'Search…',
+  clear: 'Clear search',
 }
 
 const subscribe = () => () => {}
@@ -57,8 +72,9 @@ function SearchField({
   showShortcut = true,
   expanding = false,
   expandedWidth = '16rem',
-  clearLabel = 'Clear search',
-  placeholder = 'Search…',
+  clearLabel: clearProp,
+  placeholder: placeholderProp,
+  labels: labelsProp,
   className,
   inputClassName,
   id,
@@ -70,6 +86,9 @@ function SearchField({
   style,
   ...props
 }: SearchFieldProps) {
+  const labels = useLabels('search-field', defaultSearchFieldLabels, labelsProp)
+  const clearLabel = clearProp ?? labels.clear
+  const placeholder = placeholderProp ?? labels.placeholder
   const [uncontrolled, setUncontrolled] = React.useState(defaultValue)
   const value = valueProp ?? uncontrolled
   const [open, setOpen] = React.useState(false)

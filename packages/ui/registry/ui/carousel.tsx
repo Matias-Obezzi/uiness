@@ -3,7 +3,27 @@
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface CarouselLabels {
+  /** What the carousel is announced as. */
+  carousel: string
+  /** Name of the list of items, from the carousel's `label` when it has one. */
+  items: (label?: string) => string
+  previous: string
+  next: string
+  /** Name of a dot. */
+  goTo: (index: number, count: number) => string
+}
+
+export const defaultCarouselLabels: CarouselLabels = {
+  carousel: 'carousel',
+  items: (label) => (label ? `${label} items` : 'Carousel items'),
+  previous: 'Previous',
+  next: 'Next',
+  goTo: (index, count) => `Go to item ${index} of ${count}`,
+}
 
 /* -------------------------------------------------------------------------------------------------
  * The scroller itself is a plain overflow-x element with CSS scroll snapping. That is the whole
@@ -22,6 +42,7 @@ interface CarouselContextValue {
   scrollToIndex: (index: number) => void
   step: (delta: number) => void
   label?: string
+  labels: CarouselLabels
 }
 
 const CarouselContext = React.createContext<CarouselContextValue | null>(null)
@@ -59,6 +80,8 @@ function nearestIndex(el: HTMLElement): number {
 export interface CarouselProps extends React.ComponentProps<'section'> {
   /** Names the carousel for assistive tech. Strongly recommended when there is more than one. */
   label?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<CarouselLabels>
 }
 
 /**
@@ -66,7 +89,8 @@ export interface CarouselProps extends React.ComponentProps<'section'> {
  * picture, a video, a paragraph, a whole card. Sizes are yours to set, and they do not have to
  * match each other.
  */
-function Carousel({ label, className, children, ...props }: CarouselProps) {
+function Carousel({ label, labels: labelsProp, className, children, ...props }: CarouselProps) {
+  const labels = useLabels('carousel', defaultCarouselLabels, labelsProp)
   const reduced = useReducedMotion()
   const scroller = React.useRef<HTMLUListElement | null>(null)
   const [active, setActive] = React.useState(0)
@@ -136,15 +160,15 @@ function Carousel({ label, className, children, ...props }: CarouselProps) {
   )
 
   const value = React.useMemo(
-    () => ({ scroller, active, count, atStart, atEnd, scrollToIndex, step, label }),
-    [active, count, atStart, atEnd, scrollToIndex, step, label],
+    () => ({ scroller, active, count, atStart, atEnd, scrollToIndex, step, label, labels }),
+    [active, count, atStart, atEnd, scrollToIndex, step, label, labels],
   )
 
   return (
     <CarouselContext.Provider value={value}>
       <section
         data-slot="carousel"
-        aria-roledescription="carousel"
+        aria-roledescription={labels.carousel}
         aria-label={label}
         className={cn('relative', className)}
         {...props}
@@ -174,7 +198,7 @@ function CarouselContent({
   children,
   ...props
 }: CarouselContentProps) {
-  const { scroller, label } = useCarousel()
+  const { scroller, label, labels } = useCarousel()
   const [dragging, setDragging] = React.useState(false)
   const origin = React.useRef({ x: 0, scroll: 0, moved: false })
 
@@ -211,7 +235,7 @@ function CarouselContent({
       data-dragging={dragging ? '' : undefined}
       // biome-ignore lint/a11y/noNoninteractiveTabindex: a region that scrolls has to be focusable, or everything past the first screenful is out of reach by keyboard
       tabIndex={0}
-      aria-label={label ? `${label} items` : 'Carousel items'}
+      aria-label={labels.items(label)}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}
@@ -311,12 +335,12 @@ function CarouselVideo({ src, className, poster, ...props }: CarouselVideoProps)
 export type CarouselPreviousProps = React.ComponentProps<'button'>
 
 function CarouselPrevious({ className, ...props }: CarouselPreviousProps) {
-  const { step, atStart } = useCarousel()
+  const { step, atStart, labels } = useCarousel()
   return (
     <button
       type="button"
       data-slot="carousel-previous"
-      aria-label="Previous"
+      aria-label={labels.previous}
       disabled={atStart}
       onClick={() => step(-1)}
       className={cn(
@@ -336,12 +360,12 @@ function CarouselPrevious({ className, ...props }: CarouselPreviousProps) {
 export type CarouselNextProps = React.ComponentProps<'button'>
 
 function CarouselNext({ className, ...props }: CarouselNextProps) {
-  const { step, atEnd } = useCarousel()
+  const { step, atEnd, labels } = useCarousel()
   return (
     <button
       type="button"
       data-slot="carousel-next"
-      aria-label="Next"
+      aria-label={labels.next}
       disabled={atEnd}
       onClick={() => step(1)}
       className={cn(
@@ -362,7 +386,7 @@ export type CarouselDotsProps = React.ComponentProps<'div'>
 
 /** One dot per item. They are real buttons, so the run can be jumped through without dragging. */
 function CarouselDots({ className, ...props }: CarouselDotsProps) {
-  const { count, active, scrollToIndex } = useCarousel()
+  const { count, active, scrollToIndex, labels } = useCarousel()
   if (count < 2) return null
   return (
     <div
@@ -375,7 +399,7 @@ function CarouselDots({ className, ...props }: CarouselDotsProps) {
           // biome-ignore lint/suspicious/noArrayIndexKey: dots are positional
           key={i}
           type="button"
-          aria-label={`Go to item ${i + 1} of ${count}`}
+          aria-label={labels.goTo(i + 1, count)}
           aria-current={i === active || undefined}
           onClick={() => scrollToIndex(i)}
           className={cn(

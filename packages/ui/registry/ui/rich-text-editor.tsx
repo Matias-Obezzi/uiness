@@ -21,7 +21,67 @@ import {
   UnlinkIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface RichTextEditorLabels {
+  /** Shown while the editor is empty. */
+  placeholder: string
+  /** Name of the editable area. */
+  editor: string
+  /** Name of the toolbar over the selection. */
+  formatting: string
+  /** Name of the `/` menu. */
+  blocks: string
+  /** The link field of the toolbar. */
+  linkPlaceholder: string
+  linkAddress: string
+  applyLink: string
+  removeLink: string
+  /** The toolbar buttons. */
+  bold: string
+  italic: string
+  underline: string
+  strikethrough: string
+  code: string
+  link: string
+  heading: string
+  bulletedList: string
+  numberedList: string
+  quote: string
+  /** The blocks of the `/` menu, along with the lists and the quote above. */
+  text: string
+  heading1: string
+  heading2: string
+  heading3: string
+  divider: string
+}
+
+export const defaultRichTextEditorLabels: RichTextEditorLabels = {
+  placeholder: "Write something, or press '/' for blocks…",
+  editor: 'Editor',
+  formatting: 'Formatting',
+  blocks: 'Blocks',
+  linkPlaceholder: 'Paste or type a link',
+  linkAddress: 'Link address',
+  applyLink: 'Apply link',
+  removeLink: 'Remove link',
+  bold: 'Bold',
+  italic: 'Italic',
+  underline: 'Underline',
+  strikethrough: 'Strikethrough',
+  code: 'Code',
+  link: 'Link',
+  heading: 'Heading',
+  bulletedList: 'Bulleted list',
+  numberedList: 'Numbered list',
+  quote: 'Quote',
+  text: 'Text',
+  heading1: 'Heading 1',
+  heading2: 'Heading 2',
+  heading3: 'Heading 3',
+  divider: 'Divider',
+}
 
 /* ------------------------------------------------------------------------------------------
  * Sanitizing
@@ -803,35 +863,35 @@ const INLINE_SHORTCUTS: [RegExp, string][] = [
 
 interface SlashItem {
   id: BlockType | 'hr'
-  label: string
+  label: keyof RichTextEditorLabels
   hint: string
   icon: LucideIcon
   keywords: string[]
 }
 
 const SLASH_ITEMS: SlashItem[] = [
-  { id: 'p', label: 'Text', hint: '', icon: PilcrowIcon, keywords: ['paragraph', 'plain'] },
-  { id: 'h1', label: 'Heading 1', hint: '#', icon: Heading1Icon, keywords: ['title', 'h1'] },
-  { id: 'h2', label: 'Heading 2', hint: '##', icon: Heading2Icon, keywords: ['subtitle', 'h2'] },
-  { id: 'h3', label: 'Heading 3', hint: '###', icon: Heading3Icon, keywords: ['h3'] },
+  { id: 'p', label: 'text', hint: '', icon: PilcrowIcon, keywords: ['paragraph', 'plain'] },
+  { id: 'h1', label: 'heading1', hint: '#', icon: Heading1Icon, keywords: ['title', 'h1'] },
+  { id: 'h2', label: 'heading2', hint: '##', icon: Heading2Icon, keywords: ['subtitle', 'h2'] },
+  { id: 'h3', label: 'heading3', hint: '###', icon: Heading3Icon, keywords: ['h3'] },
   {
     id: 'ul',
-    label: 'Bulleted list',
+    label: 'bulletedList',
     hint: '-',
     icon: ListIcon,
     keywords: ['bullet', 'unordered', 'ul'],
   },
   {
     id: 'ol',
-    label: 'Numbered list',
+    label: 'numberedList',
     hint: '1.',
     icon: ListOrderedIcon,
     keywords: ['ordered', 'number', 'ol'],
   },
-  { id: 'blockquote', label: 'Quote', hint: '>', icon: TextQuoteIcon, keywords: ['blockquote'] },
+  { id: 'blockquote', label: 'quote', hint: '>', icon: TextQuoteIcon, keywords: ['blockquote'] },
   {
     id: 'hr',
-    label: 'Divider',
+    label: 'divider',
     hint: '---',
     icon: MinusIcon,
     keywords: ['separator', 'rule', 'hr'],
@@ -856,25 +916,25 @@ const MARK_TAGS: Record<string, Mark> = {
 
 interface ToolbarItem {
   id: Format
-  label: string
+  label: keyof RichTextEditorLabels
   icon: LucideIcon
   keys?: string
 }
 
 const TOOLBAR: ToolbarItem[][] = [
   [
-    { id: 'bold', label: 'Bold', icon: BoldIcon, keys: 'B' },
-    { id: 'italic', label: 'Italic', icon: ItalicIcon, keys: 'I' },
-    { id: 'underline', label: 'Underline', icon: UnderlineIcon, keys: 'U' },
-    { id: 'strike', label: 'Strikethrough', icon: StrikethroughIcon, keys: 'Shift+X' },
-    { id: 'code', label: 'Code', icon: CodeIcon, keys: 'E' },
-    { id: 'link', label: 'Link', icon: LinkIcon, keys: 'K' },
+    { id: 'bold', label: 'bold', icon: BoldIcon, keys: 'B' },
+    { id: 'italic', label: 'italic', icon: ItalicIcon, keys: 'I' },
+    { id: 'underline', label: 'underline', icon: UnderlineIcon, keys: 'U' },
+    { id: 'strike', label: 'strikethrough', icon: StrikethroughIcon, keys: 'Shift+X' },
+    { id: 'code', label: 'code', icon: CodeIcon, keys: 'E' },
+    { id: 'link', label: 'link', icon: LinkIcon, keys: 'K' },
   ],
   [
-    { id: 'heading', label: 'Heading', icon: HeadingIcon },
-    { id: 'ul', label: 'Bulleted list', icon: ListIcon },
-    { id: 'ol', label: 'Numbered list', icon: ListOrderedIcon },
-    { id: 'quote', label: 'Quote', icon: TextQuoteIcon },
+    { id: 'heading', label: 'heading', icon: HeadingIcon },
+    { id: 'ul', label: 'bulletedList', icon: ListIcon },
+    { id: 'ol', label: 'numberedList', icon: ListOrderedIcon },
+    { id: 'quote', label: 'quote', icon: TextQuoteIcon },
   ],
 ]
 
@@ -922,6 +982,8 @@ export interface RichTextEditorProps
   autoFocus?: boolean
   /** Classes for the editable area itself, such as a min height. */
   contentClassName?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<RichTextEditorLabels>
 }
 
 const isMac = () =>
@@ -940,14 +1002,18 @@ function RichTextEditor({
   ref,
   defaultValue = '',
   onChange,
-  placeholder = "Write something, or press '/' for blocks…",
+  placeholder: placeholderProp,
   readOnly = false,
   autoFocus = false,
+  labels: labelsProp,
   className,
   contentClassName,
-  'aria-label': ariaLabel = 'Editor',
+  'aria-label': ariaLabelProp,
   ...props
 }: RichTextEditorProps) {
+  const labels = useLabels('rich-text-editor', defaultRichTextEditorLabels, labelsProp)
+  const placeholder = placeholderProp ?? labels.placeholder
+  const ariaLabel = ariaLabelProp ?? labels.editor
   const wrapperRef = React.useRef<HTMLDivElement>(null)
   const rootRef = React.useRef<HTMLDivElement>(null)
   const toolbarRef = React.useRef<HTMLDivElement>(null)
@@ -981,9 +1047,10 @@ function RichTextEditor({
     if (!slash) return []
     const q = slash.query.toLowerCase()
     return SLASH_ITEMS.filter(
-      (item) => item.label.toLowerCase().includes(q) || item.keywords.some((k) => k.startsWith(q)),
+      (item) =>
+        labels[item.label].toLowerCase().includes(q) || item.keywords.some((k) => k.startsWith(q)),
     )
-  }, [slash])
+  }, [slash, labels])
 
   const getHTML = React.useCallback(() => {
     const root = rootRef.current
@@ -1779,7 +1846,7 @@ function RichTextEditor({
         <div
           ref={toolbarRef}
           role="toolbar"
-          aria-label="Formatting"
+          aria-label={labels.formatting}
           data-slot="rich-text-editor-toolbar"
           onKeyDown={toolbarKeys}
           onMouseDown={(event) => {
@@ -1806,13 +1873,13 @@ function RichTextEditor({
                 type="text"
                 inputMode="url"
                 defaultValue={link.href}
-                placeholder="Paste or type a link"
-                aria-label="Link address"
+                placeholder={labels.linkPlaceholder}
+                aria-label={labels.linkAddress}
                 className="h-7 w-52 rounded-md bg-transparent px-2 text-sm outline-none placeholder:text-muted-foreground"
               />
               <button
                 type="submit"
-                aria-label="Apply link"
+                aria-label={labels.applyLink}
                 className="grid size-7 place-items-center rounded-md outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
               >
                 <CheckIcon aria-hidden className="size-4" />
@@ -1820,7 +1887,7 @@ function RichTextEditor({
               {link.href ? (
                 <button
                   type="button"
-                  aria-label="Remove link"
+                  aria-label={labels.removeLink}
                   onClick={() => applyLink(null)}
                   className="grid size-7 place-items-center rounded-md outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
@@ -1836,9 +1903,11 @@ function RichTextEditor({
                   <button
                     key={item.id}
                     type="button"
-                    aria-label={item.label}
+                    aria-label={labels[item.label]}
                     aria-pressed={active.has(item.id)}
-                    title={item.keys ? `${item.label} (${mod}${item.keys})` : item.label}
+                    title={
+                      item.keys ? `${labels[item.label]} (${mod}${item.keys})` : labels[item.label]
+                    }
                     tabIndex={groupIndex === 0 && itemIndex === 0 ? 0 : -1}
                     onClick={() => applyFormat(item.id)}
                     className="grid size-7 place-items-center rounded-md text-muted-foreground outline-none transition-colors duration-(--duration-fast,150ms) hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-pressed:bg-accent aria-pressed:text-foreground"
@@ -1856,7 +1925,7 @@ function RichTextEditor({
         <div
           id={menuId}
           role="listbox"
-          aria-label="Blocks"
+          aria-label={labels.blocks}
           data-slot="rich-text-editor-menu"
           className="fade-in-0 zoom-in-95 absolute z-(--z-popover,60) mt-1 max-h-72 w-60 animate-in overflow-y-auto rounded-lg border bg-popover p-1 text-popover-foreground shadow-md duration-(--duration-fast,150ms) motion-reduce:animate-none"
           style={{
@@ -1885,7 +1954,7 @@ function RichTextEditor({
               <span className="grid size-7 shrink-0 place-items-center rounded-md border bg-background text-muted-foreground">
                 <item.icon aria-hidden className="size-4" />
               </span>
-              <span className="flex-1">{item.label}</span>
+              <span className="flex-1">{labels[item.label]}</span>
               {item.hint ? (
                 <kbd className="font-mono text-muted-foreground text-xs">{item.hint}</kbd>
               ) : null}

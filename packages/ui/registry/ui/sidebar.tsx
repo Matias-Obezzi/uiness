@@ -3,6 +3,7 @@
 import { ChevronLeftIcon, PanelLeftIcon } from 'lucide-react'
 import { Slot } from 'radix-ui'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Drawer, DrawerBody, DrawerContent, DrawerDescription, DrawerTitle } from '@/ui/drawer'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/tooltip'
@@ -213,9 +214,26 @@ function MountSignal({ onChange }: { onChange: (mounted: boolean) => void }) {
   return null
 }
 
+export interface SidebarLabels {
+  /** Title of the mobile drawer, read by screen readers. */
+  menu: string
+  /** Description of the mobile drawer, read by screen readers. */
+  navigation: string
+  /** Name of `SidebarTrigger`. */
+  toggle: string
+}
+
+export const defaultSidebarLabels: SidebarLabels = {
+  menu: 'Menu',
+  navigation: 'Navigation',
+  toggle: 'Toggle sidebar',
+}
+
 export interface SidebarProps extends React.ComponentProps<'aside'> {
   /** Accessible name of the mobile drawer. Default "Menu". */
   label?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<SidebarLabels>
 }
 
 /**
@@ -227,7 +245,8 @@ export interface SidebarProps extends React.ComponentProps<'aside'> {
  * the page instead of pushing it, so nothing next to it reflows; only click mode pushes.
  */
 function Sidebar({
-  label = 'Menu',
+  label: labelProp,
+  labels: labelsProp,
   className,
   style,
   children,
@@ -238,6 +257,8 @@ function Sidebar({
   onBlur,
   ...props
 }: SidebarProps) {
+  const labels = useLabels('sidebar', defaultSidebarLabels, labelsProp)
+  const label = labelProp ?? labels.menu
   const ctx = useSidebar()
   const {
     open,
@@ -368,7 +389,7 @@ function Sidebar({
           )}
         >
           <DrawerTitle className="sr-only">{label}</DrawerTitle>
-          <DrawerDescription className="sr-only">Navigation</DrawerDescription>
+          <DrawerDescription className="sr-only">{labels.navigation}</DrawerDescription>
           <DrawerBody
             data-slot="sidebar-drawer"
             data-state="expanded"
@@ -391,11 +412,12 @@ function SidebarTrigger({
   ...props
 }: React.ComponentProps<'button'>) {
   const { isMobile, setMobileOpen, toggle, collapsible, open, breakpoint } = useSidebar()
+  const labels = useLabels('sidebar', defaultSidebarLabels)
   return (
     <button
       type="button"
       data-slot="sidebar-trigger"
-      aria-label="Toggle sidebar"
+      aria-label={labels.toggle}
       aria-expanded={isMobile ? undefined : open}
       onClick={(e) => {
         onClick?.(e)

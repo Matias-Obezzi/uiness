@@ -87,6 +87,8 @@ describe('registry.json', () => {
             let mappedName = ''
             if (importPath === 'lib/utils') {
               mappedName = 'utils'
+            } else if (importPath.startsWith('lib/')) {
+              mappedName = importPath.replace('lib/', '')
             } else if (importPath.startsWith('hooks/')) {
               mappedName = importPath.replace('hooks/', '')
             } else if (importPath.startsWith('ui/')) {

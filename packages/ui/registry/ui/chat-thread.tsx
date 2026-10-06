@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { LabelsProvider, useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
 import { Button } from '@/ui/button'
@@ -163,6 +164,54 @@ export function groupChatMessages(messages: ChatMessage[], groupWithin = 5 * 60_
   return rows
 }
 
+export interface ChatThreadLabels {
+  /** Name of the log of messages. */
+  messages: string
+  /** The button back down, after scrolling up. */
+  jumpToLatest: string
+  /** The same button once new messages arrive below. */
+  newMessages: string
+  /** How your own name reads, in the log and in who reacted. */
+  you: string
+  /** Name of the reactions under a message, and of the picker. */
+  reactions: string
+  addReaction: string
+  reactWith: (emoji: string) => string
+  /** Read receipts. The names come as one list, joined for the locale. */
+  seenBy: (names: string) => string
+  /** Who is typing. The names come as one list, joined for the locale. */
+  typing: (names: string, count: number) => string
+  /** Placeholder and name of the composer field. */
+  message: string
+  attach: string
+  /** Name of the files waiting to be sent. */
+  attachments: string
+  remove: (name: string) => string
+  send: string
+  sending: string
+  notSent: string
+}
+
+export const defaultChatThreadLabels: ChatThreadLabels = {
+  messages: 'Messages',
+  jumpToLatest: 'Jump to latest',
+  newMessages: 'New messages',
+  you: 'You',
+  reactions: 'Reactions',
+  addReaction: 'Add reaction',
+  reactWith: (emoji) => `React with ${emoji}`,
+  seenBy: (names) => `Seen by ${names}`,
+  typing: (names, count) =>
+    count > 2 ? `${count} people are typing` : `${names} ${count === 1 ? 'is' : 'are'} typing`,
+  message: 'Message',
+  attach: 'Attach files',
+  attachments: 'Attachments',
+  remove: (name) => `Remove ${name}`,
+  send: 'Send',
+  sending: 'Sending…',
+  notSent: 'Not sent',
+}
+
 function UserAvatar({ user, className }: { user?: ChatUser; className?: string }) {
   return (
     <Avatar className={cn('size-8', className)}>
@@ -195,10 +244,11 @@ function ChatMessages({
   children,
   scrollKey,
   status,
-  jumpLabel = 'Jump to latest',
-  'aria-label': ariaLabel = 'Messages',
+  jumpLabel,
+  'aria-label': ariaLabel,
   ...props
 }: ChatMessagesProps) {
+  const labels = useLabels('chat-thread', defaultChatThreadLabels)
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const contentRef = React.useRef<HTMLDivElement>(null)
   const atBottom = React.useRef(true)
@@ -270,7 +320,7 @@ function ChatMessages({
         tabIndex={0}
       >
         <div ref={contentRef} className="flex min-h-full flex-col justify-end gap-3 p-4">
-          <div role="log" aria-label={ariaLabel} className="flex flex-col gap-3">
+          <div role="log" aria-label={ariaLabel ?? labels.messages} className="flex flex-col gap-3">
             {children}
           </div>
           {status}
@@ -285,7 +335,7 @@ function ChatMessages({
           className="fade-in-0 slide-in-from-bottom-2 absolute bottom-3 left-1/2 inline-flex h-8 -translate-x-1/2 animate-in items-center gap-1.5 rounded-full border bg-background px-3 font-medium text-xs shadow-md outline-none transition-colors duration-(--duration-fast,150ms) hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[unseen]:border-primary data-[unseen]:bg-primary data-[unseen]:text-primary-foreground motion-reduce:animate-none"
         >
           <ArrowDownIcon aria-hidden className="size-3.5" />
-          {unseen ? 'New messages' : jumpLabel}
+          {unseen ? labels.newMessages : (jumpLabel ?? labels.jumpToLatest)}
         </button>
       ) : null}
     </div>
@@ -396,10 +446,11 @@ export interface ChatAttachmentsProps extends React.ComponentProps<'div'> {
 function ChatAttachments({
   attachments,
   self = false,
-  locale,
+  locale: localeProp,
   className,
   ...props
 }: ChatAttachmentsProps) {
+  const locale = useLocale(localeProp)
   return (
     <div
       data-slot="chat-attachments"
@@ -485,16 +536,17 @@ function ChatReactions({
   className,
   ...props
 }: ChatReactionsProps) {
+  const labels = useLabels('chat-thread', defaultChatThreadLabels)
   const shown = reactions.filter((reaction) => reaction.userIds.length > 0)
   if (shown.length === 0) return null
   const nameOf = (id: string) =>
-    id === currentUserId ? 'You' : (users?.find((u) => u.id === id)?.name ?? id)
+    id === currentUserId ? labels.you : (users?.find((u) => u.id === id)?.name ?? id)
   return (
     // biome-ignore lint/a11y/useSemanticElements: a fieldset would bring its own box model
     <div
       data-slot="chat-reactions"
       role="group"
-      aria-label="Reactions"
+      aria-label={labels.reactions}
       className={cn('flex flex-wrap gap-1', className)}
       {...props}
     >
@@ -537,13 +589,14 @@ function ChatReactionPicker({
   reactions = DEFAULT_REACTIONS,
   className,
 }: ChatReactionPickerProps) {
+  const labels = useLabels('chat-thread', defaultChatThreadLabels)
   const [open, setOpen] = React.useState(false)
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
           type="button"
-          aria-label="Add reaction"
+          aria-label={labels.addReaction}
           data-slot="chat-reaction-picker"
           className={cn(
             'grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground opacity-0 outline-none transition-[opacity,background-color] duration-(--duration-fast,150ms) hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 group-hover/message:opacity-100 data-[state=open]:opacity-100 pointer-coarse:opacity-100',
@@ -556,13 +609,13 @@ function ChatReactionPicker({
       <PopoverContent
         side="top"
         className="flex w-auto gap-0.5 rounded-full p-1"
-        aria-label="Reactions"
+        aria-label={labels.reactions}
       >
         {reactions.map((emoji) => (
           <button
             key={emoji}
             type="button"
-            aria-label={`React with ${emoji}`}
+            aria-label={labels.reactWith(emoji)}
             onClick={() => {
               onPick(emoji)
               setOpen(false)
@@ -583,12 +636,16 @@ export interface ChatSeenByProps extends React.ComponentProps<'div'> {
 }
 
 /** Small avatars of the people who have read up to here. */
-function ChatSeenBy({ users, locale, className, ...props }: ChatSeenByProps) {
+function ChatSeenBy({ users, locale: localeProp, className, ...props }: ChatSeenByProps) {
+  const labels = useLabels('chat-thread', defaultChatThreadLabels)
+  const locale = useLocale(localeProp)
   if (users.length === 0) return null
-  const label = `Seen by ${listNames(
-    users.map((u) => u.name),
-    locale,
-  )}`
+  const label = labels.seenBy(
+    listNames(
+      users.map((u) => u.name),
+      locale,
+    ),
+  )
   return (
     <div
       data-slot="chat-seen-by"
@@ -619,16 +676,24 @@ export interface ChatTypingIndicatorProps extends React.ComponentProps<'div'> {
 }
 
 /** Three dots in a bubble, with who is typing for screen readers. */
-function ChatTypingIndicator({ users, locale, className, ...props }: ChatTypingIndicatorProps) {
+function ChatTypingIndicator({
+  users,
+  locale: localeProp,
+  className,
+  ...props
+}: ChatTypingIndicatorProps) {
+  const labels = useLabels('chat-thread', defaultChatThreadLabels)
+  const locale = useLocale(localeProp)
   const text =
     users.length === 0
       ? ''
-      : users.length > 2
-        ? `${users.length} people are typing`
-        : `${listNames(
+      : labels.typing(
+          listNames(
             users.map((u) => u.name),
             locale,
-          )} ${users.length === 1 ? 'is' : 'are'} typing`
+          ),
+          users.length,
+        )
   return (
     <div
       data-slot="chat-typing"
@@ -686,13 +751,15 @@ let fileCounter = 0
  */
 function ChatComposer({
   onSend,
-  placeholder = 'Message',
+  placeholder: placeholderProp,
   disabled = false,
   allowAttachments = true,
   accept,
   className,
   ...props
 }: ChatComposerProps) {
+  const labels = useLabels('chat-thread', defaultChatThreadLabels)
+  const placeholder = placeholderProp ?? labels.message
   const [text, setText] = React.useState('')
   const [files, setFiles] = React.useState<PendingFile[]>([])
   const fieldRef = React.useRef<HTMLTextAreaElement>(null)
@@ -767,7 +834,7 @@ function ChatComposer({
             variant="ghost"
             size="icon"
             className="rounded-full text-muted-foreground"
-            aria-label="Attach files"
+            aria-label={labels.attach}
             disabled={disabled}
             onClick={() => inputRef.current?.click()}
           >
@@ -790,7 +857,7 @@ function ChatComposer({
       ) : null}
       <div className="flex min-w-0 flex-1 flex-col gap-2 rounded-2xl border border-input bg-transparent px-3 py-2 shadow-xs transition-[color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50 dark:bg-input/30">
         {files.length > 0 ? (
-          <ul aria-label="Attachments" className="flex flex-wrap gap-1.5">
+          <ul aria-label={labels.attachments} className="flex flex-wrap gap-1.5">
             {files.map((pending) => (
               <li
                 key={pending.id}
@@ -804,7 +871,7 @@ function ChatComposer({
                 <span className="truncate">{pending.file.name}</span>
                 <button
                   type="button"
-                  aria-label={`Remove ${pending.file.name}`}
+                  aria-label={labels.remove(pending.file.name)}
                   onClick={() => removeFile(pending.id)}
                   className="absolute top-1 right-1 grid size-5 place-items-center rounded-full bg-background/80 text-muted-foreground outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
@@ -840,7 +907,7 @@ function ChatComposer({
         type="submit"
         size="icon"
         className="rounded-full"
-        aria-label="Send"
+        aria-label={labels.send}
         disabled={!canSend}
       >
         <SendHorizontalIcon />
@@ -875,6 +942,8 @@ export interface ChatThreadProps extends Omit<React.ComponentProps<'div'>, 'onSu
   locale?: string
   /** Props for the composer, such as `placeholder`, `accept` or `disabled`. */
   composerProps?: Omit<ChatComposerProps, 'onSend'>
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<ChatThreadLabels>
 }
 
 /**
@@ -892,12 +961,17 @@ function ChatThread({
   reactions = DEFAULT_REACTIONS,
   groupWithin,
   showNames = true,
-  locale,
+  locale: localeProp,
   composerProps,
+  labels: labelsProp,
   className,
   'aria-label': ariaLabel,
   ...props
 }: ChatThreadProps) {
+  const labels = useLabels('chat-thread', defaultChatThreadLabels, labelsProp)
+  const locale = useLocale(localeProp)
+  // The parts read their words from the provider, so the `labels` prop reaches them through one.
+  const pack = React.useMemo(() => ({ 'chat-thread': labels }), [labels])
   const byId = React.useMemo(() => new Map(users.map((user) => [user.id, user])), [users])
   const rows = React.useMemo(
     () => groupChatMessages(messages, groupWithin),
@@ -938,134 +1012,140 @@ function ChatThread({
     .filter((user): user is ChatUser => !!user)
 
   return (
-    <div
-      data-slot="chat-thread"
-      className={cn(
-        'flex h-full min-h-0 flex-col overflow-hidden rounded-xl border bg-background text-foreground',
-        className,
-      )}
-      {...props}
-    >
-      <ChatMessages
-        aria-label={ariaLabel}
-        scrollKey={ownLatest}
-        status={<ChatTypingIndicator users={typingUsers} locale={locale} />}
+    <LabelsProvider labels={pack}>
+      <div
+        data-slot="chat-thread"
+        className={cn(
+          'flex h-full min-h-0 flex-col overflow-hidden rounded-xl border bg-background text-foreground',
+          className,
+        )}
+        {...props}
       >
-        {rows.map((row) => {
-          if (row.type === 'day') {
-            const label = formatChatDay(row.date, locale)
+        <ChatMessages
+          aria-label={ariaLabel}
+          scrollKey={ownLatest}
+          status={<ChatTypingIndicator users={typingUsers} locale={locale} />}
+        >
+          {rows.map((row) => {
+            if (row.type === 'day') {
+              const label = formatChatDay(row.date, locale)
+              return (
+                <ChatDaySeparator key={row.key} role="separator" aria-label={label}>
+                  {label}
+                </ChatDaySeparator>
+              )
+            }
+            const self = row.authorId === currentUserId
+            const author = byId.get(row.authorId)
+            const first = row.messages[0] as ChatMessage
+            const firstDate = toDate(first.createdAt)
             return (
-              <ChatDaySeparator key={row.key} role="separator" aria-label={label}>
-                {label}
-              </ChatDaySeparator>
-            )
-          }
-          const self = row.authorId === currentUserId
-          const author = byId.get(row.authorId)
-          const first = row.messages[0] as ChatMessage
-          const firstDate = toDate(first.createdAt)
-          return (
-            <ChatMessageGroup
-              key={row.key}
-              author={author}
-              self={self}
-              showName={showNames}
-              meta={<time dateTime={firstDate.toISOString()}>{formatTime(firstDate, locale)}</time>}
-            >
-              {row.messages.map((message, index) => {
-                const count = row.messages.length
-                const position =
-                  count === 1
-                    ? 'single'
-                    : index === 0
-                      ? 'first'
-                      : index === count - 1
-                        ? 'last'
-                        : 'middle'
-                const date = toDate(message.createdAt)
-                const seen = seenAt.get(message.id)
-                const toggle = (emoji: string) => {
-                  const mine = message.reactions
-                    ?.find((r) => r.emoji === emoji)
-                    ?.userIds.includes(currentUserId)
-                  onReact?.(message.id, emoji, !mine)
+              <ChatMessageGroup
+                key={row.key}
+                author={author}
+                self={self}
+                showName={showNames}
+                meta={
+                  <time dateTime={firstDate.toISOString()}>{formatTime(firstDate, locale)}</time>
                 }
-                return (
-                  <div
-                    key={message.id}
-                    data-slot="chat-message"
-                    data-status={message.status}
-                    className={cn(
-                      'group/message flex max-w-full flex-col gap-1',
-                      self ? 'items-end' : 'items-start',
-                      fresh.current?.get(message.id) &&
-                        'fade-in-0 slide-in-from-bottom-2 animate-in duration-(--duration-normal,200ms) motion-reduce:animate-none',
-                    )}
-                  >
-                    <div className="relative flex max-w-full">
-                      <div
-                        className={cn(
-                          'flex min-w-0 flex-col gap-1',
-                          self ? 'items-end' : 'items-start',
-                          message.status === 'sending' && 'opacity-60',
-                        )}
-                      >
-                        <span className="sr-only">{self ? 'You' : (author?.name ?? '')}: </span>
-                        {message.attachments?.length ? (
-                          <ChatAttachments
-                            attachments={message.attachments}
-                            self={self}
-                            locale={locale}
+              >
+                {row.messages.map((message, index) => {
+                  const count = row.messages.length
+                  const position =
+                    count === 1
+                      ? 'single'
+                      : index === 0
+                        ? 'first'
+                        : index === count - 1
+                          ? 'last'
+                          : 'middle'
+                  const date = toDate(message.createdAt)
+                  const seen = seenAt.get(message.id)
+                  const toggle = (emoji: string) => {
+                    const mine = message.reactions
+                      ?.find((r) => r.emoji === emoji)
+                      ?.userIds.includes(currentUserId)
+                    onReact?.(message.id, emoji, !mine)
+                  }
+                  return (
+                    <div
+                      key={message.id}
+                      data-slot="chat-message"
+                      data-status={message.status}
+                      className={cn(
+                        'group/message flex max-w-full flex-col gap-1',
+                        self ? 'items-end' : 'items-start',
+                        fresh.current?.get(message.id) &&
+                          'fade-in-0 slide-in-from-bottom-2 animate-in duration-(--duration-normal,200ms) motion-reduce:animate-none',
+                      )}
+                    >
+                      <div className="relative flex max-w-full">
+                        <div
+                          className={cn(
+                            'flex min-w-0 flex-col gap-1',
+                            self ? 'items-end' : 'items-start',
+                            message.status === 'sending' && 'opacity-60',
+                          )}
+                        >
+                          <span className="sr-only">
+                            {self ? labels.you : (author?.name ?? '')}:{' '}
+                          </span>
+                          {message.attachments?.length ? (
+                            <ChatAttachments
+                              attachments={message.attachments}
+                              self={self}
+                              locale={locale}
+                            />
+                          ) : null}
+                          {message.text ? (
+                            <ChatBubble
+                              self={self}
+                              position={position}
+                              title={formatTime(date, locale)}
+                            >
+                              {message.text}
+                            </ChatBubble>
+                          ) : null}
+                        </div>
+                        {onReact ? (
+                          // Beside the bubble without taking any of its width.
+                          <ChatReactionPicker
+                            reactions={reactions}
+                            onPick={toggle}
+                            className={cn(
+                              'absolute top-1/2 -translate-y-1/2',
+                              self ? 'right-full mr-1' : 'left-full ml-1',
+                            )}
                           />
                         ) : null}
-                        {message.text ? (
-                          <ChatBubble
-                            self={self}
-                            position={position}
-                            title={formatTime(date, locale)}
-                          >
-                            {message.text}
-                          </ChatBubble>
-                        ) : null}
                       </div>
-                      {onReact ? (
-                        // Beside the bubble without taking any of its width.
-                        <ChatReactionPicker
-                          reactions={reactions}
-                          onPick={toggle}
-                          className={cn(
-                            'absolute top-1/2 -translate-y-1/2',
-                            self ? 'right-full mr-1' : 'left-full ml-1',
-                          )}
+                      {message.reactions?.length ? (
+                        <ChatReactions
+                          reactions={message.reactions}
+                          currentUserId={currentUserId}
+                          users={users}
+                          onToggle={onReact ? toggle : undefined}
                         />
                       ) : null}
+                      {message.status === 'failed' ? (
+                        <p className="flex items-center gap-1 px-1 text-destructive text-xs">
+                          <CircleAlertIcon aria-hidden className="size-3.5" />
+                          {labels.notSent}
+                        </p>
+                      ) : message.status === 'sending' ? (
+                        <p className="px-1 text-muted-foreground text-xs">{labels.sending}</p>
+                      ) : null}
+                      {seen ? <ChatSeenBy users={seen} locale={locale} /> : null}
                     </div>
-                    {message.reactions?.length ? (
-                      <ChatReactions
-                        reactions={message.reactions}
-                        currentUserId={currentUserId}
-                        users={users}
-                        onToggle={onReact ? toggle : undefined}
-                      />
-                    ) : null}
-                    {message.status === 'failed' ? (
-                      <p className="flex items-center gap-1 px-1 text-destructive text-xs">
-                        <CircleAlertIcon aria-hidden className="size-3.5" />
-                        Not sent
-                      </p>
-                    ) : message.status === 'sending' ? (
-                      <p className="px-1 text-muted-foreground text-xs">Sending…</p>
-                    ) : null}
-                    {seen ? <ChatSeenBy users={seen} locale={locale} /> : null}
-                  </div>
-                )
-              })}
-            </ChatMessageGroup>
-          )
-        })}
-      </ChatMessages>
-      {onSend ? <ChatComposer onSend={onSend} className="border-t" {...composerProps} /> : null}
-    </div>
+                  )
+                })}
+              </ChatMessageGroup>
+            )
+          })}
+        </ChatMessages>
+        {onSend ? <ChatComposer onSend={onSend} className="border-t" {...composerProps} /> : null}
+      </div>
+    </LabelsProvider>
   )
 }
 

@@ -1,15 +1,42 @@
 'use client'
 
 import {
+  type AnnouncementContext,
   type DragAnnouncements,
   type DraggableResult,
+  defaultAnnouncements,
   type Point,
   type Rect,
   useDraggable,
 } from '@uiness/dnd'
 import { GripHorizontalIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface DraggableLabels {
+  /** What a screen reader calls the element. */
+  draggable: string
+  /** The name read in the announcements when no `id` is given. */
+  panel: string
+  /** Read out as the name of a `DraggableHandle`. */
+  handle: string
+  /** Read when it is picked up. */
+  start: (context: AnnouncementContext) => string
+  /** Read when it moves. */
+  move: (context: AnnouncementContext) => string
+  /** Read when it is dropped. */
+  drop: (context: AnnouncementContext) => string
+  /** Read when the drag is cancelled. */
+  cancel: (context: AnnouncementContext) => string
+}
+
+export const defaultDraggableLabels: DraggableLabels = {
+  draggable: 'draggable',
+  panel: 'panel',
+  handle: 'Move panel',
+  ...defaultAnnouncements,
+}
 
 export type { Point, Rect } from '@uiness/dnd'
 
@@ -48,6 +75,8 @@ export interface DraggableProps
   announcements?: DragAnnouncements
   /** What a screen reader calls it. Default `draggable`. */
   roleDescription?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<DraggableLabels>
 }
 
 /**
@@ -57,7 +86,7 @@ export interface DraggableProps
  * to drop it and escape to put it back where it was.
  */
 function Draggable({
-  id = 'panel',
+  id: idProp,
   position,
   defaultPosition,
   onPositionChange,
@@ -70,13 +99,15 @@ function Draggable({
   keyboardStep,
   announcements,
   roleDescription,
+  labels: labelsProp,
   className,
   style,
   children,
   ...props
 }: DraggableProps) {
+  const labels = useLabels('draggable', defaultDraggableLabels, labelsProp)
   const drag = useDraggable({
-    id,
+    id: idProp ?? labels.panel,
     position,
     defaultPosition,
     onPositionChange,
@@ -86,8 +117,14 @@ function Draggable({
     disabled,
     activationDistance,
     keyboardStep,
-    announcements,
-    roleDescription,
+    announcements: {
+      start: labels.start,
+      move: labels.move,
+      drop: labels.drop,
+      cancel: labels.cancel,
+      ...announcements,
+    },
+    roleDescription: roleDescription ?? labels.draggable,
   })
   const element = drag.getElementProps()
   const handle = withHandle ? null : drag.getHandleProps()
@@ -125,6 +162,7 @@ export interface DraggableHandleProps extends React.ComponentProps<'div'> {
 function DraggableHandle({ label, className, style, children, ...props }: DraggableHandleProps) {
   const drag = useDraggableRoot()
   const handle = drag.getHandleProps()
+  const labels = useLabels('draggable', defaultDraggableLabels)
 
   return (
     <div
@@ -141,7 +179,7 @@ function DraggableHandle({ label, className, style, children, ...props }: Dragga
       style={{ ...handle.style, ...style }}
     >
       <GripHorizontalIcon className="size-4 shrink-0" aria-hidden="true" />
-      {children ?? <span className="sr-only">{label ?? 'Move panel'}</span>}
+      {children ?? <span className="sr-only">{label ?? labels.handle}</span>}
     </div>
   )
 }

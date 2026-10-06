@@ -3,6 +3,7 @@
 import { MenuIcon, MoreHorizontalIcon } from 'lucide-react'
 import { Slot } from 'radix-ui'
 import * as React from 'react'
+import { LabelsProvider, useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import {
   Drawer,
@@ -12,6 +13,29 @@ import {
   type DrawerSide,
   DrawerTitle,
 } from '@/ui/drawer'
+
+export interface NavbarLabels {
+  /** Title of the mobile menu, read by screen readers. */
+  menu: string
+  openMenu: string
+  /** Description of the mobile menu, read by screen readers. */
+  siteNavigation: string
+  /** Name of the links landmark. */
+  primary: string
+  /** The overflow tab of the bottom bar, and its list. */
+  more: string
+  /** Description of the overflow list, read by screen readers. */
+  morePages: string
+}
+
+export const defaultNavbarLabels: NavbarLabels = {
+  menu: 'Menu',
+  openMenu: 'Open menu',
+  siteNavigation: 'Site navigation',
+  primary: 'Primary',
+  more: 'More',
+  morePages: 'More pages',
+}
 
 export type NavbarLayout = 'bar' | 'drawer' | 'tabs'
 export type NavbarBreakpoint = 'sm' | 'md' | 'lg'
@@ -96,6 +120,8 @@ export interface NavbarProps extends React.ComponentProps<'header'> {
   menu?: React.ReactNode
   /** Classes for the inner container, which centers the content. */
   containerClassName?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<NavbarLabels>
 }
 
 function Navbar({
@@ -105,14 +131,20 @@ function Navbar({
   hideOnScroll = false,
   maxTabs = 5,
   menuSide = 'bottom',
-  menuTitle = 'Menu',
-  moreLabel = 'More',
+  menuTitle: menuTitleProp,
+  moreLabel: moreLabelProp,
   menu,
+  labels: labelsProp,
   className,
   containerClassName,
   children,
   ...props
 }: NavbarProps) {
+  const labels = useLabels('navbar', defaultNavbarLabels, labelsProp)
+  // The links read their words from the provider, so the `labels` prop reaches them through one.
+  const pack = React.useMemo(() => ({ navbar: labels }), [labels])
+  const menuTitle = menuTitleProp ?? labels.menu
+  const moreLabel = moreLabelProp ?? labels.more
   const [menuOpen, setMenuOpen] = React.useState(false)
   const hidden = useHideOnScroll(hideOnScroll) && !menuOpen
 
@@ -141,7 +173,7 @@ function Navbar({
   )
 
   return (
-    <>
+    <LabelsProvider labels={pack}>
       <NavbarContext.Provider value={barValue}>
         <header
           data-slot="navbar"
@@ -165,7 +197,7 @@ function Navbar({
               <button
                 type="button"
                 data-slot="navbar-menu-button"
-                aria-label="Open menu"
+                aria-label={labels.openMenu}
                 aria-expanded={menuOpen}
                 onClick={() => setMenuOpen(true)}
                 className={cn(
@@ -185,7 +217,7 @@ function Navbar({
         <Drawer open={menuOpen} onOpenChange={setMenuOpen}>
           <DrawerContent side={menuSide} className={belowBreakpoint[breakpoint]}>
             <DrawerTitle className="sr-only">{menuTitle}</DrawerTitle>
-            <DrawerDescription className="sr-only">Site navigation</DrawerDescription>
+            <DrawerDescription className="sr-only">{labels.siteNavigation}</DrawerDescription>
             <DrawerBody className="px-3 pt-2 pb-4">
               <NavbarContext.Provider value={drawerValue}>{links}</NavbarContext.Provider>
               {menu && <div className="mt-3 border-t pt-3">{menu}</div>}
@@ -199,7 +231,7 @@ function Navbar({
           {React.cloneElement(links, { maxTabs, menuTitle: moreLabel, menu })}
         </NavbarContext.Provider>
       )}
-    </>
+    </LabelsProvider>
   )
 }
 
@@ -232,10 +264,12 @@ function NavbarLinks({
   className,
   children,
   maxTabs = 5,
-  menuTitle = 'More',
+  menuTitle: menuTitleProp,
   menu,
   ...props
 }: NavbarLinksProps) {
+  const labels = useLabels('navbar', defaultNavbarLabels)
+  const menuTitle = menuTitleProp ?? labels.more
   const { layout, breakpoint } = React.useContext(NavbarContext)
   const [moreOpen, setMoreOpen] = React.useState(false)
   const closeMore = React.useCallback(() => setMoreOpen(false), [])
@@ -250,7 +284,7 @@ function NavbarLinks({
       <nav
         data-slot="navbar-links"
         data-layout="drawer"
-        aria-label="Primary"
+        aria-label={labels.primary}
         className={cn('flex flex-col gap-0.5', className)}
         {...props}
       >
@@ -268,7 +302,7 @@ function NavbarLinks({
       <>
         <nav
           data-slot="navbar-tabs"
-          aria-label="Primary"
+          aria-label={labels.primary}
           className={cn(
             'fixed inset-x-0 bottom-0 z-(--z-sticky,40) flex h-[calc(3.5rem+env(safe-area-inset-bottom))] items-stretch border-t bg-background/90 pb-[env(safe-area-inset-bottom)] backdrop-blur supports-[backdrop-filter]:bg-background/75',
             belowBreakpoint[breakpoint],
@@ -297,13 +331,13 @@ function NavbarLinks({
           <Drawer open={moreOpen} onOpenChange={setMoreOpen}>
             <DrawerContent className={belowBreakpoint[breakpoint]}>
               <DrawerTitle className="sr-only">{menuTitle}</DrawerTitle>
-              <DrawerDescription className="sr-only">More pages</DrawerDescription>
+              <DrawerDescription className="sr-only">{labels.morePages}</DrawerDescription>
               <DrawerBody className="px-3 pt-2 pb-4">
                 <NavbarContext.Provider value={moreValue}>
                   <nav
                     data-slot="navbar-links"
                     data-layout="drawer"
-                    aria-label="More"
+                    aria-label={labels.more}
                     className="flex flex-col gap-0.5"
                   >
                     {rest}
@@ -322,7 +356,7 @@ function NavbarLinks({
     <nav
       data-slot="navbar-links"
       data-layout="bar"
-      aria-label="Primary"
+      aria-label={labels.primary}
       className={cn('items-center gap-1', fromBreakpoint[breakpoint], className)}
       {...props}
     >

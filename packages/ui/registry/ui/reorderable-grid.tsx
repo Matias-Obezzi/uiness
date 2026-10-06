@@ -1,13 +1,34 @@
 'use client'
 
 import {
+  type AnnouncementContext,
   type DragAnnouncements,
+  defaultAnnouncements,
   type SortableChange,
   type SortableResult,
   useSortable,
 } from '@uiness/dnd'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface ReorderableGridLabels {
+  /** What a screen reader calls a tile. */
+  tile: string
+  /** Read when a tile is picked up. */
+  start: (context: AnnouncementContext) => string
+  /** Read when it moves to another place. */
+  move: (context: AnnouncementContext) => string
+  /** Read when it is dropped. */
+  drop: (context: AnnouncementContext) => string
+  /** Read when the drag is cancelled. */
+  cancel: (context: AnnouncementContext) => string
+}
+
+export const defaultReorderableGridLabels: ReorderableGridLabels = {
+  tile: 'grid item',
+  ...defaultAnnouncements,
+}
 
 export type { SortableChange } from '@uiness/dnd'
 
@@ -45,6 +66,8 @@ export interface ReorderableGridProps extends Omit<React.ComponentProps<'div'>, 
   announcements?: DragAnnouncements
   /** What a screen reader calls a tile. Default `grid item`. */
   roleDescription?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<ReorderableGridLabels>
   /** One tile per id, in the order the drag is currently leaving them. Keyed by you. */
   children: (id: string, index: number) => React.ReactNode
   /**
@@ -67,13 +90,15 @@ function ReorderableGrid({
   disabled,
   activationDistance,
   announcements,
-  roleDescription = 'grid item',
+  roleDescription,
+  labels: labelsProp,
   className,
   style,
   children,
   overlay,
   ...props
 }: ReorderableGridProps) {
+  const labels = useLabels('reorderable-grid', defaultReorderableGridLabels, labelsProp)
   const grid = useSortable({
     items,
     onReorder,
@@ -81,8 +106,14 @@ function ReorderableGrid({
     columns,
     disabled,
     activationDistance,
-    announcements,
-    roleDescription,
+    announcements: {
+      start: labels.start,
+      move: labels.move,
+      drop: labels.drop,
+      cancel: labels.cancel,
+      ...announcements,
+    },
+    roleDescription: roleDescription ?? labels.tile,
   })
 
   return (

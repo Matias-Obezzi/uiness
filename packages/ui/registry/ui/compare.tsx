@@ -1,7 +1,21 @@
 'use client'
 
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+/**
+ * Set through a `LabelsProvider` under `compare`. The `labels` prop of this component is the
+ * pair of corner captions, so it keeps that meaning; `aria-label` overrides `slider`.
+ */
+export interface CompareLabels {
+  /** Accessible name of the divider. */
+  slider: string
+}
+
+export const defaultCompareLabels: CompareLabels = {
+  slider: 'Compare',
+}
 
 export interface CompareProps extends Omit<React.ComponentProps<'div'>, 'children'> {
   /** What shows on the left. Usually an image, but anything works. */
@@ -34,13 +48,14 @@ function Compare({
   mode = 'drag',
   labels,
   className,
-  'aria-label': ariaLabel = 'Compare',
+  'aria-label': ariaLabel,
   onPointerDown,
   onPointerMove,
   onPointerUp,
   onKeyDown,
   ...props
 }: CompareProps) {
+  const words = useLabels('compare', defaultCompareLabels)
   const ref = React.useRef<HTMLDivElement>(null)
   const [uncontrolled, setUncontrolled] = React.useState(initial)
   const position = value ?? uncontrolled
@@ -112,7 +127,7 @@ function Compare({
       <div
         role="slider"
         tabIndex={0}
-        aria-label={ariaLabel}
+        aria-label={ariaLabel ?? words.slider}
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round(position)}

@@ -3,6 +3,7 @@
 import type { VariantProps } from 'class-variance-authority'
 import { AlertDialog as AlertDialogPrimitive } from 'radix-ui'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button, buttonVariants } from '@/ui/button'
 
@@ -133,6 +134,18 @@ function AlertDialogCancel({
   )
 }
 
+export interface AlertDialogLabels {
+  /** The action button of `confirm()` when it has no `confirmText`. */
+  confirm: string
+  /** The cancel button of `confirm()` when it has no `cancelText`. */
+  cancel: string
+}
+
+export const defaultAlertDialogLabels: AlertDialogLabels = {
+  confirm: 'Continue',
+  cancel: 'Cancel',
+}
+
 export interface ConfirmOptions {
   title: React.ReactNode
   description?: React.ReactNode
@@ -203,7 +216,13 @@ function confirm(options: ConfirmOptions): Promise<boolean> {
 }
 
 /** Renders the dialogs `confirm()` asks for. Mount it once, near the root. */
-function Confirmer() {
+function Confirmer({
+  labels: labelsProp,
+}: {
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<AlertDialogLabels>
+} = {}) {
+  const labels = useLabels('alert-dialog', defaultAlertDialogLabels, labelsProp)
   const queue = React.useSyncExternalStore(
     confirmStore.subscribe,
     confirmStore.getQueue,
@@ -269,7 +288,9 @@ function Confirmer() {
             ) : null}
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={pending}>{shown.cancelText ?? 'Cancel'}</AlertDialogCancel>
+            <AlertDialogCancel disabled={pending}>
+              {shown.cancelText ?? labels.cancel}
+            </AlertDialogCancel>
             {/* A plain button rather than AlertDialogAction: the action closing the dialog
                 itself would go through onOpenChange and read as a cancel. */}
             <Button
@@ -280,7 +301,7 @@ function Confirmer() {
                 if (!pending) void accept(shown)
               }}
             >
-              {shown.confirmText ?? 'Continue'}
+              {shown.confirmText ?? labels.confirm}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

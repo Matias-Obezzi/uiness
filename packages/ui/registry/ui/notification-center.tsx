@@ -3,6 +3,7 @@
 import { BellIcon, BellOffIcon, CheckCheckIcon } from 'lucide-react'
 import * as React from 'react'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
 import { Button } from '@/ui/button'
@@ -39,6 +40,40 @@ export interface NotificationTab {
   label: React.ReactNode
   /** Which notifications the tab lists. */
   filter: (notification: NotificationData) => boolean
+}
+
+export interface NotificationCenterLabels {
+  /** Heading of the panel and name of the bell. */
+  title: string
+  /** Name of the bell with unread notifications. */
+  unread: (label: string, count: number) => string
+  markAsRead: string
+  /** Read for the dot of an unread notification that cannot be marked. */
+  unreadDot: string
+  /** The two built in tabs. */
+  allTab: string
+  unreadTab: string
+  markAllAsRead: string
+  /** The empty Unread tab. */
+  caughtUp: string
+  caughtUpHint: string
+  /** Any other empty tab. */
+  empty: string
+  emptyHint: string
+}
+
+export const defaultNotificationCenterLabels: NotificationCenterLabels = {
+  title: 'Notifications',
+  unread: (label, count) => `${label}, ${count} unread`,
+  markAsRead: 'Mark as read',
+  unreadDot: 'Unread',
+  allTab: 'All',
+  unreadTab: 'Unread',
+  markAllAsRead: 'Mark all as read',
+  caughtUp: 'You are all caught up',
+  caughtUpHint: 'Nothing new since you last looked.',
+  empty: 'No notifications',
+  emptyHint: 'New activity will show up here.',
 }
 
 function toDate(value: Date | string | number) {
@@ -99,16 +134,21 @@ export interface NotificationBellProps extends React.ComponentProps<'button'> {
   max?: number
   /** Accessible name before the count. Default "Notifications". */
   label?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<NotificationCenterLabels>
 }
 
 /** A bell with a badge for the unread count. The bell rings when the count goes up. */
 function NotificationBell({
   count = 0,
   max = 99,
-  label = 'Notifications',
+  label: labelProp,
+  labels: labelsProp,
   className,
   ...props
 }: NotificationBellProps) {
+  const labels = useLabels('notification-center', defaultNotificationCenterLabels, labelsProp)
+  const label = labelProp ?? labels.title
   const badgeRef = React.useRef<HTMLSpanElement>(null)
   const iconRef = React.useRef<SVGSVGElement>(null)
   const previous = React.useRef(count)
@@ -140,7 +180,7 @@ function NotificationBell({
       variant="ghost"
       size="icon"
       data-slot="notification-bell"
-      aria-label={count > 0 ? `${label}, ${count} unread` : label}
+      aria-label={count > 0 ? labels.unread(label, count) : label}
       className={cn('relative rounded-full', className)}
       {...props}
     >
@@ -169,6 +209,8 @@ export interface NotificationItemProps extends Omit<React.ComponentProps<'li'>, 
   onSelect?: (notification: NotificationData) => void
   now?: Date
   locale?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<NotificationCenterLabels>
 }
 
 /** One notification: a picture, the text, the time, its actions and an unread dot. */
@@ -178,10 +220,13 @@ function NotificationItem({
   onAction,
   onSelect,
   now = new Date(),
-  locale,
+  locale: localeProp,
+  labels: labelsProp,
   className,
   ...props
 }: NotificationItemProps) {
+  const labels = useLabels('notification-center', defaultNotificationCenterLabels, labelsProp)
+  const locale = useLocale(localeProp)
   const { id, title, description, icon, avatar, name, category, actions, read } = notification
   const date = toDate(notification.createdAt)
   const pressable = !!onSelect || (!!onRead && !read)
@@ -257,8 +302,8 @@ function NotificationItem({
         onRead ? (
           <button
             type="button"
-            aria-label="Mark as read"
-            title="Mark as read"
+            aria-label={labels.markAsRead}
+            title={labels.markAsRead}
             onClick={() => onRead(id)}
             className="group/dot absolute top-3 right-3 grid size-6 place-items-center rounded-full outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
@@ -266,7 +311,7 @@ function NotificationItem({
           </button>
         ) : (
           <span className="absolute top-5 right-5 size-2 rounded-full bg-primary">
-            <span className="sr-only">Unread</span>
+            <span className="sr-only">{labels.unreadDot}</span>
           </span>
         )
       ) : null}
@@ -298,6 +343,8 @@ export interface NotificationPanelProps
   /** What "now" is for the times and the day groups. Default the clock. */
   now?: Date
   locale?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<NotificationCenterLabels>
 }
 
 /**
@@ -312,14 +359,18 @@ function NotificationPanel({
   onSelect,
   tabs = [],
   defaultTab = 'all',
-  title = 'Notifications',
+  title: titleProp,
   footer,
   empty,
   now: nowProp,
-  locale,
+  locale: localeProp,
+  labels: labelsProp,
   className,
   ...props
 }: NotificationPanelProps) {
+  const labels = useLabels('notification-center', defaultNotificationCenterLabels, labelsProp)
+  const locale = useLocale(localeProp)
+  const title = titleProp ?? labels.title
   // Times like "5 min. ago" move on by themselves while the panel stays open.
   const [clock, setClock] = React.useState(() => new Date())
   React.useEffect(() => {
@@ -330,8 +381,8 @@ function NotificationPanel({
   const now = nowProp ?? clock
   const unread = notifications.filter((n) => !n.read).length
   const allTabs: NotificationTab[] = [
-    { value: 'all', label: 'All', filter: () => true },
-    { value: 'unread', label: 'Unread', filter: (n) => !n.read },
+    { value: 'all', label: labels.allTab, filter: () => true },
+    { value: 'unread', label: labels.unreadTab, filter: (n) => !n.read },
     ...tabs,
   ]
   // Items that were there when the panel opened come in still; the ones after slide in.
@@ -357,7 +408,7 @@ function NotificationPanel({
               onClick={onReadAll}
             >
               <CheckCheckIcon />
-              Mark all as read
+              {labels.markAllAsRead}
             </Button>
           ) : null}
         </div>
@@ -394,12 +445,10 @@ function NotificationPanel({
                       )}
                     </span>
                     <p className="font-medium text-sm">
-                      {tab.value === 'unread' ? 'You are all caught up' : 'No notifications'}
+                      {tab.value === 'unread' ? labels.caughtUp : labels.empty}
                     </p>
                     <p className="text-muted-foreground text-xs">
-                      {tab.value === 'unread'
-                        ? 'Nothing new since you last looked.'
-                        : 'New activity will show up here.'}
+                      {tab.value === 'unread' ? labels.caughtUpHint : labels.emptyHint}
                     </p>
                   </div>
                 ))
@@ -420,6 +469,7 @@ function NotificationPanel({
                             onSelect={onSelect}
                             now={now}
                             locale={locale}
+                            labels={labelsProp}
                             className={cn(
                               fresh.current?.get(notification.id) &&
                                 'fade-in-0 slide-in-from-top-2 animate-in duration-(--duration-slow,300ms) motion-reduce:animate-none',
@@ -464,23 +514,26 @@ function NotificationCenter({
   align = 'end',
   className,
   panelClassName,
-  title = 'Notifications',
+  title: titleProp,
   ...panel
 }: NotificationCenterProps) {
+  const labels = useLabels('notification-center', defaultNotificationCenterLabels, panel.labels)
+  const title = titleProp ?? labels.title
   const unread = panel.notifications.filter((n) => !n.read).length
   return (
     <Popover open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
       <PopoverTrigger asChild>
         <NotificationBell
           count={unread}
-          label={typeof title === 'string' ? title : 'Notifications'}
+          label={typeof title === 'string' ? title : labels.title}
+          labels={panel.labels}
           className={className}
         />
       </PopoverTrigger>
       <PopoverContent
         align={align}
         sideOffset={8}
-        aria-label={typeof title === 'string' ? title : 'Notifications'}
+        aria-label={typeof title === 'string' ? title : labels.title}
         className="w-[min(24rem,calc(100vw-1rem))] overflow-hidden p-0"
       >
         <NotificationPanel title={title} className={panelClassName} {...panel} />

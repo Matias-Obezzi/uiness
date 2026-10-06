@@ -3,7 +3,27 @@
 import * as React from 'react'
 import type { TooltipValueType } from 'recharts'
 import * as RechartsPrimitive from 'recharts'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
+
+export interface ChartLabels {
+  /** Shown instead of a chart with nothing to plot. */
+  empty: string
+  /** How the ready-made charts sum up their data. The x values come formatted. */
+  summary: (series: string[], points: number, from?: string, to?: string) => string
+  /** Name of a bar chart, around the summary. */
+  barChart: (summary: string) => string
+  /** Name of a line chart, around the summary. */
+  lineChart: (summary: string) => string
+}
+
+export const defaultChartLabels: ChartLabels = {
+  empty: 'No data',
+  summary: (series, points, from, to) =>
+    `${series.join(', ')}, ${points} ${points === 1 ? 'point' : 'points'}${points ? `, from ${from} to ${to}` : ''}`,
+  barChart: (summary) => `Bar chart of ${summary}`,
+  lineChart: (summary) => `Line chart of ${summary}`,
+}
 
 // Theme name to the selector it applies under.
 const THEMES = { light: '', dark: '.dark' } as const
@@ -399,6 +419,8 @@ export interface SeriesChartProps extends Omit<React.ComponentProps<'div'>, 'chi
   showLegend?: boolean
   /** Shown instead of the chart when there is nothing to plot. Default "No data". */
   empty?: React.ReactNode
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<ChartLabels>
 }
 
 /** A number out of anything a data row may hold, or `null` when it is missing. */
@@ -507,8 +529,11 @@ export function useSeriesChart({
   series,
   xFormat,
   yFormat,
-  locale,
-}: Pick<SeriesChartProps, 'data' | 'x' | 'series' | 'xFormat' | 'yFormat' | 'locale'>) {
+  locale: localeProp,
+  labels: labelsProp,
+}: Pick<SeriesChartProps, 'data' | 'x' | 'series' | 'xFormat' | 'yFormat' | 'locale' | 'labels'>) {
+  const labels = useLabels('chart', defaultChartLabels, labelsProp)
+  const locale = useLocale(localeProp)
   const [hidden, setHidden] = React.useState<ReadonlySet<string>>(() => new Set())
 
   const formats = React.useMemo(
@@ -573,11 +598,15 @@ export function useSeriesChart({
 
   const first = rows[0]?.[CHART_X_LABEL]
   const last = rows[rows.length - 1]?.[CHART_X_LABEL]
-  const summary =
-    `${series.map((s) => s.label ?? s.key).join(', ')}, ${rows.length} ${rows.length === 1 ? 'point' : 'points'}` +
-    (rows.length ? `, from ${first} to ${last}` : '')
+  const summary = labels.summary(
+    series.map((s) => s.label ?? s.key),
+    rows.length,
+    first === undefined ? undefined : String(first),
+    last === undefined ? undefined : String(last),
+  )
 
   return {
+    labels,
     config,
     rows,
     hidden,
@@ -661,6 +690,7 @@ function ChartEmpty({
   children,
   ...props
 }: React.ComponentProps<'div'> & { height: number }) {
+  const labels = useLabels('chart', defaultChartLabels)
   return (
     <div
       data-slot="chart"
@@ -672,7 +702,7 @@ function ChartEmpty({
       style={{ height, ...style }}
       {...props}
     >
-      <div data-slot="chart-empty">{children ?? 'No data'}</div>
+      <div data-slot="chart-empty">{children ?? labels.empty}</div>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { formatKey, Kbd, KbdGroup, parseShortcut } from './kbd'
+import { LabelsProvider } from '@/lib/labels'
+import { defaultKbdLabels, formatKey, Kbd, KbdGroup, parseShortcut } from './kbd'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -72,5 +73,27 @@ describe('KbdGroup', () => {
       </KbdGroup>,
     )
     expect(screen.getByText('G').parentElement?.dataset.slot).toBe('kbd-group')
+  })
+})
+
+describe('Kbd labels', () => {
+  it('says the key names in another language', () => {
+    expect(formatKey('shift', false, { ...defaultKbdLabels, shift: 'Mayúsculas' })).toEqual({
+      symbol: 'Shift',
+      name: 'Mayúsculas',
+    })
+    expect(formatKey('space', true, { ...defaultKbdLabels, space: 'Espacio' })).toEqual({
+      symbol: 'Espacio',
+      name: 'Espacio',
+    })
+  })
+
+  it('reads them from the provider', () => {
+    render(
+      <LabelsProvider labels={{ kbd: { control: 'Contrôle' } }}>
+        <KbdGroup keys="mod+k" platform="other" />
+      </LabelsProvider>,
+    )
+    expect(screen.getByText('Contrôle')).toBeTruthy()
   })
 })

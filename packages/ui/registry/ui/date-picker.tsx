@@ -2,13 +2,28 @@
 
 import { CalendarIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import { Calendar, type CalendarProps, type DateRange, dateKey } from '@/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
 
+export interface DatePickerLabels {
+  /** Shown in the button before a day is picked. */
+  placeholder: string
+  /** Shown in the button before a range is picked, with `mode="range"`. */
+  rangePlaceholder: string
+}
+
+export const defaultDatePickerLabels: DatePickerLabels = {
+  placeholder: 'Pick a date',
+  rangePlaceholder: 'Pick a range',
+}
+
 interface DatePickerBaseProps {
   placeholder?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<DatePickerLabels>
   /** BCP 47 locale for the label and the calendar. */
   locale?: string
   /** How the picked date reads in the button. Default a medium date. */
@@ -47,8 +62,9 @@ export type DatePickerProps = DatePickerSingleProps | DatePickerRangeProps
 /** A button that opens a calendar. Picks one day, or a range with `mode="range"`. */
 function DatePicker(props: DatePickerProps) {
   const {
-    placeholder = props.mode === 'range' ? 'Pick a range' : 'Pick a date',
-    locale,
+    placeholder: placeholderProp,
+    labels: labelsProp,
+    locale: localeProp,
     format = { dateStyle: 'medium' },
     disabled,
     min,
@@ -59,6 +75,10 @@ function DatePicker(props: DatePickerProps) {
     id,
     name,
   } = props
+  const labels = useLabels('date-picker', defaultDatePickerLabels, labelsProp)
+  const locale = useLocale(localeProp)
+  const placeholder =
+    placeholderProp ?? (props.mode === 'range' ? labels.rangePlaceholder : labels.placeholder)
   const [open, setOpen] = React.useState(false)
   const [internal, setInternal] = React.useState<Date | null | DateRange>(
     () => props.defaultValue ?? (props.mode === 'range' ? {} : null),

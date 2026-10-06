@@ -2,9 +2,31 @@
 
 import { XIcon } from 'lucide-react'
 import * as React from 'react'
+import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 export type TagRejectReason = 'duplicate' | 'max' | 'invalid'
+
+export interface TagInputLabels {
+  /** Name of a tag's remove button. */
+  remove: (tag: string) => string
+  /** Shown when `max` is reached. */
+  max: (max: number) => string
+  /** Shown for a tag that is already there. */
+  duplicate: (tag: string) => string
+  /** Announced after tags are added, joined with commas. */
+  added: (tags: string) => string
+  /** Announced after a tag is removed. */
+  removed: (tag: string) => string
+}
+
+export const defaultTagInputLabels: TagInputLabels = {
+  remove: (tag) => `Remove ${tag}`,
+  max: (max) => `Up to ${max} ${max === 1 ? 'tag' : 'tags'}.`,
+  duplicate: (tag) => `${tag} is already added.`,
+  added: (tags) => `Added ${tags}.`,
+  removed: (tag) => `Removed ${tag}.`,
+}
 
 export interface TagInputProps
   extends Omit<React.ComponentProps<'input'>, 'value' | 'defaultValue' | 'type' | 'size'> {
@@ -33,6 +55,8 @@ export interface TagInputProps
   removeLabel?: (tag: string) => string
   /** Classes for the text input. `className` goes on the outer box. */
   inputClassName?: string
+  /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
+  labels?: Partial<TagInputLabels>
 }
 
 /** What splits a paste into several tags. */
@@ -53,7 +77,8 @@ function TagInput({
   onReject,
   transform = (tag) => tag.trim(),
   addOnBlur = true,
-  removeLabel = (tag) => `Remove ${tag}`,
+  removeLabel: removeProp,
+  labels: labelsProp,
   className,
   inputClassName,
   id,
@@ -70,6 +95,8 @@ function TagInput({
   'aria-invalid': ariaInvalid,
   ...props
 }: TagInputProps) {
+  const labels = useLabels('tag-input', defaultTagInputLabels, labelsProp)
+  const removeLabel = removeProp ?? labels.remove
   const [uncontrolled, setUncontrolled] = React.useState<string[]>(defaultValue ?? [])
   const tags = valueProp ?? uncontrolled
   const [text, setText] = React.useState('')
@@ -100,10 +127,10 @@ function TagInput({
       let why: string | undefined
       if (max !== undefined && next.length >= max) {
         reason = 'max'
-        why = `Up to ${max} ${max === 1 ? 'tag' : 'tags'}.`
+        why = labels.max(max)
       } else if (!allowDuplicates && next.some((t) => t.toLowerCase() === tag.toLowerCase())) {
         reason = 'duplicate'
-        why = `${tag} is already added.`
+        why = labels.duplicate(tag)
       } else if (validate) {
         const verdict = validate(tag, next)
         if (verdict === false || typeof verdict === 'string') {
@@ -122,7 +149,7 @@ function TagInput({
     if (next.length !== tags.length) {
       commit(next)
       const added = next.slice(tags.length)
-      setAnnouncement(`Added ${added.join(', ')}.`)
+      setAnnouncement(labels.added(added.join(', ')))
     }
     setError(message)
     return refused
@@ -132,7 +159,7 @@ function TagInput({
     const tag = tags[index]
     if (tag === undefined) return
     commit(tags.filter((_, i) => i !== index))
-    setAnnouncement(`Removed ${tag}.`)
+    setAnnouncement(labels.removed(tag))
     setError(null)
   }
 
