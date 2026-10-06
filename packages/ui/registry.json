@@ -3089,6 +3089,19 @@
           "type": "registry:block"
         }
       ]
+    },
+    {
+      "name": "uiness-skill",
+      "type": "registry:file",
+      "title": "uiness agent skill",
+      "description": "A skill for coding agents: how to install uiness items, where to look up their APIs (MCP server, llms.txt, Markdown docs) and the conventions to keep: theme tokens, cn(), radix-ui, labels, reduced motion and accessibility. Installs to .claude/skills/uiness/SKILL.md.",
+      "files": [
+        {
+          "path": "registry/skills/uiness/SKILL.md",
+          "type": "registry:file",
+          "target": "~/.claude/skills/uiness/SKILL.md"
+        }
+      ]
     }
   ]
 }

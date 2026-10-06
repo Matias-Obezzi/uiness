@@ -73,8 +73,8 @@ describe('registry.json', () => {
           )
         }
 
-        // 5. Imports declarados
-        if (existsSync(filePath)) {
+        // 5. Imports declarados (solo en código: el SKILL.md muestra imports de ejemplo)
+        if (existsSync(filePath) && /\.(tsx?|jsx?)$/.test(file.path)) {
           const content = readFileSync(filePath, 'utf-8')
           const importRegex = /from\s+['"]@\/([^'"]+)['"]/g
           const matches = Array.from(content.matchAll(importRegex))

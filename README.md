@@ -23,6 +23,10 @@ UI primitives for React, published under the `@uiness` scope.
 | [`@uiness/choreo`](packages/choreo) | Animates a whole site from what is already on the page: inspects the DOM, gives every element an entrance, cascades, counters and hover touches. |
 | [`@uiness/ui`](packages/ui) | Radix + Tailwind components distributed through a shadcn registry, includes island, image, fx and toast items, plus motion pieces: spotlights, marquees, typewriters, tilting cards. |
 
+## AI and MCP
+
+Coding agents can search the registry, read the docs and fetch any item's source through the MCP server at `https://uiness.vercel.app/api/mcp` (Streamable HTTP, no key). Every docs page is also served as Markdown (add `.md` to its address), with an index at [`/llms.txt`](https://uiness.vercel.app/llms.txt) and everything in [`/llms-full.txt`](https://uiness.vercel.app/llms-full.txt), and the `uiness-skill` registry item installs a skill with the project's conventions. Setup for Claude Code, Cursor, VS Code, Windsurf, Codex, Gemini CLI, Zed and others: [AI and MCP](https://uiness.vercel.app/docs/ai).
+
 ## Development
 
 ```bash
@@ -47,7 +51,7 @@ Releases use [Changesets](https://github.com/changesets/changesets): run `pnpm c
 
 To publish by hand instead: `pnpm changeset:version` then `pnpm changeset:publish`.
 
-**Docs on Vercel.** The site and the registry live at `https://uiness.vercel.app`, with the registry at `/r/<name>.json`, which is the URL the install pages show. The Vercel project uses `apps/docs` as its root directory: Vercel installs the workspace and runs the docs' own `build` script, which builds the registry too, and `apps/docs/vercel.json` adds the rewrite that sends every route to the single page app (registry JSON is left out of it, so a missing item is a real 404) and the registry headers. Each pull request gets a preview deployment.
+**Docs on Vercel.** The site and the registry live at `https://uiness.vercel.app`, with the registry at `/r/<name>.json`, which is the URL the install pages show. The Vercel project uses `apps/docs` as its root directory: Vercel installs the workspace and runs the docs' own `build` script, which builds the registry too and writes the Markdown pages, `llms.txt` and `llms-full.txt` next to the site, and `apps/docs/vercel.json` adds the rewrite that sends every route to the single page app (registry JSON, `/api`, Markdown and text files are left out of it, so a missing one is a real 404) and their headers. The MCP server is the Vercel Function in `apps/docs/api/mcp.js`, which reads those same files from its own deployment; after a build, `pnpm --filter docs mcp:smoke` serves `dist/` with the function and drives it with an MCP client. Each pull request gets a preview deployment.
 
 **GitHub Pages, for old links and installs.** The `Docs` workflow no longer publishes the docs to `https://matias-obezzi.github.io/uiness/`. It publishes a small site built by `pnpm --filter docs pages:redirect`: the registry JSON, so projects whose `components.json` points at the old registry keep installing, and a page that sends every other path to the same page on uiness.vercel.app. Once nobody uses the old registry URL, delete `.github/workflows/pages.yml` and turn Pages off.
 

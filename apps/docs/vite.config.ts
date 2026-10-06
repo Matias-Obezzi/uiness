@@ -5,6 +5,7 @@ import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import remarkGfm from 'remark-gfm'
 import { defineConfig, type Plugin } from 'vite'
+import { docsMarkdown } from './scripts/docs-markdown.ts'
 
 const root = fileURLToPath(new URL('.', import.meta.url))
 
@@ -68,11 +69,17 @@ export default defineConfig({
     baseAssets(),
     {
       enforce: 'pre',
-      ...mdx({ providerImportSource: '@mdx-js/react', remarkPlugins: [remarkGfm] }),
+      // Only .mdx: plain .md files, like the agent skill imported raw, are not pages.
+      ...mdx({
+        providerImportSource: '@mdx-js/react',
+        remarkPlugins: [remarkGfm],
+        mdExtensions: [],
+      }),
     },
     react(),
     tailwindcss(),
     slowImages(),
+    docsMarkdown(),
   ],
   resolve: {
     alias: {

@@ -9,7 +9,7 @@ const copyClass =
 
 type Highlighter = Awaited<ReturnType<typeof createCore>>
 let highlighterPromise: Promise<Highlighter> | null = null
-const LANGS = ['tsx', 'ts', 'bash', 'css', 'json', 'html']
+const LANGS = ['tsx', 'ts', 'bash', 'css', 'json', 'html', 'toml', 'text']
 
 // Only the grammars and themes the docs use, instead of the full bundle.
 async function createCore() {
@@ -26,6 +26,7 @@ async function createCore() {
       import('shiki/langs/css.mjs'),
       import('shiki/langs/json.mjs'),
       import('shiki/langs/html.mjs'),
+      import('shiki/langs/toml.mjs'),
     ],
     engine: createJavaScriptRegexEngine(),
   })

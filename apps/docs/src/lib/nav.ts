@@ -65,6 +65,11 @@ const sections: NavSection[] = [
         'Localization',
         'Every word of every component in your language, one at a time or all at once.',
       ),
+      page(
+        'ai',
+        'AI and MCP',
+        'Give coding agents the registry: an MCP server, Markdown docs, llms.txt and a skill.',
+      ),
     ],
   },
   {
@@ -556,7 +561,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
-  '2026-10-06': ['localization'],
+  '2026-10-06': ['localization', 'ai'],
   '2026-10-04': [
     'blocks/blog',
     'blocks/changelog',

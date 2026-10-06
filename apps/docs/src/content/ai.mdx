@@ -1,0 +1,178 @@
+Coding agents can read uiness as well as people do. Connect yours to the MCP server and it searches the registry, reads these docs and fetches the source of any item, instead of guessing props from memory. For agents without MCP, every page is also plain Markdown, and a skill teaches them the conventions to keep.
+
+## MCP server
+
+```text
+https://uiness.vercel.app/api/mcp
+```
+
+Streamable HTTP, no key and no account. It answers from the same registry and pages this site serves, so it is never behind them.
+
+| Tool | What it does |
+| --- | --- |
+| `search_items` | Finds components, blocks, hooks and docs pages by what they do, best first, each with its install command and docs link. Takes `query`, and optionally `type` and `limit`. |
+| `list_items` | Everything in the registry, one line each, grouped by type: `ui`, `block`, `hook`, `lib`, `theme` and `file`. Takes an optional `type`. |
+| `get_item` | One item by `name`: description, install command, dependencies, the source of every file with where it lands, and its docs page. |
+| `get_docs` | Any page of these docs as Markdown, by `slug`: `installation`, `theming`, `components/button`, `blocks/hero`. |
+| `get_setup` | How to set up a project: the registry in `components.json`, the theme, `cn()` and localization, with the snippets from these docs. |
+
+## Connect your agent
+
+<Tabs>
+<Tab title="Claude Code">
+
+```bash
+claude mcp add --transport http uiness https://uiness.vercel.app/api/mcp
+```
+
+Add `--scope user` to have it in every project, or `--scope project` to write it to `.mcp.json` and share it with your team.
+
+</Tab>
+<Tab title="Claude">
+
+In Claude Desktop or on claude.ai, open **Settings**, then **Connectors**, choose **Add custom connector**, name it `uiness` and paste the URL:
+
+```text
+https://uiness.vercel.app/api/mcp
+```
+
+</Tab>
+<Tab title="Cursor">
+
+In `.cursor/mcp.json` for the project, or `~/.cursor/mcp.json` for all of them:
+
+```json
+{
+  "mcpServers": {
+    "uiness": {
+      "url": "https://uiness.vercel.app/api/mcp"
+    }
+  }
+}
+```
+
+</Tab>
+<Tab title="VS Code">
+
+In `.vscode/mcp.json` for the project, then use it from Copilot Chat in agent mode:
+
+```json
+{
+  "servers": {
+    "uiness": {
+      "type": "http",
+      "url": "https://uiness.vercel.app/api/mcp"
+    }
+  }
+}
+```
+
+</Tab>
+<Tab title="Windsurf">
+
+In `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "uiness": {
+      "serverUrl": "https://uiness.vercel.app/api/mcp"
+    }
+  }
+}
+```
+
+</Tab>
+<Tab title="Codex">
+
+In `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.uiness]
+url = "https://uiness.vercel.app/api/mcp"
+```
+
+Or from a terminal:
+
+```bash
+codex mcp add uiness --url https://uiness.vercel.app/api/mcp
+```
+
+</Tab>
+<Tab title="Gemini CLI">
+
+In `~/.gemini/settings.json`, or `.gemini/settings.json` for the project:
+
+```json
+{
+  "mcpServers": {
+    "uiness": {
+      "httpUrl": "https://uiness.vercel.app/api/mcp"
+    }
+  }
+}
+```
+
+</Tab>
+<Tab title="Zed">
+
+In Zed's `settings.json`:
+
+```json
+{
+  "context_servers": {
+    "uiness": {
+      "url": "https://uiness.vercel.app/api/mcp"
+    }
+  }
+}
+```
+
+</Tab>
+<Tab title="Other">
+
+A client that only starts local servers over stdio can reach the URL through `mcp-remote`:
+
+```json
+{
+  "mcpServers": {
+    "uiness": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://uiness.vercel.app/api/mcp"]
+    }
+  }
+}
+```
+
+</Tab>
+</Tabs>
+
+Then ask for what you need in your own words: "add a date range picker from uiness to the filters", or "build the pricing page with the uiness blocks, in Spanish". The agent finds the items, installs them with the shadcn CLI and writes the code with the props they really have.
+
+## Markdown and llms.txt
+
+Every page of these docs is also served as Markdown, for agents that read the web and for pasting into a chat:
+
+- [`/llms.txt`](https://uiness.vercel.app/llms.txt) lists every page with a line on what it covers, in the [llms.txt](https://llmstxt.org) format.
+- [`/llms-full.txt`](https://uiness.vercel.app/llms-full.txt) is every page in one file.
+- Add `.md` to the address of any page: `/docs/components/button.md`. The introduction is `/docs.md`.
+- The **Copy page** and **Markdown** buttons at the top of each page do the same from the browser.
+
+In the Markdown, previews become the source of their demos, install blocks become the shadcn command, and links point at the other Markdown pages. The registry itself is JSON with the source inline, at `/r/<name>.json` for each item and `/r/registry.json` for the index.
+
+## Agent skill
+
+A skill tells an agent how uiness is meant to be used before it writes a line: how to install items, where to look up their APIs, and the conventions the registry keeps. Theme tokens instead of colors, `cn()` for classes, the `radix-ui` package, `labels` and `LabelsProvider` for every word, reduced motion, and accessible names, states and keyboard support. Agents that read skills, like Claude Code, load it whenever the work involves uiness.
+
+Install it into the project, at `.claude/skills/uiness/SKILL.md`:
+
+<Install name="uiness-skill" />
+
+Or once for every project, in your home folder:
+
+```bash
+mkdir -p ~/.claude/skills/uiness
+curl -fsSL https://uiness.vercel.app/skills/uiness/SKILL.md -o ~/.claude/skills/uiness/SKILL.md
+```
+
+It is plain Markdown under a short front matter, so agents that do not read skills can take it as a rules or instructions file.
