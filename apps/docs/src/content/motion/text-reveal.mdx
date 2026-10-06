@@ -4,7 +4,7 @@ A paragraph whose words light up one after another as it scrolls through the vie
 
 ## Installation
 
-<Install name="text-reveal" extra="Installs @uiness/scroll, the fallback where CSS cannot drive it." />
+<Install name="text-reveal" extra="No packages: where CSS cannot drive it, a small scroll listener in the use-scroll-driver hook does." />
 
 ## Usage
 
@@ -25,14 +25,14 @@ The words are always in the document, so screen readers and search engines read 
 
 By default (`driver="auto"`) the reveal runs on CSS scroll-driven animations: the paragraph declares a view timeline, `view-timeline: --text-reveal`, with insets that match `offset`, and each word fades in with `animation-timeline` over its own slice of it. No JavaScript runs while you scroll, and it works with JavaScript turned off.
 
-`auto` switches to `@uiness/scroll` after mount when:
+`auto` switches to that listener after mount when:
 
 - the browser has no scroll-driven animations;
 - `container` is set, which CSS cannot point a timeline at;
 - `offset` uses pixel edges, or starts and ends on the same edge of the paragraph;
 - an ancestor with `overflow: hidden` (or `auto` without anything to scroll) sits between the paragraph and the real scroller. A CSS view timeline follows the nearest scroll container, even one that never scrolls, and would stay frozen. Use `overflow: clip` for clipping where you can, it is not a scroll container.
 
-`driver="css"` never loads the scroll listener: where CSS cannot drive it, the paragraph is simply fully visible. `driver="js"` always measures with `@uiness/scroll`, writing the progress to one CSS variable, so nothing re-renders while you scroll.
+`driver="css"` never loads the scroll listener: where CSS cannot drive it, the paragraph is simply fully visible. `driver="js"` always measures with it, writing the progress to one CSS variable, so nothing re-renders while you scroll.
 
 Browser support for CSS scroll-driven animations: Chrome and Edge 115 and later, Opera 101 and later, Safari 26 and later. Firefox has them only behind a flag at the time of writing, so it gets the JavaScript driver (or, with `driver="css"`, the static final state).
 

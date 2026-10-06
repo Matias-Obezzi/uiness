@@ -1,8 +1,12 @@
 'use client'
 
-import { observeScrollProgress } from '@uiness/scroll'
 import * as React from 'react'
-import { type ScrollDriver, useScrollDriver, viewTimelineFor } from '@/hooks/use-scroll-driver'
+import {
+  observeScrollProgress,
+  type ScrollDriver,
+  useScrollDriver,
+  viewTimelineFor,
+} from '@/hooks/use-scroll-driver'
 import { cn } from '@/lib/utils'
 
 export interface TimelineProps extends React.ComponentProps<'div'> {
@@ -13,7 +17,7 @@ export interface TimelineProps extends React.ComponentProps<'div'> {
   /**
    * What lights the line and the dots. `css` runs on CSS scroll-driven animations, without
    * JavaScript; where the browser has none the timeline shows fully lit. `js` measures the
-   * scroll with `@uiness/scroll`. `auto` uses CSS where it can and JavaScript elsewhere.
+   * scroll in JavaScript. `auto` uses CSS where it can and JavaScript elsewhere.
    * Default `auto`.
    */
   driver?: ScrollDriver
@@ -55,7 +59,7 @@ const driven = (timeline: string, range?: string): React.CSSProperties => ({
  * when it passes the reading position.
  *
  * Where the browser has CSS scroll-driven animations, the line and the dots follow view
- * timelines and need no JavaScript. Otherwise `@uiness/scroll` measures the progress. Before
+ * timelines and need no JavaScript. Otherwise a scroll listener measures the progress. Before
  * either runs, the server HTML shows the timeline fully lit.
  */
 function Timeline({
@@ -76,11 +80,7 @@ function Timeline({
   useIsoLayoutEffect(() => {
     const el = ref.current
     if (!el || mode !== 'js') return
-    return observeScrollProgress(
-      el,
-      { offset: [`start ${anchor}`, `end ${anchor}`] },
-      ({ progress }) => setProgress(progress),
-    )
+    return observeScrollProgress(el, { offset: [`start ${anchor}`, `end ${anchor}`] }, setProgress)
   }, [mode, anchor])
 
   const context = React.useMemo(() => ({ anchor, mode }), [anchor, mode])
@@ -157,7 +157,7 @@ function TimelineItem({
     return observeScrollProgress(
       el,
       { offset: [`start ${anchor}`, `start ${anchor}`] },
-      ({ progress }) => setPassed(progress >= 1),
+      (progress) => setPassed(progress >= 1),
     )
   }, [mode, anchor])
 

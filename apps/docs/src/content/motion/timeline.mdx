@@ -4,7 +4,7 @@ Entries down a vertical line that lights up as you scroll. Each entry's dot turn
 
 ## Installation
 
-<Install name="timeline" extra="Installs @uiness/scroll, the fallback where CSS cannot drive it." />
+<Install name="timeline" extra="No packages: where CSS cannot drive it, a small scroll listener in the use-scroll-driver hook does." />
 
 ## Usage
 
@@ -32,7 +32,7 @@ import { Timeline, TimelineItem } from '@/components/ui/timeline'
 
 By default (`driver="auto"`) the line and the dots run on CSS scroll-driven animations. The timeline declares a view timeline whose viewport is cut down to a line at `anchor`, and the lit part of the line grows along it with `animation-timeline`. Each entry has a view timeline of its own, and its dot lights up over the first `2rem` of scrolling past the anchor. Nothing runs in JavaScript while you scroll, and it works with JavaScript turned off.
 
-`auto` switches to `@uiness/scroll` after mount when the browser has no scroll-driven animations, or when an ancestor with `overflow: hidden` (or `auto` without anything to scroll) sits between the timeline and the real scroller, since a CSS view timeline follows the nearest scroll container even when it never scrolls. `driver="css"` never measures anything, and `driver="js"` always does.
+`auto` switches to that listener after mount when the browser has no scroll-driven animations, or when an ancestor with `overflow: hidden` (or `auto` without anything to scroll) sits between the timeline and the real scroller, since a CSS view timeline follows the nearest scroll container even when it never scrolls. `driver="css"` never measures anything, and `driver="js"` always does.
 
 With the CSS driver the dots are lit by the stylesheet, so `data-state` on the entries stays `active`; style on it only with `driver="js"`. The server HTML shows the line fully lit and every dot active, which is also what browsers without scroll-driven animations show when JavaScript does not run.
 

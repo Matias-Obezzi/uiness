@@ -1,10 +1,9 @@
 'use client'
 
-import { scrollParent } from '@uiness/scroll'
 import * as React from 'react'
 import { useInView } from '@/hooks/use-in-view'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
-import { type ScrollDriver, useScrollDriver } from '@/hooks/use-scroll-driver'
+import { type ScrollDriver, scrollParent, useScrollDriver } from '@/hooks/use-scroll-driver'
 import { cn } from '@/lib/utils'
 
 export interface VelocityMarqueeProps extends React.ComponentProps<'div'> {
@@ -73,7 +72,7 @@ function VelocityMarquee({
     if (!el || !inView || reduced || mode !== 'js') return
     // The same set for the life of the component; rows add and remove themselves in it.
     const list = rows.current
-    const scroller = scrollParent(el, 'y')
+    const scroller = scrollParent(el)
     const read = () => (scroller ? scroller.scrollTop : window.scrollY)
     let lastY = read()
     let last = performance.now()

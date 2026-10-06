@@ -129,4 +129,28 @@ describe('registry.json', () => {
 
     expect(errors).toEqual([])
   })
+
+  it('only declares npm dependencies its files import', () => {
+    // A stale entry makes every install pull a package that nothing uses.
+    const registry = JSON.parse(readFileSync(join(__dirname, '../registry.json'), 'utf-8'))
+    const errors: string[] = []
+    for (const item of registry.items) {
+      const code = (item.files ?? [])
+        .filter((file: { path: string }) => /\.(tsx?|jsx?)$/.test(file.path))
+        .map((file: { path: string }) => readFileSync(join(__dirname, '..', file.path), 'utf-8'))
+        .join('\n')
+      // Items without code, like the theme, bring CSS packages.
+      if (!code) continue
+      for (const dep of item.dependencies ?? []) {
+        const name = dep.replace(/(?<=.)@.*$/, '')
+        const escaped = name.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&')
+        if (
+          !new RegExp(`from\\s+['"]${escaped}(/[^'"]*)?['"]|import\\(\\s*['"]${escaped}`).test(code)
+        ) {
+          errors.push(`Item '${item.name}' declares '${dep}', but none of its files imports it.`)
+        }
+      }
+    }
+    expect(errors).toEqual([])
+  })
 })

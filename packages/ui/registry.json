@@ -475,7 +475,7 @@
       "type": "registry:ui",
       "title": "Chat Thread",
       "description": "A conversation from data: runs of messages under one avatar, day separators, reactions, read receipts, typing, attachments, jump to latest and a composer.",
-      "dependencies": ["radix-ui", "lucide-react"],
+      "dependencies": ["lucide-react"],
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/avatar",
@@ -508,7 +508,7 @@
       "type": "registry:ui",
       "title": "Comment Thread",
       "description": "Comments with one level of replies, reactions, @mentions, inline edits, delete behind a confirm and resolve.",
-      "dependencies": ["radix-ui", "lucide-react"],
+      "dependencies": ["lucide-react"],
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/alert-dialog",
@@ -531,7 +531,7 @@
       "type": "registry:ui",
       "title": "Notification Center",
       "description": "A bell with the unread count that opens tabs of notifications grouped by day, with read state, actions and new ones sliding in.",
-      "dependencies": ["radix-ui", "lucide-react"],
+      "dependencies": ["lucide-react"],
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/avatar",
@@ -975,8 +975,7 @@
       "name": "use-scroll-driver",
       "type": "registry:hook",
       "title": "useScrollDriver",
-      "description": "Picks CSS scroll-driven animations or @uiness/scroll for a scroll-linked component, and maps scroll offsets to view timelines.",
-      "dependencies": ["@uiness/scroll"],
+      "description": "Picks CSS scroll-driven animations or a small scroll listener for a scroll-linked component, and maps scroll offsets to view timelines.",
       "files": [
         {
           "path": "registry/hooks/use-scroll-driver.ts",
@@ -1366,8 +1365,7 @@
       "name": "timeline",
       "type": "registry:ui",
       "title": "Timeline",
-      "description": "Entries down a line that lights up as you scroll. Installs @uiness/scroll.",
-      "dependencies": ["@uiness/scroll"],
+      "description": "Entries down a line that lights up as you scroll.",
       "registryDependencies": ["@uiness/utils", "@uiness/use-scroll-driver"],
       "css": {
         "@keyframes timeline-progress": {
@@ -1958,8 +1956,7 @@
       "name": "text-reveal",
       "type": "registry:ui",
       "title": "Text Reveal",
-      "description": "A paragraph whose words light up as it scrolls by. Installs @uiness/scroll.",
-      "dependencies": ["@uiness/scroll"],
+      "description": "A paragraph whose words light up as it scrolls by.",
       "registryDependencies": ["@uiness/utils", "@uiness/use-scroll-driver"],
       "css": {
         "@keyframes text-reveal-word": {
@@ -2114,8 +2111,7 @@
       "name": "velocity-marquee",
       "type": "registry:ui",
       "title": "Velocity Marquee",
-      "description": "Rows of text that run sideways and speed up with the scroll. Installs @uiness/scroll.",
-      "dependencies": ["@uiness/scroll"],
+      "description": "Rows of text that run sideways and speed up with the scroll.",
       "registryDependencies": [
         "@uiness/utils",
         "@uiness/use-in-view",

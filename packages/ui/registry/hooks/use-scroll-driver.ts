@@ -1,13 +1,12 @@
 'use client'
 
-import { type Edge, type Offset, type OffsetEntry, scrollParent } from '@uiness/scroll'
 import * as React from 'react'
 
 /**
  * What moves a scroll-linked component. `css` uses CSS scroll-driven animations
  * (`animation-timeline: view()`), which run without JavaScript. `js` measures the scroll with
- * `@uiness/scroll`. `auto` takes CSS where the browser has it and the timeline can follow the
- * right scroller, and JavaScript everywhere else.
+ * the small observer below. `auto` takes CSS where the browser has it and the timeline can
+ * follow the right scroller, and JavaScript everywhere else.
  */
 export type ScrollDriver = 'auto' | 'css' | 'js'
 
@@ -62,13 +61,124 @@ export function useScrollDriver(
       supported &&
       container === undefined &&
       supportsScrollTimeline() &&
-      same(timelineScroller(el), scrollParent(el, 'y'))
+      same(timelineScroller(el), scrollParent(el))
     setMode(css ? 'css' : 'js')
   }, [ref, driver, container, supported])
   return mode
 }
 
+/** A point on the element or the viewport: a named edge, a fraction from 0 to 1, or pixels. */
+export type Edge = 'start' | 'center' | 'end' | number | `${number}px`
+/** "<element edge> <viewport edge>": `'start end'` is the element's top at the viewport's bottom. */
+export type OffsetEntry = `${Edge} ${Edge}` | [Edge, Edge]
+/** Where the progress is 0 and where it is 1. */
+export type Offset = [OffsetEntry, OffsetEntry]
+
 const edgeFractions: Record<string, number> = { start: 0, center: 0.5, end: 1 }
+
+function parseEdge(s: string): Edge {
+  if (s in edgeFractions) return s as Edge
+  if (s.endsWith('px')) return s as `${number}px`
+  const n = Number.parseFloat(s)
+  return Number.isNaN(n) ? 'start' : n
+}
+
+function edges(entry: OffsetEntry): [Edge, Edge] {
+  if (Array.isArray(entry)) return entry
+  const [a = 'start', b = 'end'] = entry.split(/\s+/)
+  return [parseEdge(a), parseEdge(b)]
+}
+
+function edgePx(edge: Edge, size: number): number {
+  if (typeof edge === 'number') return edge * size
+  const named = edgeFractions[edge]
+  if (named !== undefined) return named * size
+  const px = Number.parseFloat(edge)
+  return Number.isNaN(px) ? 0 : px
+}
+
+/**
+ * The nearest ancestor that actually scrolls vertically, or `null` when that is the page. A box
+ * with `overflow: auto` that fits its content does not count: it never moves.
+ */
+export function scrollParent(target: Element): HTMLElement | null {
+  if (typeof getComputedStyle !== 'function') return null
+  for (let el = target.parentElement; el; el = el.parentElement) {
+    const { overflowY } = getComputedStyle(el)
+    if (overflowY !== 'auto' && overflowY !== 'scroll' && overflowY !== 'overlay') continue
+    if (el.scrollHeight > el.clientHeight) return el
+  }
+  return null
+}
+
+/** How far `target` is through `offset`, 0 to 1, against `container` or the window. */
+function progressOf(target: Element, offset: Offset, container: HTMLElement | null): number {
+  const rect = target.getBoundingClientRect()
+  const position = container ? rect.top - container.getBoundingClientRect().top : rect.top
+  const viewport = container ? container.clientHeight : window.innerHeight
+  const [e0, v0] = edges(offset[0])
+  const [e1, v1] = edges(offset[1])
+  // How far the element edge sits below the viewport edge, at each end.
+  const d0 = position + edgePx(e0, rect.height) - edgePx(v0, viewport)
+  const d1 = position + edgePx(e1, rect.height) - edgePx(v1, viewport)
+  if (d0 === d1) return d0 <= 0 ? 1 : 0
+  const p = d0 / (d0 - d1)
+  return p <= 0 ? 0 : p > 1 ? 1 : p
+}
+
+/**
+ * The JavaScript driver: calls `callback` with the progress of `target` through `offset` right
+ * away, then at most once a frame while it changes on scroll or resize. Left out, `container` is
+ * the nearest ancestor that scrolls, looked up again when sizes change; `null` is the window.
+ * Returns a function that stops it.
+ */
+export function observeScrollProgress(
+  target: Element,
+  { offset, container: given }: { offset: Offset; container?: HTMLElement | null },
+  callback: (progress: number) => void,
+): () => void {
+  const find = () => (given === undefined ? scrollParent(target) : given)
+  let container = find()
+  let scroller: EventTarget = container ?? window
+  let frame = 0
+  let last: number | null = null
+
+  const update = () => {
+    frame = 0
+    const progress = progressOf(target, offset, container)
+    if (progress === last) return
+    last = progress
+    callback(progress)
+  }
+  const schedule = () => {
+    if (!frame) frame = requestAnimationFrame(update)
+  }
+  // A panel only starts scrolling once it holds more than it shows, often after images load.
+  const resize = () => {
+    const next = find()
+    if (next !== container) {
+      scroller.removeEventListener('scroll', schedule)
+      container = next
+      scroller = container ?? window
+      scroller.addEventListener('scroll', schedule, { passive: true })
+    }
+    last = null
+    schedule()
+  }
+
+  update()
+  scroller.addEventListener('scroll', schedule, { passive: true })
+  window.addEventListener('resize', schedule)
+  const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(resize)
+  ro?.observe(target)
+  if (target.parentElement) ro?.observe(target.parentElement)
+  return () => {
+    if (frame) cancelAnimationFrame(frame)
+    scroller.removeEventListener('scroll', schedule)
+    window.removeEventListener('resize', schedule)
+    ro?.disconnect()
+  }
+}
 
 function fraction(edge: Edge | undefined): number | null {
   if (typeof edge === 'number') return edge
@@ -77,9 +187,7 @@ function fraction(edge: Edge | undefined): number | null {
 }
 
 function split(entry: OffsetEntry): [number | null, number | null] {
-  const [a, b] = Array.isArray(entry)
-    ? entry
-    : entry.split(/\s+/).map((s): Edge => (s in edgeFractions ? (s as Edge) : Number(s)))
+  const [a, b] = edges(entry)
   return [fraction(a), fraction(b)]
 }
 
@@ -94,7 +202,7 @@ export interface ViewTimelineRange {
 const pct = (n: number) => `${Number((n * 100).toFixed(4))}%`
 
 /**
- * The view timeline that matches an `@uiness/scroll` offset, so the CSS and the JavaScript
+ * The view timeline that matches an offset, so the CSS and the JavaScript
  * drivers start and end at the same scroll positions. Pixel edges, and offsets whose entries
  * name the same element edge, have no match and give `null`.
  */

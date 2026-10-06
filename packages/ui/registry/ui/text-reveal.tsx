@@ -1,8 +1,13 @@
 'use client'
 
-import { type Offset, observeScrollProgress } from '@uiness/scroll'
 import * as React from 'react'
-import { type ScrollDriver, useScrollDriver, viewTimelineFor } from '@/hooks/use-scroll-driver'
+import {
+  type Offset,
+  observeScrollProgress,
+  type ScrollDriver,
+  useScrollDriver,
+  viewTimelineFor,
+} from '@/hooks/use-scroll-driver'
 import { cn } from '@/lib/utils'
 
 export interface TextRevealProps extends Omit<React.ComponentProps<'p'>, 'children'> {
@@ -11,8 +16,8 @@ export interface TextRevealProps extends Omit<React.ComponentProps<'p'>, 'childr
   /** Opacity of a word not reached yet, 0 to 1. Default 0.15. */
   from?: number
   /**
-   * When the reveal starts and ends, as `@uiness/scroll` offsets. Default from the top of the
-   * paragraph at 85% down the viewport to its bottom at 45%.
+   * When the reveal starts and ends, as `'<element edge> <viewport edge>'` pairs. Default from
+   * the top of the paragraph at 85% down the viewport to its bottom at 45%.
    */
   offset?: Offset
   /**
@@ -23,7 +28,7 @@ export interface TextRevealProps extends Omit<React.ComponentProps<'p'>, 'childr
   /**
    * What drives the reveal. `css` runs on CSS scroll-driven animations, without JavaScript;
    * where the browser has none the paragraph is simply fully visible. `js` measures the scroll
-   * with `@uiness/scroll`. `auto` uses CSS where it can and JavaScript elsewhere. Default `auto`.
+   * in JavaScript. `auto` uses CSS where it can and JavaScript elsewhere. Default `auto`.
    */
   driver?: ScrollDriver
 }
@@ -62,7 +67,7 @@ function TextReveal({
   useIsoLayoutEffect(() => {
     const el = ref.current
     if (!el || mode !== 'js') return
-    const stop = observeScrollProgress(el, { offset: stableOffset, container }, ({ progress }) => {
+    const stop = observeScrollProgress(el, { offset: stableOffset, container }, (progress) => {
       el.style.setProperty('--text-reveal-progress', progress.toFixed(4))
     })
     return () => {
