@@ -5,6 +5,12 @@ import { MetricCard } from '@/ui/metric-card'
 import { Sparkline } from '@/ui/sparkline'
 
 // Two made up weeks per metric, the same on every render; "Refresh" moves to the next set.
+// Trends are in thousands (revenue, users) and percent (churn), so the tooltips say so.
+const thousands =
+  (prefix = '') =>
+  (value: number) =>
+    `${prefix}${value.toLocaleString('en-US')}k`
+const percent = (value: number) => `${value.toLocaleString('en-US')}%`
 const sets = [
   {
     revenue: 48_210,
@@ -44,7 +50,15 @@ export default function MetricCardDemo() {
           format={{ style: 'currency', currency: 'USD', maximumFractionDigits: 0 }}
           delta={set.revenueDelta}
           comparison="vs last month"
-          sparkline={<Sparkline data={set.revenueTrend} variant="area" height={36} tooltip />}
+          sparkline={
+            <Sparkline
+              data={set.revenueTrend}
+              variant="area"
+              height={36}
+              tooltip
+              format={thousands('$')}
+            />
+          }
         />
         <MetricCard
           label="Active users"
@@ -52,7 +66,7 @@ export default function MetricCardDemo() {
           locale="en-US"
           delta={set.usersDelta}
           comparison="vs last week"
-          sparkline={<Sparkline data={set.usersTrend} height={36} />}
+          sparkline={<Sparkline data={set.usersTrend} height={36} tooltip format={thousands()} />}
         />
         <MetricCard
           label="Churn"
@@ -62,7 +76,9 @@ export default function MetricCardDemo() {
           delta={set.churnDelta}
           inverse
           comparison="vs last month"
-          sparkline={<Sparkline data={set.churnTrend} variant="bar" height={36} />}
+          sparkline={
+            <Sparkline data={set.churnTrend} variant="bar" height={36} tooltip format={percent} />
+          }
         />
       </div>
       <Button
