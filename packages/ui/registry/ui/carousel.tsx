@@ -1,7 +1,8 @@
 'use client'
 
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import { ChevronLeftIcon, ChevronRightIcon, PauseIcon, PlayIcon } from 'lucide-react'
 import * as React from 'react'
+import { useInView } from '@/hooks/use-in-view'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
@@ -15,6 +16,12 @@ export interface CarouselLabels {
   next: string
   /** Name of a dot. */
   goTo: (index: number, count: number) => string
+  /** Where the run is, read out politely when it moves and is not autoplaying. */
+  position: (index: number, count: number) => string
+  /** The autoplay toggle while the run is stopped. */
+  play: string
+  /** The autoplay toggle while the run is moving on its own. */
+  pause: string
 }
 
 export const defaultCarouselLabels: CarouselLabels = {
@@ -23,6 +30,9 @@ export const defaultCarouselLabels: CarouselLabels = {
   previous: 'Previous',
   next: 'Next',
   goTo: (index, count) => `Go to item ${index} of ${count}`,
+  position: (index, count) => `Item ${index} of ${count}`,
+  play: 'Start automatic scrolling',
+  pause: 'Pause automatic scrolling',
 }
 
 /* -------------------------------------------------------------------------------------------------
@@ -30,27 +40,59 @@ export const defaultCarouselLabels: CarouselLabels = {
  * engine: momentum on touch, the wheel, Home and End and the arrow keys all come from the browser
  * already knowing how to scroll, and items keep whatever width they were given because nothing here
  * measures them into a track. The script below only reads the scroll position to light up the
- * controls, and writes it when one is used.
+ * controls, and writes it when one is used — or when autoplay asks for the next item.
  * -----------------------------------------------------------------------------------------------*/
 
-interface CarouselContextValue {
-  scroller: React.RefObject<HTMLUListElement | null>
-  active: number
+/** What `useCarousel()` and `apiRef` give you: where the run is, and how to move it. */
+export interface CarouselApi {
+  /** Index of the item snapped at the start edge. */
+  index: number
+  /** How many items the run holds. */
   count: number
-  atStart: boolean
-  atEnd: boolean
-  scrollToIndex: (index: number) => void
-  step: (delta: number) => void
+  /** Whether `prev()` would move. Always true with `loop` and more than one item. */
+  canPrev: boolean
+  /** Whether `next()` would move. Always true with `loop` and more than one item. */
+  canNext: boolean
+  prev: () => void
+  next: () => void
+  goTo: (index: number) => void
+  /** Whether autoplay is on and not stopped by the reader. Hover and focus pause it for a moment
+   * without changing this. False when `autoplay` is off or motion is reduced. */
+  playing: boolean
+  play: () => void
+  pause: () => void
+}
+
+/** Look of the arrows, dots and play button: on the page, or over a picture. */
+export type CarouselControls = 'default' | 'overlay'
+
+interface CarouselContextValue extends CarouselApi {
+  scroller: React.RefObject<HTMLUListElement | null>
+  /** Autoplay could run here: asked for, motion allowed, more than one item. */
+  canAutoplay: boolean
+  /** Autoplay is moving the run right now, so the live region stays quiet. */
+  rotating: boolean
+  controls: CarouselControls
   label?: string
   labels: CarouselLabels
 }
 
 const CarouselContext = React.createContext<CarouselContextValue | null>(null)
 
-function useCarousel() {
+function useCarouselContext() {
   const context = React.useContext(CarouselContext)
   if (!context) throw new Error('Carousel parts must be used inside <Carousel>')
   return context
+}
+
+/**
+ * Drive the carousel from any component inside it: where it is, how many items, and the moves.
+ * From outside the carousel, pass `apiRef` instead.
+ */
+function useCarousel(): CarouselApi {
+  const { index, count, canPrev, canNext, prev, next, goTo, playing, play, pause } =
+    useCarouselContext()
+  return { index, count, canPrev, canNext, prev, next, goTo, playing, play, pause }
 }
 
 /** Items are the scroller's element children, so a caller can wrap or reorder them freely. */
@@ -80,6 +122,28 @@ function nearestIndex(el: HTMLElement): number {
 export interface CarouselProps extends React.ComponentProps<'section'> {
   /** Names the carousel for assistive tech. Strongly recommended when there is more than one. */
   label?: string
+  /**
+   * Move to the next item on its own every `interval` milliseconds. Pauses while the pointer is
+   * over the carousel, while keyboard focus is inside it, and while it is off screen; never runs
+   * under a reduced motion preference. Render a `CarouselPlayPause` with it. Default false.
+   */
+  autoplay?: boolean
+  /** Milliseconds between items when autoplaying. Default 5000. */
+  interval?: number
+  /**
+   * Wrap around: next from the last item goes to the first, previous from the first goes to the
+   * last, and the arrows never disable. Without it, autoplay stops at the end. Default false.
+   */
+  loop?: boolean
+  /**
+   * `overlay` styles the arrows, dots and play button to sit over a picture — a dark translucent
+   * scrim with white icons — and places them over the run. Default `default`.
+   */
+  controls?: CarouselControls
+  /** Called with the new index whenever the snapped item changes. */
+  onIndexChange?: (index: number) => void
+  /** Receives the same API as `useCarousel()`, to drive the carousel from outside it. */
+  apiRef?: React.Ref<CarouselApi>
   /** Words to use instead of the English ones. A `LabelsProvider` sets them for the whole app. */
   labels?: Partial<CarouselLabels>
 }
@@ -89,14 +153,37 @@ export interface CarouselProps extends React.ComponentProps<'section'> {
  * picture, a video, a paragraph, a whole card. Sizes are yours to set, and they do not have to
  * match each other.
  */
-function Carousel({ label, labels: labelsProp, className, children, ...props }: CarouselProps) {
+function Carousel({
+  label,
+  autoplay = false,
+  interval = 5000,
+  loop = false,
+  controls = 'default',
+  onIndexChange,
+  apiRef,
+  labels: labelsProp,
+  className,
+  children,
+  onPointerEnter,
+  onPointerLeave,
+  onPointerDown,
+  onFocus,
+  onBlur,
+  ...props
+}: CarouselProps) {
   const labels = useLabels('carousel', defaultCarouselLabels, labelsProp)
   const reduced = useReducedMotion()
+  const root = React.useRef<HTMLElement | null>(null)
   const scroller = React.useRef<HTMLUListElement | null>(null)
   const [active, setActive] = React.useState(0)
   const [count, setCount] = React.useState(0)
   const [atStart, setAtStart] = React.useState(true)
   const [atEnd, setAtEnd] = React.useState(false)
+  const [stopped, setStopped] = React.useState(false)
+  const [hovered, setHovered] = React.useState(false)
+  const [focused, setFocused] = React.useState(false)
+  const pointerFocus = React.useRef(false)
+  const inView = useInView(root, { once: false, amount: 0.25 })
 
   const read = React.useCallback(() => {
     const el = scroller.current
@@ -135,7 +222,21 @@ function Carousel({ label, labels: labelsProp, className, children, ...props }: 
     }
   }, [read])
 
-  const scrollToIndex = React.useCallback(
+  const changeRef = React.useRef(onIndexChange)
+  changeRef.current = onIndexChange
+  const firstIndex = React.useRef(true)
+  // Nothing is read out until the run has moved once, or every page load would announce it.
+  const [moved, setMoved] = React.useState(false)
+  React.useEffect(() => {
+    if (firstIndex.current) {
+      firstIndex.current = false
+      return
+    }
+    setMoved(true)
+    changeRef.current?.(active)
+  }, [active])
+
+  const goTo = React.useCallback(
     (index: number) => {
       const el = scroller.current
       if (!el) return
@@ -150,30 +251,149 @@ function Carousel({ label, labels: labelsProp, className, children, ...props }: 
     [reduced],
   )
 
-  const step = React.useCallback(
-    (delta: number) => {
-      const el = scroller.current
-      if (!el) return
-      scrollToIndex(nearestIndex(el) + delta)
-    },
-    [scrollToIndex],
+  const wraps = loop && count > 1
+
+  // Read from the element rather than from state, so two presses in the same frame still land
+  // two items along instead of both starting from the same one.
+  const next = React.useCallback(() => {
+    const el = scroller.current
+    if (!el) return
+    const end = el.scrollLeft >= el.scrollWidth - el.clientWidth - 1
+    if (end) {
+      if (wraps) goTo(0)
+      return
+    }
+    goTo(nearestIndex(el) + 1)
+  }, [goTo, wraps])
+
+  const prev = React.useCallback(() => {
+    const el = scroller.current
+    if (!el) return
+    if (el.scrollLeft <= 1) {
+      if (wraps) goTo(itemsOf(el).length - 1)
+      return
+    }
+    goTo(nearestIndex(el) - 1)
+  }, [goTo, wraps])
+
+  const canAutoplay = autoplay && !reduced && count > 1
+  const playing = canAutoplay && !stopped
+  const rotating = playing && !hovered && !focused && inView && (wraps || !atEnd)
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: keyed on `active` too, so each item, including one the reader scrolled to, gets a full interval
+  React.useEffect(() => {
+    if (!rotating) return
+    const timer = setTimeout(next, interval)
+    return () => clearTimeout(timer)
+  }, [rotating, active, interval, next])
+
+  const play = React.useCallback(() => setStopped(false), [])
+  const pause = React.useCallback(() => setStopped(true), [])
+
+  const value = React.useMemo<CarouselContextValue>(
+    () => ({
+      scroller,
+      index: active,
+      count,
+      canPrev: wraps || !atStart,
+      canNext: wraps || !atEnd,
+      prev,
+      next,
+      goTo,
+      playing,
+      play,
+      pause,
+      canAutoplay,
+      rotating,
+      controls,
+      label,
+      labels,
+    }),
+    [
+      active,
+      count,
+      wraps,
+      atStart,
+      atEnd,
+      prev,
+      next,
+      goTo,
+      playing,
+      play,
+      pause,
+      canAutoplay,
+      rotating,
+      controls,
+      label,
+      labels,
+    ],
   )
 
-  const value = React.useMemo(
-    () => ({ scroller, active, count, atStart, atEnd, scrollToIndex, step, label, labels }),
-    [active, count, atStart, atEnd, scrollToIndex, step, label, labels],
+  React.useImperativeHandle(
+    apiRef,
+    () => ({
+      index: value.index,
+      count: value.count,
+      canPrev: value.canPrev,
+      canNext: value.canNext,
+      prev: value.prev,
+      next: value.next,
+      goTo: value.goTo,
+      playing: value.playing,
+      play: value.play,
+      pause: value.pause,
+    }),
+    [value],
   )
 
   return (
     <CarouselContext.Provider value={value}>
       <section
+        ref={root}
         data-slot="carousel"
+        data-controls={controls}
         aria-roledescription={labels.carousel}
         aria-label={label}
         className={cn('relative', className)}
+        onPointerEnter={(event) => {
+          onPointerEnter?.(event)
+          // A finger lifting is not a pointer resting there, so touch does not pause it.
+          if (event.pointerType !== 'touch') setHovered(true)
+        }}
+        onPointerLeave={(event) => {
+          onPointerLeave?.(event)
+          setHovered(false)
+        }}
+        onPointerDown={(event) => {
+          onPointerDown?.(event)
+          pointerFocus.current = true
+        }}
+        onFocus={(event) => {
+          onFocus?.(event)
+          // Keyboard focus inside pauses autoplay: what is being read must not slide away. Focus
+          // left on an arrow by a mouse click does not, or the run would stop for good after
+          // the first press while the pointer is long gone.
+          if (!pointerFocus.current) setFocused(true)
+          pointerFocus.current = false
+        }}
+        onBlur={(event) => {
+          onBlur?.(event)
+          const to = event.relatedTarget as Node | null
+          if (!to || !event.currentTarget.contains(to)) setFocused(false)
+        }}
         {...props}
       >
         {children}
+        {/* Polite while the reader is the one moving it; off while autoplay is, so items sliding
+            by on their own are not read out over whatever else the reader is doing. */}
+        <span
+          data-slot="carousel-status"
+          className="sr-only"
+          aria-live={rotating ? 'off' : 'polite'}
+          aria-atomic
+        >
+          {moved && count > 1 ? labels.position(active + 1, count) : null}
+        </span>
       </section>
     </CarouselContext.Provider>
   )
@@ -198,7 +418,7 @@ function CarouselContent({
   children,
   ...props
 }: CarouselContentProps) {
-  const { scroller, label, labels } = useCarousel()
+  const { scroller, label, labels } = useCarouselContext()
   const [dragging, setDragging] = React.useState(false)
   const origin = React.useRef({ x: 0, scroll: 0, moved: false })
 
@@ -285,6 +505,9 @@ function CarouselItem({ align = 'start', className, ...props }: CarouselItemProp
  * A video that only plays while it is on screen, muted and looping, the way a product page uses
  * one. It never plays under a reduced motion preference: it shows its poster and its controls
  * instead, so the content is still reachable without the movement.
+ *
+ * Its looping is the clip's own `<video loop>`; the carousel's `autoplay` and `loop` move the run
+ * and leave the clip alone.
  */
 export interface CarouselVideoProps extends React.ComponentProps<'video'> {
   src: string
@@ -332,22 +555,52 @@ function CarouselVideo({ src, className, poster, ...props }: CarouselVideoProps)
   )
 }
 
-export type CarouselPreviousProps = React.ComponentProps<'button'>
+/* -------------------------------------------------------------------------------------------------
+ * Controls. The default look uses the theme, like any other button on the page. `overlay` is for
+ * controls that sit on a photograph, where the theme cannot help: a photo is light in one corner
+ * and dark in the next whatever the color scheme says, so a theme color is legible on some photos
+ * and invisible on others. A translucent black scrim under white icons reads on any picture, and
+ * the focus ring is drawn twice — white inside, black outside — so it shows on either.
+ * -----------------------------------------------------------------------------------------------*/
 
-function CarouselPrevious({ className, ...props }: CarouselPreviousProps) {
-  const { step, atStart, labels } = useCarousel()
+const buttonLook: Record<CarouselControls, string> = {
+  default: cn(
+    'border border-input bg-background/80 text-foreground backdrop-blur',
+    'hover:bg-accent hover:text-accent-foreground',
+    'focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
+  ),
+  overlay: cn(
+    'border border-white/20 bg-black/50 text-white shadow-md backdrop-blur-sm',
+    'hover:bg-black/70',
+    'focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-2 focus-visible:outline-black/70 focus-visible:outline-offset-2',
+  ),
+}
+
+const arrowBase =
+  'inline-flex size-9 items-center justify-center rounded-full transition-[opacity,background-color] disabled:pointer-events-none disabled:opacity-40'
+
+export interface CarouselArrowProps extends React.ComponentProps<'button'> {
+  /** Look of this control. Defaults to the carousel's `controls`. */
+  variant?: CarouselControls
+}
+
+export type CarouselPreviousProps = CarouselArrowProps
+
+function CarouselPrevious({ variant, className, ...props }: CarouselPreviousProps) {
+  const { prev, canPrev, labels, controls } = useCarouselContext()
+  const look = variant ?? controls
   return (
     <button
       type="button"
       data-slot="carousel-previous"
+      data-variant={look}
       aria-label={labels.previous}
-      disabled={atStart}
-      onClick={() => step(-1)}
+      disabled={!canPrev}
+      onClick={prev}
       className={cn(
-        'inline-flex size-9 items-center justify-center rounded-full border border-input bg-background/80 text-foreground backdrop-blur transition-opacity',
-        'hover:bg-accent hover:text-accent-foreground',
-        'focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
-        'disabled:pointer-events-none disabled:opacity-40',
+        arrowBase,
+        buttonLook[look],
+        look === 'overlay' && 'absolute top-1/2 left-3 z-(--z-raised,10) -translate-y-1/2',
         className,
       )}
       {...props}
@@ -357,22 +610,23 @@ function CarouselPrevious({ className, ...props }: CarouselPreviousProps) {
   )
 }
 
-export type CarouselNextProps = React.ComponentProps<'button'>
+export type CarouselNextProps = CarouselArrowProps
 
-function CarouselNext({ className, ...props }: CarouselNextProps) {
-  const { step, atEnd, labels } = useCarousel()
+function CarouselNext({ variant, className, ...props }: CarouselNextProps) {
+  const { next, canNext, labels, controls } = useCarouselContext()
+  const look = variant ?? controls
   return (
     <button
       type="button"
       data-slot="carousel-next"
+      data-variant={look}
       aria-label={labels.next}
-      disabled={atEnd}
-      onClick={() => step(1)}
+      disabled={!canNext}
+      onClick={next}
       className={cn(
-        'inline-flex size-9 items-center justify-center rounded-full border border-input bg-background/80 text-foreground backdrop-blur transition-opacity',
-        'hover:bg-accent hover:text-accent-foreground',
-        'focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
-        'disabled:pointer-events-none disabled:opacity-40',
+        arrowBase,
+        buttonLook[look],
+        look === 'overlay' && 'absolute top-1/2 right-3 z-(--z-raised,10) -translate-y-1/2',
         className,
       )}
       {...props}
@@ -382,16 +636,27 @@ function CarouselNext({ className, ...props }: CarouselNextProps) {
   )
 }
 
-export type CarouselDotsProps = React.ComponentProps<'div'>
+export interface CarouselDotsProps extends React.ComponentProps<'div'> {
+  /** Look of the dots. Defaults to the carousel's `controls`. */
+  variant?: CarouselControls
+}
 
 /** One dot per item. They are real buttons, so the run can be jumped through without dragging. */
-function CarouselDots({ className, ...props }: CarouselDotsProps) {
-  const { count, active, scrollToIndex, labels } = useCarousel()
+function CarouselDots({ variant, className, ...props }: CarouselDotsProps) {
+  const { count, index, goTo, labels, controls } = useCarouselContext()
+  const look = variant ?? controls
   if (count < 2) return null
+  const overlay = look === 'overlay'
   return (
     <div
       data-slot="carousel-dots"
-      className={cn('flex items-center justify-center gap-2', className)}
+      data-variant={look}
+      className={cn(
+        'flex items-center justify-center gap-2',
+        overlay &&
+          'absolute bottom-3 left-1/2 z-(--z-raised,10) -translate-x-1/2 rounded-full bg-black/50 px-2.5 py-2 backdrop-blur-sm',
+        className,
+      )}
       {...props}
     >
       {Array.from({ length: count }, (_, i) => (
@@ -400,16 +665,65 @@ function CarouselDots({ className, ...props }: CarouselDotsProps) {
           key={i}
           type="button"
           aria-label={labels.goTo(i + 1, count)}
-          aria-current={i === active || undefined}
-          onClick={() => scrollToIndex(i)}
+          aria-current={i === index || undefined}
+          onClick={() => goTo(i)}
           className={cn(
-            'size-2 rounded-full bg-muted-foreground/30 transition-[background-color,width]',
-            'focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
-            i === active && 'w-5 bg-foreground',
+            'size-2 rounded-full transition-[background-color,width]',
+            overlay
+              ? cn(
+                  'bg-white/50 hover:bg-white/80',
+                  'focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-2 focus-visible:outline-black/70 focus-visible:outline-offset-2',
+                  i === index && 'w-5 bg-white',
+                )
+              : cn(
+                  'bg-muted-foreground/30',
+                  'focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none',
+                  i === index && 'w-5 bg-foreground',
+                ),
           )}
         />
       ))}
     </div>
+  )
+}
+
+export interface CarouselPlayPauseProps extends React.ComponentProps<'button'> {
+  /** Look of this control. Defaults to the carousel's `controls`. */
+  variant?: CarouselControls
+}
+
+/**
+ * Stops and restarts autoplay. Anything that moves on its own for more than five seconds needs
+ * a way to stop it (WCAG 2.2.2), and hover or focus are not that way on a touch screen. Renders
+ * nothing when autoplay is off, or cannot run because motion is reduced.
+ */
+function CarouselPlayPause({ variant, className, onClick, ...props }: CarouselPlayPauseProps) {
+  const { canAutoplay, playing, play, pause, labels, controls } = useCarouselContext()
+  const look = variant ?? controls
+  if (!canAutoplay) return null
+  return (
+    <button
+      type="button"
+      data-slot="carousel-play-pause"
+      data-variant={look}
+      data-state={playing ? 'playing' : 'paused'}
+      aria-label={playing ? labels.pause : labels.play}
+      onClick={(event) => {
+        onClick?.(event)
+        if (event.defaultPrevented) return
+        if (playing) pause()
+        else play()
+      }}
+      className={cn(
+        arrowBase,
+        buttonLook[look],
+        look === 'overlay' && 'absolute right-3 bottom-3 z-(--z-raised,10) size-8',
+        className,
+      )}
+      {...props}
+    >
+      {playing ? <PauseIcon className="size-4" /> : <PlayIcon className="size-4" />}
+    </button>
   )
 }
 
@@ -419,6 +733,8 @@ export {
   CarouselDots,
   CarouselItem,
   CarouselNext,
+  CarouselPlayPause,
   CarouselPrevious,
   CarouselVideo,
+  useCarousel,
 }

@@ -95,6 +95,9 @@ export const zh = {
     previous: '上一个',
     next: '下一个',
     goTo: (index: number, count: number) => `转到第 ${index} 项，共 ${count} 项`,
+    position: (index: number, count: number) => `第 ${index} 项，共 ${count} 项`,
+    play: '开始自动滚动',
+    pause: '暂停自动滚动',
   },
   chart: {
     empty: '暂无数据',
@@ -542,6 +545,7 @@ export const zh = {
     back: '上一步',
     done: '完成',
     skip: '跳过引导',
+    exit: '退出',
     progress: (current: number, total: number) => `${current} / ${total}`,
   },
   'tree-view': {

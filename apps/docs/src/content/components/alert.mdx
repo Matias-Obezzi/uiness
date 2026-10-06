@@ -21,6 +21,18 @@ Each variant brings its icon: info, a check for success, a triangle for warning 
 
 <ComponentPreview name="alert-variants" />
 
+The color of a variant is in its icon, its border and its tint. The text stays in the foreground color: amber, sky or red text on a pale tint of itself falls below the 4.5:1 that small text needs. With the default theme, the title measures at least 16:1 on every tint, light or dark, and the description, drawn at 90% opacity, at least 13:1. `muted-foreground` would not pass on the tints in light mode (about 4.3:1, 4.0:1 on destructive), so the description keeps the foreground color too.
+
+## Screen readers
+
+Only what needs attention now interrupts. `warning` and `destructive` are `role="alert"`, read out the moment they appear. `default`, `info` and `success` are `role="status"`, read when the screen reader is free, so a notice that was already on the page does not cut into what the user is listening to.
+
+Pass `role` to change it: `role="alert"` for an info alert that must be heard right away, `role="status"` for an error that is part of the page, or `role="none"` for no live region at all.
+
+```tsx
+<Alert variant="destructive" role="status">...</Alert>
+```
+
 ## Icons
 
 The icon gets its own column. Without one, the text starts at the edge. Which icon shows, in order:
@@ -42,5 +54,6 @@ The icon gets its own column. Without one, the text starts at the edge. Which ic
 | --- | --- | --- |
 | `variant` | `default \| info \| success \| warning \| destructive` | `default` |
 | `icon` | `ReactNode \| null` | the variant's |
+| `role` | `AriaRole \| undefined` | `alert` for warning and destructive, `status` for the rest |
 
 Alerts are static and stay where they are. For messages that come and go, use [Toast](/docs/toast).

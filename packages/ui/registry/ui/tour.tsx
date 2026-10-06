@@ -28,6 +28,8 @@ export interface TourStep {
   padding?: number
   /** Overrides the tour's `allowInteraction` for this step. */
   allowInteraction?: boolean
+  /** Overrides the tour's `actions` for this step. `null` shows none. */
+  actions?: TourActions
 }
 
 /** Named tours, declared once on the provider. */
@@ -56,6 +58,22 @@ export interface TourEvents {
   onSkip?: (event: TourEvent) => void
 }
 
+/** What the `actions` slot gets: where the tour is, and the ways to move it. */
+export interface TourActionsContext extends TourEvent {
+  next: () => void
+  prev: () => void
+  /** Ends the tour as the close button does, firing `onSkip`. */
+  skip: () => void
+  /** Ends the tour without firing any event. */
+  stop: () => void
+}
+
+/**
+ * Extra buttons in the card's footer, before Back and Next: a node, or a function that gets
+ * the current step and the controls.
+ */
+export type TourActions = React.ReactNode | ((context: TourActionsContext) => React.ReactNode)
+
 export interface TourOptions extends TourEvents {
   /** Step to open on: a position among the shown steps, or a step id. */
   startAt?: number | string
@@ -63,6 +81,15 @@ export interface TourOptions extends TourEvents {
   skipMissing?: boolean
   /** Let clicks reach the highlighted element. Everything else stays blocked. */
   allowInteraction?: boolean
+  /**
+   * Hide the page from screen readers and keep focus in the card. Off on steps with
+   * `allowInteraction`.
+   */
+  modal?: boolean
+  /** Show an Exit button in the footer that ends the tour, as the close button does. */
+  showExit?: boolean
+  /** Extra buttons in the footer, before Back and Next. */
+  actions?: TourActions
   /** Space between the target and the edge of the highlight, in pixels. */
   padding?: number
 }
@@ -74,6 +101,8 @@ export interface TourLabels {
   done: string
   /** Accessible name of the close button. */
   skip: string
+  /** The button that ends the tour early, shown with `showExit`. */
+  exit: string
   /** The step counter. */
   progress: (current: number, total: number) => string
 }
@@ -83,6 +112,7 @@ export const defaultTourLabels: TourLabels = {
   back: 'Back',
   done: 'Done',
   skip: 'Skip tour',
+  exit: 'Exit',
   progress: (current, total) => `${current} of ${total}`,
 }
 
@@ -235,6 +265,16 @@ export interface TourProviderProps extends TourEvents {
   skipMissing?: boolean
   /** Let clicks reach the highlighted element. Everything else stays blocked. */
   allowInteraction?: boolean
+  /**
+   * Hide the rest of the page from screen readers, keep Tab inside the card and lock the
+   * scroll, as a dialog does. Default true. Steps with `allowInteraction` are never modal,
+   * since the highlighted element has to stay reachable.
+   */
+  modal?: boolean
+  /** Show an Exit button in the footer that ends the tour, as the close button does. */
+  showExit?: boolean
+  /** Extra buttons in the footer, before Back and Next. Steps and `start` options override it. */
+  actions?: TourActions
   /** Space between the target and the edge of the highlight, in pixels. */
   padding?: number
   /** Corner radius of the highlight, in pixels. */
@@ -259,6 +299,9 @@ function TourProvider({
   tours,
   skipMissing = true,
   allowInteraction = false,
+  modal = true,
+  showExit = false,
+  actions,
   padding = DEFAULT_PADDING,
   radius = 10,
   arrow = true,
@@ -387,6 +430,10 @@ function TourProvider({
   const step = run ? run.step : null
   const index = run ? run.shown.indexOf(run.step) : -1
   const total = run ? run.shown.length : 0
+  const interactive =
+    run && step
+      ? (step.allowInteraction ?? run.options.allowInteraction ?? allowInteraction)
+      : false
 
   const value = React.useMemo<TourControls>(
     () => ({
@@ -416,9 +463,17 @@ function TourProvider({
           total={total}
           padding={step.padding ?? run.options.padding ?? padding}
           radius={radius}
-          allowInteraction={
-            step.allowInteraction ?? run.options.allowInteraction ?? allowInteraction
+          allowInteraction={interactive}
+          modal={!interactive && (run.options.modal ?? modal)}
+          showExit={run.options.showExit ?? showExit}
+          actions={
+            step.actions !== undefined
+              ? step.actions
+              : run.options.actions !== undefined
+                ? run.options.actions
+                : actions
           }
+          tour={run.tour}
           arrow={arrow}
           labels={labels}
           className={className}
@@ -426,6 +481,7 @@ function TourProvider({
           onNext={next}
           onPrev={prev}
           onSkip={skip}
+          onStop={stop}
           onCardClosed={() => {
             if (!runRef.current) returnFocus.current?.focus({ preventScroll: true })
           }}
@@ -443,6 +499,10 @@ interface TourLayerProps {
   padding: number
   radius: number
   allowInteraction: boolean
+  modal: boolean
+  showExit: boolean
+  actions: TourActions
+  tour?: string
   arrow: boolean
   labels?: Partial<TourLabels>
   className?: string
@@ -450,6 +510,7 @@ interface TourLayerProps {
   onNext: () => void
   onPrev: () => void
   onSkip: () => void
+  onStop: () => void
   onCardClosed: () => void
 }
 
@@ -464,6 +525,10 @@ function TourLayer({
   padding,
   radius,
   allowInteraction,
+  modal,
+  showExit,
+  actions,
+  tour,
   arrow,
   labels: labelsProp,
   className,
@@ -471,6 +536,7 @@ function TourLayer({
   onNext,
   onPrev,
   onSkip,
+  onStop,
   onCardClosed,
 }: TourLayerProps) {
   const labels = useLabels('tour', defaultTourLabels, labelsProp)
@@ -555,6 +621,19 @@ function TourLayer({
   const primary = React.useRef<HTMLButtonElement>(null)
   const last = index === total - 1
   const centered = !element
+  const extra =
+    typeof actions === 'function'
+      ? actions({
+          tour,
+          step,
+          index,
+          total,
+          next: onNext,
+          prev: onPrev,
+          skip: onSkip,
+          stop: onStop,
+        })
+      : actions
 
   return (
     <>
@@ -609,13 +688,19 @@ function TourLayer({
           )}
         </div>
       </Portal.Root>
-      <Popover open onOpenChange={(open) => !open && onSkip()} modal={false}>
+      {/*
+        Modal, Radix hides everything but the card from screen readers, traps Tab inside it
+        and locks the scroll. Not modal, the page stays reachable for `allowInteraction`.
+      */}
+      <Popover open onOpenChange={(open) => !open && onSkip()} modal={modal}>
         <PopoverAnchor virtualRef={anchor} />
         {ready && (
           <PopoverContent
             key={stepKey}
             data-slot="tour-card"
             data-centered={centered ? '' : undefined}
+            data-modal={modal ? '' : undefined}
+            aria-modal={modal || undefined}
             aria-labelledby={titleId}
             aria-describedby={step.content ? contentId : undefined}
             side={centered ? 'bottom' : step.side}
@@ -660,14 +745,23 @@ function TourLayer({
                 </div>
               )}
             </div>
-            <div className="flex items-center justify-between gap-2 px-4 pb-4">
+            <div
+              data-slot="tour-footer"
+              className="flex flex-wrap items-center justify-between gap-2 px-4 pb-4"
+            >
               <span
                 data-slot="tour-progress"
                 className="text-muted-foreground text-xs tabular-nums"
               >
                 {labels.progress(index + 1, total)}
               </span>
-              <div className="flex gap-2">
+              <div data-slot="tour-actions" className="ml-auto flex flex-wrap justify-end gap-2">
+                {extra}
+                {showExit && (
+                  <Button data-slot="tour-exit" variant="ghost" size="sm" onClick={onSkip}>
+                    {labels.exit}
+                  </Button>
+                )}
                 {index > 0 && (
                   <Button variant="outline" size="sm" onClick={onPrev}>
                     {labels.back}

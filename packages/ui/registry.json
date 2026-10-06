@@ -1821,7 +1821,12 @@
       "title": "Carousel",
       "description": "A horizontal run of items of any width and any content, snapped as you scroll.",
       "dependencies": ["lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/labels"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-reduced-motion",
+        "@uiness/use-in-view",
+        "@uiness/labels"
+      ],
       "files": [
         {
           "path": "registry/ui/carousel.tsx",

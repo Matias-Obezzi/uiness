@@ -16,7 +16,37 @@ const images = [
   { src: '/photos/noon.jpg', placeholder: noonTiny, alt: 'Noon at the lake' },
 ]
 
-<Gallery images={images} columns={3} aspect="3 / 2" />
+<Gallery images={images} columns={{ base: 1, sm: 2, md: 3 }} aspect="3 / 2" />
+```
+
+## Columns
+
+Columns follow the gallery's own width, not the screen's. They are set with container queries, so a gallery in a narrow side column stacks while the same gallery in the main column spreads out, on a phone or on a wide monitor alike. Both below have the same `columns`.
+
+<ComponentPreview name="gallery-responsive" align="start" />
+
+Pass a number for the same count everywhere past the narrowest widths, or an object with a count per breakpoint. A breakpoint left out keeps the count of the one below it.
+
+| Key | Gallery width |
+| --- | --- |
+| `base` | Any. Default `1` when an object leaves it out. |
+| `sm` | 24rem (384px) and up. |
+| `md` | 36rem (576px) and up. |
+| `lg` | 48rem (768px) and up. |
+| `xl` | 64rem (1024px) and up. |
+
+A number keeps the shorthand it always had: two columns while narrow (three for five or more), then the full count from `md`. `columns={4}` is `{ base: 2, md: 4 }`.
+
+The gallery is the size container, so it takes its width from its parent and is `w-full` by default. Inside a flex row, give it a width (or `flex-1 min-w-0`): a size container does not grow to fit its content.
+
+## Without the lightbox
+
+`openOnClick={false}` makes the cells plain pictures: no buttons on the tab order, and each image gets its own `alt` now that no button carries the name. Pass `onImageClick` to handle a press yourself — the cells stay buttons and call it, and with `openOnClick` on, `event.preventDefault()` inside it keeps the lightbox shut.
+
+<ComponentPreview name="gallery-static" align="start" />
+
+```tsx
+<Gallery images={images} openOnClick={false} gap="1rem" radius="0" zoom={1.08} />
 ```
 
 ## Images
@@ -32,11 +62,34 @@ const images = [
 
 ## Props
 
+### Gallery
+
 | Prop | Default | Description |
 | --- | --- | --- |
-| `columns` | `3` | `2`, `3`, `4` or `5`. Collapses on small screens. |
+| `columns` | `3` | A number, or `{ base, sm, md, lg, xl }` by the gallery's own width. See [Columns](#columns). |
+| `gap` | `'0.5rem'` | Space between cells. Any CSS length. |
 | `aspect` | `'1 / 1'` | Aspect ratio of the cells. |
+| `radius` | the theme's `--radius` | Corner radius of the cells. Any CSS length. |
+| `zoom` | `true` | Scale on hover: `true` for 1.03, `false` for none, or a number such as `1.1`. Never with reduced motion. |
+| `openOnClick` | `true` | Open the lightbox when a cell is pressed. |
+| `onImageClick` | | `(index, event)` on a press. `event.preventDefault()` keeps the lightbox shut. |
 | `thumbnails` | `true` | Thumbnail strip in the lightbox. |
+| `container` | `document.body` | Element the lightbox portals into. |
+
+`className` and the other `div` props go on the outer element, the size container. The grid inside it is `data-slot="gallery-grid"`.
+
+### Lightbox
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `images`, `index`, `onIndexChange` | | The images and which one shows. |
+| `open`, `onOpenChange` | | Controlled open state. |
+| `origin`, `getOrigin` | | Rects to fly in from and back to. |
+| `getReturnFocus` | | `(index) => element` to focus on close. Without it, focus goes back to what had it on open. |
+| `loop` | `true` | Wrap around at the ends. |
+| `thumbnails` | `true` | Thumbnail strip. |
+| `closeOnBackdrop` | `true` | Close on a tap or click on the dark space around the image. |
+| `container` | `document.body` | Element to portal into. |
 
 ## Lightbox on its own
 
@@ -48,9 +101,19 @@ import { Lightbox } from '@/components/ui/gallery'
 <Lightbox images={images} index={index} onIndexChange={setIndex} open={open} onOpenChange={setOpen} />
 ```
 
+It needs no `Dialog.Trigger`. On close, focus goes back to whatever had it when the lightbox opened, or to the element `getReturnFocus` returns; `Gallery` uses that to focus the thumbnail of the image last shown, so the reader picks up where they left off.
+
+### Inside an iframe
+
+The lightbox portals into `document.body` of the document the code runs in. When the gallery renders into an iframe from the parent page, as a page editor's canvas does, that is the wrong page. Pass the frame's body:
+
+```tsx
+<Gallery images={images} container={frame.contentDocument?.body} />
+```
+
 ## Keyboard and touch
 
-Arrow keys move, Escape closes, focus stays inside the viewer. On touch, swipe sideways to move and down to close. `prefers-reduced-motion` turns the flight into a plain fade.
+Arrow keys move, Escape closes, focus stays inside the viewer. On touch, swipe sideways to move and down to close. A tap or click on the dark backdrop closes too; it is decided on release and only when the press both started and ended on the backdrop without moving, so a swipe that happens to end there does not close. `prefers-reduced-motion` turns the flight into a plain fade and drops the hover zoom.
 
 ## Labels
 

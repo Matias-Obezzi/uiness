@@ -67,8 +67,29 @@ function HelpMenu() {
 | `side`, `align` | Where the card goes. It flips and shifts when there is no room. |
 | `when` | Return `false` to leave the step out, for instance for users who are not admins. |
 | `padding`, `allowInteraction` | Override the tour's settings for this step. |
+| `actions` | Overrides the tour's [actions](#exit-and-actions) for this step. `null` shows none. |
 
 Steps whose target is not in the page, or is hidden with `display: none`, are left out and the counter only counts the steps shown. Both `when` and the targets are checked again on every move, so a step whose element appears halfway through is picked up. Set `skipMissing={false}` to show those steps centered instead.
+
+## Exit and actions
+
+The card has a close button in the corner, Back and Next. `showExit` adds an Exit button next to them, a visible way out that ends the tour as the close button does and fires `onSkip`. `actions` puts your own buttons in the same footer, before Back: a node, or a function that gets the step and the controls.
+
+<ComponentPreview name="tour-actions" />
+
+```tsx
+<TourProvider
+  tours={tours}
+  showExit
+  actions={({ step, index, total, next, prev, skip, stop }) => (
+    <Button variant="link" size="sm" onClick={() => { stop(); remindTomorrow() }}>
+      Later
+    </Button>
+  )}
+>
+```
+
+A step's own `actions` replace the tour's for that step, and `start(name, { actions })` replaces them for one run. `stop` ends the tour without firing anything, `skip` fires `onSkip`. With `Tour`, `stop` does not call `onOpenChange` either, so set `open` back to `false` yourself, as the demo does.
 
 ## A single tour
 
@@ -87,8 +108,9 @@ const [open, setOpen] = useState(false)
 - The target is scrolled to the middle of the screen when it is not fully visible, and the card waits until it stops moving. The highlight then follows the target through scrolling and resizing.
 - The highlight glides from one target to the next. With reduced motion it jumps, and the page scrolls instantly.
 - Clicks on the dimmed page do nothing, the highlighted element included. With `allowInteraction` the highlighted element can be clicked and typed in.
-- The card is a `role="dialog"` named by its title and described by its content. Focus moves to Next when it shows, and goes back to where it was when the tour ends.
-- Right and Left arrows move between steps while focus is in the card. Escape and the close button skip the tour.
+- The tour is modal by default, as a dialog is: the rest of the page is hidden from screen readers with `aria-hidden`, Tab and Shift+Tab stay inside the card, and the page does not scroll under it. Steps with `allowInteraction` are never modal, since the highlighted element has to stay reachable; `modal={false}` turns it off for every step.
+- The card is a `role="dialog"` named by its title and described by its content, with `aria-modal` while modal. Focus moves to Next when it shows, and goes back to where it was when the tour ends.
+- Right and Left arrows move between steps while focus is in the card. Escape, the close button and Exit skip the tour.
 - The dimmed page sits on the `--z-overlay` layer and the card on `--z-popover`, so menus opened from a highlighted element still land on top.
 
 ## useTour
@@ -111,7 +133,10 @@ const [open, setOpen] = useState(false)
 | --- | --- | --- |
 | `tours` | | The tours, by name. |
 | `skipMissing` | `true` | Leave out steps whose target is not in the page. Off, they show centered. |
-| `allowInteraction` | `false` | Let clicks reach the highlighted element. |
+| `allowInteraction` | `false` | Let clicks reach the highlighted element. Turns `modal` off. |
+| `modal` | `true` | Hide the page from screen readers, keep Tab in the card and lock the scroll. Ignored on steps with `allowInteraction`. |
+| `showExit` | `false` | Show an Exit button in the footer. It ends the tour as the close button does. |
+| `actions` | | Extra buttons in the footer, before Back. A node, or `({ tour, step, index, total, next, prev, skip, stop }) => node`. |
 | `padding` | `8` | Space around the target inside the highlight, in pixels. |
 | `radius` | `10` | Corner radius of the highlight, in pixels. |
 | `arrow` | `true` | Draw an arrow from the card to the target. |
@@ -122,7 +147,7 @@ const [open, setOpen] = useState(false)
 | `className` | | Class for the card. |
 | `spotlightClassName` | | Class for the highlight. Its shadow is the dimmed page, so change the color there. |
 
-The options of `start` are `startAt`, `skipMissing`, `allowInteraction`, `padding` and the three events, which fire for that run alongside the provider's.
+The options of `start` are `startAt`, `skipMissing`, `allowInteraction`, `modal`, `showExit`, `actions`, `padding` and the three events, which fire for that run alongside the provider's.
 
 ## Labels
 
@@ -134,6 +159,7 @@ const defaultTourLabels: TourLabels = {
   back: 'Back',
   done: 'Done',
   skip: 'Skip tour',
+  exit: 'Exit',
   progress: (current, total) => `${current} of ${total}`,
 }
 ```
