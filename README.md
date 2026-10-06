@@ -35,6 +35,7 @@ pnpm --filter docs dev   # docs and live demos on http://localhost:5174
 pnpm test
 pnpm build
 pnpm lint
+pnpm lint:react          # Rules of Hooks and React Compiler rules over the registry
 ```
 
 Every package and every registry component has a live demo in the docs site, under `apps/docs`. That is where you try a change: `src/demos` holds one file per demo and `src/content` the pages that show them.
