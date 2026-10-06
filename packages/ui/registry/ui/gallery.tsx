@@ -3,22 +3,22 @@
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import * as React from 'react'
+import {
+  GalleryGrid,
+  type GalleryGridProps,
+  type GalleryImage,
+  type GalleryImageRenderProps,
+} from '@/components/ui/gallery-grid'
 import { Image } from '@/components/ui/image'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
-export interface GalleryImage {
-  src: string
-  alt?: string
-  /** Intrinsic size, keeps the grid stable before the image loads. */
-  width?: number
-  height?: number
-  /** Tiny version for the blur transition in the grid. */
-  placeholder?: string
-  /** Smaller file for the grid; `src` is used in the lightbox. */
-  thumbnail?: string
-  caption?: React.ReactNode
-}
+export type {
+  GalleryBreakpoint,
+  GalleryColumns,
+  GalleryImage,
+  GalleryImageRenderProps,
+} from '@/components/ui/gallery-grid'
 
 export interface GalleryLabels {
   /** Name of a thumbnail in the grid, from the image's `alt` when it has one. */
@@ -389,35 +389,7 @@ function Lightbox({
   )
 }
 
-/** Container widths the `columns` breakpoints switch at, measured on the gallery itself. */
-export type GalleryBreakpoint = 'base' | 'sm' | 'md' | 'lg' | 'xl'
-
-/**
- * A count for every width, or columns per breakpoint of the gallery's own width — not the
- * viewport's — so the same gallery fits a full page and a narrow sidebar column. `sm` is 24rem
- * (384px) and up, `md` 36rem (576px), `lg` 48rem (768px), `xl` 64rem (1024px).
- */
-export type GalleryColumns = number | Partial<Record<GalleryBreakpoint, number>>
-
-export interface GalleryProps extends Omit<React.ComponentProps<'div'>, 'children'> {
-  images: GalleryImage[]
-  /**
-   * Grid columns, by the gallery's own width. A number keeps the old shorthand: two (three for
-   * five and up) when narrow, that many from `md`. An object sets each breakpoint, e.g.
-   * `{ base: 1, sm: 2, md: 3, lg: 4 }`. Default 3.
-   */
-  columns?: GalleryColumns
-  /** Space between cells. Any CSS length. Default `0.5rem`. */
-  gap?: string
-  /** Aspect ratio of the cells, e.g. "4 / 3". Default "1 / 1". */
-  aspect?: string
-  /** Corner radius of the cells. Any CSS length. Default follows the theme's `--radius`. */
-  radius?: string
-  /**
-   * Scale of a picture under the pointer: `true` for a slight 1.03, `false` for none, or a number
-   * such as 1.1. Never under a reduced motion preference. Default true.
-   */
-  zoom?: boolean | number
+export interface GalleryProps extends Omit<GalleryGridProps, 'getItemProps'> {
   /**
    * Open the lightbox when a cell is pressed. With false the cells are plain pictures, or
    * buttons that only call `onImageClick` when one is given. Default true.
@@ -433,46 +405,35 @@ export interface GalleryProps extends Omit<React.ComponentProps<'div'>, 'childre
   labels?: Partial<GalleryLabels>
 }
 
-/*
- * Columns change with container queries, not media queries: a gallery dropped in a sidebar
- * is narrow on a wide screen. Each breakpoint's count goes in a custom property, and a class
- * per breakpoint that is set reads it; a breakpoint left out has no class, so the one below
- * carries on. The classes are written out whole so Tailwind finds them.
- */
-const breakpointClass: Record<GalleryBreakpoint, string> = {
-  base: 'grid-cols-(--gallery-cols-base)',
-  sm: '@sm:grid-cols-(--gallery-cols-sm)',
-  md: '@xl:grid-cols-(--gallery-cols-md)',
-  lg: '@3xl:grid-cols-(--gallery-cols-lg)',
-  xl: '@5xl:grid-cols-(--gallery-cols-xl)',
-}
-
-const breakpoints = Object.keys(breakpointClass) as GalleryBreakpoint[]
-
-function columnsByBreakpoint(columns: GalleryColumns): Partial<Record<GalleryBreakpoint, number>> {
-  if (typeof columns !== 'number') return { base: 1, ...columns }
-  const n = Math.max(1, Math.round(columns))
-  return { base: Math.min(n, n >= 5 ? 3 : 2), md: n }
+/** The grid's pictures through `Image`, with the blur-up from `placeholder`. */
+function renderGalleryImage({ image, src, alt, className }: GalleryImageRenderProps) {
+  return (
+    <Image
+      src={src}
+      alt={alt}
+      placeholder={image.placeholder}
+      variant={image.placeholder ? 'blur' : 'fade'}
+      width={image.width}
+      height={image.height}
+      className={className}
+      wrapperProps={{ className: 'block size-full rounded-none' }}
+      style={{ objectFit: 'cover' }}
+    />
+  )
 }
 
 /**
  * A grid of images that opens a full screen lightbox. The picture flies from
- * its thumbnail to the center and back.
+ * its thumbnail to the center and back. For the grid without the lightbox, use `GalleryGrid`.
  */
 function Gallery({
   images,
-  columns = 3,
-  gap = '0.5rem',
-  aspect = '1 / 1',
-  radius,
-  zoom = true,
   openOnClick = true,
   onImageClick,
   thumbnails,
   container,
   labels: labelsProp,
-  className,
-  style,
+  renderImage = renderGalleryImage,
   ...props
 }: GalleryProps) {
   const labels = useLabels('gallery', defaultGalleryLabels, labelsProp)
@@ -487,91 +448,30 @@ function Gallery({
     setOpen(true)
   }
 
-  const counts = columnsByBreakpoint(columns)
-  const vars: Record<string, string> = {}
-  for (const bp of breakpoints) {
-    const n = counts[bp]
-    if (n) vars[`--gallery-cols-${bp}`] = `repeat(${Math.max(1, Math.round(n))}, minmax(0, 1fr))`
-  }
-  if (zoom !== false) vars['--gallery-zoom'] = String(zoom === true ? 1.03 : zoom)
-
   const interactive = openOnClick || Boolean(onImageClick)
-  const cellClass = cn(
-    'group relative overflow-hidden bg-muted outline-none',
-    radius === undefined && 'rounded-lg',
-    interactive && 'focus-visible:ring-[3px] focus-visible:ring-ring/50',
-  )
-  const cellStyle: React.CSSProperties = { aspectRatio: aspect, borderRadius: radius }
 
   return (
-    <div
-      data-slot="gallery"
-      className={cn('@container w-full', className)}
-      style={{ ...vars, ...style } as React.CSSProperties}
-      {...props}
-    >
-      <div
-        data-slot="gallery-grid"
-        className={cn(
-          'grid',
-          ...breakpoints.filter((bp) => counts[bp]).map((bp) => breakpointClass[bp]),
-        )}
-        style={{ gap }}
-      >
-        {images.map((image, i) => {
-          const picture = (
-            <Image
-              src={image.thumbnail ?? image.src}
-              // Inside a button the name lives on the button, so the picture stays silent.
-              alt={interactive ? '' : (image.alt ?? '')}
-              placeholder={image.placeholder}
-              variant={image.placeholder ? 'blur' : 'fade'}
-              width={image.width}
-              height={image.height}
-              className={cn(
-                'size-full object-cover',
-                zoom !== false &&
-                  'transition-transform duration-300 group-hover:scale-(--gallery-zoom) motion-reduce:transition-none motion-reduce:group-hover:scale-100',
-              )}
-              wrapperProps={{ className: 'block size-full rounded-none' }}
-              style={{ objectFit: 'cover' }}
-            />
-          )
-          if (!interactive)
-            return (
-              <div
-                // biome-ignore lint/suspicious/noArrayIndexKey: cells are positional, and two images may share a src
-                key={i}
-                data-slot="gallery-item"
-                className={cellClass}
-                style={cellStyle}
-              >
-                {picture}
-              </div>
-            )
-          return (
-            <button
-              // biome-ignore lint/suspicious/noArrayIndexKey: cells are positional, and two images may share a src
-              key={i}
-              type="button"
-              data-slot="gallery-item"
-              ref={(el) => {
-                if (el) thumbs.current.set(i, el)
-                else thumbs.current.delete(i)
-              }}
-              onClick={(event) => {
-                onImageClick?.(i, event)
-                if (openOnClick && !event.defaultPrevented) openAt(i, event.currentTarget)
-              }}
-              aria-label={labels.open(i + 1, image.alt)}
-              className={cellClass}
-              style={cellStyle}
-            >
-              {picture}
-            </button>
-          )
-        })}
-      </div>
+    <>
+      <GalleryGrid
+        images={images}
+        renderImage={renderImage}
+        getItemProps={
+          interactive
+            ? (i, image) => ({
+                ref: (el: HTMLButtonElement | null) => {
+                  if (el) thumbs.current.set(i, el)
+                  else thumbs.current.delete(i)
+                },
+                onClick: (event) => {
+                  onImageClick?.(i, event)
+                  if (openOnClick && !event.defaultPrevented) openAt(i, event.currentTarget)
+                },
+                'aria-label': labels.open(i + 1, image.alt),
+              })
+            : undefined
+        }
+        {...props}
+      />
       {openOnClick && (
         <Lightbox
           images={images}
@@ -587,7 +487,7 @@ function Gallery({
           labels={labelsProp}
         />
       )}
-    </div>
+    </>
   )
 }
 

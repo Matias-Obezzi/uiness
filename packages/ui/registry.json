@@ -805,12 +805,30 @@
       ]
     },
     {
+      "name": "gallery-grid",
+      "type": "registry:ui",
+      "title": "Gallery Grid",
+      "description": "The image grid of the gallery on its own: no lightbox and no client JavaScript, with your own image component.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/gallery-grid.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "gallery",
       "type": "registry:ui",
       "title": "Gallery",
       "description": "Image grid with a full screen lightbox that flies from the thumbnail.",
       "dependencies": ["radix-ui", "lucide-react"],
-      "registryDependencies": ["@uiness/utils", "@uiness/image", "@uiness/labels"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/image",
+        "@uiness/labels",
+        "@uiness/gallery-grid"
+      ],
       "files": [
         {
           "path": "registry/ui/gallery.tsx",

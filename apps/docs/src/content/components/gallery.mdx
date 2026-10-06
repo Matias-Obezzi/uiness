@@ -4,7 +4,7 @@ Click any picture. It flies from its thumbnail to the center of the screen and b
 
 ## Installation
 
-<Install name="gallery" extra="Installs the Image component as well, which the grid uses for its blur-up thumbnails." />
+<Install name="gallery" extra="Installs the Image component, for blur-up thumbnails, and the grid on its own. For the grid without the lightbox, see Grid only below." />
 
 ## Usage
 
@@ -49,6 +49,28 @@ The gallery is the size container, so it takes its width from its parent and is 
 <Gallery images={images} openOnClick={false} gap="1rem" radius="0" zoom={1.08} />
 ```
 
+## Grid only
+
+`GalleryGrid` is the grid without the lightbox, in its own file. It has no `'use client'` and no JavaScript of its own, so it renders as a server component, and none of the viewer or the dialog library ends up in your bundle. It takes the same `columns`, `gap`, `aspect`, `radius` and `zoom`, and lays out by its own width in the same way.
+
+<Install name="gallery-grid" extra="Only the grid: no Image component, no lightbox." />
+
+Pictures are plain lazy `img` elements by default. Pass `renderImage` to draw them with your own image component, for resized and optimized files. It gets the `image`, its `index`, the `src` to show (`thumbnail` or `src`), the `alt` and a `className` that fills the cell and does the hover zoom.
+
+```tsx
+import { GalleryGrid } from '@/components/ui/gallery-grid'
+
+<GalleryGrid
+  images={images}
+  columns={{ base: 2, md: 4 }}
+  renderImage={({ src, alt, className, image }) => (
+    <OptimizedImage src={src} alt={alt} width={image.width} height={image.height} sizes="25vw" className={className} />
+  )}
+/>
+```
+
+`Gallery` takes `renderImage` too, for the grid; the lightbox keeps showing `src` at full size. To make cells buttons without the lightbox, `getItemProps(index, image)` returns props for each cell's `button`: an `onClick`, its `aria-label`. That needs a client component, since it passes functions.
+
 ## Images
 
 | Field | Description |
@@ -75,6 +97,7 @@ The gallery is the size container, so it takes its width from its parent and is 
 | `onImageClick` | | `(index, event)` on a press. `event.preventDefault()` keeps the lightbox shut. |
 | `thumbnails` | `true` | Thumbnail strip in the lightbox. |
 | `container` | `document.body` | Element the lightbox portals into. |
+| `renderImage` | `Image` with blur-up | Draws a grid picture with your own image component. See [Grid only](#grid-only). |
 
 `className` and the other `div` props go on the outer element, the size container. The grid inside it is `data-slot="gallery-grid"`.
 
