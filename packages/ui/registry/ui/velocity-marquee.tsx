@@ -71,6 +71,8 @@ function VelocityMarquee({
   React.useEffect(() => {
     const el = ref.current
     if (!el || !inView || reduced || mode !== 'js') return
+    // The same set for the life of the component; rows add and remove themselves in it.
+    const list = rows.current
     const scroller = scrollParent(el, 'y')
     const read = () => (scroller ? scroller.scrollTop : window.scrollY)
     let lastY = read()
@@ -92,7 +94,7 @@ function VelocityMarquee({
       if (boost < -0.01) turn = -1
       else if (boost > 0.01) turn = 1
       const step = baseVelocity * dt * turn * (1 + Math.abs(boost))
-      for (const row of rows.current) {
+      for (const row of list) {
         const width = row.copy.offsetWidth
         if (!width) continue
         row.x = (((row.x - step * row.sign) % width) - width) % width
@@ -103,7 +105,7 @@ function VelocityMarquee({
     frame = requestAnimationFrame(tick)
     return () => {
       cancelAnimationFrame(frame)
-      for (const row of rows.current) row.track.style.removeProperty('transform')
+      for (const row of list) row.track.style.removeProperty('transform')
     }
   }, [inView, reduced, mode, baseVelocity, sensitivity])
 

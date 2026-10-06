@@ -52,23 +52,24 @@ function TextReveal({
 }: TextRevealProps) {
   const ref = React.useRef<HTMLParagraphElement>(null)
   const words = text.split(/\s+/).filter(Boolean)
+  // Keyed by its contents, so an inline array does not set everything up again every render.
   const offsetKey = JSON.stringify(offset)
-  // biome-ignore lint/correctness/useExhaustiveDependencies: the key stands for the offset
-  const range = React.useMemo(() => viewTimelineFor(offset), [offsetKey])
+  const stableOffset = React.useMemo(() => JSON.parse(offsetKey) as Offset, [offsetKey])
+  const range = React.useMemo(() => viewTimelineFor(stableOffset), [stableOffset])
   const mode = useScrollDriver(ref, driver, { container, supported: range !== null })
   const css = mode === 'css' && range !== null
 
   useIsoLayoutEffect(() => {
     const el = ref.current
     if (!el || mode !== 'js') return
-    const stop = observeScrollProgress(el, { offset, container }, ({ progress }) => {
+    const stop = observeScrollProgress(el, { offset: stableOffset, container }, ({ progress }) => {
       el.style.setProperty('--text-reveal-progress', progress.toFixed(4))
     })
     return () => {
       stop()
       el.style.removeProperty('--text-reveal-progress')
     }
-  }, [mode, offsetKey, container])
+  }, [mode, stableOffset, container])
 
   return (
     <p

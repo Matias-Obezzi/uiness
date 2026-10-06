@@ -37,7 +37,7 @@ export function useMotionReady(ref: React.RefObject<Element | null>): MotionRead
     () => true,
     () => false,
   )
-  const hydrating = React.useRef(!client).current
+  const [hydrating] = React.useState(!client)
   const [state, setState] = React.useState<MotionReady>('idle')
   useIsoLayoutEffect(() => {
     const el = ref.current
