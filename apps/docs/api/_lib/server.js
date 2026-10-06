@@ -285,20 +285,29 @@ export async function handleMcpRequest(request, catalog) {
 
 /**
  * Reads the site's own files over HTTP from `origin`, once per path for the life of the instance:
- * a deployment's files never change.
+ * a deployment's files never change. When the origin refuses (a preview behind Vercel's
+ * deployment protection answers 401), it reads them from `fallback` instead.
  * @param {string} origin
- * @param {typeof fetch} [fetcher]
+ * @param {{ fetcher?: typeof fetch, headers?: Record<string, string>, fallback?: string }} [options]
  * @returns {Load}
  */
-export function httpLoader(origin, fetcher = fetch) {
+export function httpLoader(origin, { fetcher = fetch, headers = {}, fallback } = {}) {
   /** @type {Map<string, Promise<string>>} */
   const cache = new Map()
+  const get = async (/** @type {string} */ base, /** @type {string} */ path) => {
+    const res = await fetcher(`${base}${path}`, { headers })
+    if (!res.ok)
+      throw Object.assign(new Error(`${path} answered ${res.status}`), { status: res.status })
+    return res.text()
+  }
   return (path) => {
     const cached = cache.get(path)
     if (cached) return cached
-    const promise = fetcher(`${origin}${path}`).then((res) => {
-      if (!res.ok) throw new Error(`${path} answered ${res.status}`)
-      return res.text()
+    const promise = get(origin, path).catch((/** @type {Error & { status?: number }} */ error) => {
+      if (fallback && fallback !== origin && (error.status === 401 || error.status === 403)) {
+        return get(fallback, path)
+      }
+      throw error
     })
     promise.catch(() => cache.delete(path))
     cache.set(path, promise)

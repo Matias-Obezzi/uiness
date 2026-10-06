@@ -282,12 +282,38 @@ describe('failures', () => {
       .fn<typeof fetch>()
       .mockResolvedValueOnce(new Response('nope', { status: 500 }))
       .mockResolvedValue(new Response('ok'))
-    const read = httpLoader('https://uiness.test', fetcher)
+    const read = httpLoader('https://uiness.test', { fetcher })
     await expect(read('/llms.txt')).rejects.toThrow('answered 500')
     expect(await read('/llms.txt')).toBe('ok')
     expect(await read('/llms.txt')).toBe('ok')
     expect(fetcher).toHaveBeenCalledTimes(2)
-    expect(fetcher).toHaveBeenLastCalledWith('https://uiness.test/llms.txt')
+    expect(fetcher).toHaveBeenLastCalledWith('https://uiness.test/llms.txt', { headers: {} })
+  })
+
+  it('reads from the fallback when its own deployment is protected', async () => {
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(new Response('login', { status: 401 }))
+      .mockResolvedValue(new Response('from production'))
+    const read = httpLoader('https://preview.test', {
+      fetcher,
+      headers: { 'x-vercel-protection-bypass': 'secret' },
+      fallback: 'https://uiness.test',
+    })
+    expect(await read('/llms.txt')).toBe('from production')
+    expect(fetcher).toHaveBeenNthCalledWith(1, 'https://preview.test/llms.txt', {
+      headers: { 'x-vercel-protection-bypass': 'secret' },
+    })
+    expect(fetcher).toHaveBeenNthCalledWith(2, 'https://uiness.test/llms.txt', {
+      headers: { 'x-vercel-protection-bypass': 'secret' },
+    })
+  })
+
+  it('does not fall back on other errors', async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response('boom', { status: 500 }))
+    const read = httpLoader('https://preview.test', { fetcher, fallback: 'https://uiness.test' })
+    await expect(read('/llms.txt')).rejects.toThrow('answered 500')
+    expect(fetcher).toHaveBeenCalledTimes(1)
   })
 })
 
