@@ -12,15 +12,13 @@ A contact form that checks each field as you leave it and points at what is miss
 import { Contact01 } from '@/components/contact-01'
 
 <Contact01
+  brand={{ name: 'Summit', domain: 'summit.app' }}
   title="Get in touch"
   minMessage={10}
   onSubmit={async (values) => {
     const res = await fetch('/api/contact', { method: 'POST', body: JSON.stringify(values) })
     if (!res.ok) throw new Error('Your message did not go through. Try again in a minute.')
   }}
-  channels={[
-    { title: 'Sales', description: 'Plans and pricing.', label: 'sales@example.com', href: 'mailto:sales@example.com' },
-  ]}
   offices={[
     { city: 'Berlin', address: 'Torstraße 1, 10119', timeZone: 'Europe/Berlin' },
     { city: 'Austin', address: '500 W 2nd St, TX 78701', timeZone: 'America/Chicago', hours: [8, 17] },
@@ -30,10 +28,11 @@ import { Contact01 } from '@/components/contact-01'
 
 | Prop | Description |
 | --- | --- |
+| `brand` | `{ name, domain? }`. The default description names the brand, and the default channels write to `sales@` and `press@` its domain. Default `Acme` at `acme.com`. |
 | `eyebrow`, `title`, `description` | The words above the channels. `null` hides the eyebrow or the description. |
 | `onSubmit` | Called with `{ name, email, company, message }` once every field passes. Return a promise to show the pending state; throw an `Error` to show its message and keep what was typed. |
 | `minMessage` | Shortest message accepted, in characters. Default `20`. |
-| `channels` | `{ icon?, title, description, label, href }[]` for the cards beside the form. An empty list hides them. |
+| `channels` | `{ icon?, title, description, label, href }[]` for the cards beside the form, in place of the defaults for the brand. An empty list hides them. |
 | `offices` | `{ city, address, timeZone, hours? }[]`. `timeZone` is an IANA name; `hours` is `[open, close]` on weekdays, default `[9, 18]`. An empty list hides them. |
 | `locale` | Locale for the clocks. Defaults to the browser's. |
 | `labels` | Field labels, messages and button text: `name`, `email`, `company`, `message`, `required`, `invalidEmail`, `tooShort`, `successTitle`, `successDescription`, `open`, `closed` and more. |

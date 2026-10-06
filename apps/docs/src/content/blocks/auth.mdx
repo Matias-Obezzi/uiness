@@ -12,6 +12,7 @@ A sign in form with email and password, a forgotten password link, a submit butt
 import { Auth01 } from '@/components/auth-01'
 
 <Auth01
+  brand={{ name: 'Summit', href: '/' }}
   title="Sign in to Summit"
   onSubmit={async ({ email, password }) => {
     const res = await fetch('/api/login', {
@@ -22,19 +23,19 @@ import { Auth01 } from '@/components/auth-01'
   }}
   providers={[{ id: 'github', label: 'GitHub' }]}
   onProvider={(id) => signIn(id)}
-  signUp={{ prompt: 'No account yet?', label: 'Sign up', href: '/signup' }}
+  signUp={{ prompt: 'New to {brand}?', label: 'Sign up', href: '/signup' }}
 />
 ```
 
 | Prop | Description |
 | --- | --- |
-| `brand` | `{ name, href, icon? }` for the wordmark above the form. |
+| `brand` | `{ name, href?, logo? }` for the wordmark above the form. `logo` is any node; without one the mark shows the first letter. Default `Acme`. |
 | `title`, `description` | The heading and the line under it. |
 | `onSubmit` | Called with `{ email, password }`. Return a promise to show the pending state; throw an `Error` to show its message. |
 | `forgotPasswordHref` | Where "Forgot password?" goes. `null` hides it. |
 | `providers` | `{ id, label, icon? }` for the buttons under the divider. An empty list hides them. |
 | `onProvider` | Called with a provider's `id` when its button is pressed. |
-| `signUp` | `{ prompt, label, href }` for the line under the form. `null` hides it. |
+| `signUp` | `{ prompt, label, href }` for the line under the form. `{brand}` in `prompt` becomes the brand name. `null` hides it. |
 | `testimonial` | `{ quote, name, role?, image? }` for the side panel on wide containers. `null` hides the panel. |
 | `labels` | Field labels and button text: `email`, `password`, `forgotPassword`, `submit`, `pending`, `divider`, `continueWith`, `error` and more. |
 
@@ -61,17 +62,16 @@ import { SignIn01 } from '@/components/sign-in-01'
     const res = await fetch('/api/otp/verify', { method: 'POST', body: JSON.stringify({ email, code }) })
     if (!res.ok) throw new Error('That code did not match. Try again.')
   }}
-  labels={{ emailTitle: 'Sign in to Summit' }}
 />
 ```
 
 | Prop | Description |
 | --- | --- |
-| `brand` | `{ name, href, icon? }` for the mark above the card. |
+| `brand` | `{ name, href?, logo? }` for the mark above the card and the first title. `logo` is any node; without one the mark shows the first letter. Default `Acme`. |
 | `onRequestCode` | Called with the address, and again for a resend. Return a promise to show the pending state; throw an `Error` to show its message. |
 | `onVerify` | Called with the address and the code. Throw to reject it: the field shakes, clears and shows the message. |
 | `continueHref` | Where the button on the signed in step goes. |
 | `resendAfter` | Seconds before the code can be sent again. Default `30`. |
 | `defaultStep`, `defaultEmail` | Start on `email`, `code` or `done`, with an address, for previews and tests. |
 | `footer` | The line under the card. `null` hides it. |
-| `labels` | Titles, descriptions and button text for each step: `emailTitle`, `codeTitle`, `codeDescription` (with `{email}`), `resendIn` (with `{seconds}`), `doneTitle` and more. |
+| `labels` | Titles, descriptions and button text for each step: `emailTitle` (with `{brand}`), `codeTitle`, `codeDescription` (with `{email}`), `resendIn` (with `{seconds}`), `doneTitle` and more. |

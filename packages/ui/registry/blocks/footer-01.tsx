@@ -8,7 +8,6 @@ import {
   MailCheckIcon,
   MessagesSquareIcon,
   RssIcon,
-  WindIcon,
 } from 'lucide-react'
 import * as React from 'react'
 import { cn } from '@/lib/utils'
@@ -21,11 +20,16 @@ export interface FooterLink {
   href: string
 }
 
+/** Whose site this is. The same shape as the `brand` of the other blocks. */
 export interface FooterBrand {
+  /** The wordmark, and the watermark. */
   name: string
-  href: string
-  /** A lucide icon for the mark next to the name. Without one the mark shows the first letter. */
-  icon?: LucideIcon
+  /** Where the wordmark goes. Default `/`. */
+  href?: string
+  /** The mark before the name, like `<MountainIcon />` or an `<img>`. Without one it shows the first letter. */
+  logo?: React.ReactNode
+  /** The company's legal name for the copyright line, like `Acme, Inc.`. Default `name`. */
+  legalName?: string
 }
 
 export interface FooterSocial {
@@ -68,12 +72,13 @@ export interface Footer01Props extends React.ComponentProps<'footer'> {
   onSubscribe?: (email: string) => void | Promise<void>
   /** The brand name set huge and faded between the links and the bottom bar. Default true. */
   watermark?: boolean
+  /** The line in the bottom bar. Default `© <year> <brand.legalName>`. */
   copyright?: React.ReactNode
   /** Links in the bottom bar: privacy, terms, cookies. */
   legal?: FooterLink[]
 }
 
-const defaultBrand: FooterBrand = { name: 'Northwind', href: '#', icon: WindIcon }
+const defaultBrand: FooterBrand = { name: 'Acme', href: '#', legalName: 'Acme, Inc.' }
 
 const defaultSocials: FooterSocial[] = [
   { label: 'GitHub', href: '#', icon: GitBranchIcon },
@@ -142,12 +147,11 @@ function Footer01({
   newsletter = defaultNewsletter,
   onSubscribe,
   watermark = true,
-  copyright = `© ${new Date().getFullYear()} Northwind Labs, Inc.`,
+  copyright = `© ${new Date().getFullYear()} ${brand.legalName ?? brand.name}`,
   legal = defaultLegal,
   className,
   ...props
 }: Footer01Props) {
-  const BrandIcon = brand.icon
   const newsletterId = React.useId()
   const emailId = React.useId()
   const [status, setStatus] = React.useState<Status>('idle')
@@ -175,14 +179,14 @@ function Footer01({
         <div className="grid gap-12 @4xl:grid-cols-12">
           <div className="flex flex-col items-start gap-5 @4xl:col-span-4">
             <a
-              href={brand.href}
+              href={brand.href ?? '/'}
               className="group flex items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <span
                 aria-hidden
-                className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-primary/70 text-primary-foreground shadow-sm transition-transform duration-(--duration-normal,200ms) ease-(--easing-spring,ease-out) group-hover:-rotate-6 group-hover:scale-105 motion-reduce:transition-none"
+                className="flex size-8 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-primary to-primary/70 text-primary-foreground shadow-sm transition-transform duration-(--duration-normal,200ms) ease-(--easing-spring,ease-out) group-hover:-rotate-6 group-hover:scale-105 motion-reduce:transition-none [&_svg]:size-4"
               >
-                {BrandIcon ? <BrandIcon className="size-4" /> : brand.name.charAt(0)}
+                {brand.logo ?? brand.name.charAt(0)}
               </span>
               {brand.name}
             </a>

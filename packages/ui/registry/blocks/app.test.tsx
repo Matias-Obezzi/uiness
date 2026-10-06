@@ -38,7 +38,8 @@ describe('PageHeader01', () => {
       within(screen.getByRole('navigation', { name: 'Breadcrumb' }))
         .getAllByRole('link')
         .map((a) => a.textContent),
-    ).toEqual(['Northwind', 'Projects'])
+    ).toEqual(['Acme', 'Projects'])
+    expect(screen.getByText('acme.com')).toBeTruthy()
     expect(screen.getByText('MIT license')).toBeTruthy()
     const tabs = screen.getAllByRole('tab')
     expect(tabs.map((t) => t.textContent?.replace(/\d+$/, ''))).toContain('Issues')
@@ -49,6 +50,18 @@ describe('PageHeader01', () => {
     await user.click(star)
     expect(star.getAttribute('aria-pressed')).toBe('true')
     expect(spoken(star)).toBe('1,285')
+  })
+
+  it('puts the brand it is given in the trail, the description and the facts', () => {
+    render(<PageHeader01 brand={{ name: 'Globex', href: '/globex' }} />)
+    const trail = within(screen.getByRole('navigation', { name: 'Breadcrumb' })).getAllByRole(
+      'link',
+    )
+    expect(trail[0]?.textContent).toBe('Globex')
+    expect(trail[0]?.getAttribute('href')).toBe('/globex')
+    expect(screen.getByText(/behind every Globex product/)).toBeTruthy()
+    expect(screen.getByText('globex.com')).toBeTruthy()
+    expect(screen.getByRole('region', { name: 'atlas' }).textContent).not.toMatch(/acme/i)
   })
 
   it('lets the content change a count, which the tab rolls to', async () => {

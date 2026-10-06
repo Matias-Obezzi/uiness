@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, MailIcon, WindIcon } from 'lucide-react'
+import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, MailIcon } from 'lucide-react'
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback } from '@/ui/avatar'
@@ -11,7 +11,18 @@ import { Label } from '@/ui/label'
 
 export type SignInStep = 'email' | 'code' | 'done'
 
+/** Whose product this is. The same shape as the `brand` of the other blocks. */
+export interface SignInBrand {
+  /** Read out on the mark above the card, and put in the first title. */
+  name: string
+  /** Where the mark goes. Default `/`. */
+  href?: string
+  /** The mark above the card, like `<MountainIcon />` or an `<img>`. Without one it shows the first letter. */
+  logo?: React.ReactNode
+}
+
 export interface SignInLabels {
+  /** `{brand}` is replaced with the brand name. */
   emailTitle: string
   emailDescription: string
   email: string
@@ -43,7 +54,7 @@ export interface SignInLabels {
 }
 
 export interface SignIn01Props extends Omit<React.ComponentProps<'section'>, 'title'> {
-  brand?: { name: string; href: string; icon?: React.ComponentType<{ className?: string }> }
+  brand?: SignInBrand
   /** Sends the code. Return a promise to show the pending state; throw to show an error. */
   onRequestCode?: (email: string) => void | Promise<void>
   /** Checks the code. Throw to reject it; the field shakes and clears. */
@@ -61,7 +72,7 @@ export interface SignIn01Props extends Omit<React.ComponentProps<'section'>, 'ti
 }
 
 const defaultLabels: SignInLabels = {
-  emailTitle: 'Sign in to Northwind',
+  emailTitle: 'Sign in to {brand}',
   emailDescription: 'We will email you a six digit code. No password needed.',
   email: 'Work email',
   emailPlaceholder: 'you@company.com',
@@ -119,7 +130,7 @@ function useAnimatedHeight<T extends HTMLElement>() {
  * short wait.
  */
 function SignIn01({
-  brand = { name: 'Northwind', href: '#', icon: WindIcon },
+  brand = { name: 'Acme', href: '#' },
   onRequestCode = () => wait(700),
   onVerify = () => wait(700),
   continueHref = '#',
@@ -256,9 +267,12 @@ function SignIn01({
     }
   }
 
-  const BrandIcon = brand.icon
   const title =
-    step === 'email' ? labels.emailTitle : step === 'code' ? labels.codeTitle : labels.doneTitle
+    step === 'email'
+      ? fill(labels.emailTitle, { brand: brand.name })
+      : step === 'code'
+        ? labels.codeTitle
+        : labels.doneTitle
 
   return (
     <section
@@ -274,14 +288,14 @@ function SignIn01({
       />
       <div className="mx-auto flex max-w-md flex-col items-center px-4 py-16 @md:px-6 @3xl:py-24">
         <a
-          href={brand.href}
+          href={brand.href ?? '/'}
           className="mb-8 flex items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <span
             aria-hidden
-            className="flex size-9 items-center justify-center rounded-xl bg-linear-to-br from-primary to-primary/70 text-primary-foreground shadow-sm"
+            className="flex size-9 items-center justify-center overflow-hidden rounded-xl bg-linear-to-br from-primary to-primary/70 text-primary-foreground shadow-sm [&_svg]:size-4.5"
           >
-            {BrandIcon ? <BrandIcon className="size-4.5" /> : brand.name.charAt(0)}
+            {brand.logo ?? brand.name.charAt(0)}
           </span>
           <span className="sr-only">{brand.name}</span>
         </a>

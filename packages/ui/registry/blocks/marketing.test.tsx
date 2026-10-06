@@ -109,13 +109,14 @@ describe('Comparison01', () => {
   it('renders a table with the highlighted column and readable cells', () => {
     render(<Comparison01 />)
     const heading = screen.getByRole('heading', { level: 2 })
+    expect(heading.textContent).toBe('Why teams switch to Acme')
     expect(screen.getByRole('region', { name: heading.textContent ?? '' })).toBeTruthy()
     const table = screen.getByRole('table')
     const head = table.querySelector('thead') as HTMLElement
     const columns = within(head).getAllByRole('columnheader')
     expect(columns.map((c) => c.textContent)).toEqual([
       'Feature',
-      expect.stringContaining('Northwind'),
+      expect.stringContaining('Acme'),
       expect.stringContaining('Legacy Suite'),
       expect.stringContaining('Spreadsheets'),
     ])
@@ -140,6 +141,14 @@ describe('Comparison01', () => {
     expect(container.className).toContain('overflow-y-auto')
     expect(table.querySelector('thead')?.dataset.sticky).toBe('')
     expect(within(table).getByRole('link', { name: 'Start free trial' })).toBeTruthy()
+  })
+
+  it('puts the brand it is given in the title and on its column', () => {
+    render(<Comparison01 brand={{ name: 'Globex' }} />)
+    expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('Why teams switch to Globex')
+    const head = screen.getByRole('table').querySelector('thead') as HTMLElement
+    expect(within(head).getAllByRole('columnheader')[1]?.textContent).toContain('Globex')
+    expect(screen.getByRole('region').textContent).not.toContain('Acme')
   })
 
   it('stacks a card per product for narrow containers, highlighted first', () => {

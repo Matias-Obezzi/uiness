@@ -14,7 +14,7 @@ import { Navbar01 } from '@/components/navbar-01'
 
 <Navbar01
   sticky
-  brand={{ name: 'Summit', href: '/', icon: MountainIcon }}
+  brand={{ name: 'Summit', href: '/', logo: <MountainIcon /> }}
   links={[
     { label: 'Features', href: '/features', current: true },
     { label: 'Pricing', href: '/pricing' },
@@ -25,9 +25,24 @@ import { Navbar01 } from '@/components/navbar-01'
 />
 ```
 
+The navbar, the footer, the auth screens and the other blocks that name a company all take the same `brand` object, and each reads the fields it needs. Define it once and pass it everywhere:
+
+```tsx
+const brand = {
+  name: 'Summit',
+  href: '/',
+  logo: <MountainIcon />,
+  domain: 'summit.app',
+  legalName: 'Summit Labs, Inc.',
+}
+
+<Navbar01 brand={brand} />
+<Footer01 brand={brand} />
+```
+
 | Prop | Description |
 | --- | --- |
-| `brand` | `{ name, href, icon? }` for the wordmark. `icon` is a lucide icon; without one the mark shows the first letter. |
+| `brand` | `{ name, href?, logo? }` for the wordmark. `logo` is any node, like a lucide icon or an `<img>`; without one the mark shows the first letter. Default `Acme`. |
 | `links` | `{ label, href, current? }` for the main links. `current` marks the page you are on. |
 | `secondaryAction` | `{ label, href }` for the text link before the button. `null` hides it. |
 | `primaryAction` | `{ label, href }` for the button. `null` hides it. |

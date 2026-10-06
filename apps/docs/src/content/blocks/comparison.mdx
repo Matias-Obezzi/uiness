@@ -12,6 +12,7 @@ An us versus them table. Your column is lifted out in colour with a badge and th
 import { Comparison01 } from '@/components/comparison-01'
 
 <Comparison01
+  brand={{ name: 'Summit' }}
   title="Summit vs the rest"
   maxHeight={null}
   products={[
@@ -34,6 +35,7 @@ import { Comparison01 } from '@/components/comparison-01'
 
 | Prop | Description |
 | --- | --- |
+| `brand` | `{ name }`, used in the default title and on the default highlighted column. Default `Acme`. |
 | `eyebrow`, `title`, `description` | The words above the table. `null` hides the eyebrow or the description. |
 | `products` | `{ id, name, caption?, highlight? }[]`, one per column. Mark yours with `highlight`. |
 | `sections` | `{ title, rows }[]`. Each row is `{ feature, description?, values }`, where `values` maps a product id to `true`, `false`, `'partial'` or a short text. A missing value reads as `false`. |

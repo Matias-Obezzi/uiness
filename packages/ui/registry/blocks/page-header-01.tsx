@@ -54,15 +54,26 @@ export interface PageHeaderLabels {
   tabs: string
 }
 
+/** The organization the page belongs to. The same shape as the `brand` of the other blocks. */
+export interface PageHeaderBrand {
+  /** First in the default breadcrumbs, and named in the default description. */
+  name: string
+  /** Where its breadcrumb goes. Default `/`. */
+  href?: string
+  /** For the website in the default facts, like `acme.com`. Default the name in lower case with `.com`. */
+  domain?: string
+}
+
 export interface PageHeader01Props
   extends Omit<React.ComponentProps<'section'>, 'title' | 'children'> {
-  /** The trail above the title. An empty list hides it. */
+  brand?: PageHeaderBrand
+  /** The trail above the title. Default the brand, then `Projects`. An empty list hides it. */
   breadcrumbs?: { label: string; href: string }[]
   title?: string
   description?: React.ReactNode | null
   /** A badge beside the title, like `Public`. `null` hides it. */
   status?: string | null
-  /** Small facts under the description. */
+  /** Small facts under the description. The default starts with the brand's domain. */
   meta?: { icon?: LucideIcon; label: string }[]
   /** A star button with a count that rolls when pressed. `null` hides it. */
   star?: { count: number; starred?: boolean; onChange?: (starred: boolean) => void } | null
@@ -92,8 +103,13 @@ const defaultTabs: PageHeaderTab[] = [
   { id: 'releases', label: 'Releases', icon: TagIcon, count: 28 },
 ]
 
-const defaultMeta = [
-  { icon: GlobeIcon, label: 'northwind.dev' },
+const defaultBrand: PageHeaderBrand = { name: 'Acme', href: '#', domain: 'acme.com' }
+
+const domainOf = (brand: PageHeaderBrand) =>
+  brand.domain ?? `${brand.name.toLowerCase().replace(/[^a-z0-9]+/g, '')}.com`
+
+const defaultMeta = (domain: string) => [
+  { icon: GlobeIcon, label: domain },
   { icon: ScaleIcon, label: 'MIT license' },
   { icon: GitBranchIcon, label: 'main' },
   { icon: ClockIcon, label: 'Updated 2 hours ago' },
@@ -115,14 +131,15 @@ const defaultActions: PageHeaderAction[] = [{ label: 'New issue', icon: PlusIcon
  * roll to their new value whenever they change. Works inside its own scroll box or the page.
  */
 function PageHeader01({
+  brand = defaultBrand,
   breadcrumbs = [
-    { label: 'Northwind', href: '#' },
+    { label: brand.name, href: brand.href ?? '/' },
     { label: 'Projects', href: '#' },
   ],
   title = 'atlas',
-  description = 'The design system and component library behind every Northwind product.',
+  description = `The design system and component library behind every ${brand.name} product.`,
   status = 'Public',
-  meta = defaultMeta,
+  meta = defaultMeta(domainOf(brand)),
   star = { count: 1284 },
   actions = defaultActions,
   tabs = defaultTabs,

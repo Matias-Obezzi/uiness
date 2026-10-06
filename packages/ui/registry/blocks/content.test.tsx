@@ -123,7 +123,7 @@ describe('Features02', () => {
 describe('Logos01', () => {
   it('renders the line and a marquee of wordmarks', () => {
     const { container } = render(<Logos01 />)
-    expect(regionOf(2).textContent).toContain('Northwind')
+    expect(regionOf(2).textContent).toContain('Ridgeline')
     const marquee = container.querySelector('[data-slot=marquee]')
     expect(marquee).toBeTruthy()
     // The first copy is read, the repeats are hidden.

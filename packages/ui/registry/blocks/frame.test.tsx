@@ -38,7 +38,7 @@ describe('Navbar01', () => {
     expect(header.dataset.slot).toBe('block-navbar-01')
     expect(header.className).toContain('@container')
     expect(header.className).not.toContain('sticky')
-    expect(screen.getByRole('link', { name: 'Northwind' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'Acme' }).textContent).toBe('AAcme')
     const nav = screen.getByRole('navigation', { name: 'Main' })
     expect(
       within(nav)
@@ -55,7 +55,7 @@ describe('Navbar01', () => {
     render(
       <Navbar01
         sticky
-        brand={{ name: 'Summit', href: '/', icon: MountainIcon }}
+        brand={{ name: 'Summit', href: '/', logo: <MountainIcon data-testid="logo" /> }}
         links={[
           { label: 'Features', href: '/features', current: true },
           { label: 'Docs', href: '/docs' },
@@ -67,7 +67,9 @@ describe('Navbar01', () => {
     const header = screen.getByRole('banner')
     expect(header.className).toContain('sticky')
     expect(header.className).toContain('z-(--z-sticky,40)')
-    expect(screen.getByRole('link', { name: 'Summit' }).getAttribute('href')).toBe('/')
+    const wordmark = screen.getByRole('link', { name: 'Summit' })
+    expect(wordmark.getAttribute('href')).toBe('/')
+    expect(within(wordmark).getByTestId('logo')).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Features' }).getAttribute('aria-current')).toBe('page')
     expect(screen.getByRole('link', { name: 'Docs' }).hasAttribute('aria-current')).toBe(false)
     expect(screen.queryByRole('link', { name: 'Sign in' })).toBeNull()
@@ -111,10 +113,17 @@ describe('Navbar01', () => {
     expect(screen.getByRole('dialog', { name: 'Open navigation' })).toBeTruthy()
   })
 
-  it('shows a monogram when the brand has no icon', () => {
+  it('shows a monogram when the brand has no logo', () => {
     render(<Navbar01 brand={{ name: 'Quill', href: '/' }} links={[]} />)
-    expect(screen.getByRole('link', { name: 'Quill' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'Quill' }).textContent).toBe('QQuill')
     expect(screen.queryByRole('navigation')).toBeNull()
+  })
+
+  it('shows the brand it is given in place of the default', () => {
+    render(<Navbar01 brand={{ name: 'Globex' }} />)
+    const wordmark = screen.getByRole('link', { name: 'Globex' })
+    expect(wordmark.getAttribute('href')).toBe('/')
+    expect(screen.getByRole('banner').textContent).not.toContain('Acme')
   })
 })
 
@@ -123,7 +132,7 @@ describe('Footer01', () => {
     render(<Footer01 />)
     const footer = screen.getByRole('contentinfo')
     expect(footer.dataset.slot).toBe('block-footer-01')
-    expect(screen.getByRole('link', { name: 'Northwind' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'Acme' })).toBeTruthy()
     for (const label of ['GitHub', 'Community', 'RSS feed']) {
       expect(screen.getByRole('link', { name: label })).toBeTruthy()
     }
@@ -142,7 +151,21 @@ describe('Footer01', () => {
         .getAllByRole('link')
         .map((a) => a.textContent),
     ).toEqual(['Privacy', 'Terms', 'Cookies'])
-    expect(screen.getByText(`© ${new Date().getFullYear()} Northwind Labs, Inc.`)).toBeTruthy()
+    expect(screen.getByText(`© ${new Date().getFullYear()} Acme, Inc.`)).toBeTruthy()
+  })
+
+  it('puts the brand it is given in the wordmark, the watermark and the copyright', () => {
+    const { container } = render(<Footer01 brand={{ name: 'Globex' }} />)
+    expect(screen.getByRole('link', { name: 'Globex' }).getAttribute('href')).toBe('/')
+    const watermark = container.querySelector('[aria-hidden].select-none')
+    expect(watermark?.textContent).toBe('Globex')
+    expect(screen.getByText(`© ${new Date().getFullYear()} Globex`)).toBeTruthy()
+    expect(screen.getByRole('contentinfo').textContent).not.toContain('Acme')
+  })
+
+  it('uses the legal name for the copyright when there is one', () => {
+    render(<Footer01 brand={{ name: 'Globex', legalName: 'Globex Corporation' }} />)
+    expect(screen.getByText(`© ${new Date().getFullYear()} Globex Corporation`)).toBeTruthy()
   })
 
   it('subscribes with a pending state and thanks in place', async () => {
@@ -241,8 +264,17 @@ describe('Auth01', () => {
     expect(screen.getByRole('button', { name: 'Continue with Google' })).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Create an account' })).toBeTruthy()
     const aside = screen.getByRole('complementary')
-    expect(within(aside).getByText('Maya Okafor')).toBeTruthy()
-    expect(within(aside).getByText('MO')).toBeTruthy()
+    expect(within(aside).getByText('Rosa Delgado')).toBeTruthy()
+    expect(within(aside).getByText('RD')).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'Acme' })).toBeTruthy()
+    expect(screen.getByText(/New to Acme\?/)).toBeTruthy()
+  })
+
+  it('puts the brand it is given in the wordmark and the sign up line', () => {
+    render(<Auth01 brand={{ name: 'Globex' }} />)
+    expect(screen.getByRole('link', { name: 'Globex' }).getAttribute('href')).toBe('/')
+    expect(screen.getByText(/New to Globex\?/)).toBeTruthy()
+    expect(screen.getByRole('region').textContent).not.toContain('Acme')
   })
 
   it('submits the values with a pending state', async () => {

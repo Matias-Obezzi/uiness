@@ -34,7 +34,7 @@ const defaultTestimonials: Testimonial[] = [
     quote:
       'We replaced three internal tools in a week. The team stopped asking where things live and started shipping.',
     name: 'Maya Lindqvist',
-    role: 'Head of Product, Northwind',
+    role: 'Head of Product, Ridgeline',
     rating: 5,
   },
   {

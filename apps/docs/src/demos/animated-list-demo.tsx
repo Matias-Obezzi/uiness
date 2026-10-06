@@ -5,7 +5,7 @@ const notifications = [
   {
     icon: CreditCard,
     title: 'Payment received',
-    body: '$1,280.00 from Northwind',
+    body: '$1,280.00 from Acme',
     time: '8m',
     tint: 'from-emerald-400 to-teal-500',
   },
