@@ -97,6 +97,9 @@ export const pt = {
     previous: 'Anterior',
     next: 'Próximo',
     goTo: (index: number, count: number) => `Ir para o item ${index} de ${count}`,
+    position: (index: number, count: number) => `Item ${index} de ${count}`,
+    play: 'Iniciar a rolagem automática',
+    pause: 'Pausar a rolagem automática',
   },
   chart: {
     empty: 'Sem dados',

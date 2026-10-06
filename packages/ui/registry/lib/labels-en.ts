@@ -96,6 +96,9 @@ export const en = {
     previous: 'Previous',
     next: 'Next',
     goTo: (index: number, count: number) => `Go to item ${index} of ${count}`,
+    position: (index: number, count: number) => `Item ${index} of ${count}`,
+    play: 'Start automatic scrolling',
+    pause: 'Pause automatic scrolling',
   },
   chart: {
     empty: 'No data',

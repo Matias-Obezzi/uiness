@@ -96,6 +96,9 @@ export const es = {
     previous: 'Anterior',
     next: 'Siguiente',
     goTo: (index: number, count: number) => `Ir al elemento ${index} de ${count}`,
+    position: (index: number, count: number) => `Elemento ${index} de ${count}`,
+    play: 'Iniciar el desplazamiento automático',
+    pause: 'Pausar el desplazamiento automático',
   },
   chart: {
     empty: 'Sin datos',
