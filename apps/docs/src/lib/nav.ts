@@ -872,10 +872,17 @@ export const nav: NavSection[] = sections.map((section) => {
 export const pages: NavPage[] = nav.flatMap((section) => section.pages)
 
 /** How long a page is called new after it ships. */
-const NEW_FOR_DAYS = 30
+const NEW_FOR_DAYS = 7
+
+/** Only the latest releases count, so a busy week doesn't mark half the site as new. */
+const NEW_RELEASES = 2
+
+const latestReleases = new Set(Object.keys(releases).sort().slice(-NEW_RELEASES))
 
 export const isNew = (p: NavPage, now = Date.now()) =>
-  p.added !== undefined && now - Date.parse(p.added) < NEW_FOR_DAYS * 24 * 60 * 60 * 1000
+  p.added !== undefined &&
+  latestReleases.has(p.added) &&
+  now - Date.parse(p.added) < NEW_FOR_DAYS * 24 * 60 * 60 * 1000
 
 export const findPage = (slug: string): NavPage | undefined =>
   pages.find((p) => p.slug === slug.replace(/\/$/, ''))
