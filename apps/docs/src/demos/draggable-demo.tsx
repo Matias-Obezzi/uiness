@@ -17,8 +17,8 @@ export default function DraggableDemo() {
         >
           <DraggableHandle>Now playing</DraggableHandle>
           <div className="space-y-1 p-3 text-sm">
-            <p className="font-medium">Sunlit</p>
-            <p className="text-muted-foreground text-xs">Mildlife · Automatic</p>
+            <p className="font-medium">Teardrop</p>
+            <p className="text-muted-foreground text-xs">Massive Attack · Mezzanine</p>
             <p className="pt-2 font-mono text-muted-foreground text-xs tabular-nums">
               x {Math.round(position.x)} · y {Math.round(position.y)}
             </p>

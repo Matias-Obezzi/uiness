@@ -10,7 +10,7 @@ export default function FlipCardDemo() {
 
   return (
     <div className="flex flex-wrap items-start justify-center gap-6">
-      <FlipCard aria-label="Ada Lovelace, profile" className="h-72 w-52">
+      <FlipCard aria-label="Hedy Lamarr, profile" className="h-72 w-52">
         <FlipCardFront className="flex flex-col items-center justify-center gap-3 p-6 text-center">
           <img
             src="/img/gallery-1.png"
@@ -18,20 +18,20 @@ export default function FlipCardDemo() {
             className="size-20 rounded-full object-cover ring-4 ring-muted"
           />
           <div>
-            <p className="font-semibold">Ada Lovelace</p>
-            <p className="text-muted-foreground text-sm">Analyst</p>
+            <p className="font-semibold">Hedy Lamarr</p>
+            <p className="text-muted-foreground text-sm">Inventor</p>
           </div>
           <p className="mt-auto text-caption text-muted-foreground">Hover to turn</p>
         </FlipCardFront>
         <FlipCardBack className="flex flex-col justify-between bg-primary p-6 text-primary-foreground">
           <p className="text-sm leading-relaxed">
-            Wrote the first program for a machine that did not exist yet, and saw it could do far
-            more than sums.
+            Worked out frequency hopping between film takes, the idea that keeps Wi-Fi and Bluetooth
+            out of each other’s way.
           </p>
           <div className="grid grid-cols-3 gap-2 text-center">
             {[
-              ['1843', 'Notes'],
-              ['1st', 'Program'],
+              ['1942', 'Patent'],
+              ['88', 'Channels'],
               ['∞', 'Ideas'],
             ].map(([value, label]) => (
               <div key={label}>

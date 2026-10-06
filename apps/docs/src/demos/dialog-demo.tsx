@@ -28,7 +28,7 @@ export default function DialogDemo() {
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
             <Label htmlFor="profile-name">Name</Label>
-            <Input id="profile-name" defaultValue="Ada Lovelace" />
+            <Input id="profile-name" defaultValue="Jonah Weiss" />
           </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="profile-username">Username</Label>

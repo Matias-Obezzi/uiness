@@ -19,7 +19,7 @@ export default function TabsDemo() {
           </CardHeader>
           <CardContent className="flex flex-col gap-3">
             <Label htmlFor="tabs-name">Name</Label>
-            <Input id="tabs-name" defaultValue="Ada Lovelace" />
+            <Input id="tabs-name" defaultValue="Tariq Aziz" />
           </CardContent>
           <CardFooter>
             <Button>Save changes</Button>

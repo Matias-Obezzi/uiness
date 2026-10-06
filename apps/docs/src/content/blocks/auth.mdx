@@ -12,8 +12,8 @@ A sign in form with email and password, a forgotten password link, a submit butt
 import { Auth01 } from '@/components/auth-01'
 
 <Auth01
-  brand={{ name: 'Summit', href: '/' }}
-  title="Sign in to Summit"
+  brand={{ name: 'Beacon', href: '/' }}
+  title="Sign in to Beacon"
   onSubmit={async ({ email, password }) => {
     const res = await fetch('/api/login', {
       method: 'POST',
@@ -51,7 +51,7 @@ A passwordless sign in card that changes in place: an email, then a six digit co
 import { SignIn01 } from '@/components/sign-in-01'
 
 <SignIn01
-  brand={{ name: 'Summit', href: '/' }}
+  brand={{ name: 'Pebble', href: '/' }}
   resendAfter={45}
   continueHref="/app"
   onRequestCode={async (email) => {

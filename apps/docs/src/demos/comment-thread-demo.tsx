@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { CommentThread, type CommentUser, type ThreadComment } from '@/ui/comment-thread'
 
 const users: CommentUser[] = [
-  { id: 'me', name: 'Alex Morgan' },
-  { id: 'maya', name: 'Maya Chen', avatar: '/img/gallery-1-tiny.png' },
-  { id: 'leo', name: 'Leo Park', avatar: '/img/gallery-3-tiny.png' },
+  { id: 'me', name: 'Jordan Blake' },
+  { id: 'aiyana', name: 'Aiyana Brooks', avatar: '/img/gallery-1-tiny.png' },
+  { id: 'felix', name: 'Felix Wagner', avatar: '/img/gallery-3-tiny.png' },
 ]
 
 const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60_000)
@@ -12,14 +12,14 @@ const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60_000)
 const initial: ThreadComment[] = [
   {
     id: 'c1',
-    authorId: 'maya',
-    body: 'The hero headline wraps onto three lines on small phones. @Leo could we try a shorter one?',
+    authorId: 'aiyana',
+    body: 'The hero headline wraps onto three lines on small phones. @Felix could we try a shorter one?',
     createdAt: minutesAgo(180),
-    reactions: [{ emoji: '👀', userIds: ['leo', 'me'] }],
+    reactions: [{ emoji: '👀', userIds: ['felix', 'me'] }],
     replies: [
       {
         id: 'c2',
-        authorId: 'leo',
+        authorId: 'felix',
         body: 'Good catch. "Ship faster, together" fits in two.',
         createdAt: minutesAgo(150),
       },
@@ -28,13 +28,13 @@ const initial: ThreadComment[] = [
         authorId: 'me',
         body: 'Works for me. I will update the copy doc.',
         createdAt: minutesAgo(12),
-        reactions: [{ emoji: '👍', userIds: ['maya'] }],
+        reactions: [{ emoji: '👍', userIds: ['aiyana'] }],
       },
     ],
   },
   {
     id: 'c4',
-    authorId: 'leo',
+    authorId: 'felix',
     body: 'Also: the pricing toggle needs a focus ring.',
     createdAt: minutesAgo(3),
   },

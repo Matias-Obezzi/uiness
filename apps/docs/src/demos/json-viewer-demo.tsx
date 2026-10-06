@@ -10,8 +10,8 @@ const response = {
   data: {
     customer: {
       id: 'cus_8812',
-      name: 'Acme Corp',
-      email: 'billing@acme.test',
+      name: 'Harlow & Finch',
+      email: 'billing@harlowfinch.test',
       tags: ['enterprise', 'eu'],
     },
     amount: 129_900,

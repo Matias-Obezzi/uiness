@@ -77,7 +77,7 @@ export default function IslandHardware() {
               content: (
                 <div className="flex w-64 flex-col gap-1">
                   <p className="font-semibold">New message</p>
-                  <p className="text-sm opacity-70">Ada: the deploy is green.</p>
+                  <p className="text-sm opacity-70">Theo: the deploy is green.</p>
                 </div>
               ),
               duration: 4000,

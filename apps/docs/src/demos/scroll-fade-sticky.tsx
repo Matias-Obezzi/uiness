@@ -1,15 +1,15 @@
 import { ScrollFade } from '@/ui/scroll-fade'
 
 const people = {
-  A: ['Ada Lovelace', 'Alan Kay', 'Anita Borg'],
-  B: ['Barbara Liskov', 'Bjarne Stroustrup', 'Brian Kernighan'],
-  D: ['Dennis Ritchie', 'Donald Knuth'],
+  A: ['Alan Kay', 'Anita Borg', 'Adele Goldberg'],
+  B: ['Bjarne Stroustrup', 'Brian Kernighan', 'Butler Lampson'],
+  D: ['Donald Knuth', 'Dorothy Vaughan'],
   E: ['Edsger Dijkstra', 'Evelyn Boyd Granville'],
-  G: ['Grace Hopper', 'Guido van Rossum'],
+  G: ['Gladys West', 'Guido van Rossum'],
   J: ['John McCarthy', 'Joan Clarke'],
-  K: ['Ken Thompson', 'Katherine Johnson'],
+  K: ['Karen Spärck Jones', 'Kristen Nygaard'],
   L: ['Linus Torvalds', 'Lynn Conway'],
-  M: ['Margaret Hamilton', 'Mary Kenneth Keller'],
+  M: ['Mary Kenneth Keller', 'Marvin Minsky'],
 }
 
 export default function ScrollFadeSticky() {

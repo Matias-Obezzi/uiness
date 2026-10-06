@@ -89,11 +89,11 @@ const makeDefaults = (): NotificationItem[] => [
   {
     id: 'n1',
     kind: 'mention',
-    actor: 'Maya Okafor',
+    actor: 'Camille Laurent',
     title: 'mentioned you in Q4 planning',
     time: ago(4),
     details:
-      '“@you can we get the saved views work into the first sprint? Fieldnote asked about it again this morning.”',
+      '“@you can we get the saved views work into the first sprint? Kettlebrook asked about it again this morning.”',
     action: { label: 'Reply', href: '#' },
   },
   {
@@ -108,7 +108,7 @@ const makeDefaults = (): NotificationItem[] => [
   {
     id: 'n3',
     kind: 'merge',
-    actor: 'Tomás Rivera',
+    actor: 'Wei Zhang',
     title: 'merged Faster search for large workspaces',
     time: ago(95),
     read: true,
@@ -126,7 +126,7 @@ const makeDefaults = (): NotificationItem[] => [
   {
     id: 'n5',
     kind: 'comment',
-    actor: 'Lena Fischer',
+    actor: 'Oskar Lind',
     title: 'commented on Keyboard shortcuts spec',
     time: ago(60 * 29),
     read: true,
@@ -135,7 +135,7 @@ const makeDefaults = (): NotificationItem[] => [
   {
     id: 'n6',
     kind: 'invite',
-    actor: 'Priya Natarajan',
+    actor: 'Amara Nwosu',
     title: 'invited you to the Infrastructure team',
     time: ago(60 * 24 * 4),
     action: { label: 'Accept invite', href: '#' },

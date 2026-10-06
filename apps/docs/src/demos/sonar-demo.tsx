@@ -22,7 +22,7 @@ export default function SonarDemo() {
           <Sonar variant="pulse" rings={2} duration={2} scale={2.4} className="text-emerald-500">
             <span className="size-2.5 rounded-full bg-emerald-500" />
           </Sonar>
-          <span className="font-medium text-sm">Ada is online</span>
+          <span className="font-medium text-sm">Mira is online</span>
         </div>
       </div>
     </div>

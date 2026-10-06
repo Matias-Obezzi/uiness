@@ -5,7 +5,7 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export default function InlineEditDemo() {
   const [name, setName] = useState('Website redesign')
-  const [owner, setOwner] = useState('Ada Lovelace')
+  const [owner, setOwner] = useState('Ravi Menon')
   return (
     <div className="flex w-full max-w-sm flex-col gap-2">
       <h3 className="font-semibold text-2xl tracking-tight">

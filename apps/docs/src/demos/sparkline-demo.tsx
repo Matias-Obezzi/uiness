@@ -7,9 +7,9 @@ const walk = (seed: number, start: number, drift: number) =>
   )
 
 const rows = [
-  { symbol: 'ACME', name: 'Acme Corp', data: walk(1, 120, 0.9) },
-  { symbol: 'GLBX', name: 'Globex', data: walk(4, 84, -0.6) },
-  { symbol: 'INIT', name: 'Initech', data: walk(2, 42, 0.1) },
+  { symbol: 'ORSN', name: 'Orrin Systems', data: walk(1, 120, 0.9) },
+  { symbol: 'VLTA', name: 'Velta', data: walk(4, 84, -0.6) },
+  { symbol: 'QLLN', name: 'Quillon', data: walk(2, 42, 0.1) },
 ]
 
 const days = Array.from({ length: 20 }, (_, i) =>

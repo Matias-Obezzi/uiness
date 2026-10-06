@@ -34,14 +34,14 @@ const defaultTestimonials: Testimonial[] = [
     quote:
       'We replaced three internal tools in a week. The team stopped asking where things live and started shipping.',
     name: 'Maya Lindqvist',
-    role: 'Head of Product, Ridgeline',
+    role: 'Head of Product, Cinderhouse',
     rating: 5,
   },
   {
     quote:
       'The first product where the defaults are better than what I would have built. I mostly delete code now.',
     name: 'Tomás Herrera',
-    role: 'Staff Engineer, Lumen',
+    role: 'Staff Engineer, Wavelength',
     rating: 5,
   },
   {
@@ -67,7 +67,7 @@ const defaultTestimonials: Testimonial[] = [
   {
     quote:
       'Our weekly report used to take a morning. Now it writes itself and people actually read it.',
-    name: 'Daniel Okafor',
+    name: 'Daniel Osei',
     role: 'Operations, Brightline',
     rating: 5,
   },

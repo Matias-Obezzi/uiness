@@ -2,14 +2,14 @@ import { useState } from 'react'
 import { Combobox } from '@/ui/combobox'
 
 const people = [
-  { value: 'ada', label: 'Ada Lovelace', keywords: ['analytical engine'] },
-  { value: 'alan', label: 'Alan Turing' },
-  { value: 'grace', label: 'Grace Hopper' },
-  { value: 'katherine', label: 'Katherine Johnson' },
+  { value: 'freya', label: 'Freya Nilsson', keywords: ['design systems'] },
+  { value: 'rohan', label: 'Rohan Mehta' },
+  { value: 'yara', label: 'Yara Costa' },
+  { value: 'emeka', label: 'Emeka Obi' },
 ]
 
 export default function ComboboxMultiple() {
-  const [value, setValue] = useState<string[]>(['ada'])
+  const [value, setValue] = useState<string[]>(['freya'])
   return (
     <Combobox
       multiple
