@@ -542,6 +542,7 @@ export const en = {
     back: 'Back',
     done: 'Done',
     skip: 'Skip tour',
+    exit: 'Exit',
     progress: (current: number, total: number) => `${current} of ${total}`,
   },
   'tree-view': {

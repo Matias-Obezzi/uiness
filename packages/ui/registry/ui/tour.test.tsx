@@ -238,6 +238,136 @@ describe('Tour', () => {
     expect(document.querySelector('[data-slot=tour-blocker]')).toBeNull()
   })
 
+  it('is modal by default: hides the page from screen readers and keeps Tab in the card', async () => {
+    const { container } = setup()
+    await userEvent.click(screen.getByText('Start'))
+    const dialog = await card()
+    expect(dialog.getAttribute('aria-modal')).toBe('true')
+    expect(dialog.hasAttribute('data-modal')).toBe(true)
+    expect(container.getAttribute('aria-hidden')).toBe('true')
+    expect(dialog.closest('[aria-hidden=true]')).toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    const second = await screen.findByRole('dialog', { name: 'Create' })
+    for (let i = 0; i < 6; i++) {
+      await userEvent.tab()
+      expect(second.contains(document.activeElement)).toBe(true)
+    }
+    await userEvent.tab({ shift: true })
+    expect(second.contains(document.activeElement)).toBe(true)
+
+    act(() => controls.stop())
+    expect(container.hasAttribute('aria-hidden')).toBe(false)
+  })
+
+  it('is not modal with allowInteraction or modal={false}', async () => {
+    const { container } = setup()
+    act(() => controls.start('onboarding', { allowInteraction: true }))
+    let dialog = await card()
+    expect(dialog.hasAttribute('aria-modal')).toBe(false)
+    expect(container.hasAttribute('aria-hidden')).toBe(false)
+    act(() => controls.stop())
+
+    act(() => controls.start('onboarding', { modal: false }))
+    dialog = await card()
+    expect(dialog.hasAttribute('aria-modal')).toBe(false)
+    expect(container.hasAttribute('aria-hidden')).toBe(false)
+    expect(document.querySelector('[data-slot=tour-blocker]')).toBeTruthy()
+  })
+
+  it('stays modal unless the step itself allows interaction', async () => {
+    const { container } = setup({
+      tours: { onboarding: [search, { ...create, allowInteraction: true }] },
+    })
+    await userEvent.click(screen.getByText('Start'))
+    expect((await card()).getAttribute('aria-modal')).toBe('true')
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    const second = await screen.findByRole('dialog', { name: 'Create' })
+    expect(second.hasAttribute('aria-modal')).toBe(false)
+    expect(container.hasAttribute('aria-hidden')).toBe(false)
+  })
+
+  it('shows an Exit button with showExit that skips the tour', async () => {
+    const onSkip = vi.fn()
+    setup({ onSkip })
+    await userEvent.click(screen.getByText('Start'))
+    await card()
+    expect(screen.queryByRole('button', { name: 'Exit' })).toBeNull()
+    act(() => controls.stop())
+
+    act(() => controls.start('onboarding', { showExit: true }))
+    await card()
+    await userEvent.click(screen.getByRole('button', { name: 'Exit' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(onSkip).toHaveBeenCalledTimes(1)
+    expect(onSkip.mock.calls[0]?.[0]).toMatchObject({ step: search, index: 0 })
+  })
+
+  it('takes the Exit label from labels', async () => {
+    setup({ showExit: true, labels: { exit: 'Salir' } })
+    await userEvent.click(screen.getByText('Start'))
+    await card()
+    expect(screen.getByRole('button', { name: 'Salir' })).toBeTruthy()
+  })
+
+  it('renders extra actions in the footer, with the step and the controls', async () => {
+    const onSkip = vi.fn()
+    const actions = vi.fn(({ index, total, stop }) => (
+      <button type="button" onClick={stop}>
+        Later ({index + 1}/{total})
+      </button>
+    ))
+    setup({
+      actions,
+      onSkip,
+      tours: {
+        onboarding: [search, { ...create, actions: <a href="#docs">Docs</a> }, profile],
+      },
+    })
+    await userEvent.click(screen.getByText('Start'))
+    const dialog = await card()
+    const later = screen.getByRole('button', { name: 'Later (1/3)' })
+    expect(dialog.querySelector('[data-slot=tour-footer]')?.contains(later)).toBe(true)
+    expect(actions).toHaveBeenLastCalledWith(
+      expect.objectContaining({ tour: 'onboarding', step: search, index: 0, total: 3 }),
+    )
+
+    // A step's own actions replace the tour's.
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await screen.findByRole('dialog', { name: 'Create' })
+    expect(screen.getByRole('link', { name: 'Docs' })).toBeTruthy()
+    expect(screen.queryByRole('button', { name: /Later/ })).toBeNull()
+
+    await userEvent.click(screen.getByRole('button', { name: 'Back' }))
+    await screen.findByRole('dialog', { name: 'Search' })
+    await userEvent.click(screen.getByRole('button', { name: 'Later (1/3)' }))
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(onSkip).not.toHaveBeenCalled()
+  })
+
+  it('lets a step hide the actions with null, and start override them', async () => {
+    setup({
+      actions: <button type="button">Tour action</button>,
+      tours: { onboarding: [{ ...search, actions: null }, create] },
+    })
+    await userEvent.click(screen.getByText('Start'))
+    await card()
+    expect(screen.queryByRole('button', { name: 'Tour action' })).toBeNull()
+    await userEvent.click(screen.getByRole('button', { name: 'Next' }))
+    await screen.findByRole('dialog', { name: 'Create' })
+    expect(screen.getByRole('button', { name: 'Tour action' })).toBeTruthy()
+    act(() => controls.stop())
+
+    act(() =>
+      controls.start('onboarding', {
+        startAt: 'create',
+        actions: <button type="button">Run action</button>,
+      }),
+    )
+    await screen.findByRole('dialog', { name: 'Create' })
+    expect(screen.getByRole('button', { name: 'Run action' })).toBeTruthy()
+  })
+
   it('runs as a declarative component driven by open', async () => {
     const onOpenChange = vi.fn()
     const onComplete = vi.fn()

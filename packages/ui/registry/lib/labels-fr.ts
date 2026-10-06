@@ -556,6 +556,7 @@ export const fr = {
     back: 'Retour',
     done: 'Terminé',
     skip: 'Passer la visite',
+    exit: 'Quitter',
     progress: (current: number, total: number) => `${current} sur ${total}`,
   },
   'tree-view': {

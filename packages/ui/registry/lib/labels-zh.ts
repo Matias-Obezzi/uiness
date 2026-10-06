@@ -542,6 +542,7 @@ export const zh = {
     back: '上一步',
     done: '完成',
     skip: '跳过引导',
+    exit: '退出',
     progress: (current: number, total: number) => `${current} / ${total}`,
   },
   'tree-view': {

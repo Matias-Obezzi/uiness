@@ -551,6 +551,7 @@ export const pt = {
     back: 'Voltar',
     done: 'Concluir',
     skip: 'Pular tour',
+    exit: 'Sair',
     progress: (current: number, total: number) => `${current} de ${total}`,
   },
   'tree-view': {

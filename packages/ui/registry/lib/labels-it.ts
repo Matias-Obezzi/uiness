@@ -551,6 +551,7 @@ export const it = {
     back: 'Indietro',
     done: 'Fine',
     skip: 'Salta il tour',
+    exit: 'Esci',
     progress: (current: number, total: number) => `${current} di ${total}`,
   },
   'tree-view': {
