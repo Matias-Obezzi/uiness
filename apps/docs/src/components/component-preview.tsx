@@ -1,5 +1,6 @@
 import { type ComponentType, useState } from 'react'
 import { cn } from '@/lib/utils'
+import { forDisplay } from '~/lib/markdown'
 import { themeScope } from '~/lib/themes'
 import { CodeBlock } from './code-block'
 
@@ -12,13 +13,6 @@ const sources = import.meta.glob('../demos/*.tsx', {
   import: 'default',
   eager: true,
 }) as Record<string, string>
-
-/** Turn the docs import paths into the ones a project gets after installing. */
-function forDisplay(source: string) {
-  return source
-    .replace(/from '@\/ui\//g, "from '@/components/ui/")
-    .replace(/^import [^\n]* from '~\/[^']+'\n/gm, '')
-}
 
 export interface ComponentPreviewProps {
   /** File name in src/demos without extension. */
