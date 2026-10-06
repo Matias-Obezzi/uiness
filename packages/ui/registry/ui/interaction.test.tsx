@@ -1,5 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
+import * as React from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { Button } from './button'
 import { Dock, DockItem, DockSeparator } from './dock'
 import { FlipCard, FlipCardBack, FlipCardFront } from './flip-card'
 import { Magnetic, MagneticInner } from './magnetic'
@@ -198,6 +200,48 @@ describe('Ripple', () => {
     fireEvent.pointerUp(button)
     unmount()
     expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it('wraps a Button that is itself asChild, without a second child for its Slot', () => {
+    const ref = React.createRef<HTMLAnchorElement>()
+    const click = vi.fn()
+    render(
+      <Ripple asChild center ref={ref as unknown as React.Ref<HTMLDivElement>}>
+        <Button asChild onClick={click}>
+          <a href="#x">x</a>
+        </Button>
+      </Ripple>,
+    )
+    const link = screen.getByRole('link', { name: 'x' })
+    expect(ref.current).toBe(link)
+    // Both slots merged into the one anchor.
+    expect(link.dataset.slot).toBe('ripple')
+    expect(link.className).toContain('relative')
+    expect(link.className).toContain('inline-flex')
+    const layer = link.querySelector('[data-slot=ripple-container]')
+    expect(layer?.getAttribute('aria-hidden')).toBe('true')
+    rect(link, { width: 100, height: 40 })
+    fireEvent.pointerDown(link, { button: 0, clientX: 0, clientY: 0 })
+    expect(layer?.querySelectorAll('[data-slot=ripple-wave]')).toHaveLength(1)
+    fireEvent.click(link)
+    expect(click).toHaveBeenCalled()
+  })
+
+  it('puts its layer back when the label text changes', () => {
+    const { rerender } = render(
+      <Ripple asChild>
+        <button type="button">Save</button>
+      </Ripple>,
+    )
+    rerender(
+      <Ripple asChild>
+        <button type="button">Saving</button>
+      </Ripple>,
+    )
+    const button = screen.getByRole('button', { name: 'Saving' })
+    rect(button, { width: 100, height: 40 })
+    fireEvent.pointerDown(button, { button: 0, clientX: 5, clientY: 5 })
+    expect(button.querySelectorAll('[data-slot=ripple-wave]')).toHaveLength(1)
   })
 
   it('ignores other buttons and does nothing when disabled', () => {

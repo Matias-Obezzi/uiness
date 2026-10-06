@@ -21,6 +21,12 @@ export default function RippleDemo() {
         <Ripple asChild>
           <Button variant="destructive">Delete</Button>
         </Ripple>
+        {/* A link: Ripple and Button both slot onto the one anchor. */}
+        <Ripple asChild>
+          <Button asChild variant="outline">
+            <a href="#usage">Read the usage</a>
+          </Button>
+        </Ripple>
         <Ripple asChild center>
           <Button variant="ghost" size="icon" aria-label="Like" className="rounded-full">
             <Heart />

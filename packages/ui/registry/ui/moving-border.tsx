@@ -19,6 +19,7 @@ export interface MovingBorderProps extends React.ComponentProps<'div'> {
 /**
  * A border with a light running around it. Wraps anything: a card, an avatar, or with
  * `asChild` your own button becomes the inner surface, which takes the background color.
+ * The surface always fills the ring, however wide or tall its parent makes it.
  */
 function MovingBorder({
   asChild,
@@ -61,7 +62,9 @@ function MovingBorder({
       <Inner
         data-slot="moving-border-inner"
         className={cn(
-          'relative inline-flex size-full items-center justify-center bg-background [border-radius:calc(var(--radius)-var(--border-width))]',
+          // Grows along and stretches across the ring, so a ring stretched by its parent (a full
+          // width grid cell, `w-full`) is filled by the surface instead of framing it small.
+          'relative inline-flex min-w-0 grow items-center justify-center self-stretch bg-background [border-radius:calc(var(--radius)-var(--border-width))]',
           innerClassName,
         )}
       >

@@ -17,7 +17,7 @@ import { Meteors } from '@/components/ui/meteors'
 </div>
 ```
 
-The positions come from a seeded generator, so the server and the client render the same sky and nothing jumps on hydration.
+The positions come from a seeded generator, so the server and the client render the same sky and nothing jumps on hydration. Positions and timings are rounded to two decimals: `Math.sin` is not bit for bit the same in every engine (Node and Chrome differ in the last decimals for some seeds), and an unrounded value would be a hydration mismatch.
 
 ## Props
 

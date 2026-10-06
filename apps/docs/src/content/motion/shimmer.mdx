@@ -23,3 +23,17 @@ import { Shimmer } from '@/components/ui/shimmer'
 | `highlight` | foreground | Color of the sweep. |
 | `color` | foreground at 55% | Base color of the text. |
 | `width` | `30` | Width of the sweep as a percentage. |
+
+## currentColor
+
+Both colors take `currentColor`, which is the color the text would have had there. Inside a button that is its label color, so the shimmer matches any variant without naming a token:
+
+```tsx
+<Button>
+  <Shimmer color="color-mix(in oklab, currentColor 55%, transparent)" highlight="currentColor">
+    Generating…
+  </Shimmer>
+</Button>
+```
+
+This works because the glyphs are emptied with `-webkit-text-fill-color: transparent` rather than `color: transparent`. A `text-transparent` class would make `currentColor` transparent too and leave the text invisible, so do not add one. Every current browser supports `-webkit-text-fill-color`, Firefox included.
