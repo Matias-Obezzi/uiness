@@ -1,4 +1,4 @@
-import { BarChart } from '@/ui/bar-chart'
+import { BarChart } from '@/components/ui/bar-chart'
 
 // Thirty days of made up traffic, the same on every render.
 const data = Array.from({ length: 30 }, (_, i) => {

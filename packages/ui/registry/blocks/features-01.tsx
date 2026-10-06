@@ -9,8 +9,8 @@ import {
   UsersIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { Reveal } from '@/components/ui/reveal'
 import { cn } from '@/lib/utils'
-import { Reveal } from '@/ui/reveal'
 
 export interface FeatureItem {
   /** An icon element, like `<GaugeIcon />`. */

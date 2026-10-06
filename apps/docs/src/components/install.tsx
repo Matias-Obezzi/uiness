@@ -1,7 +1,7 @@
 import { SquareTerminalIcon } from 'lucide-react'
 import { type ReactNode, useEffect, useState } from 'react'
+import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmented-control'
 import { cn } from '@/lib/utils'
-import { SegmentedControl, SegmentedControlItem } from '@/ui/segmented-control'
 import {
   addCommand,
   type PackageManager,

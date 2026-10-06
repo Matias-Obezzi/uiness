@@ -1,8 +1,8 @@
 import { RefreshCwIcon } from 'lucide-react'
 import * as React from 'react'
-import { Button } from '@/ui/button'
-import { MetricCard } from '@/ui/metric-card'
-import { Sparkline } from '@/ui/sparkline'
+import { Button } from '@/components/ui/button'
+import { MetricCard } from '@/components/ui/metric-card'
+import { Sparkline } from '@/components/ui/sparkline'
 
 // Two made up weeks per metric, the same on every render; "Refresh" moves to the next set.
 // Trends are in thousands (revenue, users) and percent (churn), so the tooltips say so.

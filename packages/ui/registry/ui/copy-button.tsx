@@ -2,10 +2,10 @@
 
 import { CheckIcon, CopyIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
+import { Button, type ButtonProps } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Button, type ButtonProps } from '@/ui/button'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/tooltip'
 
 type CopyState = 'idle' | 'copied' | 'error'
 

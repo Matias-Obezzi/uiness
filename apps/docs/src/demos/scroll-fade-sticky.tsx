@@ -1,4 +1,4 @@
-import { ScrollFade } from '@/ui/scroll-fade'
+import { ScrollFade } from '@/components/ui/scroll-fade'
 
 const people = {
   A: ['Alan Kay', 'Anita Borg', 'Adele Goldberg'],

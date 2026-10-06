@@ -1,4 +1,4 @@
-import { Label } from '@/ui/label'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
@@ -7,7 +7,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@/ui/select'
+} from '@/components/ui/select'
 
 export default function SelectDemo() {
   return (

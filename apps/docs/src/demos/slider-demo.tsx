@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Label } from '@/ui/label'
-import { Slider } from '@/ui/slider'
+import { Label } from '@/components/ui/label'
+import { Slider } from '@/components/ui/slider'
 
 export default function SliderDemo() {
   const [volume, setVolume] = useState([60])

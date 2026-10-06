@@ -1,5 +1,5 @@
-import { Label } from '@/ui/label'
-import { TimePicker } from '@/ui/time-picker'
+import { Label } from '@/components/ui/label'
+import { TimePicker } from '@/components/ui/time-picker'
 
 export default function TimePickerCycles() {
   return (

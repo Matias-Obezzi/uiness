@@ -2,15 +2,15 @@
 
 import { ActivityIcon, BarChart3Icon, BlocksIcon, SlidersHorizontalIcon } from 'lucide-react'
 import * as React from 'react'
+import { BentoCard, BentoGrid } from '@/components/ui/bento-grid'
+import { Label } from '@/components/ui/label'
+import { Marquee } from '@/components/ui/marquee'
+import { NumberTicker } from '@/components/ui/number-ticker'
+import { Odometer } from '@/components/ui/odometer'
+import { Switch } from '@/components/ui/switch'
 import { useInView } from '@/hooks/use-in-view'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { cn } from '@/lib/utils'
-import { BentoCard, BentoGrid } from '@/ui/bento-grid'
-import { Label } from '@/ui/label'
-import { Marquee } from '@/ui/marquee'
-import { NumberTicker } from '@/ui/number-ticker'
-import { Odometer } from '@/ui/odometer'
-import { Switch } from '@/ui/switch'
 
 export interface BentoFeature {
   /** An icon element, like `<ActivityIcon />`. */

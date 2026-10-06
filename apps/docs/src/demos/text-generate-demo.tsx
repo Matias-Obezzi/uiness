@@ -1,4 +1,4 @@
-import { TextGenerate } from '@/ui/text-generate'
+import { TextGenerate } from '@/components/ui/text-generate'
 
 export default function TextGenerateDemo() {
   return (

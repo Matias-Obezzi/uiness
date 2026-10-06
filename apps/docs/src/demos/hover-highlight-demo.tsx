@@ -1,4 +1,4 @@
-import { HoverHighlight, HoverHighlightItem } from '@/ui/hover-highlight'
+import { HoverHighlight, HoverHighlightItem } from '@/components/ui/hover-highlight'
 
 const items = [
   { title: 'Spotlight', body: 'A light that follows the pointer.' },

@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { Stepper } from '@/ui/stepper'
+import { Button } from '@/components/ui/button'
+import { Stepper } from '@/components/ui/stepper'
 
 const steps = [
   { title: 'Account', description: 'Email and password' },

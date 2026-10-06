@@ -1,5 +1,5 @@
-import { Button } from '@/ui/button'
-import { toast } from '@/ui/toast'
+import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 const save = (fail: boolean) =>
   new Promise<{ name: string }>((resolve, reject) =>

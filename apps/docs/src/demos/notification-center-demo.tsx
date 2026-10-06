@@ -1,8 +1,8 @@
 import { GitMergeIcon, RocketIcon, ShieldAlertIcon } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { NotificationCenter, type NotificationData } from '@/ui/notification-center'
-import { toast } from '@/ui/toast'
+import { Button } from '@/components/ui/button'
+import { NotificationCenter, type NotificationData } from '@/components/ui/notification-center'
+import { toast } from '@/components/ui/toast'
 
 const minutesAgo = (minutes: number) => new Date(Date.now() - minutes * 60_000)
 

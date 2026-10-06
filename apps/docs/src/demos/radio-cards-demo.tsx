@@ -6,7 +6,7 @@ import {
   RadioCardsItem,
   RadioCardsPrice,
   RadioCardsTitle,
-} from '@/ui/radio-cards'
+} from '@/components/ui/radio-cards'
 
 export default function RadioCardsDemo() {
   return (

@@ -1,4 +1,4 @@
-import { Typewriter } from '@/ui/typewriter'
+import { Typewriter } from '@/components/ui/typewriter'
 
 export default function TypewriterDemo() {
   return (

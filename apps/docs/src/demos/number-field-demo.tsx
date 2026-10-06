@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Label } from '@/ui/label'
-import { NumberField } from '@/ui/number-field'
+import { Label } from '@/components/ui/label'
+import { NumberField } from '@/components/ui/number-field'
 
 export default function NumberFieldDemo() {
   const [guests, setGuests] = useState<number | null>(2)

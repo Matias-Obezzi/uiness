@@ -1,5 +1,5 @@
 import { LayersIcon, SparklesIcon, ZapIcon } from 'lucide-react'
-import { BentoCard, BentoGrid } from '@/ui/bento-grid'
+import { BentoCard, BentoGrid } from '@/components/ui/bento-grid'
 
 // The same grid twice on one screen: across the preview it has three columns, in a narrow
 // column it stacks, because each one measures its own width and not the screen's.

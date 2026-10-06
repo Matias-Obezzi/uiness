@@ -41,8 +41,8 @@ import {
   CommandItem,
   CommandList,
   CommandSeparator,
-} from '@/ui/command'
-import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/ui/popover'
+} from '@/components/ui/command'
+import { Popover, PopoverAnchor, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 export interface MultiSelectOption {
   value: string

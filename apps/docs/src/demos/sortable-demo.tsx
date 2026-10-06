@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Sortable, SortableHandle, SortableItem } from '@/ui/sortable'
+import { Sortable, SortableHandle, SortableItem } from '@/components/ui/sortable'
 
 const TASKS = {
   'design-review': { title: 'Design review', meta: 'Thursday · Rui' },

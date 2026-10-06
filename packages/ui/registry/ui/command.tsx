@@ -17,7 +17,7 @@ export const defaultCommandLabels: CommandLabels = {
   description: 'Search for a command or a page',
 }
 
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 
 /* -------------------------------------------------------------------------------------------------
  * Matching

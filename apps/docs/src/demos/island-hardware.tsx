@@ -1,8 +1,14 @@
 import { useMemo, useState } from 'react'
-import { Button } from '@/ui/button'
-import { createIsland, Island, Spinner, useStandalone } from '@/ui/island'
-import { Label } from '@/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select'
+import { Button } from '@/components/ui/button'
+import { createIsland, Island, Spinner, useStandalone } from '@/components/ui/island'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 type Mode = 'auto' | 'off' | 'wrap' | 'stack'
 type Position = 'top' | 'bottom'

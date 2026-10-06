@@ -1,7 +1,7 @@
 import { HomeIcon } from 'lucide-react'
 import { useState } from 'react'
-import { BreadcrumbTrail } from '@/ui/breadcrumb'
-import { Slider } from '@/ui/slider'
+import { BreadcrumbTrail } from '@/components/ui/breadcrumb'
+import { Slider } from '@/components/ui/slider'
 
 const items = [
   { label: 'Home', href: '#', icon: <HomeIcon className="size-3.5" /> },

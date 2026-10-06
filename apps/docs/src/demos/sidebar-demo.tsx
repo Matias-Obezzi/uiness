@@ -16,7 +16,6 @@ import {
   UsersIcon,
 } from 'lucide-react'
 import { type MouseEvent, type ReactNode, useState } from 'react'
-import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +23,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 import {
   Sidebar,
   SidebarButton,
@@ -43,7 +42,8 @@ import {
   SidebarView,
   SidebarViews,
   useSidebar,
-} from '@/ui/sidebar'
+} from '@/components/ui/sidebar'
+import { cn } from '@/lib/utils'
 
 interface Item {
   id: string

@@ -1,4 +1,4 @@
-import { Kbd, KbdGroup } from '@/ui/kbd'
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
 
 const shortcuts = [
   { label: 'Search', keys: 'mod+k' },

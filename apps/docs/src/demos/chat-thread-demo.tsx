@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { type ChatDraft, type ChatMessage, ChatThread, type ChatUser } from '@/ui/chat-thread'
+import {
+  type ChatDraft,
+  type ChatMessage,
+  ChatThread,
+  type ChatUser,
+} from '@/components/ui/chat-thread'
 
 const users: ChatUser[] = [
   { id: 'me', name: 'Alex Morgan' },

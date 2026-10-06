@@ -1,4 +1,4 @@
-import { ParallaxGrid } from '@/ui/parallax-grid'
+import { ParallaxGrid } from '@/components/ui/parallax-grid'
 
 const images = Array.from({ length: 12 }, (_, i) => `/img/gallery-${(i % 6) + 1}.png`)
 

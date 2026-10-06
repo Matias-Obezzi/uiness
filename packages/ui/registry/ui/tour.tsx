@@ -3,11 +3,11 @@
 import { XIcon } from 'lucide-react'
 import { Popover as PopoverPrimitive, Portal } from 'radix-ui'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Popover, PopoverAnchor, PopoverContent } from '@/ui/popover'
 
 export interface TourStep {
   /** Stable key, also accepted by `startAt`. */

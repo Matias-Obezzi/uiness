@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { island } from '@/ui/island'
+import { Button } from '@/components/ui/button'
+import { island } from '@/components/ui/island'
 
 export default function IslandConfirm() {
   const [result, setResult] = useState('')

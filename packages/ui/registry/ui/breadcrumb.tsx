@@ -3,14 +3,14 @@
 import { ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
 import { Slot } from 'radix-ui'
 import * as React from 'react'
-import { useLabels } from '@/lib/labels'
-import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
+import { useLabels } from '@/lib/labels'
+import { cn } from '@/lib/utils'
 
 export interface BreadcrumbLabels {
   /** Name of the navigation landmark. */

@@ -1,4 +1,15 @@
 import { useState } from 'react'
+import { CopyButton } from '@/components/ui/copy-button'
+import { DateRangePicker } from '@/components/ui/date-range-picker'
+import { Paginator } from '@/components/ui/pagination'
+import { PasswordField } from '@/components/ui/password-field'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { type LabelsPack, LabelsProvider } from '@/lib/labels'
 import { en } from '@/lib/labels-en'
 import { es } from '@/lib/labels-es'
@@ -6,11 +17,6 @@ import { fr } from '@/lib/labels-fr'
 import { it } from '@/lib/labels-it'
 import { pt } from '@/lib/labels-pt'
 import { zh } from '@/lib/labels-zh'
-import { CopyButton } from '@/ui/copy-button'
-import { DateRangePicker } from '@/ui/date-range-picker'
-import { Paginator } from '@/ui/pagination'
-import { PasswordField } from '@/ui/password-field'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select'
 
 const languages: Record<string, { name: string; labels: LabelsPack; locale: string }> = {
   en: { name: 'English', labels: en, locale: 'en' },

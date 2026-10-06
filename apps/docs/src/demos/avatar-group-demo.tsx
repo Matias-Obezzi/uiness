@@ -1,4 +1,4 @@
-import { AvatarGroup } from '@/ui/avatar-group'
+import { AvatarGroup } from '@/components/ui/avatar-group'
 
 const team = [
   { name: 'Ada Lovelace', src: '/img/gallery-1-tiny.png', description: 'Analyst' },

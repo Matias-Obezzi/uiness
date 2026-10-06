@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Kanban, KanbanCard, KanbanColumn, KanbanHandle } from '@/ui/kanban'
+import { Kanban, KanbanCard, KanbanColumn, KanbanHandle } from '@/components/ui/kanban'
 
 const COLUMNS: Record<string, string> = {
   backlog: 'Backlog',

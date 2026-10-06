@@ -1,7 +1,7 @@
 import { type ReactNode, useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { CopyButton } from '@/components/ui/copy-button'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { CopyButton } from '@/ui/copy-button'
 
 /** The registry's copy button, sized down for a code block's corner. */
 const copyClass =

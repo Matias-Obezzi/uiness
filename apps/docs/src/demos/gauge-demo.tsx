@@ -1,7 +1,7 @@
 import { ShuffleIcon } from 'lucide-react'
 import * as React from 'react'
-import { Button } from '@/ui/button'
-import { Gauge } from '@/ui/gauge'
+import { Button } from '@/components/ui/button'
+import { Gauge } from '@/components/ui/gauge'
 
 const load = [
   { value: 0, color: 'var(--chart-2)', label: 'Healthy' },

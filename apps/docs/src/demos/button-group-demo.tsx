@@ -6,7 +6,7 @@ import {
   ZoomOutIcon,
 } from 'lucide-react'
 import { useState } from 'react'
-import { ButtonGroup, ButtonGroupItem } from '@/ui/button-group'
+import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group'
 
 const ranges = ['Day', 'Week', 'Month', 'Year']
 

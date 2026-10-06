@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { Image } from '@/ui/image'
+import { Button } from '@/components/ui/button'
+import { Image } from '@/components/ui/image'
 
 // In development the image is streamed slowly so the transition is visible.
 const src = import.meta.env.DEV ? '/slow/2500/photo.png' : '/img/photo.png'

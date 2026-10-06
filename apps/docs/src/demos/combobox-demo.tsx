@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Combobox } from '@/ui/combobox'
-import { Label } from '@/ui/label'
+import { Combobox } from '@/components/ui/combobox'
+import { Label } from '@/components/ui/label'
 
 const frameworks = [
   { value: 'next', label: 'Next.js' },

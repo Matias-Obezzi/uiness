@@ -1,4 +1,4 @@
-import { Sparkles } from '@/ui/sparkles'
+import { Sparkles } from '@/components/ui/sparkles'
 
 export default function SparklesDemo() {
   return (

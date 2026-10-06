@@ -10,12 +10,12 @@ import {
   XIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { LabelsProvider, useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
-import { Button } from '@/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
 
 export interface ChatUser {
   id: string

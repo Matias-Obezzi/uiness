@@ -2,9 +2,9 @@
 
 import { CheckIcon } from 'lucide-react'
 import * as React from 'react'
+import { Spinner } from '@/components/ui/spinner'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Spinner } from '@/ui/spinner'
 
 export interface InlineEditProps
   extends Omit<

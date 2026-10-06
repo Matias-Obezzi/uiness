@@ -1,6 +1,6 @@
 import { ImageIcon, LayersIcon, SparklesIcon, TimerIcon, ZapIcon } from 'lucide-react'
-import { BentoCard, BentoGrid } from '@/ui/bento-grid'
-import { Pattern } from '@/ui/pattern'
+import { BentoCard, BentoGrid } from '@/components/ui/bento-grid'
+import { Pattern } from '@/components/ui/pattern'
 
 const header = (src: string) => <img src={src} alt="" className="size-full object-cover" />
 

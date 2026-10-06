@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChipGroup, ChipGroupItem } from '@/ui/chip-group'
+import { ChipGroup, ChipGroupItem } from '@/components/ui/chip-group'
 
 const cuisines = ['Italian', 'Japanese', 'Mexican', 'Indian', 'Vegan', 'Thai']
 

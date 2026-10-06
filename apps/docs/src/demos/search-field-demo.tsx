@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { SearchField } from '@/ui/search-field'
+import { SearchField } from '@/components/ui/search-field'
 
 const pages = ['Accordion', 'Button', 'Calendar', 'Combobox', 'Dialog', 'Popover', 'Tabs']
 

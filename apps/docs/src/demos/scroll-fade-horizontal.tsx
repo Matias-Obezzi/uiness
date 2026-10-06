@@ -1,6 +1,6 @@
 import { useState } from 'react'
+import { ScrollFade } from '@/components/ui/scroll-fade'
 import { cn } from '@/lib/utils'
-import { ScrollFade } from '@/ui/scroll-fade'
 
 const topics = [
   'All',

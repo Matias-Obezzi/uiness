@@ -2,11 +2,11 @@
 
 import { CalendarIcon } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Calendar, type CalendarProps, type DateRange, dateKey } from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Calendar, type CalendarProps, type DateRange, dateKey } from '@/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
 
 export interface DatePickerLabels {
   /** Shown in the button before a day is picked. */

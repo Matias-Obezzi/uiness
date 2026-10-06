@@ -1,7 +1,7 @@
 import { ArchiveIcon, MailIcon, MailOpenIcon, Trash2Icon } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { SwipeActions, SwipeActionsRow } from '@/ui/swipe-actions'
+import { Button } from '@/components/ui/button'
+import { SwipeActions, SwipeActionsRow } from '@/components/ui/swipe-actions'
 
 const inbox = [
   {

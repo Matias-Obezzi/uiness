@@ -1,11 +1,11 @@
 'use client'
 
 import type * as React from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/tooltip'
 
 export interface AvatarGroupItem {
   /** Full name, shown in the tooltip and the overflow list and read by screen readers. */

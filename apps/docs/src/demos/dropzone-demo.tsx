@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Dropzone, type DropzoneRejection } from '@/ui/dropzone'
+import { Dropzone, type DropzoneRejection } from '@/components/ui/dropzone'
 
 export default function DropzoneDemo() {
   const [files, setFiles] = useState<File[]>([])

@@ -10,8 +10,6 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { useReducedMotion } from '@/hooks/use-reduced-motion'
-import { cn } from '@/lib/utils'
 import {
   CHART_X_AXIS,
   ChartContainer,
@@ -21,7 +19,9 @@ import {
   ChartTooltipContent,
   type SeriesChartProps,
   useSeriesChart,
-} from '@/ui/chart'
+} from '@/components/ui/chart'
+import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { cn } from '@/lib/utils'
 
 export interface BarChartProps extends SeriesChartProps {
   /** Stack the series in one bar per row instead of side by side. Default false. */

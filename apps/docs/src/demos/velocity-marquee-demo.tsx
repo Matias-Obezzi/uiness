@@ -1,4 +1,4 @@
-import { VelocityMarquee } from '@/ui/velocity-marquee'
+import { VelocityMarquee } from '@/components/ui/velocity-marquee'
 
 const first = ['Design', 'Build', 'Ship', 'Repeat']
 const second = ['Scroll', 'Faster', 'Then', 'Back', 'Up']

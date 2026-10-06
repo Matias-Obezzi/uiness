@@ -1,4 +1,4 @@
-import { ScrollFade } from '@/ui/scroll-fade'
+import { ScrollFade } from '@/components/ui/scroll-fade'
 
 const releases = [
   ['v2.4.0', 'Scroll fades on every edge'],

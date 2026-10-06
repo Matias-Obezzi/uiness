@@ -2,10 +2,10 @@
 
 import { CheckIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Spinner } from '@/components/ui/spinner'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Spinner } from '@/ui/spinner'
 
 type MorphState = 'idle' | 'confirming' | 'pending' | 'done' | 'error'
 

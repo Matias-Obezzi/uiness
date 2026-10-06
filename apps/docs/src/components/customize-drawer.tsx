@@ -1,8 +1,7 @@
 import { ChevronRightIcon, PaletteIcon } from 'lucide-react'
 import { Link } from 'react-router'
-import { cn } from '@/lib/utils'
-import { Badge } from '@/ui/badge'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/collapsible'
+import { Badge } from '@/components/ui/badge'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   Drawer,
   DrawerBody,
@@ -11,7 +10,8 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from '@/ui/drawer'
+} from '@/components/ui/drawer'
+import { cn } from '@/lib/utils'
 import { setCustomizerOpen, useCustomizerOpen, useThemeChoice } from '~/lib/theme-choice'
 import { siteChrome } from '~/lib/themes'
 import {

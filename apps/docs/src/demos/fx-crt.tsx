@@ -1,4 +1,4 @@
-import { crt, Fx } from '@/ui/fx'
+import { crt, Fx } from '@/components/ui/fx'
 
 export default function FxCrt() {
   return (

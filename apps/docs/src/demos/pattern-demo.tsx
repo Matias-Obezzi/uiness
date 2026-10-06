@@ -1,4 +1,4 @@
-import { Pattern } from '@/ui/pattern'
+import { Pattern } from '@/components/ui/pattern'
 
 export default function PatternDemo() {
   return (

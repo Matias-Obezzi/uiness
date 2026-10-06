@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CommentThread, type CommentUser, type ThreadComment } from '@/ui/comment-thread'
+import { CommentThread, type CommentUser, type ThreadComment } from '@/components/ui/comment-thread'
 
 const users: CommentUser[] = [
   { id: 'me', name: 'Jordan Blake' },

@@ -2,10 +2,10 @@
 
 import { ArrowRightIcon, MailCheckIcon, MailIcon } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Input } from '@/ui/input'
-import { Label } from '@/ui/label'
 
 export interface NewsletterIssue {
   /** The issue number, shown as `No. 42`. */

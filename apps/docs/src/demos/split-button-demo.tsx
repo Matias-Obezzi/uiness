@@ -7,8 +7,8 @@ import {
   GitMergeIcon,
 } from 'lucide-react'
 import { useState } from 'react'
-import { DropdownMenuItem, DropdownMenuSeparator } from '@/ui/dropdown-menu'
-import { SplitButton, SplitButtonAction, SplitButtonMenu } from '@/ui/split-button'
+import { DropdownMenuItem, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
+import { SplitButton, SplitButtonAction, SplitButtonMenu } from '@/components/ui/split-button'
 
 export default function SplitButtonDemo() {
   const [last, setLast] = useState('Nothing yet')

@@ -11,12 +11,10 @@ import {
   XIcon,
 } from 'lucide-react'
 import * as React from 'react'
-import { useLabels } from '@/lib/labels'
-import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Checkbox } from '@/ui/checkbox'
-import { Input } from '@/ui/input'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
+import { Button } from '@/components/ui/button'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   Table,
   TableBody,
@@ -25,7 +23,9 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/ui/table'
+} from '@/components/ui/table'
+import { useLabels } from '@/lib/labels'
+import { cn } from '@/lib/utils'
 
 export interface DataTableColumn<T> {
   /** Unique id. Also the key read from each row when there is no `accessor`. */

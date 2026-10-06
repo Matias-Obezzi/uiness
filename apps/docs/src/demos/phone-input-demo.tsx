@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Label } from '@/ui/label'
-import { PhoneInput } from '@/ui/phone-input'
+import { Label } from '@/components/ui/label'
+import { PhoneInput } from '@/components/ui/phone-input'
 
 export default function PhoneInputDemo() {
   const [phone, setPhone] = useState('')

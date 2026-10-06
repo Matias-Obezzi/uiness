@@ -1,6 +1,6 @@
 import { ArrowRight, Bookmark, Heart, MessageCircle, Share2 } from 'lucide-react'
-import { Button } from '@/ui/button'
-import { Magnetic, MagneticInner } from '@/ui/magnetic'
+import { Button } from '@/components/ui/button'
+import { Magnetic, MagneticInner } from '@/components/ui/magnetic'
 
 const actions = [
   { label: 'Like', icon: Heart },

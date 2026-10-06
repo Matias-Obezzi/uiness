@@ -1,8 +1,8 @@
 import { CheckIcon } from 'lucide-react'
 import * as React from 'react'
+import { type BillingPeriod, BillingToggle, Price } from '@/components/ui/billing-toggle'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { type BillingPeriod, BillingToggle, Price } from '@/ui/billing-toggle'
-import { Button } from '@/ui/button'
 
 const plans = [
   { name: 'Hobby', monthly: 0, yearly: 0, features: ['1 project', 'Community support'] },

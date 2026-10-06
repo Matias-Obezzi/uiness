@@ -1,4 +1,4 @@
-import { TracingBeam } from '@/ui/tracing-beam'
+import { TracingBeam } from '@/components/ui/tracing-beam'
 
 const sections = [
   {

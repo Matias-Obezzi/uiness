@@ -1,5 +1,5 @@
 import { DatabaseIcon, TableIcon } from 'lucide-react'
-import { type TreeNode, TreeView } from '@/ui/tree-view'
+import { type TreeNode, TreeView } from '@/components/ui/tree-view'
 
 const databases: TreeNode[] = ['analytics', 'billing', 'auth'].map((name) => ({
   id: name,

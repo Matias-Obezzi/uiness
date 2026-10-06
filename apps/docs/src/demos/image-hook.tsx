@@ -1,4 +1,4 @@
-import { useImageLoad } from '@/ui/image'
+import { useImageLoad } from '@/components/ui/image'
 
 export default function ImageHook() {
   const { status, progress, imgProps } = useImageLoad({ src: '/img/photo.png', progressive: true })

@@ -1,9 +1,9 @@
 import { render, renderHook, screen } from '@testing-library/react'
 import type * as React from 'react'
 import { describe, expect, it } from 'vitest'
+import { Paginator } from '@/components/ui/pagination'
 import { type LabelsPack, LabelsProvider, useLabels, useLocale } from '@/lib/labels'
 import { es } from '@/lib/labels-es'
-import { Paginator } from '@/ui/pagination'
 
 interface DemoLabels {
   close: string

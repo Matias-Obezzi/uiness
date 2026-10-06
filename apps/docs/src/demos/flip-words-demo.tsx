@@ -1,4 +1,4 @@
-import { FlipWords } from '@/ui/flip-words'
+import { FlipWords } from '@/components/ui/flip-words'
 
 export default function FlipWordsDemo() {
   return (

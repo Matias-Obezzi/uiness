@@ -2,10 +2,9 @@
 
 import { ArrowRightIcon, ChevronLeftIcon, ChevronRightIcon, ClockIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
-import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
-import { Badge } from '@/ui/badge'
-import { Button } from '@/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Drawer,
   DrawerBody,
@@ -13,7 +12,8 @@ import {
   DrawerContent,
   DrawerDescription,
   DrawerTitle,
-} from '@/ui/drawer'
+} from '@/components/ui/drawer'
+import { cn } from '@/lib/utils'
 
 export interface BlogAuthor {
   name: string

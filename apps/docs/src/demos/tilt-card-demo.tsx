@@ -1,5 +1,5 @@
-import { Button } from '@/ui/button'
-import { TiltCard, TiltCardItem } from '@/ui/tilt-card'
+import { Button } from '@/components/ui/button'
+import { TiltCard, TiltCardItem } from '@/components/ui/tilt-card'
 
 export default function TiltCardDemo() {
   return (

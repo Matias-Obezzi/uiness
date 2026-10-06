@@ -1,4 +1,4 @@
-import { BarChart } from '@/ui/bar-chart'
+import { BarChart } from '@/components/ui/bar-chart'
 
 export default function BarChartEmpty() {
   return (

@@ -1,4 +1,4 @@
-import { LineChart } from '@/ui/line-chart'
+import { LineChart } from '@/components/ui/line-chart'
 
 // Response times with a few days the monitor was down: those rows have no value.
 const down = new Set([9, 10, 11, 19])

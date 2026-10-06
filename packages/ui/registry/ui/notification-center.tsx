@@ -2,13 +2,13 @@
 
 import { BellIcon, BellOffIcon, CheckCheckIcon } from 'lucide-react'
 import * as React from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
-import { Button } from '@/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/tabs'
 
 export interface NotificationAction {
   id: string

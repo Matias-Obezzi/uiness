@@ -3,10 +3,10 @@
 import { MoonIcon, SunIcon } from 'lucide-react'
 import * as React from 'react'
 import { flushSync } from 'react-dom'
+import { Button, type ButtonProps } from '@/components/ui/button'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Button, type ButtonProps } from '@/ui/button'
 
 export type Theme = 'light' | 'dark'
 

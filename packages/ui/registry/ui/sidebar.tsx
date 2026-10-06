@@ -3,10 +3,16 @@
 import { ChevronLeftIcon, PanelLeftIcon } from 'lucide-react'
 import { Slot } from 'radix-ui'
 import * as React from 'react'
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+} from '@/components/ui/drawer'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Drawer, DrawerBody, DrawerContent, DrawerDescription, DrawerTitle } from '@/ui/drawer'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/tooltip'
 
 export type SidebarCollapsible = 'hover' | 'click' | 'none'
 export type SidebarBreakpoint = 'sm' | 'md' | 'lg'

@@ -2,10 +2,10 @@
 
 import { ArrowRightIcon, SparklesIcon, TrendingUpIcon } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Pattern } from '@/components/ui/pattern'
+import { TiltCard, TiltCardItem } from '@/components/ui/tilt-card'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Pattern } from '@/ui/pattern'
-import { TiltCard, TiltCardItem } from '@/ui/tilt-card'
 
 export interface HeroAction {
   label: string

@@ -1,6 +1,6 @@
 import { CalendarIcon, KanbanIcon, ListIcon } from 'lucide-react'
 import { useState } from 'react'
-import { SegmentedControl, SegmentedControlItem } from '@/ui/segmented-control'
+import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmented-control'
 
 const views = {
   list: 'Every task in one list, sorted by due date.',

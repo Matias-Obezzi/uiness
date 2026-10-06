@@ -2,10 +2,10 @@
 
 import { ArrowRightIcon } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { GradientText } from '@/components/ui/gradient-text'
+import { Pattern } from '@/components/ui/pattern'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { GradientText } from '@/ui/gradient-text'
-import { Pattern } from '@/ui/pattern'
 
 export interface HeroAction {
   label: string

@@ -11,7 +11,7 @@ import {
   saturate,
   sepia,
   vignette,
-} from '@/ui/fx'
+} from '@/components/ui/fx'
 
 const presets = [
   { title: 'pixelate(10)', effects: pixelate(10) },

@@ -1,4 +1,4 @@
-import { ActivityHeatmap } from '@/ui/activity-heatmap'
+import { ActivityHeatmap } from '@/components/ui/activity-heatmap'
 
 // A year of made up commits up to 4 October 2026: busier on weekdays, quieter in August, the
 // same on every render.

@@ -1,4 +1,4 @@
-import { ScrambleText } from '@/ui/scramble-text'
+import { ScrambleText } from '@/components/ui/scramble-text'
 
 const links = ['Work', 'About', 'Journal', 'Contact']
 

@@ -1,7 +1,7 @@
 import { CheckIcon, LoaderIcon, SaveIcon } from 'lucide-react'
 import * as React from 'react'
-import { Button } from '@/ui/button'
-import { TextMorph } from '@/ui/text-morph'
+import { Button } from '@/components/ui/button'
+import { TextMorph } from '@/components/ui/text-morph'
 
 const labels = { idle: 'Save changes', saving: 'Saving', saved: 'Saved' } as const
 

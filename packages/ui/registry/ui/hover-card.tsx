@@ -2,8 +2,8 @@
 
 import { HoverCard as HoverCardPrimitive } from 'radix-ui'
 import type * as React from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
 
 /**
  * A card that previews what a link points at, on hover or keyboard focus. Same API as the

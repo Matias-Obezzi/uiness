@@ -1,5 +1,5 @@
 import { CreditCardIcon, LogOutIcon, SettingsIcon, UserIcon } from 'lucide-react'
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from '@/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
 
 export default function DropdownMenuDemo() {
   return (

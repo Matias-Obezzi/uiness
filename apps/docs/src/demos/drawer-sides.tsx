@@ -1,4 +1,4 @@
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Drawer,
   DrawerBody,
@@ -8,7 +8,7 @@ import {
   type DrawerSide,
   DrawerTitle,
   DrawerTrigger,
-} from '@/ui/drawer'
+} from '@/components/ui/drawer'
 
 const sides: DrawerSide[] = ['bottom', 'top', 'left', 'right']
 

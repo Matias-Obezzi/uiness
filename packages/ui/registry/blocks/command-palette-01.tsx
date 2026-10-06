@@ -24,7 +24,6 @@ import {
   UserPlusIcon,
 } from 'lucide-react'
 import * as React from 'react'
-import { cn } from '@/lib/utils'
 import {
   Command,
   CommandEmpty,
@@ -34,8 +33,9 @@ import {
   CommandList,
   CommandSeparator,
   useCommandShortcut,
-} from '@/ui/command'
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/ui/dialog'
+} from '@/components/ui/command'
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
 
 export interface CommandPaletteItem {
   /** Unique across the palette, nested pages included. Recent items are kept by it. */

@@ -1,12 +1,12 @@
-import { Badge } from '@/ui/badge'
-import { Button } from '@/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   ExpandableCard,
   ExpandableCardContent,
   ExpandableCardDescription,
   ExpandableCardTitle,
   ExpandableCardTrigger,
-} from '@/ui/expandable-card'
+} from '@/components/ui/expandable-card'
 
 const trips = [
   {

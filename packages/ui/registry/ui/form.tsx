@@ -2,8 +2,8 @@
 
 import { Slot } from 'radix-ui'
 import * as React from 'react'
+import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
-import { Label } from '@/ui/label'
 
 interface FormFieldContextValue {
   /** Name of the field, used for the generated ids. */

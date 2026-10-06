@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { ColorPicker } from '@/ui/color-picker'
-import { Label } from '@/ui/label'
+import { ColorPicker } from '@/components/ui/color-picker'
+import { Label } from '@/components/ui/label'
 
 export default function ColorPickerDemo() {
   const [color, setColor] = useState('#6d28d9')

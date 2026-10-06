@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import type { DateRange } from '@/ui/calendar'
-import { DatePicker } from '@/ui/date-picker'
+import type { DateRange } from '@/components/ui/calendar'
+import { DatePicker } from '@/components/ui/date-picker'
 
 export default function DatePickerRange() {
   const [range, setRange] = useState<DateRange>({})

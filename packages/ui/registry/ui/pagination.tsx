@@ -3,9 +3,9 @@
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from 'lucide-react'
 import { Slot } from 'radix-ui'
 import type * as React from 'react'
+import { type Button, buttonVariants } from '@/components/ui/button'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { type Button, buttonVariants } from '@/ui/button'
 
 export interface PaginationLabels {
   /** Name of the navigation landmark. */

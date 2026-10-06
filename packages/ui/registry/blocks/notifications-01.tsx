@@ -13,11 +13,11 @@ import {
   UserPlusIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Odometer } from '@/components/ui/odometer'
 import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback } from '@/ui/avatar'
-import { Button } from '@/ui/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/collapsible'
-import { Odometer } from '@/ui/odometer'
 
 export type NotificationKind = 'mention' | 'comment' | 'merge' | 'deploy' | 'security' | 'invite'
 

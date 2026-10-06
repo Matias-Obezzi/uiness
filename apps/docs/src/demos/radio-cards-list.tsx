@@ -4,7 +4,7 @@ import {
   RadioCardsItem,
   RadioCardsPrice,
   RadioCardsTitle,
-} from '@/ui/radio-cards'
+} from '@/components/ui/radio-cards'
 
 const speeds = [
   { value: 'standard', title: 'Standard', description: '4 to 6 business days', price: 'Free' },

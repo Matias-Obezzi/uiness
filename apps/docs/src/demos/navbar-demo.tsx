@@ -1,7 +1,7 @@
 import { BellIcon, CompassIcon, HomeIcon, UserIcon } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarLinks } from '@/ui/navbar'
+import { Button } from '@/components/ui/button'
+import { Navbar, NavbarActions, NavbarBrand, NavbarLink, NavbarLinks } from '@/components/ui/navbar'
 
 const links = [
   { href: '#home', label: 'Home', icon: <HomeIcon /> },

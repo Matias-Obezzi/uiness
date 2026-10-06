@@ -2,9 +2,7 @@
 
 import { CalendarRangeIcon } from 'lucide-react'
 import * as React from 'react'
-import { useLabels, useLocale } from '@/lib/labels'
-import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   addDays,
   addMonths,
@@ -15,8 +13,10 @@ import {
   isSameDay,
   startOfDay,
   startOfMonth,
-} from '@/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
+} from '@/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useLabels, useLocale } from '@/lib/labels'
+import { cn } from '@/lib/utils'
 
 export interface DateRangePreset {
   /** Text on the preset button. */

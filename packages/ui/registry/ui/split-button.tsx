@@ -4,10 +4,14 @@ import type { VariantProps } from 'class-variance-authority'
 import { ChevronDownIcon } from 'lucide-react'
 import type { DropdownMenu as DropdownMenuPrimitive } from 'radix-ui'
 import * as React from 'react'
+import { Button, type ButtonProps, buttonVariants } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Button, type ButtonProps, buttonVariants } from '@/ui/button'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/ui/dropdown-menu'
 
 type SplitVariant = Exclude<VariantProps<typeof buttonVariants>['variant'], 'link' | null>
 type SplitSize = Exclude<VariantProps<typeof buttonVariants>['size'], 'icon' | null>

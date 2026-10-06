@@ -2,11 +2,11 @@
 
 import * as React from 'react'
 import { matchByDataKey, Pie, PieChart, type PieSectorShapeProps, Sector } from 'recharts'
+import { type ChartConfig, ChartContainer, ChartEmpty, seriesColor } from '@/components/ui/chart'
+import { Odometer } from '@/components/ui/odometer'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { type ChartConfig, ChartContainer, ChartEmpty, seriesColor } from '@/ui/chart'
-import { Odometer } from '@/ui/odometer'
 
 export interface DonutChartDatum {
   /** Stable identity of the slice. Becomes `--color-<key>`, so keep it to letters, digits, `-` and `_`. */

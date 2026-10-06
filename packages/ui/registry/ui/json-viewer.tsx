@@ -10,10 +10,10 @@ import {
   SearchIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Input } from '@/ui/input'
 
 export type JsonType = 'object' | 'array' | 'string' | 'number' | 'boolean' | 'null' | 'other'
 

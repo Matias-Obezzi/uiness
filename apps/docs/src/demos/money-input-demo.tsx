@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Label } from '@/ui/label'
-import { MoneyInput } from '@/ui/money-input'
+import { Label } from '@/components/ui/label'
+import { MoneyInput } from '@/components/ui/money-input'
 
 export default function MoneyInputDemo() {
   const [usd, setUsd] = useState<number | null>(1234500)

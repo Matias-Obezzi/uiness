@@ -2,9 +2,9 @@
 
 import { ClockIcon } from 'lucide-react'
 import * as React from 'react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
 
 /* -------------------------------------------------------------------------------------------------
  * Time values. Always "HH:mm" or "HH:mm:ss" in 24 hours, the same string a native time

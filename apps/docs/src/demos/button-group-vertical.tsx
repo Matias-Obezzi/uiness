@@ -1,4 +1,4 @@
-import { ButtonGroup, ButtonGroupItem } from '@/ui/button-group'
+import { ButtonGroup, ButtonGroupItem } from '@/components/ui/button-group'
 
 const links = ['Overview', 'Activity', 'Settings', 'Billing']
 

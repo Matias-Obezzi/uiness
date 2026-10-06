@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { Stepper, StepperItem } from '@/ui/stepper'
+import { Button } from '@/components/ui/button'
+import { Stepper, StepperItem } from '@/components/ui/stepper'
 
 export default function StepperVertical() {
   const [step, setStep] = useState(2)

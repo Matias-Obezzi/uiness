@@ -6,6 +6,8 @@ const root = fileURLToPath(new URL('.', import.meta.url))
 export default defineConfig({
   resolve: {
     alias: {
+      // Registry files import components the way a shadcn project resolves them.
+      '@/components/ui': `${root}registry/ui`,
       '@': `${root}registry`,
       '@uiness/island': `${root}../island/src/index.ts`,
       '@uiness/image': `${root}../image/src/index.ts`,

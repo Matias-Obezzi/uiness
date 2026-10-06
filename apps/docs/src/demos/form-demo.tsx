@@ -1,8 +1,15 @@
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormLabel, FormMessage } from '@/ui/form'
-import { Input } from '@/ui/input'
-import { Textarea } from '@/ui/textarea'
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 
 interface Errors {
   email?: string

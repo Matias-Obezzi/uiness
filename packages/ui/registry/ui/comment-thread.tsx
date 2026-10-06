@@ -11,19 +11,19 @@ import {
   Trash2Icon,
 } from 'lucide-react'
 import * as React from 'react'
-import { LabelsProvider, useLabels, useLocale } from '@/lib/labels'
-import { cn } from '@/lib/utils'
-import { confirm } from '@/ui/alert-dialog'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
-import { Button } from '@/ui/button'
+import { confirm } from '@/components/ui/alert-dialog'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/ui/dropdown-menu'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
-import { Textarea } from '@/ui/textarea'
+} from '@/components/ui/dropdown-menu'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Textarea } from '@/components/ui/textarea'
+import { LabelsProvider, useLabels, useLocale } from '@/lib/labels'
+import { cn } from '@/lib/utils'
 
 export interface CommentUser {
   id: string

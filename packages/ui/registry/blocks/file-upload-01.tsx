@@ -13,10 +13,10 @@ import {
   XIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Dropzone, type DropzoneRejection } from '@/components/ui/dropzone'
+import { Progress } from '@/components/ui/progress'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Dropzone, type DropzoneRejection } from '@/ui/dropzone'
-import { Progress } from '@/ui/progress'
 
 export type UploadStatus = 'uploading' | 'done' | 'error' | 'rejected'
 

@@ -1,6 +1,6 @@
 import { BellIcon } from 'lucide-react'
-import { Button } from '@/ui/button'
-import { island } from '@/ui/island'
+import { Button } from '@/components/ui/button'
+import { island } from '@/components/ui/island'
 
 export default function IslandAlert() {
   return (

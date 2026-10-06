@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { type TreeNode, TreeView } from '@/ui/tree-view'
+import { type TreeNode, TreeView } from '@/components/ui/tree-view'
 
 const permissions: TreeNode[] = [
   {

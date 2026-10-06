@@ -10,6 +10,7 @@
       "@uiness/image": ["../../packages/image/src/index.ts"],
       "@uiness/island": ["../../packages/island/src/index.ts"],
       "@uiness/fx": ["../../packages/fx/src/index.ts"],
+      "@/components/ui/*": ["../../packages/ui/registry/ui/*"],
       "@/*": ["../../packages/ui/registry/*"],
       "~/*": ["./src/*"],
       "@uiness/toast": ["../../packages/toast/src/index.ts"],

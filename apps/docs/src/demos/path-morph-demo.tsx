@@ -1,4 +1,4 @@
-import { PathMorph } from '@/ui/path-morph'
+import { PathMorph } from '@/components/ui/path-morph'
 
 const shapes = [
   // star

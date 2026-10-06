@@ -1,5 +1,5 @@
 import { Trash2Icon } from 'lucide-react'
-import { ConfirmMorph } from '@/ui/confirm-morph'
+import { ConfirmMorph } from '@/components/ui/confirm-morph'
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 

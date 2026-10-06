@@ -1,4 +1,4 @@
-import { LineChart } from '@/ui/line-chart'
+import { LineChart } from '@/components/ui/line-chart'
 
 // Thirty days of made up visitors, the same on every render.
 const data = Array.from({ length: 30 }, (_, i) => ({

@@ -1,4 +1,4 @@
-import { AnimatedTooltip } from '@/ui/animated-tooltip'
+import { AnimatedTooltip } from '@/components/ui/animated-tooltip'
 
 const people = [
   { id: 1, name: 'Ines Duarte', title: 'Design', image: '/img/gallery-1.png' },

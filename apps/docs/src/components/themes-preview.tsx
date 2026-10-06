@@ -12,17 +12,21 @@ import {
   UserIcon,
 } from 'lucide-react'
 import { type ReactNode, useState } from 'react'
-import { cn } from '@/lib/utils'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/ui/accordion'
-import { Alert, AlertDescription, AlertTitle } from '@/ui/alert'
-import { confirm } from '@/ui/alert-dialog'
-import { Avatar, AvatarFallback } from '@/ui/avatar'
-import { Badge } from '@/ui/badge'
-import { BarChart } from '@/ui/bar-chart'
-import { BentoCard, BentoGrid } from '@/ui/bento-grid'
-import { Button } from '@/ui/button'
-import { Calendar } from '@/ui/calendar'
-import { Checkbox } from '@/ui/checkbox'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { confirm } from '@/components/ui/alert-dialog'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { BarChart } from '@/components/ui/bar-chart'
+import { BentoCard, BentoGrid } from '@/components/ui/bento-grid'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Command,
   CommandEmpty,
@@ -32,7 +36,7 @@ import {
   CommandList,
   CommandSeparator,
   CommandShortcut,
-} from '@/ui/command'
+} from '@/components/ui/command'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,20 +44,34 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/ui/dropdown-menu'
-import { Input } from '@/ui/input'
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/ui/input-otp'
-import { Label } from '@/ui/label'
-import { LineChart } from '@/ui/line-chart'
-import { Progress } from '@/ui/progress'
-import { RadioGroup, RadioGroupItem } from '@/ui/radio-group'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select'
-import { Slider } from '@/ui/slider'
-import { Switch } from '@/ui/switch'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/ui/table'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/ui/tabs'
-import { Textarea } from '@/ui/textarea'
-import { toast } from '@/ui/toast'
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
+import { Label } from '@/components/ui/label'
+import { LineChart } from '@/components/ui/line-chart'
+import { Progress } from '@/components/ui/progress'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Slider } from '@/components/ui/slider'
+import { Switch } from '@/components/ui/switch'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
+import { toast } from '@/components/ui/toast'
+import { cn } from '@/lib/utils'
 
 /** A bento card holding live components. The grid's hover lift would move the controls, so it is off. */
 function Tile({

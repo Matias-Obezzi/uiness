@@ -16,8 +16,8 @@ import {
   ContextMenuProvider,
   type ContextMenuTarget,
   defineContextMenus,
-} from '@/ui/context-menu'
-import { toast } from '@/ui/toast'
+} from '@/components/ui/context-menu'
+import { toast } from '@/components/ui/toast'
 
 interface Entry {
   id: string

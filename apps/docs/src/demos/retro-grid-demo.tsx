@@ -1,4 +1,4 @@
-import { RetroGrid } from '@/ui/retro-grid'
+import { RetroGrid } from '@/components/ui/retro-grid'
 
 export default function RetroGridDemo() {
   return (

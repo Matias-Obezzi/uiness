@@ -2,12 +2,12 @@
 
 import { ArrowRightIcon, type LucideIcon, RocketIcon } from 'lucide-react'
 import * as React from 'react'
+import { Aurora } from '@/components/ui/aurora'
+import { Button } from '@/components/ui/button'
+import { Pattern } from '@/components/ui/pattern'
+import { Sonar } from '@/components/ui/sonar'
+import { Spotlight } from '@/components/ui/spotlight'
 import { cn } from '@/lib/utils'
-import { Aurora } from '@/ui/aurora'
-import { Button } from '@/ui/button'
-import { Pattern } from '@/ui/pattern'
-import { Sonar } from '@/ui/sonar'
-import { Spotlight } from '@/ui/spotlight'
 
 export interface CtaAction {
   label: string

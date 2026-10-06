@@ -1,9 +1,9 @@
 import { ChevronDownIcon } from 'lucide-react'
-import { Badge } from '@/ui/badge'
-import { Button } from '@/ui/button'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/collapsible'
-import { Label } from '@/ui/label'
-import { Switch } from '@/ui/switch'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 
 const settings = [
   { id: 'comments', label: 'New comments on my posts', on: true },

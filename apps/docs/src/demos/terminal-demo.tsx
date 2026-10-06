@@ -1,4 +1,4 @@
-import { Terminal, TerminalLine, TerminalSpinner, TerminalTyping } from '@/ui/terminal'
+import { Terminal, TerminalLine, TerminalSpinner, TerminalTyping } from '@/components/ui/terminal'
 
 export default function TerminalDemo() {
   return (

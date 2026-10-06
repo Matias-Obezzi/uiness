@@ -1,4 +1,4 @@
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogBody,
@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/ui/dialog'
+} from '@/components/ui/dialog'
 
 const sections = [
   [

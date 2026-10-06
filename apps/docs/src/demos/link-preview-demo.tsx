@@ -1,4 +1,4 @@
-import { LinkPreview } from '@/ui/link-preview'
+import { LinkPreview } from '@/components/ui/link-preview'
 
 export default function LinkPreviewDemo() {
   return (

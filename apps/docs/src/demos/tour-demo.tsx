@@ -8,12 +8,12 @@ import {
   UsersIcon,
 } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { Input } from '@/ui/input'
-import { Label } from '@/ui/label'
-import { Switch } from '@/ui/switch'
-import { toast } from '@/ui/toast'
-import { defineTours, TourProvider, useTour } from '@/ui/tour'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { toast } from '@/components/ui/toast'
+import { defineTours, TourProvider, useTour } from '@/components/ui/tour'
 
 export default function TourDemo() {
   const [admin, setAdmin] = useState(false)

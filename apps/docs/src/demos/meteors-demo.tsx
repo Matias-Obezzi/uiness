@@ -1,4 +1,4 @@
-import { Meteors } from '@/ui/meteors'
+import { Meteors } from '@/components/ui/meteors'
 
 export default function MeteorsDemo() {
   return (

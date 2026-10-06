@@ -1,4 +1,4 @@
-import { CodeBlock } from '@/ui/code-block'
+import { CodeBlock } from '@/components/ui/code-block'
 
 const config = `{
   "$schema": "https://ui.shadcn.com/schema.json",

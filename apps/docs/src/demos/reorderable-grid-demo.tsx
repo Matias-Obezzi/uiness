@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ReorderableGrid, ReorderableGridItem } from '@/ui/reorderable-grid'
+import { ReorderableGrid, ReorderableGridItem } from '@/components/ui/reorderable-grid'
 
 const APPS = {
   mail: { label: 'Mail', emoji: '✉️' },

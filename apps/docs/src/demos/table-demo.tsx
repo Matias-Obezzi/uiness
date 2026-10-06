@@ -7,7 +7,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/ui/table'
+} from '@/components/ui/table'
 
 const invoices = [
   { invoice: 'INV001', status: 'Paid', method: 'Credit card', amount: 250 },

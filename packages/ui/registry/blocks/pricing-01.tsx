@@ -2,12 +2,12 @@
 
 import { CheckIcon, SparklesIcon } from 'lucide-react'
 import * as React from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { GradientBorder } from '@/components/ui/gradient-text'
+import { Odometer } from '@/components/ui/odometer'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { cn } from '@/lib/utils'
-import { Badge } from '@/ui/badge'
-import { Button } from '@/ui/button'
-import { GradientBorder } from '@/ui/gradient-text'
-import { Odometer } from '@/ui/odometer'
-import { ToggleGroup, ToggleGroupItem } from '@/ui/toggle-group'
 
 export type PricingBilling = 'monthly' | 'yearly'
 

@@ -1,6 +1,6 @@
 import { FileCodeIcon, FileIcon, FileTextIcon, FolderIcon, FolderOpenIcon } from 'lucide-react'
 import { useState } from 'react'
-import { type TreeNode, TreeView } from '@/ui/tree-view'
+import { type TreeNode, TreeView } from '@/components/ui/tree-view'
 
 const files: TreeNode[] = [
   {

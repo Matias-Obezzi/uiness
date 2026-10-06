@@ -1,4 +1,4 @@
-import { ThemeSwitch } from '@/ui/theme-switch'
+import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { useTheme } from '~/lib/theme'
 
 const variants = ['eclipse', 'split', 'rise', 'fade'] as const

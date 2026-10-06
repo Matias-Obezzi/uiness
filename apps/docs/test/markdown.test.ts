@@ -15,7 +15,7 @@ const ctx: MarkdownContext = {
   namespace: '@uiness',
   demoSource: (name) =>
     name === 'thing-demo'
-      ? "import { Thing } from '@/ui/thing'\nimport { helper } from '~/lib/helper'\n\nexport default function ThingDemo() {\n  return <Thing />\n}\n"
+      ? "import { Thing } from '@/components/ui/thing'\nimport { helper } from '~/lib/helper'\n\nexport default function ThingDemo() {\n  return <Thing />\n}\n"
       : undefined,
 }
 

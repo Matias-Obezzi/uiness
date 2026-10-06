@@ -1,4 +1,4 @@
-import { Marquee } from '@/ui/marquee'
+import { Marquee } from '@/components/ui/marquee'
 
 const tags = ['React', 'Tailwind', 'Radix', 'Vite', 'TypeScript', 'Biome', 'pnpm', 'Vitest']
 

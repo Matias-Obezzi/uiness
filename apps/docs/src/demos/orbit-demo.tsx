@@ -9,7 +9,7 @@ import {
   MessageSquare,
   Sparkles,
 } from 'lucide-react'
-import { Orbit, OrbitItem } from '@/ui/orbit'
+import { Orbit, OrbitItem } from '@/components/ui/orbit'
 
 const inner = { code: Code, database: Database, lock: Lock }
 const outer = { globe: Globe, mail: Mail, cloud: Cloud, git: GitBranch, chat: MessageSquare }

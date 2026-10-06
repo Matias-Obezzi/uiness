@@ -1,5 +1,5 @@
 import { ClockIcon, FlameIcon, StarIcon } from 'lucide-react'
-import { ChipGroup, ChipGroupItem } from '@/ui/chip-group'
+import { ChipGroup, ChipGroupItem } from '@/components/ui/chip-group'
 
 export default function ChipGroupSingle() {
   return (

@@ -1,5 +1,5 @@
-import { FormControl, FormDescription, FormField, FormLabel } from '@/ui/form'
-import { TagInput } from '@/ui/tag-input'
+import { FormControl, FormDescription, FormField, FormLabel } from '@/components/ui/form'
+import { TagInput } from '@/components/ui/tag-input'
 
 export default function TagInputValidate() {
   return (

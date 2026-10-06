@@ -9,13 +9,13 @@ import {
   QuoteIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { Aurora } from '@/components/ui/aurora'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Pattern } from '@/components/ui/pattern'
 import { cn } from '@/lib/utils'
-import { Aurora } from '@/ui/aurora'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
-import { Button } from '@/ui/button'
-import { Input } from '@/ui/input'
-import { Label } from '@/ui/label'
-import { Pattern } from '@/ui/pattern'
 
 /** Whose product this is. The same shape as the `brand` of the other blocks. */
 export interface AuthBrand {

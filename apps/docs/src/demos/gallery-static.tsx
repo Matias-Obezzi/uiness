@@ -1,4 +1,4 @@
-import { Gallery } from '@/ui/gallery'
+import { Gallery } from '@/components/ui/gallery'
 
 const names = ['Dawn', 'Noon', 'Dusk', 'Night']
 

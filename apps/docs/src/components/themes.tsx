@@ -1,6 +1,6 @@
 import { PaletteIcon } from 'lucide-react'
 import { useEffect } from 'react'
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import { site } from '~/lib/site'
 import { setCustomizerOpen, useThemeChoice } from '~/lib/theme-choice'
 import { themeScope } from '~/lib/themes'

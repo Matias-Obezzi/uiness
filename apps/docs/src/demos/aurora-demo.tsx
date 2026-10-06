@@ -1,4 +1,4 @@
-import { Aurora } from '@/ui/aurora'
+import { Aurora } from '@/components/ui/aurora'
 
 export default function AuroraDemo() {
   return (

@@ -14,7 +14,7 @@ export const defaultTreeViewLabels: TreeViewLabels = {
   loadFailed: 'could not load, open to retry',
 }
 
-import { Spinner } from '@/ui/spinner'
+import { Spinner } from '@/components/ui/spinner'
 
 export interface TreeNode {
   /** Unique across the whole tree. */

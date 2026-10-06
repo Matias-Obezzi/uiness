@@ -1,7 +1,7 @@
 import { PartyPopper, Rocket, Sparkles, Star } from 'lucide-react'
 import * as React from 'react'
-import { Button } from '@/ui/button'
-import { ConfettiButton, confetti } from '@/ui/confetti'
+import { Button } from '@/components/ui/button'
+import { ConfettiButton, confetti } from '@/components/ui/confetti'
 
 const stars = ['#ffe066', '#fcc419', '#fab005', '#fff3bf']
 

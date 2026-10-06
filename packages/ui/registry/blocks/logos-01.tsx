@@ -11,8 +11,8 @@ import {
   TriangleIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { Marquee } from '@/components/ui/marquee'
 import { cn } from '@/lib/utils'
-import { Marquee } from '@/ui/marquee'
 
 export interface LogoItem {
   /** The company name, read out and shown as the wordmark. */

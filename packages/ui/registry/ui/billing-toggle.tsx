@@ -1,9 +1,9 @@
 'use client'
 
 import * as React from 'react'
+import { Odometer } from '@/components/ui/odometer'
 import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Odometer } from '@/ui/odometer'
 
 export type BillingPeriod = 'monthly' | 'yearly'
 

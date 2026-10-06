@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { AnnouncementBar } from '@/ui/announcement-bar'
-import { Button } from '@/ui/button'
+import { AnnouncementBar } from '@/components/ui/announcement-bar'
+import { Button } from '@/components/ui/button'
 
 // Three days from whenever the page is opened, so the demo always has something to count.
 const launch = Date.now() + 3 * 24 * 60 * 60 * 1000 + 4 * 60 * 60 * 1000

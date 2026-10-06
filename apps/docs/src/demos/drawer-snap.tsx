@@ -1,4 +1,4 @@
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Drawer,
   DrawerBody,
@@ -7,7 +7,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/ui/drawer'
+} from '@/components/ui/drawer'
 
 const places = Array.from({ length: 12 }, (_, i) => ({
   name: `Place ${i + 1}`,

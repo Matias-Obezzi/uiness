@@ -1,4 +1,4 @@
-import { Reveal } from '@/ui/reveal'
+import { Reveal } from '@/components/ui/reveal'
 
 const steps = ['Install the item', 'Import the component', 'Scroll and watch', 'Tweak the variant']
 

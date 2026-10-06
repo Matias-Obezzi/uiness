@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { addDays, type DateRange } from '@/ui/calendar'
-import { DateRangePicker } from '@/ui/date-range-picker'
+import { addDays, type DateRange } from '@/components/ui/calendar'
+import { DateRangePicker } from '@/components/ui/date-range-picker'
 
 const next = (days: number) => (today: Date) => ({ from: today, to: addDays(today, days - 1) })
 

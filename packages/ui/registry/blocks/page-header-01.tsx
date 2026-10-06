@@ -16,10 +16,10 @@ import {
   TagIcon,
 } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Odometer } from '@/components/ui/odometer'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Odometer } from '@/ui/odometer'
-import { Tabs, TabsList, TabsTrigger } from '@/ui/tabs'
 
 export interface PageHeaderTab {
   id: string

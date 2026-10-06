@@ -1,4 +1,4 @@
-import { GradientBorder, GradientText } from '@/ui/gradient-text'
+import { GradientBorder, GradientText } from '@/components/ui/gradient-text'
 
 export default function GradientTextDemo() {
   return (

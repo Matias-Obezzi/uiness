@@ -1,9 +1,9 @@
 import { LayersIcon, RotateCcwIcon, SparklesIcon, ZapIcon } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { Choreo } from '@/ui/choreo'
-import { Label } from '@/ui/label'
-import { Switch } from '@/ui/switch'
+import { Button } from '@/components/ui/button'
+import { Choreo } from '@/components/ui/choreo'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 
 const features = [
   {

@@ -1,5 +1,5 @@
 import { RocketIcon, Trash2Icon } from 'lucide-react'
-import { HoldToConfirm } from '@/ui/hold-to-confirm'
+import { HoldToConfirm } from '@/components/ui/hold-to-confirm'
 
 export default function HoldToConfirmDemo() {
   return (

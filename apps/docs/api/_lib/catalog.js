@@ -75,7 +75,7 @@ export function targetPath(/** @type {RegistryFile} */ file) {
   return `${folders[file.type] ?? 'components'}/${base}`
 }
 
-/** The registry imports components as `@/ui/x`; a project with default aliases has `@/components/ui/x`. */
+/** Older registry files imported components as `@/ui/x`; a project with default aliases has `@/components/ui/x`. */
 export const toProjectImports = (/** @type {string} */ source) =>
   source.replace(/from '@\/ui\//g, "from '@/components/ui/")
 

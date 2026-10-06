@@ -1,8 +1,7 @@
 import { ChevronRightIcon, MenuIcon, PaletteIcon, SearchIcon } from 'lucide-react'
 import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
-import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   CommandDialog,
   CommandEmpty,
@@ -11,12 +10,19 @@ import {
   CommandItem,
   CommandList,
   useCommandShortcut,
-} from '@/ui/command'
-import { Drawer, DrawerBody, DrawerContent, DrawerDescription, DrawerTitle } from '@/ui/drawer'
-import { Kbd, KbdGroup } from '@/ui/kbd'
-import { ScrollFade } from '@/ui/scroll-fade'
-import { ThemeSwitch } from '@/ui/theme-switch'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/ui/tooltip'
+} from '@/components/ui/command'
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerDescription,
+  DrawerTitle,
+} from '@/components/ui/drawer'
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
+import { ScrollFade } from '@/components/ui/scroll-fade'
+import { ThemeSwitch } from '@/components/ui/theme-switch'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
 import { isNew, nav, pageHref } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { useTheme } from '~/lib/theme'

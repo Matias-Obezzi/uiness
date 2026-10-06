@@ -1,6 +1,6 @@
-import { confirm } from '@/ui/alert-dialog'
-import { Button } from '@/ui/button'
-import { toast } from '@/ui/toast'
+import { confirm } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
 
 const archive = () => new Promise<void>((resolve) => setTimeout(resolve, 1500))
 

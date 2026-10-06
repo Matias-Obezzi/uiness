@@ -1,4 +1,4 @@
-import { Marquee } from '@/ui/marquee'
+import { Marquee } from '@/components/ui/marquee'
 
 const quotes = [
   { name: 'Tomasz', text: 'Finally a marquee that pauses when I want to read it.' },

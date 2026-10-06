@@ -1,7 +1,7 @@
 import { DownloadIcon } from 'lucide-react'
-import { Badge } from '@/ui/badge'
-import { Button } from '@/ui/button'
-import { DataTable, type DataTableColumn } from '@/ui/data-table'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { DataTable, type DataTableColumn } from '@/components/ui/data-table'
 
 interface Payment {
   id: string

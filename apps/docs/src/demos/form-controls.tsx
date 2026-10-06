@@ -1,8 +1,20 @@
 import { useState } from 'react'
-import { Checkbox } from '@/ui/checkbox'
-import { FormControl, FormDescription, FormField, FormLabel, FormMessage } from '@/ui/form'
-import { RadioGroup, RadioGroupItem } from '@/ui/radio-group'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 export default function FormControls() {
   const [plan, setPlan] = useState('')

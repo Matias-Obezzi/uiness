@@ -4,6 +4,7 @@
     "noEmit": true,
     "types": ["vitest/globals"],
     "paths": {
+      "@/components/ui/*": ["./registry/ui/*"],
       "@/*": ["./registry/*"],
       "@uiness/island": ["../island/src/index.ts"],
       "@uiness/image": ["../image/src/index.ts"],

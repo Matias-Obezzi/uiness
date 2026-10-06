@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { InlineEdit } from '@/ui/inline-edit'
+import { InlineEdit } from '@/components/ui/inline-edit'
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 

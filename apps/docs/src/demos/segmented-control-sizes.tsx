@@ -1,4 +1,4 @@
-import { SegmentedControl, SegmentedControlItem } from '@/ui/segmented-control'
+import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmented-control'
 
 export default function SegmentedControlSizes() {
   return (

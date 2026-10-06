@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { DatePicker } from '@/ui/date-picker'
-import { Label } from '@/ui/label'
+import { DatePicker } from '@/components/ui/date-picker'
+import { Label } from '@/components/ui/label'
 
 export default function DatePickerDemo() {
   const [date, setDate] = useState<Date | null>(null)

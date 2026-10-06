@@ -1,4 +1,4 @@
-import { Sparkline } from '@/ui/sparkline'
+import { Sparkline } from '@/components/ui/sparkline'
 
 const data = [4, 6, 5, 9, 7, 11, 8, 12, 10, 14, 13, 16]
 

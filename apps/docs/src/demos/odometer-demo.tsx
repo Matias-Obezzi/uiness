@@ -1,7 +1,7 @@
 import { Minus, Plus } from 'lucide-react'
 import * as React from 'react'
-import { Button } from '@/ui/button'
-import { Odometer } from '@/ui/odometer'
+import { Button } from '@/components/ui/button'
+import { Odometer } from '@/components/ui/odometer'
 
 function Followers() {
   const [count, setCount] = React.useState(48_217)

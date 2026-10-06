@@ -1,4 +1,4 @@
-import { StickyScroll } from '@/ui/sticky-scroll'
+import { StickyScroll } from '@/components/ui/sticky-scroll'
 
 const panel = (label: string, className: string) => (
   <div

@@ -2,10 +2,10 @@
 
 import { PlayIcon, Trash2Icon, Undo2Icon } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
 
 /* -------------------------------------------------------------------------------------------------
  * Strokes. Points in CSS pixels from the top left of the pad, so they survive a resize and a

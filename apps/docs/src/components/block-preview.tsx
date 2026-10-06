@@ -1,7 +1,7 @@
 import { MonitorIcon, SmartphoneIcon, TabletIcon } from 'lucide-react'
 import { type ComponentType, useState } from 'react'
+import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmented-control'
 import { cn } from '@/lib/utils'
-import { SegmentedControl, SegmentedControlItem } from '@/ui/segmented-control'
 import { toProjectImports } from '~/lib/registry'
 import { themeScope } from '~/lib/themes'
 import { CodeBlock } from './code-block'

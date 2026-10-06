@@ -1,11 +1,11 @@
 import { Children, isValidElement, type ReactElement, type ReactNode } from 'react'
-import { ScrollFade } from '@/ui/scroll-fade'
+import { ScrollFade } from '@/components/ui/scroll-fade'
 import {
   TabsContent as TabsContentPrimitive,
   TabsList,
   Tabs as TabsRoot,
   TabsTrigger,
-} from '@/ui/tabs'
+} from '@/components/ui/tabs'
 
 export interface DocTabProps {
   /** The tab's name. In the Markdown version of the page it becomes a heading. */

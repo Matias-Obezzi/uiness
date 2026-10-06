@@ -1,4 +1,4 @@
-import { dither, Fx, palettes } from '@/ui/fx'
+import { dither, Fx, palettes } from '@/components/ui/fx'
 
 export default function FxGameboy() {
   return (

@@ -1,9 +1,9 @@
 'use client'
 
 import * as React from 'react'
+import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Popover, PopoverAnchor, PopoverContent } from '@/ui/popover'
 
 /* -------------------------------------------------------------------------------------------------
  * Types

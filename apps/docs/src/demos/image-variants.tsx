@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { blur, Image, pixelate, reveal } from '@/ui/image'
+import { Button } from '@/components/ui/button'
+import { blur, Image, pixelate, reveal } from '@/components/ui/image'
 
 const src = import.meta.env.DEV ? '/slow/3000/photo.png' : '/img/photo.png'
 

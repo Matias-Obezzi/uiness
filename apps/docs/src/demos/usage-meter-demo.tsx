@@ -1,7 +1,7 @@
 import { MinusIcon, PlusIcon } from 'lucide-react'
 import * as React from 'react'
-import { Button } from '@/ui/button'
-import { UsageMeter } from '@/ui/usage-meter'
+import { Button } from '@/components/ui/button'
+import { UsageMeter } from '@/components/ui/usage-meter'
 
 export default function UsageMeterDemo() {
   const [video, setVideo] = React.useState(18)

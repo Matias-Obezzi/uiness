@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Label } from '@/ui/label'
-import { MultiSelect } from '@/ui/multi-select'
+import { Label } from '@/components/ui/label'
+import { MultiSelect } from '@/components/ui/multi-select'
 
 const options = [
   { value: 'react', label: 'React', group: 'Libraries' },

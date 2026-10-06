@@ -1,6 +1,6 @@
 import { ArchiveIcon, BookmarkIcon, ForwardIcon, ReplyIcon, Trash2Icon } from 'lucide-react'
 import { useState } from 'react'
-import { ExpandingButton, ExpandingButtonGroup } from '@/ui/expanding-button-group'
+import { ExpandingButton, ExpandingButtonGroup } from '@/components/ui/expanding-button-group'
 
 export default function ExpandingButtonGroupDemo() {
   const [saved, setSaved] = useState(false)

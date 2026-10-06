@@ -1,5 +1,5 @@
-import { Button } from '@/ui/button'
-import { Shimmer } from '@/ui/shimmer'
+import { Button } from '@/components/ui/button'
+import { Shimmer } from '@/components/ui/shimmer'
 
 export default function ShimmerDemo() {
   return (

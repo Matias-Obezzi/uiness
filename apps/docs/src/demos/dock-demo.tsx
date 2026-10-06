@@ -10,7 +10,7 @@ import {
   Trash2,
 } from 'lucide-react'
 import { useState } from 'react'
-import { Dock, DockItem, DockSeparator } from '@/ui/dock'
+import { Dock, DockItem, DockSeparator } from '@/components/ui/dock'
 
 const apps = [
   { label: 'Browser', icon: Compass, tint: 'from-sky-400 to-blue-600' },

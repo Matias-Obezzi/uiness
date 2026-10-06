@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { CodeBlock } from '@/ui/code-block'
+import { CodeBlock } from '@/components/ui/code-block'
 
 const code = `import { useEffect, useState } from 'react'
 

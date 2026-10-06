@@ -2,7 +2,7 @@ import { MDXProvider } from '@mdx-js/react'
 import { ChevronLeftIcon, ChevronRightIcon, FileTextIcon } from 'lucide-react'
 import { type ComponentType, lazy, Suspense, useEffect } from 'react'
 import { Link, Navigate, useLocation } from 'react-router'
-import { Badge } from '@/ui/badge'
+import { Badge } from '@/components/ui/badge'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,9 +10,9 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from '@/ui/breadcrumb'
-import { Button } from '@/ui/button'
-import { CopyButton } from '@/ui/copy-button'
+} from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
+import { CopyButton } from '@/components/ui/copy-button'
 import { markdownPath } from '~/lib/markdown'
 import { findPage, isNew, nav, pageHref, pages } from '~/lib/nav'
 import { site } from '~/lib/site'

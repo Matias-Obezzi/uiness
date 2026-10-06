@@ -2,10 +2,10 @@
 
 import { ArrowRightIcon, MenuIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { HoverHighlight, HoverHighlightItem } from '@/components/ui/hover-highlight'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { HoverHighlight, HoverHighlightItem } from '@/ui/hover-highlight'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
 
 /** Whose site this is. The same shape as the `brand` of the other blocks. */
 export interface NavbarBrand {

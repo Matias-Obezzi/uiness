@@ -1,4 +1,4 @@
-import { ascii, Fx } from '@/ui/fx'
+import { ascii, Fx } from '@/components/ui/fx'
 
 export default function FxAscii() {
   return (

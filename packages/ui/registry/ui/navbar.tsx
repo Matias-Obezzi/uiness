@@ -3,8 +3,6 @@
 import { MenuIcon, MoreHorizontalIcon } from 'lucide-react'
 import { Slot } from 'radix-ui'
 import * as React from 'react'
-import { LabelsProvider, useLabels } from '@/lib/labels'
-import { cn } from '@/lib/utils'
 import {
   Drawer,
   DrawerBody,
@@ -12,7 +10,9 @@ import {
   DrawerDescription,
   type DrawerSide,
   DrawerTitle,
-} from '@/ui/drawer'
+} from '@/components/ui/drawer'
+import { LabelsProvider, useLabels } from '@/lib/labels'
+import { cn } from '@/lib/utils'
 
 export interface NavbarLabels {
   /** Title of the mobile menu, read by screen readers. */

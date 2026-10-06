@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Draggable, DraggableHandle, type Point } from '@/ui/draggable'
+import { Draggable, DraggableHandle, type Point } from '@/components/ui/draggable'
 
 export default function DraggableDemo() {
   const [position, setPosition] = useState<Point>({ x: 0, y: 0 })

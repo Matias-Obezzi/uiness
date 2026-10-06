@@ -91,8 +91,14 @@ describe('registry.json', () => {
               mappedName = importPath.replace('lib/', '')
             } else if (importPath.startsWith('hooks/')) {
               mappedName = importPath.replace('hooks/', '')
+            } else if (importPath.startsWith('components/ui/')) {
+              mappedName = importPath.replace('components/ui/', '')
             } else if (importPath.startsWith('ui/')) {
-              mappedName = importPath.replace('ui/', '')
+              // The CLI rewrites it on install, but a file copied by hand would not resolve.
+              errors.push(
+                `Item '${item.name}' imports '@/${importPath}': use '@/components/ui/${importPath.slice(3)}', the path a copied file resolves in any shadcn project.`,
+              )
+              continue
             }
 
             if (!mappedName) continue

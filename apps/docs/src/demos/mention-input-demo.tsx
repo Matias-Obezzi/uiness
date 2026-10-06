@@ -1,6 +1,6 @@
 import { HashIcon } from 'lucide-react'
 import { useState } from 'react'
-import { MentionInput, type MentionTrigger, type MentionValue } from '@/ui/mention-input'
+import { MentionInput, type MentionTrigger, type MentionValue } from '@/components/ui/mention-input'
 
 const people = [
   { id: 'u1', label: 'Lucía Ortega', description: 'Engineering' },

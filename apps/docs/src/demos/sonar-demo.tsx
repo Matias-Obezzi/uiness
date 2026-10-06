@@ -1,4 +1,4 @@
-import { Sonar } from '@/ui/sonar'
+import { Sonar } from '@/components/ui/sonar'
 
 export default function SonarDemo() {
   return (

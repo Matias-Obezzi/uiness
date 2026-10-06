@@ -90,6 +90,7 @@ export default defineConfig({
       '@uiness/scroll': `${root}../../packages/scroll/src/index.ts`,
       '@uiness/dnd': `${root}../../packages/dnd/src/index.ts`,
       '@uiness/choreo': `${root}../../packages/choreo/src/index.ts`,
+      '@/components/ui': `${root}../../packages/ui/registry/ui`,
       '@': `${root}../../packages/ui/registry`,
       '~': `${root}src`,
     },

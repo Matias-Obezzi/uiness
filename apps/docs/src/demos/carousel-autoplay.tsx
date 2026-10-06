@@ -6,7 +6,7 @@ import {
   CarouselNext,
   CarouselPlayPause,
   CarouselPrevious,
-} from '@/ui/carousel'
+} from '@/components/ui/carousel'
 
 const photos = [
   { src: '/img/gallery-1.png', alt: 'Dawn at the lake' },

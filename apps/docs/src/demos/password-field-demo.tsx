@@ -1,5 +1,5 @@
-import { Label } from '@/ui/label'
-import { PasswordField } from '@/ui/password-field'
+import { Label } from '@/components/ui/label'
+import { PasswordField } from '@/components/ui/password-field'
 
 export default function PasswordFieldDemo() {
   return (

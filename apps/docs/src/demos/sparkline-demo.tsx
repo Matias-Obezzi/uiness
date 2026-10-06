@@ -1,4 +1,4 @@
-import { Sparkline } from '@/ui/sparkline'
+import { Sparkline } from '@/components/ui/sparkline'
 
 // Made up closing prices over twenty days, the same on every render.
 const walk = (seed: number, start: number, drift: number) =>

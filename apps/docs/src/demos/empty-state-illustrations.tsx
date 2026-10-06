@@ -1,6 +1,6 @@
 import { SearchXIcon } from 'lucide-react'
-import { Button } from '@/ui/button'
-import { EmptyState } from '@/ui/empty-state'
+import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
 
 export default function EmptyStateIllustrations() {
   return (

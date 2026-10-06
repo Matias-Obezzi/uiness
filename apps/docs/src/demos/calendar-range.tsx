@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Calendar, type DateRange } from '@/ui/calendar'
+import { Calendar, type DateRange } from '@/components/ui/calendar'
 
 export default function CalendarRange() {
   const [range, setRange] = useState<DateRange>({})

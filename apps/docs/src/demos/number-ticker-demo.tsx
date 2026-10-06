@@ -1,4 +1,4 @@
-import { NumberTicker } from '@/ui/number-ticker'
+import { NumberTicker } from '@/components/ui/number-ticker'
 
 const stats = [
   { label: 'Downloads', value: 128400 },

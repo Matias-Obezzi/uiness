@@ -1,8 +1,8 @@
 'use client'
 
 import * as React from 'react'
+import { NumberTicker } from '@/components/ui/number-ticker'
 import { cn } from '@/lib/utils'
-import { NumberTicker } from '@/ui/number-ticker'
 
 export interface StatItem {
   /** The number the figure counts up to. */

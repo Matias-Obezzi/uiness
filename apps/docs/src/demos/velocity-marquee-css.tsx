@@ -1,4 +1,4 @@
-import { VelocityMarquee } from '@/ui/velocity-marquee'
+import { VelocityMarquee } from '@/components/ui/velocity-marquee'
 
 const rows = [
   ['No', 'JavaScript', 'while', 'scrolling'],

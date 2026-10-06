@@ -1,4 +1,4 @@
-import { MovingBorder } from '@/ui/moving-border'
+import { MovingBorder } from '@/components/ui/moving-border'
 
 export default function MovingBorderDemo() {
   return (

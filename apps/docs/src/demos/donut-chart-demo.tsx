@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { DonutChart } from '@/ui/donut-chart'
-import { ToggleGroup, ToggleGroupItem } from '@/ui/toggle-group'
+import { DonutChart } from '@/components/ui/donut-chart'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 const months = {
   september: [

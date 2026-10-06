@@ -1,5 +1,5 @@
 import { Quote } from 'lucide-react'
-import { CardStack } from '@/ui/card-stack'
+import { CardStack } from '@/components/ui/card-stack'
 
 const testimonials = [
   {

@@ -5,7 +5,7 @@ import {
   ChatMessageGroup,
   ChatMessages,
   ChatTypingIndicator,
-} from '@/ui/chat-thread'
+} from '@/components/ui/chat-thread'
 
 const bot = { id: 'bot', name: 'Helper' }
 

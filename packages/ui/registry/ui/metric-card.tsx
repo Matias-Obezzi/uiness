@@ -2,10 +2,10 @@
 
 import { ArrowDownRightIcon, ArrowUpRightIcon, MinusIcon } from 'lucide-react'
 import * as React from 'react'
+import { NumberTicker } from '@/components/ui/number-ticker'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useLabels, useLocale } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { NumberTicker } from '@/ui/number-ticker'
-import { Skeleton } from '@/ui/skeleton'
 
 export interface MetricCardLabels {
   /** Read while `loading`. */

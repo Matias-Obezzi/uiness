@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Label } from '@/ui/label'
-import { TagInput } from '@/ui/tag-input'
+import { Label } from '@/components/ui/label'
+import { TagInput } from '@/components/ui/tag-input'
 
 export default function TagInputDemo() {
   const [tags, setTags] = useState(['design', 'react'])

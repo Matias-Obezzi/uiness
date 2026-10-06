@@ -1,8 +1,8 @@
 import { BellIcon, InboxIcon, SettingsIcon } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { toast } from '@/ui/toast'
-import { Tour, type TourStep } from '@/ui/tour'
+import { Button } from '@/components/ui/button'
+import { toast } from '@/components/ui/toast'
+import { Tour, type TourStep } from '@/components/ui/tour'
 
 const steps: TourStep[] = [
   {

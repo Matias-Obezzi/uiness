@@ -2,9 +2,9 @@
 
 import { ArrowUpRightIcon, ChevronDownIcon, RssIcon } from 'lucide-react'
 import * as React from 'react'
+import { Badge } from '@/components/ui/badge'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { cn } from '@/lib/utils'
-import { Badge } from '@/ui/badge'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/ui/collapsible'
 
 export interface ChangelogEntry {
   /** Shown on the badge, like `2.4.0`. Also the entry's key, so keep it unique. */

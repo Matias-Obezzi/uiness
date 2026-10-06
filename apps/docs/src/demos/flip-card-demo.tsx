@@ -1,7 +1,7 @@
 import { Check, RotateCcw } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/ui/button'
-import { FlipCard, FlipCardBack, FlipCardFront } from '@/ui/flip-card'
+import { Button } from '@/components/ui/button'
+import { FlipCard, FlipCardBack, FlipCardFront } from '@/components/ui/flip-card'
 
 const features = ['Unlimited projects', 'Custom domains', 'Priority support', 'Team seats']
 

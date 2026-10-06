@@ -1,5 +1,5 @@
-import { Compare } from '@/ui/compare'
-import { dither, Fx, palettes } from '@/ui/fx'
+import { Compare } from '@/components/ui/compare'
+import { dither, Fx, palettes } from '@/components/ui/fx'
 
 export default function CompareDemo() {
   return (

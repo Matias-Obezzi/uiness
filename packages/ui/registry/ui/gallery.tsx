@@ -3,9 +3,9 @@
 import { ChevronLeftIcon, ChevronRightIcon, XIcon } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 import * as React from 'react'
+import { Image } from '@/components/ui/image'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Image } from '@/ui/image'
 
 export interface GalleryImage {
   src: string

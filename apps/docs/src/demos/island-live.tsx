@@ -1,5 +1,5 @@
-import { Button } from '@/ui/button'
-import { island, Spinner } from '@/ui/island'
+import { Button } from '@/components/ui/button'
+import { island, Spinner } from '@/components/ui/island'
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms))
 

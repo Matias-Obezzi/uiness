@@ -3,10 +3,10 @@
 import { PipetteIcon, PlusIcon } from 'lucide-react'
 import { Slider as SliderPrimitive } from 'radix-ui'
 import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Button } from '@/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
 
 /* -------------------------------------------------------------------------------------------------
  * Color math. sRGB in, sRGB out, with OKLCH through OKLab. No library.

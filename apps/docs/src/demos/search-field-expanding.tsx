@@ -1,4 +1,4 @@
-import { SearchField } from '@/ui/search-field'
+import { SearchField } from '@/components/ui/search-field'
 
 export default function SearchFieldExpanding() {
   return (

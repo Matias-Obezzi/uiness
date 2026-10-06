@@ -2,9 +2,9 @@
 
 import { StarIcon } from 'lucide-react'
 import * as React from 'react'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Marquee } from '@/components/ui/marquee'
 import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback, AvatarImage } from '@/ui/avatar'
-import { Marquee } from '@/ui/marquee'
 
 export interface Testimonial {
   quote: React.ReactNode

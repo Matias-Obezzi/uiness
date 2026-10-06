@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Combobox } from '@/ui/combobox'
+import { Combobox } from '@/components/ui/combobox'
 
 const people = [
   { value: 'freya', label: 'Freya Nilsson', keywords: ['design systems'] },

@@ -1,4 +1,4 @@
-import { UsageMeter } from '@/ui/usage-meter'
+import { UsageMeter } from '@/components/ui/usage-meter'
 
 const seats = (admins: number, members: number, guests: number) => [
   { key: 'admins', label: 'Admins', value: admins },

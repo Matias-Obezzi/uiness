@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/ui/input-otp'
-import { Label } from '@/ui/label'
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
+import { Label } from '@/components/ui/label'
 
 export default function InputOTPDemo() {
   const [code, setCode] = useState('')

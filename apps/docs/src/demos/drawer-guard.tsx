@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { confirm } from '@/ui/alert-dialog'
-import { Button } from '@/ui/button'
+import { confirm } from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
 import {
   Drawer,
   DrawerBody,
@@ -11,9 +11,9 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/ui/drawer'
-import { Input } from '@/ui/input'
-import { Label } from '@/ui/label'
+} from '@/components/ui/drawer'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function DrawerGuard() {
   const [open, setOpen] = useState(false)

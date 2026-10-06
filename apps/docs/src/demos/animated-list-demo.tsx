@@ -1,5 +1,5 @@
 import { CreditCard, MessageCircle, Star, UserPlus } from 'lucide-react'
-import { AnimatedList } from '@/ui/animated-list'
+import { AnimatedList } from '@/components/ui/animated-list'
 
 const notifications = [
   {

@@ -2,12 +2,12 @@
 
 import { ArrowLeftIcon, ArrowRightIcon, CheckIcon, MailIcon } from 'lucide-react'
 import * as React from 'react'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/components/ui/input-otp'
+import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
-import { Avatar, AvatarFallback } from '@/ui/avatar'
-import { Button } from '@/ui/button'
-import { Input } from '@/ui/input'
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '@/ui/input-otp'
-import { Label } from '@/ui/label'
 
 export type SignInStep = 'email' | 'code' | 'done'
 

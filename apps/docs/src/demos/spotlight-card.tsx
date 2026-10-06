@@ -1,4 +1,4 @@
-import { SpotlightCard } from '@/ui/spotlight'
+import { SpotlightCard } from '@/components/ui/spotlight'
 
 const features = [
   { title: 'Fast', body: 'Nothing but a radial gradient and two CSS variables.' },

@@ -1,5 +1,5 @@
-import { Pattern } from '@/ui/pattern'
-import { Spotlight } from '@/ui/spotlight'
+import { Pattern } from '@/components/ui/pattern'
+import { Spotlight } from '@/components/ui/spotlight'
 
 export default function SpotlightDemo() {
   return (

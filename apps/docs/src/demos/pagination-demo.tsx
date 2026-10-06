@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Paginator } from '@/ui/pagination'
+import { Paginator } from '@/components/ui/pagination'
 
 const orders = Array.from({ length: 236 }, (_, i) => ({
   id: 10_000 + i,

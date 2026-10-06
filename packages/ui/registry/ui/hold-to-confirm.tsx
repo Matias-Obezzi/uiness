@@ -2,10 +2,10 @@
 
 import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
+import { Spinner } from '@/components/ui/spinner'
 import { useReducedMotion } from '@/hooks/use-reduced-motion'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
-import { Spinner } from '@/ui/spinner'
 
 const holdVariants = cva(
   'relative isolate inline-flex shrink-0 touch-manipulation select-none items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-lg border font-medium text-sm outline-none transition-[scale,box-shadow] duration-(--duration-fast,150ms) [-webkit-touch-callout:none] focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 data-[state=holding]:scale-[0.98] motion-reduce:data-[state=holding]:scale-100 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=size-])]:size-4',

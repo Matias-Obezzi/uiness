@@ -1,6 +1,6 @@
 import { FileIcon, LayersIcon, PaletteIcon } from 'lucide-react'
 import { useState } from 'react'
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   CommandDialog,
   CommandEmpty,
@@ -9,7 +9,7 @@ import {
   CommandItem,
   CommandList,
   useCommandShortcut,
-} from '@/ui/command'
+} from '@/components/ui/command'
 
 const pages = [
   { icon: <FileIcon />, label: 'Introduction' },

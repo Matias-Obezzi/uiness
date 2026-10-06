@@ -1,4 +1,4 @@
-import { RadioGroup, RadioGroupItem } from '@/ui/radio-group'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 
 const plans = [
   { value: 'free', label: 'Free', hint: 'One project, community support.' },

@@ -1,6 +1,6 @@
 import { CalendarIcon, PackageIcon } from 'lucide-react'
 import { useState } from 'react'
-import { type NotificationData, NotificationPanel } from '@/ui/notification-center'
+import { type NotificationData, NotificationPanel } from '@/components/ui/notification-center'
 
 const hoursAgo = (hours: number) => new Date(Date.now() - hours * 3_600_000)
 

@@ -3,7 +3,7 @@ import {
   RichTextEditor,
   type RichTextEditorHandle,
   type RichTextEditorValue,
-} from '@/ui/rich-text-editor'
+} from '@/components/ui/rich-text-editor'
 
 const start = `
 <h2>Launch notes</h2>

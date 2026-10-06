@@ -1,4 +1,4 @@
-import { defineEffect, Fx, pixelate } from '@/ui/fx'
+import { defineEffect, Fx, pixelate } from '@/components/ui/fx'
 
 /** Keeps only the red channel, then pixelates the result. */
 const redOnly = defineEffect({

@@ -1,6 +1,6 @@
 import { CalendarIcon, MapPinIcon } from 'lucide-react'
-import { Button } from '@/ui/button'
-import { ProfileHoverCard } from '@/ui/hover-card'
+import { Button } from '@/components/ui/button'
+import { ProfileHoverCard } from '@/components/ui/hover-card'
 
 export default function HoverCardDemo() {
   return (

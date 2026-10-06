@@ -1,8 +1,8 @@
 import * as React from 'react'
-import { Label } from '@/ui/label'
-import { MetricCard } from '@/ui/metric-card'
-import { Sparkline } from '@/ui/sparkline'
-import { Switch } from '@/ui/switch'
+import { Label } from '@/components/ui/label'
+import { MetricCard } from '@/components/ui/metric-card'
+import { Sparkline } from '@/components/ui/sparkline'
+import { Switch } from '@/components/ui/switch'
 
 export default function MetricCardLoading() {
   const [loading, setLoading] = React.useState(true)

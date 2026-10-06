@@ -1,9 +1,13 @@
 import { CheckIcon, CodeIcon, MoonIcon, RotateCcwIcon, SunIcon } from 'lucide-react'
 import { type ReactNode, useEffect, useRef, useState } from 'react'
-import { cn } from '@/lib/utils'
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/ui/accordion'
-import { Button, type ButtonProps } from '@/ui/button'
-import { CopyButton, type CopyButtonProps } from '@/ui/copy-button'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+import { Button, type ButtonProps } from '@/components/ui/button'
+import { CopyButton, type CopyButtonProps } from '@/components/ui/copy-button'
 import {
   Dialog,
   DialogContent,
@@ -12,9 +16,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/ui/dialog'
-import { SegmentedControl, SegmentedControlItem } from '@/ui/segmented-control'
-import { useThemeTransition } from '@/ui/theme-switch'
+} from '@/components/ui/dialog'
+import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmented-control'
+import { useThemeTransition } from '@/components/ui/theme-switch'
+import { cn } from '@/lib/utils'
 import { hexToOklch, oklchToHex, parseOklch } from '~/lib/color'
 import { type SiteTheme, useTheme } from '~/lib/theme'
 import { setThemeChoice, useThemeChoice } from '~/lib/theme-choice'

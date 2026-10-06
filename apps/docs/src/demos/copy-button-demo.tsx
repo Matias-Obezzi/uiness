@@ -1,4 +1,4 @@
-import { CopyButton } from '@/ui/copy-button'
+import { CopyButton } from '@/components/ui/copy-button'
 
 const command = 'pnpm dlx shadcn@latest add @uiness/copy-button'
 

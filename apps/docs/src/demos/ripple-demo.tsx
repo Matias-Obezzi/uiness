@@ -1,6 +1,6 @@
 import { Heart, Inbox, Send } from 'lucide-react'
-import { Button } from '@/ui/button'
-import { Ripple } from '@/ui/ripple'
+import { Button } from '@/components/ui/button'
+import { Ripple } from '@/components/ui/ripple'
 
 export default function RippleDemo() {
   return (

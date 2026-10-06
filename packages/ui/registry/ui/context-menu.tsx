@@ -2,7 +2,6 @@
 
 import { DropdownMenu as DropdownMenuPrimitive, Slot } from 'radix-ui'
 import * as React from 'react'
-import { cn } from '@/lib/utils'
 import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -13,7 +12,8 @@ import {
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-} from '@/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
 
 export interface ContextMenuItemAction {
   type?: 'item'

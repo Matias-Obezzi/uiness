@@ -1,4 +1,4 @@
-import { JsonViewer } from '@/ui/json-viewer'
+import { JsonViewer } from '@/components/ui/json-viewer'
 
 // A made up API response, with a long array to page through.
 const response = {

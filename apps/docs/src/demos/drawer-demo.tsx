@@ -1,4 +1,4 @@
-import { Button } from '@/ui/button'
+import { Button } from '@/components/ui/button'
 import {
   Drawer,
   DrawerBody,
@@ -9,9 +9,9 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/ui/drawer'
-import { Label } from '@/ui/label'
-import { Switch } from '@/ui/switch'
+} from '@/components/ui/drawer'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 
 const filters = ['In stock only', 'Free shipping', 'On sale']
 

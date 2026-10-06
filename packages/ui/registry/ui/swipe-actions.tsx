@@ -2,16 +2,16 @@
 
 import { MoreHorizontalIcon } from 'lucide-react'
 import * as React from 'react'
-import { useReducedMotion } from '@/hooks/use-reduced-motion'
-import { useLabels } from '@/lib/labels'
-import { cn } from '@/lib/utils'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu'
+import { useReducedMotion } from '@/hooks/use-reduced-motion'
+import { useLabels } from '@/lib/labels'
+import { cn } from '@/lib/utils'
 
 export interface SwipeAction {
   /** Names the action, on its button and in the menu. */

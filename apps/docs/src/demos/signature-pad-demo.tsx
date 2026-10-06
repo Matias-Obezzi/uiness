@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
-import { Button } from '@/ui/button'
-import { SignaturePad, type SignaturePadHandle } from '@/ui/signature-pad'
+import { Button } from '@/components/ui/button'
+import { SignaturePad, type SignaturePadHandle } from '@/components/ui/signature-pad'
 
 export default function SignaturePadDemo() {
   const pad = useRef<SignaturePadHandle>(null)
