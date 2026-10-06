@@ -11,13 +11,29 @@ type CopyState = 'idle' | 'copied' | 'error'
 
 /**
  * Write text to the clipboard. Falls back to a hidden textarea and `execCommand` where the
- * Clipboard API is missing, which is the case on plain http pages.
+ * Clipboard API is missing, which is the case on plain http pages, and where it refuses the
+ * text, which it does when the document is not focused or the permission was denied. When the
+ * fallback fails as well, the Clipboard API's own error is the one thrown.
  */
 async function copyToClipboard(text: string) {
   if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text)
-    return
+    try {
+      await navigator.clipboard.writeText(text)
+      return
+    } catch (error) {
+      try {
+        copyWithTextarea(text)
+        return
+      } catch {
+        throw error
+      }
+    }
   }
+  copyWithTextarea(text)
+}
+
+/** Copy through a hidden textarea and `execCommand`, the way it was done before the Clipboard API. */
+function copyWithTextarea(text: string) {
   const area = document.createElement('textarea')
   area.value = text
   area.setAttribute('readonly', '')
@@ -27,7 +43,7 @@ async function copyToClipboard(text: string) {
   const focused = document.activeElement as HTMLElement | null
   area.select()
   try {
-    if (!document.execCommand('copy')) throw new Error('Copy command was refused')
+    if (!document.execCommand?.('copy')) throw new Error('Copy command was refused')
   } finally {
     area.remove()
     focused?.focus()

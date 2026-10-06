@@ -6,9 +6,17 @@ import { CopyButton } from './copy-button'
 const clipboard = (writeText: (text: string) => Promise<void>) =>
   vi.stubGlobal('navigator', { ...navigator, clipboard: { writeText } })
 
+// jsdom has no execCommand, so the fallback gets one of these.
+const execCommand = (impl: (command: string) => boolean) => {
+  const fn = vi.fn(impl)
+  Object.defineProperty(document, 'execCommand', { value: fn, configurable: true })
+  return fn
+}
+
 afterEach(() => {
   vi.useRealTimers()
   vi.unstubAllGlobals()
+  Reflect.deleteProperty(document, 'execCommand')
 })
 
 // Clicks go through fireEvent: user-event installs its own clipboard over the stub.
@@ -67,6 +75,54 @@ describe('CopyButton', () => {
     expect(onCopy).not.toHaveBeenCalled()
     expect(onCopyError).toHaveBeenCalledWith(error)
     expect(screen.getByRole('status').textContent).toBe('Copy failed')
+  })
+
+  it('falls back to execCommand when the Clipboard API rejects the text', async () => {
+    const writeText = vi.fn().mockRejectedValue(new DOMException('Document is not focused.'))
+    clipboard(writeText)
+    let selected: string | undefined
+    const exec = execCommand((command) => {
+      selected = document.querySelector('textarea')?.value
+      return command === 'copy'
+    })
+    const onCopy = vi.fn()
+    const onCopyError = vi.fn()
+    render(<CopyButton value="secret" onCopy={onCopy} onCopyError={onCopyError} />)
+    const button = screen.getByRole('button')
+    await press(button)
+    expect(writeText).toHaveBeenCalledWith('secret')
+    expect(exec).toHaveBeenCalledWith('copy')
+    expect(selected).toBe('secret')
+    expect(button.dataset.state).toBe('copied')
+    expect(onCopy).toHaveBeenCalledWith('secret')
+    expect(onCopyError).not.toHaveBeenCalled()
+    expect(document.querySelector('textarea')).toBeNull()
+  })
+
+  it('falls back to execCommand when the Clipboard API is missing', async () => {
+    vi.stubGlobal('navigator', { ...navigator, clipboard: undefined })
+    const exec = execCommand(() => true)
+    const onCopy = vi.fn()
+    render(<CopyButton value="x" onCopy={onCopy} />)
+    const button = screen.getByRole('button')
+    await press(button)
+    expect(exec).toHaveBeenCalledWith('copy')
+    expect(button.dataset.state).toBe('copied')
+    expect(onCopy).toHaveBeenCalledWith('x')
+  })
+
+  it('reports the Clipboard API error when the fallback is refused too', async () => {
+    const error = new Error('denied')
+    clipboard(vi.fn().mockRejectedValue(error))
+    const exec = execCommand(() => false)
+    const onCopyError = vi.fn()
+    render(<CopyButton value="x" onCopyError={onCopyError} />)
+    const button = screen.getByRole('button')
+    await press(button)
+    expect(exec).toHaveBeenCalledWith('copy')
+    expect(button.dataset.state).toBe('error')
+    expect(onCopyError).toHaveBeenCalledWith(error)
+    expect(document.querySelector('textarea')).toBeNull()
   })
 
   it('takes its name from children when it has them', () => {
