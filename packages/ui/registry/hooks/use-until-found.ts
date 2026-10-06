@@ -59,14 +59,14 @@ export function useUntilFound<T extends HTMLElement = HTMLDivElement>(
   return React.useCallback(
     (node: T | null) => {
       nodeRef.current = node
-      setRef(ref, node)
+      assignRef(ref, node)
     },
     [ref],
   )
 }
 
 /** Hand the node to a callback or object ref from outside, without writing to the argument. */
-function setRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
+function assignRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
   if (typeof ref === 'function') ref(node)
   else if (ref) ref.current = node
 }
