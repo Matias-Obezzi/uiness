@@ -1,5 +1,11 @@
 # @uiness/toast
 
+## 0.2.0
+
+### Minor Changes
+
+- c8b9452: `Toaster` takes `label` and `closeLabel`, to name the region and the close button in another language.
+
 ## 0.1.2
 
 ### Patch Changes
