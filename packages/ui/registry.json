@@ -1366,7 +1366,7 @@
       "type": "registry:ui",
       "title": "Timeline",
       "description": "Entries down a line that lights up as you scroll.",
-      "registryDependencies": ["@uiness/utils", "@uiness/use-scroll-driver"],
+      "registryDependencies": ["@uiness/utils"],
       "css": {
         "@keyframes timeline-progress": {
           "from": {

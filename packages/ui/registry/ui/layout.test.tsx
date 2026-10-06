@@ -321,56 +321,28 @@ describe('scroll pieces', () => {
     )
     expect(screen.getByRole('heading', { name: 'Launch' })).toBeTruthy()
     expect(document.querySelector('[data-slot=timeline-dot]')).toBeTruthy()
-    expect(
-      document.querySelector<HTMLElement>('[data-slot=timeline-progress]')?.style.height,
-    ).toMatch(/%$/)
   })
 
-  it('lights the timeline with view timelines in CSS mode', () => {
-    vi.stubGlobal('CSS', { supports: () => true })
+  it('lights the timeline with view timelines alone', () => {
     render(
       <Timeline anchor={0.5}>
         <TimelineItem title="Launch">Body</TimelineItem>
       </Timeline>,
     )
     const root = document.querySelector<HTMLElement>('[data-slot=timeline]')
-    expect(root?.dataset.driver).toBe('css')
-    expect(root?.style.getPropertyValue('view-timeline-inset')).toBe('50% 50%')
+    expect(root?.style.getPropertyValue('--timeline-inset')).toBe('50% 50%')
+    expect(root?.style.getPropertyValue('view-timeline')).toBe('--timeline block')
+    // The layout follows the timeline's width, not the screen's.
+    expect(root?.className).toContain('@container/timeline')
     const line = document.querySelector<HTMLElement>('[data-slot=timeline-progress]')
     expect(line?.className).toContain('[animation-name:timeline-progress]')
     expect(line?.style.getPropertyValue('animation-timeline')).toBe('--timeline')
+    const item = document.querySelector<HTMLElement>('[data-slot=timeline-item]')
+    expect(item?.className).not.toMatch(/(^|\s)md:/)
+    expect(item?.style.getPropertyValue('view-timeline-inset')).toBe('var(--timeline-inset)')
     const dot = document.querySelector<HTMLElement>('[data-slot=timeline-dot]')
     expect(dot?.className).toContain('[animation-name:timeline-dot]')
     expect(dot?.style.getPropertyValue('animation-timeline')).toBe('--timeline-item')
-  })
-
-  it('measures the scroll in JS mode', () => {
-    vi.stubGlobal('CSS', { supports: () => false })
-    vi.spyOn(window, 'innerHeight', 'get').mockReturnValue(1000)
-    // The top of everything sits below the reading position: nothing lit yet.
-    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
-      top: 900,
-      bottom: 1300,
-      height: 400,
-      left: 0,
-      right: 100,
-      width: 100,
-      x: 0,
-      y: 900,
-      toJSON() {},
-    } as DOMRect)
-    render(
-      <Timeline>
-        <TimelineItem title="Launch">Body</TimelineItem>
-      </Timeline>,
-    )
-    expect(document.querySelector<HTMLElement>('[data-slot=timeline]')?.dataset.driver).toBe('js')
-    const line = document.querySelector<HTMLElement>('[data-slot=timeline-progress]')
-    expect(line?.style.height).toBe('0%')
-    expect(line?.className).not.toContain('animation-name')
-    expect(document.querySelector('[data-slot=timeline-item]')?.getAttribute('data-state')).toBe(
-      'idle',
-    )
   })
 })
 

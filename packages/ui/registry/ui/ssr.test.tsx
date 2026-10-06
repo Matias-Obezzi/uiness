@@ -227,17 +227,17 @@ describe('server rendering of the scroll pieces', () => {
     expect(hydrate(ui).errors).toEqual([])
   })
 
-  it('timeline sends a lit line and active dots', () => {
+  it('timeline renders as a server component, lit until CSS drives it', () => {
     const ui = (
       <Timeline>
         <TimelineItem title="Launch">Body</TimelineItem>
       </Timeline>
     )
     const { el } = serverHtml(ui)
-    expect(el.querySelector<HTMLElement>('[data-slot=timeline-progress]')?.style.height).toBe(
-      '100%',
+    expect(el.querySelector('[data-slot=timeline-progress]')?.className).toContain('h-full')
+    expect(el.querySelector('[data-slot=timeline-dot]')?.className).toContain(
+      'bg-(--timeline-color)',
     )
-    expect(el.querySelector('[data-slot=timeline-item]')?.getAttribute('data-state')).toBe('active')
     expect(hydrate(ui).errors).toEqual([])
   })
 

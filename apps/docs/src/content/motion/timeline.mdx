@@ -4,7 +4,7 @@ Entries down a vertical line that lights up as you scroll. Each entry's dot turn
 
 ## Installation
 
-<Install name="timeline" extra="No packages: where CSS cannot drive it, a small scroll listener in the use-scroll-driver hook does." />
+<Install name="timeline" extra="Pure CSS: no packages and no JavaScript." />
 
 ## Usage
 
@@ -24,16 +24,17 @@ import { Timeline, TimelineItem } from '@/components/ui/timeline'
 | --- | --- | --- |
 | `color` | primary | Color of the lit part of the line. |
 | `anchor` | `0.6` | Where on the screen the line catches up with you, 0 to 1. |
-| `driver` | `'auto'` | `auto`, `css` or `js`. See below. |
 
 `TimelineItem` takes `date`, `title` and `icon`, which replaces the dot.
 
-## CSS scroll-driven mode
+## Pure CSS
 
-By default (`driver="auto"`) the line and the dots run on CSS scroll-driven animations. The timeline declares a view timeline whose viewport is cut down to a line at `anchor`, and the lit part of the line grows along it with `animation-timeline`. Each entry has a view timeline of its own, and its dot lights up over the first `2rem` of scrolling past the anchor. Nothing runs in JavaScript while you scroll, and it works with JavaScript turned off.
+The timeline runs no JavaScript, so it works as a server component and with JavaScript turned off. The line and the dots run on CSS scroll-driven animations: the timeline declares a view timeline whose viewport is cut down to a line at `anchor`, and the lit part of the line grows along it with `animation-timeline`. Each entry has a view timeline of its own, and its dot lights up over the first `2rem` of scrolling past the anchor.
 
-`auto` switches to that listener after mount when the browser has no scroll-driven animations, or when an ancestor with `overflow: hidden` (or `auto` without anything to scroll) sits between the timeline and the real scroller, since a CSS view timeline follows the nearest scroll container even when it never scrolls. `driver="css"` never measures anything, and `driver="js"` always does.
+Browsers without scroll-driven animations show the line fully lit and every dot on. Support: Chrome and Edge 115 and later, Opera 101 and later, Safari 26 and later. Firefox has them only behind a flag at the time of writing.
 
-With the CSS driver the dots are lit by the stylesheet, so `data-state` on the entries stays `active`; style on it only with `driver="js"`. The server HTML shows the line fully lit and every dot active, which is also what browsers without scroll-driven animations show when JavaScript does not run.
+A CSS view timeline follows the nearest scroll container, and an ancestor with `overflow: hidden` counts as one even though it never scrolls. Between the timeline and the page, use `overflow: clip` instead, which does not create a scroll container.
 
-Browser support for CSS scroll-driven animations: Chrome and Edge 115 and later, Opera 101 and later, Safari 26 and later. Firefox has them only behind a flag at the time of writing, so it gets the JavaScript driver (or, with `driver="css"`, the static final state).
+## Layout
+
+The layout follows the timeline's own width with container queries, not the screen's: from `42rem` wide each date sits in a sticky column beside its entry, and below that it goes above the entry. The same timeline fits a full page and a narrow column.
