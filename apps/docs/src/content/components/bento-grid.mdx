@@ -15,14 +15,24 @@ import { BentoCard, BentoGrid } from '@/components/ui/bento-grid'
 </BentoGrid>
 ```
 
-Three columns on wide screens, one on phones. `span` and `rows` size a card, `header` holds a visual that lifts on hover, and `href` makes the whole card a link.
+Three columns when the grid has room for them, one when it does not. `span` and `rows` size a card once there are three columns, `header` holds a visual that lifts on hover, and `href` makes the whole card a link.
+
+## Inside a column
+
+The grid measures its own width, not the screen's: it is wrapped in a [container](https://tailwindcss.com/docs/responsive-design#container-queries) and switches to three columns at `@xl` (36rem). In a sidebar or a narrow column on a wide screen it stacks, and on a phone it stacks as before.
+
+<ComponentPreview name="bento-grid-column" align="start" />
+
+`className` goes on the grid and `containerClassName` on the wrapper. To change when the columns appear, use container variants on the grid and the cards, such as `@3xl:grid-cols-4`, rather than screen ones like `md:`. The wrapper takes the full width it is given, so it also works as an item of a flex row.
 
 ## Props
 
 | Prop | Default | Description |
 | --- | --- | --- |
-| `span` | `1` | Columns the card takes: 1, 2 or 3. |
-| `rows` | `1` | Rows the card takes. |
+| `span` | `1` | Columns the card takes once the grid has three: 1, 2 or 3. |
+| `rows` | `1` | Rows the card takes once the grid has three columns. |
 | `header` | | Visual at the top. |
 | `icon`, `title`, `description` | | The text part. |
 | `href` | | Render as a link. |
+
+`BentoGrid` takes the props of a `div`, which go on the grid, and `containerClassName` for the wrapper.

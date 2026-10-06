@@ -197,10 +197,30 @@ describe('BentoGrid', () => {
       </BentoGrid>,
     )
     const big = screen.getByText('Big').closest('[data-slot=bento-card]')
-    expect(big?.className).toContain('md:col-span-2')
-    expect(big?.className).toContain('md:row-span-2')
+    expect(big?.className).toContain('@xl:col-span-2')
+    expect(big?.className).toContain('@xl:row-span-2')
     expect(big?.querySelector('[data-slot=bento-header]')).toBeTruthy()
     expect(screen.getByRole('link', { name: 'Link' }).getAttribute('href')).toBe('/go')
+  })
+
+  // Container queries, not the screen: the grid stacks inside a narrow column on a wide screen.
+  it('sizes its columns from its wrapper, not from the viewport', () => {
+    render(
+      <BentoGrid id="features" className="gap-2" containerClassName="max-w-sm">
+        <BentoCard span={3} title="Wide" />
+      </BentoGrid>,
+    )
+    const grid = document.getElementById('features') as HTMLElement
+    const wrapper = grid.parentElement as HTMLElement
+    expect(grid.dataset.slot).toBe('bento-grid')
+    expect(wrapper.dataset.slot).toBe('bento-grid-container')
+    expect(wrapper.className.split(' ')).toEqual(['@container', 'w-full', 'max-w-sm'])
+    expect(grid.className).toContain('@xl:grid-cols-3')
+    expect(grid.className).toContain('gap-2')
+    expect(grid.className).not.toContain('gap-4')
+    const wide = screen.getByText('Wide').closest('[data-slot=bento-card]') as HTMLElement
+    expect(wide.className).toContain('@xl:col-span-3')
+    for (const el of [grid, wide]) expect(el.className).not.toMatch(/(^|\s)md:/)
   })
 })
 
