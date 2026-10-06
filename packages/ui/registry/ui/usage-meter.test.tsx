@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { UsageMeter } from './usage-meter'
 
@@ -47,5 +47,46 @@ describe('UsageMeter', () => {
     const mark = document.querySelector<HTMLElement>('[data-slot=usage-meter-limit]')
     expect(mark?.style.left).toBe('calc(83.3333% - 1px)')
     expect(screen.queryByText('Free')).toBeNull()
+  })
+
+  it('shows a tooltip for the segment under the pointer, and for what is free', () => {
+    render(
+      <UsageMeter
+        label="Storage"
+        segments={segments}
+        limit={100}
+        format={(n) => `${n} GB`}
+        locale="en-US"
+      />,
+    )
+    const tip = () => document.querySelector<HTMLElement>('[data-slot=usage-meter-tooltip]')
+    const bar = document.querySelector<HTMLElement>('[data-slot=usage-meter-bar]') as HTMLElement
+    const parts = document.querySelectorAll<HTMLElement>('[data-slot=usage-meter-segment]')
+    expect(tip()).toBeNull()
+
+    fireEvent.pointerEnter(parts[1] as HTMLElement)
+    expect(tip()?.textContent).toBe('Video20 GB20%')
+    expect(parts[1]?.dataset.active).toBe('true')
+    expect(parts[0]?.className).toContain('opacity-40')
+
+    fireEvent.pointerEnter(document.querySelector('[data-slot=usage-meter-free]') as HTMLElement)
+    expect(tip()?.textContent).toBe('Free40 GB40%')
+
+    fireEvent.pointerLeave(bar)
+    expect(tip()).toBeNull()
+  })
+
+  it('highlights a segment from its legend entry', () => {
+    render(<UsageMeter label="Storage" segments={segments} limit={100} locale="en-US" />)
+    const legend = document.querySelector<HTMLElement>(
+      '[data-slot=usage-meter-legend]',
+    ) as HTMLElement
+    const [images] = within(legend).getAllByRole('listitem')
+    fireEvent.pointerEnter(images as HTMLElement)
+    expect(document.querySelector('[data-slot=usage-meter-tooltip]')?.textContent).toBe(
+      'Images3030%',
+    )
+    fireEvent.pointerLeave(images as HTMLElement)
+    expect(document.querySelector('[data-slot=usage-meter-tooltip]')).toBeNull()
   })
 })
