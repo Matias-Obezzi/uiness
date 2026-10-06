@@ -62,6 +62,20 @@ function cellsFor(parts: Intl.NumberFormatPart[]): Cell[] {
 
 const DIGITS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
 
+/**
+ * A character drawn as generated content. The HTML then holds the number once, in the screen
+ * reader text, instead of every digit strip from 0 to 9: that is what crawlers and copy read.
+ */
+function Glyph({ char, className, ...props }: { char: string } & React.ComponentProps<'span'>) {
+  return (
+    <span
+      data-char={char}
+      className={cn('before:content-[attr(data-char)]', className)}
+      {...props}
+    />
+  )
+}
+
 function OdometerDigit({
   digit,
   rollIn,
@@ -89,7 +103,7 @@ function OdometerDigit({
       data-slot="odometer-digit"
       className="relative inline-block overflow-y-clip [clip-path:inset(0_-0.5em)]"
     >
-      <span className="invisible">{DIGITS[digit]}</span>
+      <Glyph char={DIGITS[digit] ?? ''} className="invisible" />
       <span
         data-slot="odometer-strip"
         className="absolute inset-x-0 top-0 flex flex-col items-center transition-transform motion-reduce:transition-none"
@@ -101,7 +115,7 @@ function OdometerDigit({
         }}
       >
         {DIGITS.map((d) => (
-          <span key={d}>{d}</span>
+          <Glyph key={d} char={d} />
         ))}
       </span>
     </span>
@@ -112,6 +126,9 @@ function OdometerDigit({
  * A number whose digits roll to their new value like an odometer. Separators, signs and
  * symbols come from Intl.NumberFormat and stay put; only the digits move. Screen readers get
  * the plain value, and reduced motion swaps it without the roll.
+ *
+ * The digits are drawn with CSS generated content, so the text of the HTML, server rendered
+ * or not, is the formatted number once.
  */
 function Odometer({
   value,
@@ -150,9 +167,12 @@ function Odometer({
       <span aria-hidden className="inline-flex">
         {cells.map((cell) =>
           cell.order === undefined ? (
-            <span key={cell.key} data-slot="odometer-symbol" className="whitespace-pre">
-              {cell.char}
-            </span>
+            <Glyph
+              key={cell.key}
+              char={cell.char}
+              data-slot="odometer-symbol"
+              className="whitespace-pre"
+            />
           ) : (
             <OdometerDigit
               key={cell.key}

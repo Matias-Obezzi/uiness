@@ -186,8 +186,8 @@ describe('Odometer', () => {
       'translateY(-40%)',
       'translateY(-70%)',
     ])
-    const symbols = document.querySelectorAll('[data-slot=odometer-symbol]')
-    expect([...symbols].map((s) => s.textContent)).toEqual([','])
+    const symbols = document.querySelectorAll<HTMLElement>('[data-slot=odometer-symbol]')
+    expect([...symbols].map((s) => s.dataset.char)).toEqual([','])
     expect(screen.getByText('1,047', { selector: '.sr-only' })).toBeTruthy()
   })
 
@@ -230,8 +230,8 @@ describe('Odometer', () => {
     )
     expect(screen.getByText('$1,234.50', { selector: '.sr-only' })).toBeTruthy()
     expect(document.querySelectorAll('[data-slot=odometer-digit]')).toHaveLength(6)
-    const symbols = [...document.querySelectorAll('[data-slot=odometer-symbol]')]
-    expect(symbols.map((s) => s.textContent)).toEqual(['$', ',', '.'])
+    const symbols = [...document.querySelectorAll<HTMLElement>('[data-slot=odometer-symbol]')]
+    expect(symbols.map((s) => s.dataset.char)).toEqual(['$', ',', '.'])
   })
 
   it('drops the roll with reduced motion', () => {
