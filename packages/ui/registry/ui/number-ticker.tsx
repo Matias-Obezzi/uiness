@@ -19,8 +19,11 @@ export interface NumberTickerProps extends Omit<React.ComponentProps<'span'>, 'c
   decimals?: number
   /** Formatting locale, defaults to the browser's. */
   locale?: string
-  /** Extra Intl.NumberFormat options, for currency or units. */
-  format?: Intl.NumberFormatOptions
+  /**
+   * Extra Intl.NumberFormat options, for currency or units. `false` shows the number as written,
+   * with no separators and a `.` before the decimals: `1500` stays "1500" in any locale.
+   */
+  format?: Intl.NumberFormatOptions | false
   /** Wait for the element to scroll into view. Default true. */
   whenVisible?: boolean
 }
@@ -85,13 +88,19 @@ function NumberTicker({
 
   const formatter = React.useMemo(
     () =>
-      new Intl.NumberFormat(locale, {
-        minimumFractionDigits: decimals,
-        maximumFractionDigits: decimals,
-        ...format,
-      }),
+      format === false
+        ? null
+        : new Intl.NumberFormat(locale, {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals,
+            ...format,
+          }),
     [locale, decimals, format],
   )
+  // As written: the value itself at rest, and while counting as many decimals as it has.
+  const places = decimals || (String(value).split('.')[1]?.length ?? 0)
+  const show = (n: number) =>
+    formatter ? formatter.format(n) : n === value && !decimals ? String(n) : n.toFixed(places)
 
   return (
     <span
@@ -100,22 +109,22 @@ function NumberTicker({
       className={cn('inline-block tabular-nums', className)}
       {...props}
     >
-      <span className="sr-only">{formatter.format(value)}</span>
+      <span className="sr-only">{show(value)}</span>
       {animate ? (
         <span aria-hidden className="inline-grid justify-items-end">
           {/* The final value as generated content: it holds the width, but is not text twice. */}
           <span
             data-slot="number-ticker-sizer"
-            data-value={formatter.format(value)}
+            data-value={show(value)}
             className="invisible [grid-area:1/1] before:content-[attr(data-value)]"
           />
           <span data-slot="number-ticker-value" className="[grid-area:1/1]">
-            {formatter.format(current)}
+            {show(current)}
           </span>
         </span>
       ) : (
         <span aria-hidden data-slot="number-ticker-value">
-          {formatter.format(current)}
+          {show(current)}
         </span>
       )}
     </span>

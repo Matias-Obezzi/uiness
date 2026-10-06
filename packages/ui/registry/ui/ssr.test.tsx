@@ -153,8 +153,10 @@ describe('server rendering of the text animations', () => {
     const ui = <Odometer value={1234} locale="en-US" />
     const { el } = serverHtml(ui)
     expect(el.querySelector('.sr-only')?.textContent).toBe('1,234')
-    const digits = [...el.querySelectorAll('[data-slot=odometer-digit] > .invisible')]
-      .map((d) => d.textContent)
+    // The number once, not the strips from 0 to 9: the digits are generated content.
+    expect(el.textContent).toBe('1,234')
+    const digits = [...el.querySelectorAll<HTMLElement>('[data-slot=odometer-digit] > .invisible')]
+      .map((d) => d.dataset.char)
       .join('')
     expect(digits).toBe('1234')
     const strips = [...el.querySelectorAll<HTMLElement>('[data-slot=odometer-strip]')]
@@ -179,6 +181,19 @@ describe('server rendering of the text animations', () => {
     const sizer = host.querySelector<HTMLElement>('[data-slot=number-ticker-sizer]')
     expect(sizer?.dataset.value).toBe('1,234')
     expect(sizer?.textContent).toBe('')
+  })
+
+  it('number ticker shows the number as written with format false', () => {
+    const ui = <NumberTicker value={1500} locale="es-AR" format={false} />
+    const { el } = serverHtml(ui)
+    expect(text(el, 'number-ticker-value')).toBe('1500')
+    expect(el.querySelector('.sr-only')?.textContent).toBe('1500')
+    expect(
+      serverHtml(<NumberTicker value={2.5} format={false} decimals={2} />).el.querySelector(
+        '.sr-only',
+      )?.textContent,
+    ).toBe('2.50')
+    expect(hydrate(ui).errors).toEqual([])
   })
 
   it('keeps what the reader already sees when the page hydrates on screen', () => {
