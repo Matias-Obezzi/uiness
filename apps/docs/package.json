@@ -9,11 +9,13 @@
     "build": "node scripts/copy-registry.mjs && vite build && node scripts/postbuild.mjs",
     "preview": "vite preview",
     "test": "vitest run",
+    "mcp:smoke": "node scripts/mcp-smoke.mjs",
     "typecheck": "tsc --noEmit",
     "pages:redirect": "node scripts/copy-registry.mjs && node scripts/pages-redirect.mjs"
   },
   "dependencies": {
     "@mdx-js/react": "^3.1.1",
+    "@modelcontextprotocol/sdk": "^1.30.0",
     "@uiness/choreo": "workspace:*",
     "@uiness/dnd": "workspace:*",
     "@uiness/fx": "workspace:*",
