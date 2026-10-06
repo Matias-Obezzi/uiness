@@ -42,11 +42,20 @@ export interface ComparisonLabels {
   recommended: string
 }
 
+/** Whose product is being compared. The same shape as the `brand` of the other blocks. */
+export interface ComparisonBrand {
+  /** Named in the default title and on the default highlighted column. */
+  name: string
+}
+
 export interface Comparison01Props extends Omit<React.ComponentProps<'section'>, 'title'> {
+  brand?: ComparisonBrand
   /** The small line above the heading. `null` hides it. */
   eyebrow?: React.ReactNode | null
+  /** Default `Why teams switch to <brand.name>`. */
   title?: React.ReactNode
   description?: React.ReactNode | null
+  /** One per column. The default puts the brand first, against two alternatives. */
   products?: ComparisonProduct[]
   sections?: ComparisonSection[]
   /** A button under the highlighted column. `null` hides it. */
@@ -59,8 +68,10 @@ export interface Comparison01Props extends Omit<React.ComponentProps<'section'>,
   labels?: Partial<ComparisonLabels>
 }
 
-const defaultProducts: ComparisonProduct[] = [
-  { id: 'us', name: 'Northwind', caption: 'from $12 / seat', highlight: true },
+const defaultBrand: ComparisonBrand = { name: 'Acme' }
+
+const defaultProducts = (name: string): ComparisonProduct[] => [
+  { id: 'us', name, caption: 'from $12 / seat', highlight: true },
   { id: 'a', name: 'Legacy Suite', caption: 'from $25 / seat' },
   { id: 'b', name: 'Spreadsheets', caption: 'free-ish' },
 ]
@@ -157,10 +168,11 @@ function Value({
  * a short text, and each says what it means to screen readers.
  */
 function Comparison01({
+  brand = defaultBrand,
   eyebrow = 'Compare',
-  title = 'Why teams switch to Northwind',
+  title = `Why teams switch to ${brand.name}`,
   description = 'An honest look at what you get, side by side with the tools people usually come from.',
-  products = defaultProducts,
+  products = defaultProducts(brand.name),
   sections = defaultSections,
   action = { label: 'Start free trial', href: '#' },
   maxHeight = '34rem',

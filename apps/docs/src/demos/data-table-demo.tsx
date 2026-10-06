@@ -14,11 +14,20 @@ interface Payment {
 }
 
 // Forty made up payments, the same on every render.
-const customers = ['Acme', 'Globex', 'Initech', 'Umbrella', 'Hooli', 'Stark', 'Wayne', 'Wonka']
+const customers = [
+  'Halcyon',
+  'Brightwater',
+  'Copperleaf',
+  'Marlowe',
+  'Pinecrest',
+  'Saltmarsh',
+  'Fennel',
+  'Kestrel',
+]
 const statuses: Payment['status'][] = ['Paid', 'Paid', 'Paid', 'Pending', 'Failed', 'Refunded']
 const methods: Payment['method'][] = ['Card', 'Card', 'Bank transfer', 'PayPal']
 const payments: Payment[] = Array.from({ length: 40 }, (_, i) => {
-  const customer = customers[(i * 5) % customers.length] ?? 'Acme'
+  const customer = customers[(i * 5) % customers.length] ?? 'Halcyon'
   return {
     id: `PAY-${String(1040 - i)}`,
     customer,
@@ -90,7 +99,7 @@ export default function DataTableDemo() {
       defaultSort={[{ id: 'date', desc: true }]}
       selectable
       pageSize={8}
-      containerClassName="max-h-[28rem]"
+      containerClassName="max-h-[32rem]"
       toolbar={
         <Button variant="outline" size="sm" className="h-8">
           <DownloadIcon />

@@ -17,7 +17,7 @@ import { Label } from '@/ui/label'
 
 export default function DrawerGuard() {
   const [open, setOpen] = useState(false)
-  const [saved, setSaved] = useState('Ada Lovelace')
+  const [saved, setSaved] = useState('Clara Nyberg')
   const [name, setName] = useState(saved)
   const dirty = name !== saved
 

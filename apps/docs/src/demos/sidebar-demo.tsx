@@ -85,8 +85,8 @@ const settings: Item[] = [
 
 const groups = [
   { name: 'Acme Inc', plan: 'Free plan' },
-  { name: 'Globex', plan: 'Pro plan' },
-  { name: 'Initech', plan: 'Team plan' },
+  { name: 'Bramble Labs', plan: 'Pro plan' },
+  { name: 'Cobalt Studio', plan: 'Team plan' },
 ]
 
 const titles = new Map(

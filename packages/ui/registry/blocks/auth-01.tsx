@@ -7,7 +7,6 @@ import {
   LoaderCircleIcon,
   type LucideIcon,
   QuoteIcon,
-  WindIcon,
 } from 'lucide-react'
 import * as React from 'react'
 import { cn } from '@/lib/utils'
@@ -18,11 +17,14 @@ import { Input } from '@/ui/input'
 import { Label } from '@/ui/label'
 import { Pattern } from '@/ui/pattern'
 
+/** Whose product this is. The same shape as the `brand` of the other blocks. */
 export interface AuthBrand {
+  /** The wordmark above the form, also in the sign up line. */
   name: string
-  href: string
-  /** A lucide icon for the mark next to the name. Without one the mark shows the first letter. */
-  icon?: LucideIcon
+  /** Where the wordmark goes. Default `/`. */
+  href?: string
+  /** The mark before the name, like `<MountainIcon />` or an `<img>`. Without one it shows the first letter. */
+  logo?: React.ReactNode
 }
 
 export interface AuthProvider {
@@ -75,7 +77,7 @@ export interface Auth01Props extends Omit<React.ComponentProps<'section'>, 'titl
   /** Buttons under the divider. An empty list hides them and the divider. */
   providers?: AuthProvider[]
   onProvider?: (id: string) => void
-  /** The line under the form. `null` hides it. */
+  /** The line under the form. `{brand}` in `prompt` is replaced with the brand name. `null` hides it. */
   signUp?: { prompt: string; label: string; href: string } | null
   /** The quote in the side panel on wide containers. `null` hides the panel. */
   testimonial?: AuthTestimonial | null
@@ -83,7 +85,7 @@ export interface Auth01Props extends Omit<React.ComponentProps<'section'>, 'titl
   labels?: Partial<AuthLabels>
 }
 
-const defaultBrand: AuthBrand = { name: 'Northwind', href: '#', icon: WindIcon }
+const defaultBrand: AuthBrand = { name: 'Acme', href: '#' }
 
 const defaultProviders: AuthProvider[] = [
   { id: 'github', label: 'GitHub', icon: GitBranchIcon },
@@ -93,8 +95,8 @@ const defaultProviders: AuthProvider[] = [
 const defaultTestimonial: AuthTestimonial = {
   quote:
     'We moved three teams over in a week. Planning went from a Monday meeting to a five minute glance, and nobody wants to go back.',
-  name: 'Maya Okafor',
-  role: 'Head of Product, Fieldnote',
+  name: 'Rosa Delgado',
+  role: 'Engineering Manager, Tidewater',
 }
 
 const defaultLabels: AuthLabels = {
@@ -127,17 +129,16 @@ const initials = (name: string) =>
     .toUpperCase()
 
 function Mark({ brand }: { brand: AuthBrand }) {
-  const Icon = brand.icon
   return (
     <a
-      href={brand.href}
+      href={brand.href ?? '/'}
       className="group flex w-fit items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
       <span
         aria-hidden
-        className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-primary/70 text-primary-foreground shadow-sm transition-transform duration-(--duration-normal,200ms) ease-(--easing-spring,ease-out) group-hover:-rotate-6 group-hover:scale-105 motion-reduce:transition-none"
+        className="flex size-8 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-primary to-primary/70 text-primary-foreground shadow-sm transition-transform duration-(--duration-normal,200ms) ease-(--easing-spring,ease-out) group-hover:-rotate-6 group-hover:scale-105 motion-reduce:transition-none [&_svg]:size-4"
       >
-        {Icon ? <Icon className="size-4" /> : brand.name.charAt(0)}
+        {brand.logo ?? brand.name.charAt(0)}
       </span>
       {brand.name}
     </a>
@@ -157,7 +158,7 @@ function Auth01({
   forgotPasswordHref = '#',
   providers = defaultProviders,
   onProvider,
-  signUp = { prompt: 'New to Northwind?', label: 'Create an account', href: '#' },
+  signUp = { prompt: 'New to {brand}?', label: 'Create an account', href: '#' },
   testimonial = defaultTestimonial,
   labels: labelsProp,
   className,
@@ -325,7 +326,7 @@ function Auth01({
 
             {signUp && (
               <p className="mt-8 text-center text-muted-foreground text-sm">
-                {signUp.prompt}{' '}
+                {signUp.prompt.replaceAll('{brand}', brand.name)}{' '}
                 <a
                   href={signUp.href}
                   className="rounded-sm font-medium text-foreground underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"

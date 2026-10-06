@@ -67,15 +67,24 @@ export interface ContactLabels {
   closed: string
 }
 
+/** Who people are writing to. The same shape as the `brand` of the other blocks. */
+export interface ContactBrand {
+  /** Named in the default description. */
+  name: string
+  /** For the default addresses, like `sales@acme.com`. Default the name in lower case with `.com`. */
+  domain?: string
+}
+
 export interface Contact01Props
   extends Omit<React.ComponentProps<'section'>, 'title' | 'onSubmit'> {
+  brand?: ContactBrand
   /** The small line above the heading. `null` hides it. */
   eyebrow?: React.ReactNode | null
   title?: React.ReactNode
   description?: React.ReactNode | null
   /** Called with the values once they pass. Return a promise to wait; throw to show an error. */
   onSubmit?: (values: ContactValues) => void | Promise<void>
-  /** Ways to reach you besides the form. An empty list hides them. */
+  /** Ways to reach you besides the form. The default ones write to the brand's domain. An empty list hides them. */
   channels?: ContactChannel[]
   /** Office cards with their local time. An empty list hides them. */
   offices?: ContactOffice[]
@@ -86,13 +95,18 @@ export interface Contact01Props
   labels?: Partial<ContactLabels>
 }
 
-const defaultChannels: ContactChannel[] = [
+const defaultBrand: ContactBrand = { name: 'Acme', domain: 'acme.com' }
+
+const domainOf = (brand: ContactBrand) =>
+  brand.domain ?? `${brand.name.toLowerCase().replace(/[^a-z0-9]+/g, '')}.com`
+
+const defaultChannels = (domain: string): ContactChannel[] => [
   {
     icon: MessagesSquareIcon,
     title: 'Talk to sales',
     description: 'Pricing, security reviews and volume plans.',
-    label: 'sales@northwind.dev',
-    href: 'mailto:sales@northwind.dev',
+    label: `sales@${domain}`,
+    href: `mailto:sales@${domain}`,
   },
   {
     icon: LifeBuoyIcon,
@@ -105,8 +119,8 @@ const defaultChannels: ContactChannel[] = [
     icon: MailIcon,
     title: 'Press',
     description: 'Stories, logos and interviews.',
-    label: 'press@northwind.dev',
-    href: 'mailto:press@northwind.dev',
+    label: `press@${domain}`,
+    href: `mailto:press@${domain}`,
   },
 ]
 
@@ -177,11 +191,12 @@ function useAnimatedHeight<T extends HTMLElement>() {
  * ticking, and whether they are open.
  */
 function Contact01({
+  brand = defaultBrand,
   eyebrow = 'Contact',
   title = 'Let’s talk',
-  description = 'Questions about plans, a demo for your team, or just a hello. A real person reads every message.',
+  description = `Questions about plans, a demo for your team, or just a hello. A real person at ${brand.name} reads every message.`,
   onSubmit = () => wait(900),
-  channels = defaultChannels,
+  channels = defaultChannels(domainOf(brand)),
   offices = defaultOffices,
   minMessage = 20,
   locale,

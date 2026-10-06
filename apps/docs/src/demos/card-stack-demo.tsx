@@ -4,26 +4,26 @@ import { CardStack } from '@/ui/card-stack'
 const testimonials = [
   {
     quote: 'We replaced three animation libraries with a handful of components we actually own.',
-    name: 'Ada Lovelace',
-    role: 'Staff Engineer, Analytical',
+    name: 'Sofia Brandt',
+    role: 'Staff Engineer, Kiln',
     image: '/img/gallery-1.png',
   },
   {
     quote: 'The docs read like someone cared. Installed, tweaked the classes, shipped by lunch.',
-    name: 'Grace Hopper',
-    role: 'Founder, Compiler Co.',
+    name: 'Marcus Webb',
+    role: 'Founder, Tallow & Pine',
     image: '/img/gallery-2.png',
   },
   {
     quote: 'Reduced motion is handled everywhere. That alone saved us a week of review comments.',
-    name: 'Alan Turing',
-    role: 'Accessibility Lead, Enigma',
+    name: 'Amina Diallo',
+    role: 'Accessibility Lead, Lattice',
     image: '/img/gallery-3.png',
   },
   {
     quote: 'Swipe it, click it, arrow-key it. Our landing page finally feels alive.',
-    name: 'Katherine Johnson',
-    role: 'Design Director, Orbit',
+    name: 'Jakob Horvat',
+    role: 'Design Director, Pilotlight',
     image: '/img/gallery-4.png',
   },
 ]

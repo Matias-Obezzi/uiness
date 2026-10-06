@@ -29,7 +29,8 @@ describe('SignIn01', () => {
     const user = userEvent.setup()
     const onRequestCode = vi.fn()
     render(<SignIn01 onRequestCode={onRequestCode} />)
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Sign in to Northwind')
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Sign in to Acme')
+    expect(screen.getByRole('link', { name: 'Acme' })).toBeTruthy()
     await user.type(screen.getByLabelText('Work email'), 'ada@{Enter}')
     expect(screen.getByRole('alert').textContent).toMatch(/Enter an email address/)
     expect(screen.getByLabelText('Work email').getAttribute('aria-invalid')).toBe('true')
@@ -97,6 +98,15 @@ describe('SignIn01', () => {
     expect(step()).toBe('email')
     expect((screen.getByLabelText('Work email') as HTMLInputElement).value).toBe('ada@example.com')
   })
+
+  it('puts the brand it is given on the mark and in the title', () => {
+    const { rerender } = render(<SignIn01 brand={{ name: 'Globex' }} />)
+    expect(screen.getByRole('link', { name: 'Globex' }).getAttribute('href')).toBe('/')
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Sign in to Globex')
+    expect(screen.getByRole('region').textContent).not.toContain('Acme')
+    rerender(<SignIn01 brand={{ name: 'Globex' }} labels={{ emailTitle: 'Entrar a {brand}' }} />)
+    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('Entrar a Globex')
+  })
 })
 
 describe('Contact01', () => {
@@ -122,6 +132,23 @@ describe('Contact01', () => {
     expect(screen.getByText(/Enter an email address/)).toBeTruthy()
     await user.type(screen.getByLabelText('How can we help?'), 'Too short')
     expect(screen.getByText(/at least 20 characters/)).toBeTruthy()
+  })
+
+  it('writes the default addresses and description for the brand', () => {
+    const { rerender } = render(<Contact01 offices={[]} />)
+    expect(screen.getByRole('link', { name: 'sales@acme.com' }).getAttribute('href')).toBe(
+      'mailto:sales@acme.com',
+    )
+    expect(screen.getByText(/A real person at Acme reads/)).toBeTruthy()
+
+    rerender(<Contact01 offices={[]} brand={{ name: 'Globex' }} />)
+    expect(screen.getByRole('link', { name: 'sales@globex.com' })).toBeTruthy()
+    expect(screen.getByRole('link', { name: 'press@globex.com' })).toBeTruthy()
+    expect(screen.getByText(/A real person at Globex reads/)).toBeTruthy()
+    expect(screen.getByRole('region').textContent).not.toMatch(/acme/i)
+
+    rerender(<Contact01 offices={[]} brand={{ name: 'Globex', domain: 'globex.example' }} />)
+    expect(screen.getByRole('link', { name: 'sales@globex.example' })).toBeTruthy()
   })
 
   it('sends the values and turns into a confirmation', async () => {

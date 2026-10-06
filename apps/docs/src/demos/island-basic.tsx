@@ -17,7 +17,7 @@ export default function IslandBasic() {
             content: (
               <div className="flex w-72 flex-col gap-1">
                 <p className="font-semibold">New message</p>
-                <p className="text-sm opacity-70">Ada: the deploy is green, shipping now.</p>
+                <p className="text-sm opacity-70">Bea: the deploy is green, shipping now.</p>
               </div>
             ),
             duration: 4000,

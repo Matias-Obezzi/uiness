@@ -6,7 +6,7 @@ import { SwipeActions, SwipeActionsRow } from '@/ui/swipe-actions'
 const inbox = [
   {
     id: 1,
-    from: 'Ana Lima',
+    from: 'Bruna Lima',
     subject: 'Lunch on Friday?',
     preview: 'There is a new place by the river…',
   },

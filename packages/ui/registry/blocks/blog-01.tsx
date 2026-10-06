@@ -139,7 +139,7 @@ const defaultPosts: BlogPost[] = [
   },
   {
     slug: 'customer-fieldnote',
-    title: 'How Fieldnote plans a quarter in one afternoon',
+    title: 'How Quillfeather plans a quarter in one afternoon',
     excerpt: 'Three teams, one board, and a Monday meeting they no longer need.',
     category: 'Customers',
     date: '2026-08-20',

@@ -12,7 +12,7 @@ A footer with the wordmark, a short blurb and social links, columns of links, a 
 import { Footer01 } from '@/components/footer-01'
 
 <Footer01
-  brand={{ name: 'Summit', href: '/' }}
+  brand={{ name: 'Harbor', href: '/', legalName: 'Harbor Labs, Inc.' }}
   description="Trail maps for teams."
   columns={[
     { title: 'Product', links: [{ label: 'Pricing', href: '/pricing' }] },
@@ -26,12 +26,12 @@ import { Footer01 } from '@/components/footer-01'
 
 | Prop | Description |
 | --- | --- |
-| `brand` | `{ name, href, icon? }` for the wordmark. |
+| `brand` | `{ name, href?, logo?, legalName? }` for the wordmark, the watermark and the copyright. `logo` is any node; without one the mark shows the first letter. Default `Acme`. |
 | `description` | A line or two under the wordmark. |
 | `socials` | `{ label, href, icon }` for the icon links. `label` is the accessible name. |
 | `columns` | `{ title, links }` for each column of links. Three or four read best. |
 | `newsletter` | `{ title, description?, label?, placeholder?, button?, success?, error? }` for the signup. `null` hides it. |
 | `onSubscribe` | Called with the email. Return a promise to show a pending state, throw to show the error. |
 | `watermark` | The brand name set huge and faded above the bottom bar. Default `true`. |
-| `copyright` | The line in the bottom bar. |
+| `copyright` | The line in the bottom bar. Default `© <year> <legalName or name>`. |
 | `legal` | `{ label, href }` for the links in the bottom bar. |

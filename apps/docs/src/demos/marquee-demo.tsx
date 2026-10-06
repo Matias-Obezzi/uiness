@@ -1,10 +1,10 @@
 import { Marquee } from '@/ui/marquee'
 
 const quotes = [
-  { name: 'Ada', text: 'Finally a marquee that pauses when I want to read it.' },
-  { name: 'Grace', text: 'No animation library, and it still looks this smooth.' },
-  { name: 'Alan', text: 'The copies are hidden from screen readers. Nice touch.' },
-  { name: 'Linus', text: 'It just scrolls. That is all I wanted.' },
+  { name: 'Tomasz', text: 'Finally a marquee that pauses when I want to read it.' },
+  { name: 'Ife', text: 'No animation library, and it still looks this smooth.' },
+  { name: 'Nora', text: 'The copies are hidden from screen readers. Nice touch.' },
+  { name: 'Saoirse', text: 'It just scrolls. That is all I wanted.' },
 ]
 
 export default function MarqueeDemo() {

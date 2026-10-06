@@ -11,12 +11,12 @@ const initial: NotificationData[] = [
     id: 'n1',
     title: (
       <>
-        <b className="font-medium">Maya Chen</b> mentioned you in Homepage hero
+        <b className="font-medium">Zara Ahmed</b> mentioned you in Homepage hero
       </>
     ),
     description: '"@Alex could we try a shorter headline?"',
     createdAt: minutesAgo(4),
-    name: 'Maya Chen',
+    name: 'Zara Ahmed',
     avatar: '/img/gallery-1-tiny.png',
     category: 'Mentions',
   },
@@ -24,11 +24,11 @@ const initial: NotificationData[] = [
     id: 'n2',
     title: (
       <>
-        <b className="font-medium">Leo Park</b> invited you to Design Systems
+        <b className="font-medium">Diego Santos</b> invited you to Design Systems
       </>
     ),
     createdAt: minutesAgo(52),
-    name: 'Leo Park',
+    name: 'Diego Santos',
     avatar: '/img/gallery-3-tiny.png',
     actions: [
       { id: 'accept', label: 'Accept' },
@@ -63,11 +63,11 @@ const incoming: Omit<NotificationData, 'id' | 'createdAt'>[] = [
   {
     title: (
       <>
-        <b className="font-medium">Leo Park</b> mentioned you in Pricing
+        <b className="font-medium">Diego Santos</b> mentioned you in Pricing
       </>
     ),
     description: '"@Alex the toggle needs a focus ring."',
-    name: 'Leo Park',
+    name: 'Diego Santos',
     avatar: '/img/gallery-3-tiny.png',
     category: 'Mentions',
   },

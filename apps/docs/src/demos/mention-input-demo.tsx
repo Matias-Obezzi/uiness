@@ -3,11 +3,11 @@ import { useState } from 'react'
 import { MentionInput, type MentionTrigger, type MentionValue } from '@/ui/mention-input'
 
 const people = [
-  { id: 'u1', label: 'Ada Lovelace', description: 'Engineering' },
-  { id: 'u2', label: 'Alan Turing', description: 'Research' },
-  { id: 'u3', label: 'Grace Hopper', description: 'Platform' },
-  { id: 'u4', label: 'Katherine Johnson', description: 'Data' },
-  { id: 'u5', label: 'Margaret Hamilton', description: 'Flight software' },
+  { id: 'u1', label: 'Lucía Ortega', description: 'Engineering' },
+  { id: 'u2', label: 'Samir Khan', description: 'Research' },
+  { id: 'u3', label: 'Greta Holm', description: 'Platform' },
+  { id: 'u4', label: 'Malik Grant', description: 'Data' },
+  { id: 'u5', label: 'Chiara Bianchi', description: 'Mobile' },
 ]
 
 const channels = ['general', 'design', 'releases', 'random', 'support']

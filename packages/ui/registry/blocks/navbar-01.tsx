@@ -1,17 +1,20 @@
 'use client'
 
-import { ArrowRightIcon, type LucideIcon, MenuIcon, WindIcon, XIcon } from 'lucide-react'
+import { ArrowRightIcon, MenuIcon, XIcon } from 'lucide-react'
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/ui/button'
 import { HoverHighlight, HoverHighlightItem } from '@/ui/hover-highlight'
 import { Popover, PopoverContent, PopoverTrigger } from '@/ui/popover'
 
+/** Whose site this is. The same shape as the `brand` of the other blocks. */
 export interface NavbarBrand {
+  /** The wordmark. */
   name: string
-  href: string
-  /** A lucide icon for the mark next to the name. Without one the mark shows the first letter. */
-  icon?: LucideIcon
+  /** Where the wordmark goes. Default `/`. */
+  href?: string
+  /** The mark before the name, like `<MountainIcon />` or an `<img>`. Without one it shows the first letter. */
+  logo?: React.ReactNode
 }
 
 export interface NavbarLink {
@@ -39,7 +42,7 @@ export interface Navbar01Props extends React.ComponentProps<'header'> {
   menuLabel?: string
 }
 
-const defaultBrand: NavbarBrand = { name: 'Northwind', href: '#', icon: WindIcon }
+const defaultBrand: NavbarBrand = { name: 'Acme', href: '#' }
 
 const defaultLinks: NavbarLink[] = [
   { label: 'Product', href: '#' },
@@ -65,7 +68,6 @@ function Navbar01({
   ...props
 }: Navbar01Props) {
   const [open, setOpen] = React.useState(false)
-  const BrandIcon = brand.icon
   return (
     <header
       data-slot="block-navbar-01"
@@ -78,14 +80,14 @@ function Navbar01({
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-6">
         <a
-          href={brand.href}
+          href={brand.href ?? '/'}
           className="group flex shrink-0 items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <span
             aria-hidden
-            className="flex size-8 items-center justify-center rounded-lg bg-linear-to-br from-primary to-primary/70 text-primary-foreground shadow-sm ring-1 ring-primary/10 ring-inset transition-transform duration-(--duration-normal,200ms) ease-(--easing-spring,ease-out) group-hover:-rotate-6 group-hover:scale-105 motion-reduce:transition-none"
+            className="flex size-8 items-center justify-center overflow-hidden rounded-lg bg-linear-to-br from-primary to-primary/70 text-primary-foreground shadow-sm ring-1 ring-primary/10 ring-inset transition-transform duration-(--duration-normal,200ms) ease-(--easing-spring,ease-out) group-hover:-rotate-6 group-hover:scale-105 motion-reduce:transition-none [&_svg]:size-4"
           >
-            {BrandIcon ? <BrandIcon className="size-4" /> : brand.name.charAt(0)}
+            {brand.logo ?? brand.name.charAt(0)}
           </span>
           {brand.name}
         </a>

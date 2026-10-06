@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Sortable, SortableHandle, SortableItem } from '@/ui/sortable'
 
 const TASKS = {
-  'design-review': { title: 'Design review', meta: 'Thursday · Ana' },
+  'design-review': { title: 'Design review', meta: 'Thursday · Rui' },
   'ship-registry': { title: 'Ship the registry', meta: 'Blocked on the docs' },
   'write-tests': { title: 'Write the drag tests', meta: 'In progress' },
   'update-changelog': { title: 'Update the changelog', meta: '5 entries pending' },

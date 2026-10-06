@@ -16,7 +16,7 @@ import { PageHeader01 } from '@/components/page-header-01'
 <PageHeader01
   height={null}
   stickyOffset={64}
-  breadcrumbs={[{ label: 'Acme', href: '/' }]}
+  brand={{ name: 'Orchard', href: '/', domain: 'orchard.dev' }}
   title="billing"
   description="Invoices, plans and payment methods."
   actions={[{ label: 'New invoice', href: '/invoices/new', primary: true }]}
@@ -31,7 +31,8 @@ import { PageHeader01 } from '@/components/page-header-01'
 
 | Prop | Description |
 | --- | --- |
-| `breadcrumbs` | `{ label, href }[]` above the title. An empty list hides them. |
+| `brand` | `{ name, href?, domain? }` for the organization: first in the default breadcrumbs, named in the default description, and its domain in the default facts. Default `Acme`. |
+| `breadcrumbs` | `{ label, href }[]` above the title. Default the brand, then `Projects`. An empty list hides them. |
 | `title`, `description`, `status` | The heading, the line under it and a badge beside it. `null` hides the description or the status. |
 | `meta` | `{ icon?, label }[]`, small facts under the description. |
 | `star` | `{ count, starred?, onChange? }` for a star button whose count rolls. `null` hides it. |

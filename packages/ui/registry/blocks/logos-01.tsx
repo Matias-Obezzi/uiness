@@ -32,7 +32,7 @@ export interface Logos01Props extends Omit<React.ComponentProps<'section'>, 'tit
 }
 
 const defaultLogos: LogoItem[] = [
-  { name: 'Northwind', icon: <MountainIcon />, className: 'font-semibold tracking-tight' },
+  { name: 'Ridgeline', icon: <MountainIcon />, className: 'font-semibold tracking-tight' },
   { name: 'Lumen', icon: <SparkleIcon />, className: 'font-serif text-2xl italic' },
   { name: 'HEXA', icon: <HexagonIcon />, className: 'font-black tracking-[0.2em]' },
   { name: 'orbital', icon: <OrbitIcon />, className: 'font-mono font-medium lowercase' },
