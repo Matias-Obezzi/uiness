@@ -82,7 +82,12 @@ function OdometerDigit({
   }, [digit])
 
   return (
-    <span data-slot="odometer-digit" className="relative inline-block [clip-path:inset(0_-0.5em)]">
+    // The strip holds all ten digits. The clip path hides them but still lets them count as
+    // overflow, so a scrolling parent would scroll to them; clipping the y axis stops that.
+    <span
+      data-slot="odometer-digit"
+      className="relative inline-block overflow-y-clip [clip-path:inset(0_-0.5em)]"
+    >
       <span className="invisible">{DIGITS[digit]}</span>
       <span
         data-slot="odometer-strip"

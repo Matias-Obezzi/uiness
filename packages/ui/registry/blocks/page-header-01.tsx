@@ -344,7 +344,7 @@ function PageHeader01({
           <Tabs value={tab} onValueChange={setTab} className="min-w-0 flex-1 gap-0">
             <TabsList
               aria-label={labels.tabs}
-              className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none bg-transparent p-0 [scrollbar-width:none]"
+              className="h-auto w-full justify-start gap-1 overflow-x-auto overflow-y-hidden rounded-none bg-transparent p-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {tabs.map(({ id, label, icon: Icon }) => (
                 <TabsTrigger
