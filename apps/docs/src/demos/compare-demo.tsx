@@ -6,6 +6,7 @@ export default function CompareDemo() {
     <Compare
       className="w-full max-w-lg"
       labels={['Game Boy', 'Original']}
+      getValueText={(value) => `${Math.round(value)}% Game Boy`}
       before={
         <Fx
           src="/img/gallery-3.png"

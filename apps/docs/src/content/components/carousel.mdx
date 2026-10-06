@@ -37,6 +37,76 @@ It is a scroll container with CSS snapping, not a track moved by script. That is
 
 Dragging with a mouse is added on top, since desktop pointers do not scroll by dragging on their own. Touch and pen are left alone — taking those over would throw away the momentum the platform gives for free.
 
+## Autoplay and loop
+
+A slideshow over photos: `autoplay` moves to the next item every `interval` milliseconds, `loop` wraps from the last item to the first, and `controls="overlay"` puts the arrows, dots and play button on the picture.
+
+<ComponentPreview name="carousel-autoplay" align="start" />
+
+```tsx
+import {
+  Carousel,
+  CarouselContent,
+  CarouselDots,
+  CarouselItem,
+  CarouselNext,
+  CarouselPlayPause,
+  CarouselPrevious,
+} from '@/components/ui/carousel'
+
+<Carousel label="Photos" autoplay interval={4000} loop controls="overlay">
+  <CarouselContent gap="0" className="rounded-2xl">
+    {photos.map((photo) => (
+      <CarouselItem key={photo.src} className="w-full">
+        <img src={photo.src} alt={photo.alt} className="aspect-3/2 w-full object-cover" />
+      </CarouselItem>
+    ))}
+  </CarouselContent>
+  <CarouselPrevious />
+  <CarouselNext />
+  <CarouselDots />
+  <CarouselPlayPause />
+</Carousel>
+```
+
+Autoplay pauses while the mouse rests on the carousel, while keyboard focus is anywhere inside it, and while it is scrolled off screen, and picks up again afterwards. Each item gets a full `interval`, including one the reader scrolled to by hand. Under `prefers-reduced-motion` it never starts, and `CarouselPlayPause` renders nothing. Without `loop` it stops on the last item.
+
+Always render a `CarouselPlayPause` with `autoplay`. Anything that moves on its own for more than five seconds needs a way to stop it ([WCAG 2.2.2](https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide)), and hover and focus are not that way on a touch screen. A press stops the run until it is pressed again.
+
+With `loop`, Previous on the first item goes to the last, Next on the last goes to the first, and the arrows never disable. These props move the run. They do not touch `CarouselVideo`, whose clip keeps looping and playing on screen through its own `<video>` attributes, as before.
+
+## Controls over a photo
+
+`controls="overlay"` styles every control for a picture underneath — a translucent black scrim, white icons, and a focus ring drawn twice, white inside and black outside — and places them over the run: arrows centered on the sides, dots at the bottom, the play button in the bottom right corner. The positions are relative to the `Carousel`, so put only the run and the controls inside it, or pass a `className` to move them. Each part takes `variant` to pick its own look, for a carousel whose dots sit below the photo while its arrows sit on it.
+
+These are the only controls that use fixed black and white rather than theme tokens, on purpose: a photograph is light in one corner and dark in the next whatever the color scheme says, so a theme color reads on some pictures and vanishes on others. White on a dark scrim reads on any picture, in light mode and dark. The default look keeps using the theme, like any other button on the page.
+
+## Driving it from elsewhere
+
+`useCarousel()` hands any component inside the carousel where it is and how to move it. From outside, pass `apiRef` for the same object, and `onIndexChange` to hear about moves.
+
+```tsx
+import { type CarouselApi, useCarousel } from '@/components/ui/carousel'
+
+function Counter() {
+  const { index, count, canPrev, canNext, prev, next, goTo } = useCarousel()
+  return <span>{index + 1} / {count}</span>
+}
+
+const api = React.useRef<CarouselApi>(null)
+
+<Carousel apiRef={api} onIndexChange={setIndex}>…</Carousel>
+<button onClick={() => api.current?.goTo(0)}>Back to the start</button>
+```
+
+| Field | Description |
+| --- | --- |
+| `index` | The item snapped at the start edge. |
+| `count` | How many items there are. |
+| `canPrev`, `canNext` | Whether `prev()` and `next()` would move. Always true with `loop`. |
+| `prev()`, `next()`, `goTo(index)` | Move the run. They respect `loop` and reduced motion. |
+| `playing`, `play()`, `pause()` | Autoplay as the reader set it. Hover and focus pause it without changing `playing`. |
+
 ## Video
 
 `CarouselVideo` is a clip that plays only while it is on screen, muted and looping.
@@ -55,7 +125,9 @@ Off screen it pauses rather than merely going out of view, so a run of clips is 
 
 The scrolling run is a list, and it is focusable. Both matter: a screen reader announces how many items there are and reads them in order, and a keyboard can enter the run at all — a scrolling box that no key can reach hides everything past its first screenful.
 
-Give the carousel a `label` whenever a page has more than one, so the two are told apart. The dots are real buttons that name where they go, and the arrows disable themselves at each end rather than going quiet.
+Give the carousel a `label` whenever a page has more than one, so the two are told apart. The dots are real buttons that name where they go, and the arrows disable themselves at each end rather than going quiet (unless `loop` is on).
+
+A polite live region reads out the position, "Item 2 of 5", whenever the reader moves the run. While autoplay is moving it, the region is switched off (`aria-live="off"`), so items sliding by on their own are not read out over whatever the reader is doing; pausing turns it back on.
 
 ## Props
 
@@ -64,6 +136,12 @@ Give the carousel a `label` whenever a page has more than one, so the two are to
 | Prop | Default | Description |
 | --- | --- | --- |
 | `label` | | Names the carousel for assistive tech. |
+| `autoplay` | `false` | Move to the next item on its own. Pauses on hover, keyboard focus within and off screen; off with reduced motion. |
+| `interval` | `5000` | Milliseconds between items when autoplaying. |
+| `loop` | `false` | Wrap from the last item to the first and back. Arrows never disable. |
+| `controls` | `'default'` | `'overlay'` styles and places the controls to sit on a photo. |
+| `onIndexChange` | | Called with the new index when the snapped item changes. |
+| `apiRef` | | Ref that receives the `useCarousel()` API, to drive it from outside. |
 
 ### CarouselContent
 
@@ -77,6 +155,14 @@ Give the carousel a `label` whenever a page has more than one, so the two are to
 | Prop | Default | Description |
 | --- | --- | --- |
 | `align` | `'start'` | Where the item lines up when it snaps: `start` or `center`. |
+
+### CarouselPrevious, CarouselNext, CarouselDots, CarouselPlayPause
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `variant` | the carousel's `controls` | `'default'` or `'overlay'`, for this control alone. |
+
+`CarouselPlayPause` renders only when `autoplay` is on and motion is not reduced.
 
 ### CarouselVideo
 
@@ -93,5 +179,8 @@ const defaultCarouselLabels: CarouselLabels = {
   previous: 'Previous',
   next: 'Next',
   goTo: (index, count) => `Go to item ${index} of ${count}`,
+  position: (index, count) => `Item ${index} of ${count}`,
+  play: 'Start automatic scrolling',
+  pause: 'Pause automatic scrolling',
 }
 ```

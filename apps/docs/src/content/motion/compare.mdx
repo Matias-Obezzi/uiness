@@ -15,6 +15,7 @@ import { Compare } from '@/components/ui/compare'
   before={<img src="/before.jpg" alt="Before" />}
   after={<img src="/after.jpg" alt="After" />}
   labels={['Before', 'After']}
+  getValueText={(value) => `${Math.round(value)}% before`}
 />
 ```
 
@@ -27,9 +28,16 @@ Anything goes in either side, as long as both have the same size. The `after` la
 | `initial` | `50` | Starting position, 0 to 100. |
 | `value`, `onValueChange` | | Controlled position. |
 | `mode` | `'drag'` | `drag` moves it while pressing, `hover` follows the pointer. |
-| `labels` | | Two corner labels. |
+| `labels` | | Two corner labels. An empty string draws nothing on that side. |
+| `getValueText` | | `(value) => string` for the slider's `aria-valuetext`. Without it, screen readers read the bare number. |
 
-The divider is a slider: arrows move it by two, with shift by ten, Home and End go to the edges.
+The divider is a slider: arrows move it by two, with shift by ten, Page Up and Page Down by ten, Home and End go to the edges.
+
+The divider, its knob and the corner labels use the theme's `background` and `foreground`, so they follow light and dark mode.
+
+## Touch
+
+In `drag` mode the root is `touch-action: pan-y`: a sideways drag moves the divider, and an up or down swipe scrolls the page as usual, so a photo as wide as the phone does not trap the page. A touch only moves the divider once it goes sideways, or on a tap, so starting a scroll on the picture leaves it where it was.
 
 ## Labels
 
