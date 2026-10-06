@@ -309,6 +309,54 @@ describe('Dock', () => {
   })
 })
 
+describe('Dock fit', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.restoreAllMocks()
+  })
+
+  const renderIn = (room: number, size = 48) => {
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        observe() {}
+        disconnect() {}
+      },
+    )
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      return 'room' in this.dataset ? room : 0
+    })
+    render(
+      <div data-room="">
+        <Dock size={size} style={{ padding: 8, columnGap: 8 }}>
+          {['a', 'b', 'c', 'd', 'e'].map((label) => (
+            <DockItem key={label} label={label}>
+              {label}
+            </DockItem>
+          ))}
+        </Dock>
+      </div>,
+    )
+    return slot('dock')?.style.getPropertyValue('--dock-size')
+  }
+
+  it('keeps its size when the row fits', () => {
+    // 5 × 48 + 4 gaps × 8 + 16 of padding = 288.
+    expect(renderIn(400)).toBe('48px')
+  })
+
+  it('shrinks its items so a long row fits a narrow container', () => {
+    // (200 − 16 − 32) / 5 = 30.4, rounded down.
+    expect(renderIn(200)).toBe('30px')
+  })
+
+  it('stops shrinking at 24px', () => {
+    expect(renderIn(100)).toBe('24px')
+  })
+})
+
 describe('FlipCard', () => {
   const card = (props: React.ComponentProps<typeof FlipCard> = {}) =>
     render(

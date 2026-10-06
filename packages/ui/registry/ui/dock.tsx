@@ -62,6 +62,38 @@ function Dock({
   const target = React.useRef<number | null>(null)
   const hovering = React.useRef(false)
   const [active, setActive] = React.useState(false)
+  // A row too long for its container would run off the edge, on a phone above all: the items
+  // shrink until it fits, down to 24px. Columns keep their size, their container grows with them.
+  const [fitted, setFitted] = React.useState(size)
+  const itemSize = vertical ? size : fitted
+
+  React.useLayoutEffect(() => {
+    const el = ref.current
+    const parent = el?.parentElement
+    if (vertical || !el || !parent || typeof ResizeObserver === 'undefined') return
+    const measure = () => {
+      const parts = Array.from(el.querySelectorAll<HTMLElement>(PARTS))
+      const items = parts.filter((part) => part.dataset.slot === 'dock-item').length
+      if (!items) return
+      const css = getComputedStyle(el)
+      const room = getComputedStyle(parent)
+      const px = (value: string) => Number.parseFloat(value) || 0
+      const available = parent.clientWidth - px(room.paddingLeft) - px(room.paddingRight)
+      const fixed =
+        px(css.paddingLeft) +
+        px(css.paddingRight) +
+        el.clientLeft * 2 +
+        px(css.columnGap) * (parts.length - 1) +
+        parts
+          .filter((part) => part.dataset.slot !== 'dock-item')
+          .reduce((sum, part) => sum + part.offsetWidth, 0)
+      setFitted(Math.max(24, Math.min(size, Math.floor((available - fixed) / items))))
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(parent)
+    return () => observer.disconnect()
+  }, [size, vertical])
 
   const apply = React.useCallback(() => {
     frame.current = 0
@@ -76,18 +108,18 @@ function Dock({
         : part.offsetLeft + part.offsetWidth / 2
       const d = Math.min(Math.abs(at - center) / distance, 1)
       // A cosine bell: full size under the pointer, easing to nothing at `distance`.
-      return size * (magnification - 1) * ((Math.cos(Math.PI * d) + 1) / 2)
+      return itemSize * (magnification - 1) * ((Math.cos(Math.PI * d) + 1) / 2)
     })
     const total = extras.reduce((a, b) => a + b, 0)
     let before = 0
     parts.forEach((part, i) => {
       const extra = extras[i] ?? 0
-      part.style.setProperty('--dock-scale', (1 + extra / size).toFixed(3))
+      part.style.setProperty('--dock-scale', (1 + extra / itemSize).toFixed(3))
       part.style.setProperty('--dock-shift', `${(before + extra / 2 - total / 2).toFixed(2)}px`)
       before += extra
     })
     el.style.setProperty('--dock-extra', `${total.toFixed(2)}px`)
-  }, [vertical, distance, magnification, size])
+  }, [vertical, distance, magnification, itemSize])
 
   const schedule = () => {
     if (!frame.current) frame.current = requestAnimationFrame(apply)
@@ -140,7 +172,10 @@ function Dock({
     schedule()
   }
 
-  const context = React.useMemo(() => ({ direction, size, reduced }), [direction, size, reduced])
+  const context = React.useMemo(
+    () => ({ direction, size: itemSize, reduced }),
+    [direction, itemSize, reduced],
+  )
 
   return (
     <DockContext.Provider value={context}>
@@ -155,7 +190,7 @@ function Dock({
           vertical ? 'flex-col items-start' : 'items-end',
           className,
         )}
-        style={{ '--dock-size': `${size}px`, ...style } as React.CSSProperties}
+        style={{ '--dock-size': `${itemSize}px`, ...style } as React.CSSProperties}
         onPointerMove={move}
         onPointerLeave={leave}
         onFocus={focus}

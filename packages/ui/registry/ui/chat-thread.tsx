@@ -339,7 +339,8 @@ function ChatMessageGroup({
       {self ? null : <UserAvatar user={author} className="mb-0.5" />}
       <div
         className={cn(
-          'flex min-w-0 max-w-[85%] flex-col gap-1 sm:max-w-[75%]',
+          // On a phone the avatar and the reaction button beside the bubble need room too.
+          'flex min-w-0 max-w-[min(85%,calc(100%-4.5rem))] flex-col gap-1 sm:max-w-[75%]',
           self ? 'items-end' : 'items-start',
         )}
       >
@@ -414,13 +415,13 @@ function ChatAttachments({
               href={attachment.url}
               target="_blank"
               rel="noreferrer"
-              className="block overflow-hidden rounded-2xl border outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="block max-w-[min(15rem,100%)] overflow-hidden rounded-2xl border outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <img
                 src={attachment.url}
                 alt={attachment.name}
                 loading="lazy"
-                className="block max-h-48 w-auto max-w-60 object-cover"
+                className="block max-h-48 w-auto max-w-full object-cover"
               />
             </a>
           )

@@ -99,7 +99,7 @@ export default function DataTableDemo() {
       defaultSort={[{ id: 'date', desc: true }]}
       selectable
       pageSize={8}
-      containerClassName="max-h-[28rem]"
+      containerClassName="max-h-[32rem]"
       toolbar={
         <Button variant="outline" size="sm" className="h-8">
           <DownloadIcon />
