@@ -107,6 +107,13 @@ function UsageMeter({
     return () => cancelAnimationFrame(frame)
   }, [])
 
+  // The segment under the pointer, or the free part of the track, for the tooltip.
+  const [active, setActive] = React.useState<number | 'free' | null>(null)
+  const percent = React.useMemo(
+    () => new Intl.NumberFormat(locale, { style: 'percent', maximumFractionDigits: 1 }),
+    [locale],
+  )
+
   const used = segments.reduce((sum, s) => sum + Math.max(0, s.value), 0)
   const share = limit > 0 ? used / limit : used > 0 ? Number.POSITIVE_INFINITY : 0
   const state = share > 1 ? 'over' : share >= warnAt ? 'warning' : 'ok'
@@ -114,6 +121,25 @@ function UsageMeter({
   const scale = Math.max(limit, used) || 1
   const limitAt = Math.min(100, (limit / scale) * 100)
   const usedText = labels.valueText(fmt(used), fmt(limit))
+  const free = Math.max(0, limit - used)
+
+  // Where each segment starts and how wide it is, as a share of the bar, to place the tooltip.
+  const spans = segments.reduce<{ start: number; size: number }[]>((acc, segment) => {
+    const last = acc[acc.length - 1]
+    const start = last ? last.start + last.size : 0
+    acc.push({ start, size: (Math.max(0, segment.value) / scale) * 100 })
+    return acc
+  }, [])
+  const tip =
+    active === 'free'
+      ? { name: labels.free, value: free, center: (used / scale) * 100 + (free / scale) * 50 }
+      : active !== null && segments[active] && spans[active]
+        ? {
+            name: segments[active].label,
+            value: Math.max(0, segments[active].value),
+            center: spans[active].start + spans[active].size / 2,
+          }
+        : null
   const [beforeUsed = '', afterUsed = ''] = labels.amount(SLOT, fmt(limit)).split(SLOT)
 
   return (
@@ -170,6 +196,7 @@ function UsageMeter({
         }
         data-slot="usage-meter-bar"
         className="relative h-2.5 w-full rounded-full bg-muted"
+        onPointerLeave={() => setActive(null)}
       >
         {/* Each segment leaves two pixels of track before the next, so neighbours read apart. */}
         <div className="flex size-full gap-0.5 overflow-hidden rounded-full">
@@ -179,17 +206,56 @@ function UsageMeter({
               <div
                 key={segment.key}
                 data-slot="usage-meter-segment"
-                title={`${segment.label}: ${fmt(segment.value)}`}
-                className="h-full shrink-0 transition-[width] duration-(--duration-slower,500ms) ease-(--easing-emphasized,cubic-bezier(0.16,1,0.3,1)) motion-reduce:transition-none"
+                data-active={active === i || undefined}
+                className={cn(
+                  'h-full shrink-0 transition-[width,opacity] duration-(--duration-slower,500ms) ease-(--easing-emphasized,cubic-bezier(0.16,1,0.3,1)) motion-reduce:transition-none',
+                  active !== null && active !== i && 'opacity-40',
+                )}
                 style={{
                   width: `calc(${width}% - ${i < segments.length - 1 ? 2 : 0}px)`,
                   background: segment.color ?? segmentColor(i),
                   display: segment.value > 0 ? undefined : 'none',
                 }}
+                onPointerEnter={() => setActive(i)}
               />
             )
           })}
+          {/* The rest of the track is what is free, and answers the pointer like a segment. */}
+          {state !== 'over' && (
+            <div
+              data-slot="usage-meter-free"
+              className="h-full min-w-0 flex-1"
+              onPointerEnter={() => setActive('free')}
+            />
+          )}
         </div>
+        {/* Visual only: the meter's value and the legend already say all of this. */}
+        {tip && (
+          <span
+            aria-hidden
+            data-slot="usage-meter-tooltip"
+            className="pointer-events-none absolute bottom-full z-(--z-tooltip,80) mb-2 whitespace-nowrap rounded-md border bg-popover px-2 py-1 text-popover-foreground text-xs shadow-md"
+            style={{
+              left: `${tip.center}%`,
+              transform:
+                tip.center < 10
+                  ? 'translateX(-8px)'
+                  : tip.center > 90
+                    ? 'translateX(calc(-100% + 8px))'
+                    : 'translateX(-50%)',
+            }}
+          >
+            <span className="text-muted-foreground">{tip.name}</span>
+            <span className="ml-1.5 font-semibold text-foreground tabular-nums">
+              {fmt(tip.value)}
+            </span>
+            {limit > 0 && (
+              <span className="ml-1.5 text-muted-foreground tabular-nums">
+                {percent.format(tip.value / limit)}
+              </span>
+            )}
+          </span>
+        )}
         {state === 'over' && (
           <div
             aria-hidden
@@ -206,7 +272,15 @@ function UsageMeter({
           className="flex flex-wrap gap-x-4 gap-y-1.5 text-muted-foreground text-xs"
         >
           {segments.map((segment, i) => (
-            <li key={segment.key} className="inline-flex items-center gap-1.5">
+            <li
+              key={segment.key}
+              className={cn(
+                'inline-flex items-center gap-1.5 transition-opacity duration-(--duration-fast,150ms)',
+                active !== null && active !== i && 'opacity-50',
+              )}
+              onPointerEnter={() => setActive(i)}
+              onPointerLeave={() => setActive(null)}
+            >
               <span
                 aria-hidden
                 className="size-2.5 shrink-0 rounded-[3px]"
@@ -217,15 +291,20 @@ function UsageMeter({
             </li>
           ))}
           {state !== 'over' && (
-            <li className="inline-flex items-center gap-1.5">
+            <li
+              className={cn(
+                'inline-flex items-center gap-1.5 transition-opacity duration-(--duration-fast,150ms)',
+                active !== null && active !== 'free' && 'opacity-50',
+              )}
+              onPointerEnter={() => setActive('free')}
+              onPointerLeave={() => setActive(null)}
+            >
               <span
                 aria-hidden
                 className="size-2.5 shrink-0 rounded-[3px] bg-muted ring-1 ring-border ring-inset"
               />
               {labels.free}
-              <span className="font-medium text-foreground tabular-nums">
-                {fmt(Math.max(0, limit - used))}
-              </span>
+              <span className="font-medium text-foreground tabular-nums">{fmt(free)}</span>
             </li>
           )}
         </ul>
