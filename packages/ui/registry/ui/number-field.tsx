@@ -139,10 +139,11 @@ function NumberField({
   // What is being typed, before it is read back. `null` shows the formatted value.
   const [draft, setDraft] = React.useState<string | null>(null)
 
+  // Keyed by the options' contents, so an inline object does not make a new formatter every
+  // render. The options are plain strings, numbers and booleans, which survive the round trip.
   const optionsKey = JSON.stringify(formatOptions ?? {})
-  // biome-ignore lint/correctness/useExhaustiveDependencies: optionsKey stands in for the object
   const formatter = React.useMemo(
-    () => new Intl.NumberFormat(locale, formatOptions),
+    () => new Intl.NumberFormat(locale, JSON.parse(optionsKey) as Intl.NumberFormatOptions),
     [locale, optionsKey],
   )
   const parse = React.useMemo(
@@ -159,9 +160,12 @@ function NumberField({
   const inputRef = React.useRef<HTMLInputElement>(null)
   React.useImperativeHandle(ref, () => inputRef.current as HTMLInputElement)
 
-  // The repeat timer reads these, so it always steps from the latest value.
+  // The repeat timer reads these, so it always steps from the latest value. A commit writes them
+  // straight away too, so steps that come before the next render build on each other.
   const latest = React.useRef({ value, draft })
-  latest.current = { value, draft }
+  React.useLayoutEffect(() => {
+    latest.current = { value, draft }
+  })
 
   const commit = (next: number | null) => {
     const clamped = next === null ? null : clamp(next, min, max)
@@ -171,10 +175,9 @@ function NumberField({
     if (clamped !== value) onValueChange?.(clamped)
   }
 
-  const current = () => {
-    const { value, draft } = latest.current
-    return draft === null ? value : (parse(draft) ?? value)
-  }
+  const resolve = (value: number | null, draft: string | null) =>
+    draft === null ? value : (parse(draft) ?? value)
+  const current = () => resolve(latest.current.value, latest.current.draft)
 
   /** Move by `delta` steps, landing on the step grid. Returns false at a bound. */
   const stepBy = (delta: number) => {
@@ -218,7 +221,9 @@ function NumberField({
 
   // React attaches wheel listeners as passive, and a passive one cannot stop the page scrolling.
   const stepRef = React.useRef(stepBy)
-  stepRef.current = stepBy
+  React.useLayoutEffect(() => {
+    stepRef.current = stepBy
+  })
   React.useEffect(() => {
     const input = inputRef.current
     if (!allowWheel || !input || disabled || readOnly) return
@@ -276,29 +281,7 @@ function NumberField({
     }
   }
 
-  // A pointer press steps on pointerdown and repeats while held, so the click that follows
-  // is ignored. Assistive tech and the keyboard only send a click (detail 0), which steps once.
-  const buttonProps = (delta: number) => ({
-    type: 'button' as const,
-    tabIndex: -1,
-    'aria-controls': inputId,
-    onPointerDown: (e: React.PointerEvent<HTMLButtonElement>) => {
-      if (e.button !== 0) return
-      // Keeps focus, and the caret, where it was.
-      e.preventDefault()
-      startRepeat(delta)
-    },
-    onPointerUp: stopRepeat,
-    onPointerLeave: stopRepeat,
-    onPointerCancel: stopRepeat,
-    // A long press on a phone would otherwise open the context menu mid repeat.
-    onContextMenu: (e: React.MouseEvent) => e.preventDefault(),
-    onClick: (e: React.MouseEvent) => {
-      if (e.detail === 0) stepBy(delta)
-    },
-  })
-
-  const shown = current()
+  const shown = resolve(value, draft)
   const atMin = min !== undefined && value !== null && value <= min
   const atMax = max !== undefined && value !== null && value >= max
   const integer = Number.isInteger(step) && (formatOptions?.maximumFractionDigits ?? 0) === 0
@@ -317,15 +300,19 @@ function NumberField({
         className,
       )}
     >
-      <button
-        {...buttonProps(-1)}
+      <StepButton
+        delta={-1}
+        onRepeat={startRepeat}
+        onStop={stopRepeat}
+        onStep={stepBy}
+        aria-controls={inputId}
         data-slot="number-field-decrement"
         aria-label={decrementLabel}
         disabled={!interactive || atMin}
         className={cn(stepperClass, 'border-input border-r')}
       >
         <MinusIcon aria-hidden />
-      </button>
+      </StepButton>
       <input
         ref={inputRef}
         id={inputId}
@@ -357,15 +344,19 @@ function NumberField({
         )}
         {...props}
       />
-      <button
-        {...buttonProps(1)}
+      <StepButton
+        delta={1}
+        onRepeat={startRepeat}
+        onStop={stopRepeat}
+        onStep={stepBy}
+        aria-controls={inputId}
         data-slot="number-field-increment"
         aria-label={incrementLabel}
         disabled={!interactive || atMax}
         className={cn(stepperClass, 'border-input border-l')}
       >
         <PlusIcon aria-hidden />
-      </button>
+      </StepButton>
       {name && (
         // What is typed counts straight away, so pressing Enter submits the number on screen.
         <input
@@ -380,5 +371,42 @@ function NumberField({
 
 const stepperClass =
   'flex w-9 shrink-0 select-none items-center justify-center text-muted-foreground touch-manipulation outline-none transition-colors hover:bg-accent hover:text-accent-foreground active:bg-accent disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:duration-(--duration-instant,100ms) active:[&_svg]:scale-85 motion-reduce:[&_svg]:transition-none'
+
+interface StepButtonProps extends React.ComponentProps<'button'> {
+  delta: number
+  /** Steps once and keeps stepping while held. */
+  onRepeat: (delta: number) => void
+  onStop: () => void
+  /** Steps once. */
+  onStep: (delta: number) => void
+}
+
+/**
+ * A pointer press steps on pointerdown and repeats while held, so the click that follows
+ * is ignored. Assistive tech and the keyboard only send a click (detail 0), which steps once.
+ */
+function StepButton({ delta, onRepeat, onStop, onStep, ...props }: StepButtonProps) {
+  return (
+    <button
+      type="button"
+      tabIndex={-1}
+      onPointerDown={(e) => {
+        if (e.button !== 0) return
+        // Keeps focus, and the caret, where it was.
+        e.preventDefault()
+        onRepeat(delta)
+      }}
+      onPointerUp={onStop}
+      onPointerLeave={onStop}
+      onPointerCancel={onStop}
+      // A long press on a phone would otherwise open the context menu mid repeat.
+      onContextMenu={(e) => e.preventDefault()}
+      onClick={(e) => {
+        if (e.detail === 0) onStep(delta)
+      }}
+      {...props}
+    />
+  )
+}
 
 export { NumberField }

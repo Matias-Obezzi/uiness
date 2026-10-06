@@ -78,6 +78,28 @@ describe('Drawer', () => {
     expect(onSnap).toHaveBeenCalledWith(1)
   })
 
+  it('opens again at the default snap point after it was moved and closed', async () => {
+    const user = userEvent.setup()
+    const onSnap = vi.fn()
+    render(
+      <Drawer>
+        <DrawerTrigger>Open</DrawerTrigger>
+        <DrawerContent snapPoints={[0.4, 1]} onActiveSnapPointChange={onSnap}>
+          <DrawerTitle>Sheet</DrawerTitle>
+        </DrawerContent>
+      </Drawer>,
+    )
+    const offset = `translate3d(0, ${window.innerHeight * 0.6}px, 0)`
+    await user.click(screen.getByText('Open'))
+    expect(screen.getByRole('dialog').style.transform).toBe(offset)
+    await user.click(screen.getByLabelText('Resize drawer'))
+    expect(onSnap).toHaveBeenLastCalledWith(1)
+    await user.keyboard('{Escape}')
+    expect(screen.queryByRole('dialog')).toBeNull()
+    await user.click(screen.getByText('Open'))
+    expect(screen.getByRole('dialog').style.transform).toBe(offset)
+  })
+
   it('does not close from Escape when not dismissible and shows no handle on side drawers', async () => {
     const user = userEvent.setup()
     render(
@@ -448,6 +470,46 @@ describe('Command', () => {
     expect(input.getAttribute('aria-activedescendant')).toBe(
       screen.getByRole('option', { name: 'Log out' }).id,
     )
+  })
+
+  it('calls the latest onSelect and filters items that mount later', async () => {
+    const user = userEvent.setup()
+    const first = vi.fn()
+    const second = vi.fn()
+    function Changing({ onSelect, more }: { onSelect: (v: string) => void; more?: boolean }) {
+      return (
+        <Command>
+          <CommandInput />
+          <CommandList>
+            <CommandItem onSelect={onSelect}>Home</CommandItem>
+            {more && <CommandItem onSelect={onSelect}>Billing</CommandItem>}
+          </CommandList>
+        </Command>
+      )
+    }
+    const { rerender } = render(<Changing onSelect={first} />)
+    rerender(<Changing onSelect={second} more />)
+    await user.type(screen.getByRole('combobox'), 'bill')
+    const shown = screen.getAllByRole('option').filter((o) => !o.hidden)
+    expect(shown.map((o) => o.textContent)).toEqual(['Billing'])
+    expect(shown[0]?.dataset.selected).toBe('')
+    await user.keyboard('{Enter}')
+    expect(second).toHaveBeenCalledWith('Billing')
+    expect(first).not.toHaveBeenCalled()
+  })
+
+  it('runs the latest shortcut handler', () => {
+    const first = vi.fn()
+    const second = vi.fn()
+    function Host({ handler }: { handler: () => void }) {
+      useCommandShortcut(handler)
+      return null
+    }
+    const { rerender } = render(<Host handler={first} />)
+    rerender(<Host handler={second} />)
+    fireEvent.keyDown(document, { key: 'k', ctrlKey: true })
+    expect(second).toHaveBeenCalledTimes(1)
+    expect(first).not.toHaveBeenCalled()
   })
 
   it('selects with the mouse', async () => {

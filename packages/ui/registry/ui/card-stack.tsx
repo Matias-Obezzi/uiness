@@ -91,8 +91,11 @@ function CardStack({
   const moved = React.useRef(false)
   const labels = useLabels('card-stack', defaultCardStackLabels, labelsProp)
   const pointerFocus = React.useRef(false)
+  // The latest onIndexChange, for the timers and handlers that run after a render commits.
   const changeRef = React.useRef(onIndexChange)
-  changeRef.current = onIndexChange
+  React.useLayoutEffect(() => {
+    changeRef.current = onIndexChange
+  })
   const half = Math.round(duration / 2)
 
   const go = React.useCallback(

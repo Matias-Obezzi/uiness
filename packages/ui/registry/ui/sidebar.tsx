@@ -162,9 +162,13 @@ function SidebarProvider({
   const toggle = React.useCallback(() => setOpen(!open), [open, setOpen])
   const [mobileOpen, setMobileOpen] = React.useState(false)
   const isMobile = useIsMobile(breakpoint)
-  React.useEffect(() => {
+  // The mobile sheet closes when the viewport grows past the breakpoint. Adjusted during render
+  // so the desktop layout never renders a frame with it open.
+  const [wasMobile, setWasMobile] = React.useState(isMobile)
+  if (wasMobile !== isMobile) {
+    setWasMobile(isMobile)
     if (!isMobile) setMobileOpen(false)
-  }, [isMobile])
+  }
 
   React.useEffect(() => {
     if (!keyboardShortcut) return
@@ -797,21 +801,31 @@ function SidebarViews({
     [valueProp, onValueChange],
   )
 
-  const parents = React.useRef(new Map<string, string | undefined>())
+  // Each view's `back.to`, kept in state so the direction can be worked out during render.
+  const [parents, setParents] = React.useState<ReadonlyMap<string, string | undefined>>(
+    () => new Map(),
+  )
   const register = React.useCallback((name: string, parent: string | undefined) => {
-    parents.current.set(name, parent)
+    setParents((map) =>
+      map.has(name) && map.get(name) === parent ? map : new Map(map).set(name, parent),
+    )
     return () => {
-      parents.current.delete(name)
+      setParents((map) => {
+        if (!map.has(name)) return map
+        const next = new Map(map)
+        next.delete(name)
+        return next
+      })
     }
   }, [])
   const depth = (name: string) => {
     let d = 0
     const seen = new Set<string>()
-    let parent = parents.current.get(name)
+    let parent = parents.get(name)
     while (parent !== undefined && !seen.has(parent)) {
       seen.add(parent)
       d++
-      parent = parents.current.get(parent)
+      parent = parents.get(parent)
     }
     return d
   }

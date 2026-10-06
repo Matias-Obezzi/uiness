@@ -214,10 +214,11 @@ function Sparkline({
       : words.empty)
 
   // Draw-in on mount only: later updates swap in place, which reads as a live value changing.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: on mount only, see above
+  // Whether to draw in is settled by the first render, so toggling `animate` later does nothing.
+  const [drawIn] = React.useState(animate && !reduced)
   React.useEffect(() => {
     const svg = svgRef.current
-    if (!svg || !animate || reduced || typeof svg.animate !== 'function') return
+    if (!svg || !drawIn || typeof svg.animate !== 'function') return
     const easing = 'cubic-bezier(0.16, 1, 0.3, 1)'
     for (const path of svg.querySelectorAll<SVGPathElement>('[data-sparkline="line"]')) {
       path.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }], { duration: 700, easing })
@@ -240,7 +241,7 @@ function Sparkline({
         fill: 'backwards',
       })
     })
-  }, [])
+  }, [drawIn])
 
   const nearest = (clientX: number) => {
     const rect = svgRef.current?.getBoundingClientRect()

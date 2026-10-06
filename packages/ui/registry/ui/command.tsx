@@ -160,29 +160,31 @@ function Command({
     [valueProp, onValueChange],
   )
 
-  const items = React.useRef(new Map<string, ItemRecord>())
-  const [version, bump] = React.useReducer((v: number) => v + 1, 0)
+  // Items register themselves from a layout effect, so the filter below sees them in render.
+  const [items, setItems] = React.useState<ReadonlyMap<string, ItemRecord>>(() => new Map())
   const register = React.useCallback((item: ItemRecord) => {
-    items.current.set(item.id, item)
-    bump()
+    setItems((map) => new Map(map).set(item.id, item))
     return () => {
-      items.current.delete(item.id)
-      bump()
+      setItems((map) => {
+        if (map.get(item.id) !== item) return map
+        const next = new Map(map)
+        next.delete(item.id)
+        return next
+      })
     }
   }, [])
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: version tracks the item registry
   const { visible, groupCounts } = React.useMemo(() => {
     const visible = new Set<string>()
     const groupCounts = new Map<string, number>()
-    for (const item of items.current.values()) {
+    for (const item of items.values()) {
       const score = shouldFilter ? filter(item.value, search, item.keywords) : 1
       if (score <= 0) continue
       visible.add(item.id)
       if (item.group) groupCounts.set(item.group, (groupCounts.get(item.group) ?? 0) + 1)
     }
     return { visible, groupCounts }
-  }, [search, version, shouldFilter, filter])
+  }, [search, items, shouldFilter, filter])
 
   const [active, setActive] = React.useState<string | null>(null)
   const listRef = React.useRef<HTMLDivElement>(null)
@@ -194,19 +196,23 @@ function Command({
     [],
   )
 
+  // The first item is the first one in the DOM, which only the committed list knows, so these
+  // two read it in layout effects, before paint.
   // Keep the active item valid: first visible one whenever the current one disappears.
   React.useLayoutEffect(() => {
-    if (active && visible.has(active) && !items.current.get(active)?.disabled) return
-    setActive(visibleElements()[0]?.id ?? null)
-  }, [visible, active, visibleElements])
+    if (active && visible.has(active) && !items.get(active)?.disabled) return
+    const first = listRef.current?.querySelector<HTMLElement>(ITEM_SELECTOR)
+    setActive(first?.id ?? null)
+  }, [visible, items, active])
 
   // Reset to the first item when the search changes.
   const lastSearch = React.useRef(search)
   React.useLayoutEffect(() => {
     if (lastSearch.current === search) return
     lastSearch.current = search
-    setActive(visibleElements()[0]?.id ?? null)
-  }, [search, visibleElements])
+    const first = listRef.current?.querySelector<HTMLElement>(ITEM_SELECTOR)
+    setActive(first?.id ?? null)
+  }, [search])
 
   // Keep the active item in view inside the list only. scrollIntoView would also scroll the
   // page, which jumps to a command menu further down as soon as it mounts.
@@ -222,11 +228,14 @@ function Command({
     else if (item.bottom > box.bottom - pad) list.scrollTop += item.bottom - (box.bottom - pad)
   }, [active])
 
-  const select = React.useCallback((id: string) => {
-    const item = items.current.get(id)
-    if (!item || item.disabled) return
-    item.onSelect?.(item.value)
-  }, [])
+  const select = React.useCallback(
+    (id: string) => {
+      const item = items.get(id)
+      if (!item || item.disabled) return
+      item.onSelect?.(item.value)
+    },
+    [items],
+  )
 
   const move = (delta: number, to?: 'first' | 'last') => {
     const els = visibleElements()
@@ -457,8 +466,12 @@ function CommandItem({
   const group = React.useContext(GroupContext)
   const { register, visible, active, setActive, select } = useCommand()
   const ref = React.useRef<HTMLDivElement>(null)
+  // The registered record calls the latest onSelect, so a new function each render does not
+  // register the item again.
   const onSelectRef = React.useRef(onSelect)
-  onSelectRef.current = onSelect
+  React.useLayoutEffect(() => {
+    onSelectRef.current = onSelect
+  })
 
   const [text, setText] = React.useState(value ?? '')
   React.useLayoutEffect(() => {
@@ -574,7 +587,9 @@ function useCommandShortcut(
   { key = 'k', inInputs = true }: { key?: string; inInputs?: boolean } = {},
 ) {
   const ref = React.useRef(handler)
-  ref.current = handler
+  React.useLayoutEffect(() => {
+    ref.current = handler
+  })
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (!(e.metaKey || e.ctrlKey) || e.key.toLowerCase() !== key.toLowerCase()) return

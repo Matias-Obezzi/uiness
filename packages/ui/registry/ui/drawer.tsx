@@ -38,7 +38,7 @@ interface DrawerContextValue {
   open: boolean
   setOpen: (open: boolean) => void
   /** Where DrawerContent puts its onDismissAttempt, so the root can ask it. */
-  guard: React.RefObject<DismissGuard | undefined>
+  setGuard: (guard: DismissGuard | undefined) => void
   /** True to close now, false to stay, or a promise for a guard that has to ask first. */
   mayDismiss: () => boolean | Promise<boolean>
 }
@@ -74,10 +74,17 @@ function Drawer({ open: openProp, defaultOpen, onOpenChange, ...props }: DrawerP
     },
     [controlled, onOpenChange],
   )
+  // Read when an async guard answers, which is always after the render that changed `open`
+  // has committed.
   const openRef = React.useRef(open)
-  openRef.current = open
+  React.useLayoutEffect(() => {
+    openRef.current = open
+  }, [open])
 
   const guard = React.useRef<DismissGuard | undefined>(undefined)
+  const setGuard = React.useCallback((ask: DismissGuard | undefined) => {
+    guard.current = ask
+  }, [])
   const asking = React.useRef(false)
   const mayDismiss = React.useCallback((): boolean | Promise<boolean> => {
     const ask = guard.current
@@ -111,8 +118,8 @@ function Drawer({ open: openProp, defaultOpen, onOpenChange, ...props }: DrawerP
   )
 
   const value = React.useMemo(
-    () => ({ open, setOpen, guard, mayDismiss }),
-    [open, setOpen, mayDismiss],
+    () => ({ open, setOpen, setGuard, mayDismiss }),
+    [open, setOpen, setGuard, mayDismiss],
   )
   return (
     <DrawerContext.Provider value={value}>
@@ -292,13 +299,11 @@ function DrawerContent({
   const labels = useLabels('drawer', defaultDrawerLabels, labelsProp)
   const drawer = React.useContext(DrawerContext)
   if (!drawer) throw new Error('<DrawerContent> must be rendered inside <Drawer>')
-  const { setOpen, guard, mayDismiss } = drawer
+  const { setOpen, setGuard, mayDismiss } = drawer
   React.useLayoutEffect(() => {
-    guard.current = onDismissAttempt
-    return () => {
-      guard.current = undefined
-    }
-  }, [guard, onDismissAttempt])
+    setGuard(onDismissAttempt)
+    return () => setGuard(undefined)
+  }, [setGuard, onDismissAttempt])
 
   // A state backed ref: the content mounts in a portal a commit later, and the snap placement
   // effect has to run once the element is really there.
@@ -337,23 +342,32 @@ function DrawerContent({
   const restOffset = (index: number) =>
     hasSnaps ? Math.max(0, fullSize() - snapToPx(snaps[index] ?? maxSnap, side)) : 0
 
-  // Start at the default snap point every time the drawer opens.
+  // Start at the default snap point every time the drawer opens: while it is closed the
+  // uncontrolled snap point goes back to the default, adjusted during render.
   const { open } = drawer
-  React.useEffect(() => {
-    if (!open && activeSnapPoint === undefined) setUncontrolledSnap(defaultSnapPoint)
-  }, [open, activeSnapPoint, defaultSnapPoint])
+  if (!open && activeSnapPoint === undefined && uncontrolledSnap !== defaultSnapPoint) {
+    setUncontrolledSnap(defaultSnapPoint)
+  }
+
+  // restOffset reads live layout and closes over the snap points, which are often a new array
+  // every render. The placement effect reads the latest one through this ref, so it only reacts
+  // to open and snap changes.
+  const restOffsetRef = React.useRef(restOffset)
+  React.useLayoutEffect(() => {
+    restOffsetRef.current = restOffset
+  })
 
   // Move to the active snap point when it changes. The first placement is instant, the enter
   // animation slides from off screen to it.
   const placed = React.useRef(false)
-  // biome-ignore lint/correctness/useExhaustiveDependencies: restOffset reads live layout, only react to open and snap changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: element is the trigger, the node itself is read from the ref
   React.useLayoutEffect(() => {
-    const el = element
+    const el = ref.current
     if (!open || !el || !hasSnaps) {
       placed.current = false
       return
     }
-    const target = translate(side, restOffset(activeSnap))
+    const target = translate(side, restOffsetRef.current(activeSnap))
     if (placed.current) animateTo(el, target, 300)
     else el.style.transform = target
     placed.current = true

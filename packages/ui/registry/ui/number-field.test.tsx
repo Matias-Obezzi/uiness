@@ -1,5 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { useState } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { FormControl, FormField, FormLabel } from './form'
 import { NumberField } from './number-field'
@@ -159,6 +160,51 @@ describe('NumberField', () => {
     expect(screen.getByRole('button', { name: 'Increase' }).getAttribute('aria-controls')).toBe(
       input.id,
     )
+  })
+
+  it('steps once on a click with no pointer press, as assistive tech sends it', () => {
+    const onValueChange = vi.fn()
+    render(<NumberField aria-label="N" defaultValue={5} onValueChange={onValueChange} />)
+    fireEvent.click(screen.getByRole('button', { name: 'Decrease' }), { detail: 0 })
+    expect(field().value).toBe('4')
+    // The click after a pointer press is ignored, the press already stepped.
+    fireEvent.click(screen.getByRole('button', { name: 'Decrease' }), { detail: 1 })
+    expect(field().value).toBe('4')
+    expect(onValueChange).toHaveBeenCalledTimes(1)
+  })
+
+  it('wheels and repeats from the latest value of a controlled field', () => {
+    vi.useFakeTimers()
+    function Controlled() {
+      const [value, setValue] = useState<number | null>(10)
+      return (
+        <NumberField
+          aria-label="N"
+          value={value}
+          onValueChange={setValue}
+          allowWheel
+          formatOptions={{ maximumFractionDigits: 0 }}
+        />
+      )
+    }
+    render(<Controlled />)
+    field().focus()
+    fireEvent.wheel(field(), { deltaY: -100 })
+    fireEvent.wheel(field(), { deltaY: -100 })
+    expect(field().value).toBe('12')
+    fireEvent.wheel(field(), { deltaY: 100 })
+    expect(field().value).toBe('11')
+    const plus = screen.getByRole('button', { name: 'Increase' })
+    fireEvent.pointerDown(plus, { button: 0 })
+    expect(field().value).toBe('12')
+    act(() => {
+      vi.advanceTimersByTime(400)
+    })
+    act(() => {
+      vi.advanceTimersByTime(60)
+    })
+    fireEvent.pointerUp(plus)
+    expect(field().value).toBe('14')
   })
 
   it('follows a controlled value', () => {

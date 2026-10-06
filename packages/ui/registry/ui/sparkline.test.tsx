@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Sparkline } from './sparkline'
 
 const svg = () => screen.getByRole('img')
@@ -55,5 +55,31 @@ describe('Sparkline', () => {
   it('is not focusable without the tooltip', () => {
     render(<Sparkline data={[1, 2]} width={40} />)
     expect(svg().getAttribute('tabindex')).toBeNull()
+  })
+
+  describe('draw-in', () => {
+    const animate = vi.fn(() => ({}) as Animation)
+    beforeEach(() => {
+      animate.mockClear()
+      Element.prototype.animate = animate
+    })
+    afterEach(() => {
+      // @ts-expect-error restore jsdom, which has no animate
+      delete Element.prototype.animate
+    })
+
+    it('draws in on mount only, and not again when the data changes', () => {
+      const { rerender } = render(<Sparkline data={[1, 3, 2]} width={90} variant="area" />)
+      // The line draws, the area and the marker fade in.
+      expect(animate).toHaveBeenCalledTimes(3)
+      rerender(<Sparkline data={[1, 3, 2, 5]} width={90} variant="area" />)
+      expect(animate).toHaveBeenCalledTimes(3)
+    })
+
+    it('stays still with animate off, even when it is turned on later', () => {
+      const { rerender } = render(<Sparkline data={[1, 3, 2]} width={90} animate={false} />)
+      rerender(<Sparkline data={[1, 3, 2]} width={90} />)
+      expect(animate).not.toHaveBeenCalled()
+    })
   })
 })
