@@ -1,4 +1,4 @@
-Every component speaks English out of the box, and every word it shows or reads out to screen readers can be changed: for one component with its `labels` prop, or for the whole app at once with `LabelsProvider`. A Spanish pack is ready to install.
+Every component speaks English out of the box, and every word it shows or reads out to screen readers can be changed: for one component with its `labels` prop, or for the whole app at once with `LabelsProvider`. Packs for English, Spanish, Portuguese, French, Italian and Chinese are ready to install.
 
 <ComponentPreview name="localization-demo" />
 
@@ -45,9 +45,22 @@ A component takes its English defaults, then what the nearest provider has for i
 
 Parts of a composed component read the provider too, so a dialog's close button follows `dialog` wherever it is rendered. The `labels` prop of a root, like the one of `ChatThread` or `Navbar`, reaches all of its parts.
 
-## Spanish
+## Ready-made packs
 
-<Install name="labels-es" extra="Installs lib/labels-es.ts, with every component in neutral Spanish." />
+Each pack names every component in the registry, in one language:
+
+| Language | Install | Import | Locale |
+| --- | --- | --- | --- |
+| English | `labels-en` | `import { en } from '@/lib/labels-en'` | `en` |
+| Spanish | `labels-es` | `import { es } from '@/lib/labels-es'` | `es` |
+| Portuguese (Brazil) | `labels-pt` | `import { pt } from '@/lib/labels-pt'` | `pt-BR` |
+| French | `labels-fr` | `import { fr } from '@/lib/labels-fr'` | `fr` |
+| Italian | `labels-it` | `import { it } from '@/lib/labels-it'` | `it` |
+| Chinese (Simplified) | `labels-zh` | `import { zh } from '@/lib/labels-zh'` | `zh-CN` |
+
+The English pack is the components' own defaults written out: you don't need it to have English, but it is the place to start a new language, or to reword English across the app.
+
+<Install name="labels-es" extra="Installs lib/labels-es.ts. Swap the name for any pack in the table." />
 
 ```tsx
 'use client'
@@ -64,13 +77,23 @@ export function Providers({ children }: { children: React.ReactNode }) {
 }
 ```
 
-The pack names every component in the registry. The ones you have not installed are never read, and it still compiles. It is a plain file in your project: change any word in it, or keep it as it is and nest a provider with your own:
+The ones you have not installed are never read, and the pack still compiles. It is a plain file in your project: change any word in it, or keep it as it is and nest a provider with your own:
 
 ```tsx
 <LabelsProvider labels={es} locale="es-AR">
   <LabelsProvider labels={{ 'copy-button': { copied: '¡Listo!' } }}>
     <App />
   </LabelsProvider>
+</LabelsProvider>
+```
+
+To let people pick their language, keep the packs in a map and hand the chosen one to the provider:
+
+```tsx
+const packs = { en, es, pt, fr, it, zh }
+
+<LabelsProvider labels={packs[language]} locale={language}>
+  <App />
 </LabelsProvider>
 ```
 
@@ -88,19 +111,19 @@ Dates, numbers, month and day names, relative times and country names come from 
 
 ## Your own pack
 
-Start from `labels-es.ts`: it has every key, and a test in the uiness registry makes sure it keeps up with the components. A pack is an object keyed by component name:
+Start from `labels-en.ts`: it has every key with the English words to translate, and a test in the uiness registry makes sure every pack keeps up with the components. A pack is an object keyed by component name:
 
 ```ts
 import type { LabelsPack } from '@/lib/labels'
 import type { PaginationLabels } from '@/components/ui/pagination'
 
-export const fr = {
+export const de = {
   pagination: {
-    previous: 'Précédent',
-    next: 'Suivant',
-    pageOf: (page: number, count: number) => `Page ${page} sur ${count}`,
+    previous: 'Zurück',
+    next: 'Weiter',
+    pageOf: (page: number, count: number) => `Seite ${page} von ${count}`,
   } satisfies Partial<PaginationLabels>,
-  dialog: { close: 'Fermer' },
+  dialog: { close: 'Schließen' },
 } satisfies LabelsPack
 ```
 

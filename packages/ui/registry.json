@@ -184,6 +184,20 @@
       ]
     },
     {
+      "name": "labels-en",
+      "type": "registry:lib",
+      "title": "English labels",
+      "description": "Every component in English: the defaults written out, to copy for a new language or to reword app-wide.",
+      "registryDependencies": ["@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/lib/labels-en.ts",
+          "type": "registry:lib",
+          "target": "lib/labels-en.ts"
+        }
+      ]
+    },
+    {
       "name": "labels-es",
       "type": "registry:lib",
       "title": "Spanish labels",
@@ -194,6 +208,62 @@
           "path": "registry/lib/labels-es.ts",
           "type": "registry:lib",
           "target": "lib/labels-es.ts"
+        }
+      ]
+    },
+    {
+      "name": "labels-pt",
+      "type": "registry:lib",
+      "title": "Portuguese labels",
+      "description": "Every component in Brazilian Portuguese, ready for LabelsProvider.",
+      "registryDependencies": ["@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/lib/labels-pt.ts",
+          "type": "registry:lib",
+          "target": "lib/labels-pt.ts"
+        }
+      ]
+    },
+    {
+      "name": "labels-fr",
+      "type": "registry:lib",
+      "title": "French labels",
+      "description": "Every component in French, ready for LabelsProvider.",
+      "registryDependencies": ["@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/lib/labels-fr.ts",
+          "type": "registry:lib",
+          "target": "lib/labels-fr.ts"
+        }
+      ]
+    },
+    {
+      "name": "labels-it",
+      "type": "registry:lib",
+      "title": "Italian labels",
+      "description": "Every component in Italian, ready for LabelsProvider.",
+      "registryDependencies": ["@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/lib/labels-it.ts",
+          "type": "registry:lib",
+          "target": "lib/labels-it.ts"
+        }
+      ]
+    },
+    {
+      "name": "labels-zh",
+      "type": "registry:lib",
+      "title": "Chinese labels",
+      "description": "Every component in Simplified Chinese, ready for LabelsProvider.",
+      "registryDependencies": ["@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/lib/labels-zh.ts",
+          "type": "registry:lib",
+          "target": "lib/labels-zh.ts"
         }
       ]
     },
