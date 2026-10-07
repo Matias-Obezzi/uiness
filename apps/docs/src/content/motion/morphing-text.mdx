@@ -1,0 +1,39 @@
+A liquid, gooey morph transition between full words using SVG threshold filters.
+
+<ComponentPreview name="morphing-text-demo" />
+
+## Installation
+
+<Install name="morphing-text" />
+
+## Usage
+
+```tsx
+import { MorphingText } from '@/components/ui/morphing-text'
+
+const phrases = ['Design', 'Develop', 'Animate', 'Delight']
+
+<h2>
+  We <MorphingText texts={phrases} className="font-bold text-primary" />
+</h2>
+```
+
+Morphing Text blends two overlapping phrases together using an SVG `feColorMatrix` filter, creating a melting liquid blur effect as each word transitions into the next.
+
+For letter-by-letter rearrangement where shared letters glide into their new position, see [Text Morph](/docs/motion/text-morph).
+
+## Behavior
+
+- **Accessibility**: Announced through `aria-live="polite"`. The active phrase is exposed while incoming and outgoing layers are marked `aria-hidden`.
+- **Reduced motion**: Switches to a gentle opacity crossfade on a timer, disabling the SVG filter and blur entirely.
+- **SSR and hydration**: The server and initial client render output the first word statically via `useMotionReady`, preventing hydration mismatches.
+- **Performance**: Opacity and blur values are written directly to DOM element styles in `requestAnimationFrame`, pausing automatically when scrolled off-screen or when the tab is hidden.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `texts` | | Array of phrases to cycle through. |
+| `morphTime` | `1` | Duration of the morphing transition in seconds. |
+| `cooldownTime` | `0.25` | Pause duration between morph transitions in seconds. |
+| `as` | `span` | HTML element rendered as the root container. |

@@ -1,0 +1,34 @@
+A headline text effect with an animated diagonal-striped shadow drifting behind the letters.
+
+<ComponentPreview name="line-shadow-text-demo" />
+
+## Installation
+
+<Install name="line-shadow-text" />
+
+## Usage
+
+```tsx
+import { LineShadowText } from '@/components/ui/line-shadow-text'
+
+<h1 className="font-bold text-6xl">
+  Ship <LineShadowText shadowColor="var(--primary)">Fast</LineShadowText>
+</h1>
+```
+
+The real text renders in front, and an `aria-hidden` duplicate sits behind it with diagonal gradient stripes animated across `background-position`. Screen readers read the label exactly once without duplicated pseudo-elements.
+
+## Behavior
+
+- **Accessibility**: The visual shadow is marked `aria-hidden`, ensuring assistive tools encounter the text only once.
+- **Reduced motion**: When `prefers-reduced-motion` is active, the shadow stripes remain fixed in place as a clean static effect without continuous animation loops.
+- **Server-side rendering**: Fully deterministic output without layout jumps or hydration differences.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `children` | | The text content to display. |
+| `shadowColor` | `var(--foreground)` | Color of the diagonal stripes in the shadow. |
+| `as` | `span` | HTML element rendered as the root container. |
+| `speed` | `15` | Duration of one full animation cycle in seconds. |

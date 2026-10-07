@@ -560,12 +560,32 @@ const sections: NavSection[] = [
         'Text Morph',
         'A label that morphs into its next value, letter by letter.',
       ),
+      page(
+        'motion/line-shadow-text',
+        'Line Shadow Text',
+        'A headline with an animated diagonal-striped shadow.',
+      ),
+      page('motion/morphing-text', 'Morphing Text', 'A liquid gooey morph between words.'),
+      page('motion/spinning-text', 'Spinning Text', 'Characters revolving around a circle.'),
+      page(
+        'motion/text-highlighter',
+        'Text Highlighter',
+        'Hand-drawn highlights, underlines, boxes and circles.',
+      ),
+      page('motion/video-text', 'Video Text', 'A video playing through letterforms.'),
     ],
   },
 ]
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-07': [
+    'motion/line-shadow-text',
+    'motion/morphing-text',
+    'motion/spinning-text',
+    'motion/text-highlighter',
+    'motion/video-text',
+  ],
   '2026-10-06': ['localization', 'ai', 'three'],
   '2026-10-04': [
     'blocks/blog',
@@ -804,14 +824,19 @@ const groups: Record<string, Record<string, string[]>> = {
     Text: [
       'flip-words',
       'gradient-text',
+      'line-shadow-text',
+      'morphing-text',
       'number-ticker',
       'odometer',
       'scramble-text',
       'shimmer',
+      'spinning-text',
       'text-generate',
+      'text-highlighter',
       'text-morph',
       'text-reveal',
       'typewriter',
+      'video-text',
     ],
     Backgrounds: [
       'aurora',
