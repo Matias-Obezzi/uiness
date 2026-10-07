@@ -4,7 +4,7 @@ export default function IPhoneDemo() {
   return (
     <div className="flex w-full items-center justify-center p-6">
       <IPhone
-        src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=600&auto=format&fit=crop&q=80"
+        src="/img/gallery-2.png"
         alt="iPhone Wallpaper"
       />
     </div>
