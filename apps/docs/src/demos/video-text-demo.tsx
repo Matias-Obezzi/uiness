@@ -4,12 +4,11 @@ export default function VideoTextDemo() {
   return (
     <div className="relative flex h-72 w-full items-center justify-center overflow-hidden rounded-2xl border bg-black text-white">
       <VideoText
-        src="https://cdn.magicui.design/ocean-small.webm"
-        poster="/img/gallery-1.png"
+        src="/video/text-video-background.webm#t=0.1"
         className="size-full"
         fontWeight={900}
       >
-        OCEAN
+        FIRE
       </VideoText>
     </div>
   )

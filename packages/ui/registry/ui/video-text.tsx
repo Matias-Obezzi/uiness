@@ -132,7 +132,6 @@ function VideoText({
       <video
         ref={videoRef}
         aria-hidden="true"
-        autoPlay={!reduced}
         muted
         suppressHydrationWarning
         loop
