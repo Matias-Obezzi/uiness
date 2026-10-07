@@ -3,13 +3,20 @@ import type * as React from 'react'
 import { hydrateRoot, type Root } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { Ambilight } from './ambilight'
+import { Lens } from './lens'
 import { LineShadowText } from './line-shadow-text'
 import { Meteors } from './meteors'
 import { MorphingText } from './morphing-text'
+import { NoiseTexture } from './noise-texture'
 import { NumberTicker } from './number-ticker'
 import { Odometer } from './odometer'
+import { Particles } from './particles'
+import { Pointer } from './pointer'
 import { Reveal } from './reveal'
 import { ScrambleText } from './scramble-text'
+import { ScrollProgress } from './scroll-progress'
+import { SmoothCursor } from './smooth-cursor'
 import { SpinningText } from './spinning-text'
 import { TextGenerate } from './text-generate'
 import { Highlighter } from './text-highlighter'
@@ -277,6 +284,68 @@ describe('meteors', () => {
     expect(renderToString(ui)).toBe(html)
     vi.restoreAllMocks()
     expect(hydrate(ui).errors).toEqual([])
+  })
+})
+
+describe('motion pointer components SSR', () => {
+  it('hydrates Lens without mismatches', () => {
+    const ui = (
+      <Lens position={{ x: 50, y: 50 }}>
+        <span>Target</span>
+      </Lens>
+    )
+    expect(serverHtml(ui).el.textContent).toContain('Target')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates Pointer without mismatches', () => {
+    const ui = (
+      <div>
+        <Pointer />
+      </div>
+    )
+    expect(serverHtml(ui).el.querySelector('[data-slot=pointer]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates SmoothCursor without mismatches', () => {
+    const ui = <SmoothCursor />
+    expect(serverHtml(ui).el.querySelector('[data-slot=smooth-cursor]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates Particles without mismatches', () => {
+    const ui = <Particles quantity={10} />
+    expect(serverHtml(ui).el.querySelector('[data-slot=particles]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates NoiseTexture without mismatches', () => {
+    const ui = <NoiseTexture animated />
+    expect(serverHtml(ui).el.querySelector('[data-slot=noise-texture]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates Ambilight without mismatches', () => {
+    const ui = (
+      <Ambilight>
+        <img src="/sample.png" alt="Sample" />
+      </Ambilight>
+    )
+    expect(serverHtml(ui).el.querySelector('[data-slot=ambilight]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates ScrollProgress in bar and circle variants without mismatches', () => {
+    const bar = <ScrollProgress variant="bar" />
+    expect(serverHtml(bar).el.querySelector('[data-slot=scroll-progress]')).toBeTruthy()
+    expect(hydrate(bar).errors).toEqual([])
+    act(() => root?.unmount())
+    root = undefined
+
+    const circle = <ScrollProgress variant="circle" />
+    expect(serverHtml(circle).el.querySelector('[data-slot=scroll-progress]')).toBeTruthy()
+    expect(hydrate(circle).errors).toEqual([])
   })
 })
 

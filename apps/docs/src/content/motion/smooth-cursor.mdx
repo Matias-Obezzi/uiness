@@ -1,0 +1,27 @@
+A cursor follower driven by spring physics that rotates into movement direction, shrinks on press, and grows over interactive elements.
+
+<ComponentPreview name="smooth-cursor-demo" />
+
+## Installation
+
+<Install name="smooth-cursor" />
+
+## Usage
+
+```tsx
+import { SmoothCursor } from '@/components/ui/smooth-cursor'
+
+<SmoothCursor stiffness={0.2} damping={0.75} scope="page" />
+```
+
+The animation loop only runs while the spring remains unsettled, shutting down completely once the cursor comes to rest. Under `prefers-reduced-motion`, the cursor follows 1:1 without rotational skew or spring momentum. Interactive elements like buttons and links enlarge the cursor, and pressing compresses it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `stiffness` | `0.2` | Spring tension from 0.05 to 0.5. |
+| `damping` | `0.75` | Spring resistance damping from 0.5 to 0.95. |
+| `rotate` | `true` | Whether the cursor tilts toward the direction of travel. |
+| `scope` | `'page'` | Tracking boundaries: `'page'` (fixed) or `'parent'` (absolute). |
+| `children` | dot ring | Custom cursor shape or inner element. |

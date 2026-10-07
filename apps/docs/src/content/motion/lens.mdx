@@ -1,0 +1,30 @@
+Magnifies content under the pointer or at a fixed coordinate, revealing fine details on images and diagrams.
+
+<ComponentPreview name="lens-demo" />
+
+## Installation
+
+<Install name="lens" />
+
+## Usage
+
+```tsx
+import { Lens } from '@/components/ui/lens'
+
+<Lens zoom={2.4} size={180} shape="circle">
+  <img src="/photo.jpg" alt="Artwork detail" />
+</Lens>
+```
+
+The magnifying loupe duplicates its content into an `aria-hidden` and `inert` overlay clipped to the lens shape, ensuring assistive technologies and keyboard focus only interact with the real content once. Coordinates update directly on CSS custom properties (`--lens-x`, `--lens-y`) without React state re-renders on pointer movement. Touch devices reveal the loupe on press and follow finger movement until released.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `zoom` | `2` | Magnification factor. |
+| `size` | `160` | Diameter or width/height of the lens area in pixels. |
+| `shape` | `'circle'` | Cutout shape: `'circle'` or `'square'`. |
+| `position` | `undefined` | Fixed lens focus coordinates `{ x, y }` for static highlights. |
+| `disabled` | `false` | Disables magnification and hides the overlay. |
+| `ring` | `true` | Outline border around the lens, or custom utility classes. |

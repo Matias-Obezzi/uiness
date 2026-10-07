@@ -2767,6 +2767,155 @@
       ]
     },
     {
+      "name": "lens",
+      "type": "registry:ui",
+      "title": "Lens",
+      "description": "Magnifies content under the pointer or at a fixed coordinate.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/lens.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pointer",
+      "type": "registry:ui",
+      "title": "Pointer",
+      "description": "Custom cursor replacement within a container region.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/pointer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "smooth-cursor",
+      "type": "registry:ui",
+      "title": "Smooth Cursor",
+      "description": "Spring-animated cursor follower with orientation and scale reaction.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/smooth-cursor.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "particles",
+      "type": "registry:ui",
+      "title": "Particles",
+      "description": "Interactive canvas particle field reacting to cursor movement.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/particles.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "noise-texture",
+      "type": "registry:ui",
+      "title": "Noise Texture",
+      "description": "Decorative procedural film grain overlay powered by SVG turbulence.",
+      "registryDependencies": ["@uiness/utils"],
+      "css": {
+        "@keyframes noise-grain": {
+          "0%, 100%": {
+            "transform": "translate(0, 0)"
+          },
+          "10%": {
+            "transform": "translate(-5%, -10%)"
+          },
+          "20%": {
+            "transform": "translate(-15%, 5%)"
+          },
+          "30%": {
+            "transform": "translate(7%, -25%)"
+          },
+          "40%": {
+            "transform": "translate(-5%, 25%)"
+          },
+          "50%": {
+            "transform": "translate(-15%, 10%)"
+          },
+          "60%": {
+            "transform": "translate(15%, 0%)"
+          },
+          "70%": {
+            "transform": "translate(0%, 15%)"
+          },
+          "80%": {
+            "transform": "translate(3%, 35%)"
+          },
+          "90%": {
+            "transform": "translate(-10%, 10%)"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/noise-texture.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ambilight",
+      "type": "registry:ui",
+      "title": "Ambilight",
+      "description": "Dynamic ambient glow mirroring content colors behind images and videos.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/ambilight.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scroll-progress",
+      "type": "registry:ui",
+      "title": "Scroll Progress",
+      "description": "Progress bar or back-to-top ring tracking scroll position.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/use-scroll-driver",
+        "@uiness/use-reduced-motion"
+      ],
+      "css": {
+        "@keyframes scroll-progress": {
+          "from": {
+            "transform": "scaleX(0)"
+          },
+          "to": {
+            "transform": "scaleX(1)"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/scroll-progress.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "line-shadow-text",
       "type": "registry:ui",
       "title": "Line Shadow Text",

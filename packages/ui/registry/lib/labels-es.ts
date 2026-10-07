@@ -467,6 +467,9 @@ export const es = {
     heading3: 'Título 3',
     divider: 'Separador',
   },
+  'scroll-progress': {
+    backToTop: 'Volver arriba',
+  },
   'search-field': {
     placeholder: 'Buscar…',
     clear: 'Borrar la búsqueda',
