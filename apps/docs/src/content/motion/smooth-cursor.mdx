@@ -16,6 +16,8 @@ import { SmoothCursor } from '@/components/ui/smooth-cursor'
 
 The animation loop only runs while the spring remains unsettled, shutting down completely once the cursor comes to rest. Under `prefers-reduced-motion`, the cursor follows 1:1 without rotational skew or spring momentum. Interactive elements like buttons and links enlarge the cursor, and pressing compresses it.
 
+It replaces the system cursor inside its scope, the page or the parent, links and buttons included. Text fields keep the system's caret, and the circle steps aside over them. On touch screens nothing changes.
+
 ## Props
 
 | Prop | Default | Description |

@@ -16,6 +16,11 @@ export interface SmoothCursorProps extends React.ComponentProps<'div'> {
 }
 
 const FINE_POINTER = '(hover: hover) and (pointer: fine)'
+const TEXT_FIELD = 'input, textarea, select, [contenteditable]:not([contenteditable="false"])'
+
+// The system cursor goes on everything in the scope, links and buttons included, since they
+// set a cursor of their own. Text fields keep theirs: the caret is how you aim inside them.
+const HIDE_SYSTEM_CURSOR = `[data-smooth-cursor], [data-smooth-cursor] :not(${TEXT_FIELD}, ${TEXT_FIELD} *) { cursor: none !important; }`
 
 function DefaultCursorShape() {
   return (
@@ -48,6 +53,8 @@ function SmoothCursor({
 
     const targetEl: EventTarget = scope === 'page' ? window : (el.parentElement ?? window)
     const isParentScope = scope === 'parent' && el.parentElement !== null
+    const scopeEl = isParentScope ? el.parentElement : document.documentElement
+    scopeEl?.setAttribute('data-smooth-cursor', '')
 
     let frame = 0
     let last = 0
@@ -135,9 +142,13 @@ function SmoothCursor({
       }
 
       const target = pe.target as HTMLElement | null
-      interactive = !!target?.closest?.(
-        'a, button, [role=button], [data-cursor], input, select, textarea',
-      )
+      // Over a text field the system cursor is back, so the circle steps aside.
+      if (target?.closest?.(TEXT_FIELD)) {
+        shown = false
+        el.style.opacity = '0'
+        return
+      }
+      interactive = !!target?.closest?.('a, button, [role=button], [data-cursor]')
 
       if (reduced || !shown) {
         cx = tx
@@ -185,6 +196,7 @@ function SmoothCursor({
     }
 
     return () => {
+      scopeEl?.removeAttribute('data-smooth-cursor')
       cancelAnimationFrame(frame)
       targetEl.removeEventListener('pointermove', onMove as EventListener)
       targetEl.removeEventListener('pointerdown', onDown as EventListener)
@@ -212,6 +224,9 @@ function SmoothCursor({
       {...props}
     >
       {children ?? <DefaultCursorShape />}
+      <style href="uiness-smooth-cursor" precedence="default">
+        {HIDE_SYSTEM_CURSOR}
+      </style>
     </div>
   )
 }

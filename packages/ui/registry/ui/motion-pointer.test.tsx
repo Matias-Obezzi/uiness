@@ -183,9 +183,12 @@ describe('SmoothCursor', () => {
         )
       })
 
-    render(<SmoothCursor data-testid="cursor" />)
+    const { unmount } = render(<SmoothCursor data-testid="cursor" />)
     const cursor = screen.getByTestId('cursor')
     expect(cursor.className).toContain('origin-top-left')
+    // The system cursor is hidden over the page while it is mounted, and back after.
+    expect(document.documentElement.hasAttribute('data-smooth-cursor')).toBe(true)
+    expect(document.head.textContent).toContain('[data-smooth-cursor]')
 
     // First arrival: placed under the pointer, not flown in from the corner.
     move(300, 200)
@@ -198,6 +201,25 @@ describe('SmoothCursor', () => {
     const x = Number(/translate3d\(([\d.]+)px/.exec(cursor.style.transform)?.[1])
     expect(x).toBeGreaterThan(300)
     expect(x).toBeLessThan(400)
+
+    // Over a text field the circle steps aside for the system's caret.
+    const input = document.createElement('input')
+    document.body.append(input)
+    act(() => {
+      input.dispatchEvent(
+        new PointerEvent('pointermove', {
+          bubbles: true,
+          clientX: 10,
+          clientY: 10,
+          pointerType: 'mouse',
+        }),
+      )
+    })
+    expect(cursor.style.opacity).toBe('0')
+    input.remove()
+
+    unmount()
+    expect(document.documentElement.hasAttribute('data-smooth-cursor')).toBe(false)
   })
 })
 
