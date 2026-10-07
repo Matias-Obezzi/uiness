@@ -42,6 +42,11 @@ export const selfAnimated = [
   'orbit',
   'sonar',
   'retro-grid',
+  'line-shadow-text',
+  'video-text',
+  'morphing-text',
+  'spinning-text',
+  'text-highlighter',
 ]
   .map((slot) => `[data-slot="${slot}"]`)
   .join(', ')

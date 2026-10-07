@@ -3,16 +3,21 @@ import type * as React from 'react'
 import { hydrateRoot, type Root } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { LineShadowText } from './line-shadow-text'
 import { Meteors } from './meteors'
+import { MorphingText } from './morphing-text'
 import { NumberTicker } from './number-ticker'
 import { Odometer } from './odometer'
 import { Reveal } from './reveal'
 import { ScrambleText } from './scramble-text'
+import { SpinningText } from './spinning-text'
 import { TextGenerate } from './text-generate'
+import { Highlighter } from './text-highlighter'
 import { TextReveal } from './text-reveal'
 import { Timeline, TimelineItem } from './timeline'
 import { Typewriter } from './typewriter'
 import { VelocityMarquee } from './velocity-marquee'
+import { VideoText } from './video-text'
 
 let root: Root | undefined
 let host: HTMLElement | undefined
@@ -270,6 +275,38 @@ describe('meteors', () => {
     vi.spyOn(Math, 'sin').mockImplementation((x) => sin(x) * (1 + 1e-15))
     expect(renderToString(ui)).toBe(html)
     vi.restoreAllMocks()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+})
+
+describe('motion text SSR', () => {
+  it('line-shadow-text hydrates cleanly without errors', () => {
+    const ui = <LineShadowText>Heading</LineShadowText>
+    expect(serverHtml(ui).el.textContent).toContain('Heading')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('video-text hydrates cleanly without errors', () => {
+    const ui = <VideoText src="/video.mp4">CLIP</VideoText>
+    expect(serverHtml(ui).el.textContent).toContain('CLIP')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('morphing-text renders initial word and hydrates cleanly without errors', () => {
+    const ui = <MorphingText texts={['One', 'Two']} />
+    expect(serverHtml(ui).el.textContent).toContain('One')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('spinning-text renders text accessible label and hydrates cleanly without errors', () => {
+    const ui = <SpinningText>RING</SpinningText>
+    expect(serverHtml(ui).html).toContain('aria-label="RING"')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('text-highlighter hydrates cleanly without errors', () => {
+    const ui = <Highlighter action="highlight">Marked</Highlighter>
+    expect(serverHtml(ui).el.textContent).toContain('Marked')
     expect(hydrate(ui).errors).toEqual([])
   })
 })
