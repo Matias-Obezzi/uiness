@@ -460,6 +460,9 @@ export const zh = {
     heading3: '标题 3',
     divider: '分割线',
   },
+  'scroll-progress': {
+    backToTop: '返回顶部',
+  },
   'search-field': {
     placeholder: '搜索…',
     clear: '清除搜索',

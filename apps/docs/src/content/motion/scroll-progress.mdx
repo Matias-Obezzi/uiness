@@ -1,0 +1,49 @@
+A visual scroll indicator that runs on CSS scroll-driven animations where available, with a return-to-top circle variant.
+
+<ComponentPreview name="scroll-progress-demo" />
+
+## Installation
+
+<Install name="scroll-progress" />
+
+## Usage
+
+```tsx
+import { ScrollProgress } from '@/components/ui/scroll-progress'
+
+// Global page progress bar
+<ScrollProgress position="top" thickness={3} />
+
+// Floating return-to-top ring
+<ScrollProgress variant="circle" />
+```
+
+### Container Scroller
+
+Pass a ref to track a scrollable container instead of the whole window:
+
+```tsx
+const containerRef = useRef<HTMLDivElement>(null)
+
+<ScrollProgress target={containerRef} />
+<div ref={containerRef} className="h-96 overflow-y-auto">
+  ...
+</div>
+```
+
+<ComponentPreview name="scroll-progress-circle-demo" />
+
+Where supported, the bar variant runs on native CSS `animation-timeline: scroll()` with zero JavaScript execution during scrolling. When JavaScript fallback is needed or in the circular variant, updates write directly to CSS custom properties on the DOM node. The circular button provides localized accessible names across 6 languages.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `variant` | `'bar'` | Visual style: `'bar'` or `'circle'`. |
+| `position` | `'top'` | Bar edge placement: `'top'` or `'bottom'`. |
+| `thickness` | `3` | Bar height or circle ring stroke width in pixels. |
+| `color` | `'var(--primary)'` | Progress color or gradient. |
+| `target` | `undefined` | Scrollable container element ref (defaults to window). |
+| `driver` | `'auto'` | Scroll driver mechanism: `'auto'`, `'css'`, or `'js'`. |
+| `size` | `44` | Diameter in pixels for the circle variant. |
+| `labels` | `undefined` | Custom label translations for the return-to-top button. |

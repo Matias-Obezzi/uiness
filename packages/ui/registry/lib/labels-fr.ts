@@ -474,6 +474,9 @@ export const fr = {
     heading3: 'Titre 3',
     divider: 'Séparateur',
   },
+  'scroll-progress': {
+    backToTop: 'Retour en haut',
+  },
   'search-field': {
     placeholder: 'Rechercher…',
     clear: 'Effacer la recherche',

@@ -469,6 +469,9 @@ export const pt = {
     heading3: 'Título 3',
     divider: 'Divisor',
   },
+  'scroll-progress': {
+    backToTop: 'Voltar ao topo',
+  },
   'search-field': {
     placeholder: 'Pesquisar…',
     clear: 'Limpar pesquisa',

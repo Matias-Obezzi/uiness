@@ -460,6 +460,9 @@ export const en = {
     heading3: 'Heading 3',
     divider: 'Divider',
   },
+  'scroll-progress': {
+    backToTop: 'Back to top',
+  },
   'search-field': {
     placeholder: 'Search…',
     clear: 'Clear search',

@@ -1,0 +1,31 @@
+Projects dynamic ambient backlight behind images and videos using their own colors.
+
+<ComponentPreview name="ambilight-demo" />
+
+## Installation
+
+<Install name="ambilight" />
+
+## Usage
+
+```tsx
+import { Ambilight } from '@/components/ui/ambilight'
+
+<Ambilight blur={60} spread={1.1} intensity={0.7} saturation={1.4}>
+  <img src="/photo.jpg" alt="Poster art" />
+</Ambilight>
+```
+
+Images project their ambient halo purely through CSS `filter: blur() saturate()` without executing JavaScript. When wrapping a `<video>`, the component finds the video element and samples frames to an off-screen low-resolution canvas at the specified `fps`.
+
+Pixels are drawn directly to the canvas and never read back with `getImageData`: this ensures cross-origin videos without CORS headers continue to display their ambient backlight without throwing browser security exceptions. The sampling loop stops automatically when the video pauses, ends, scrolls off-screen, or the browser tab becomes hidden. Under `prefers-reduced-motion`, updates occur only when the video pauses or seeks.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `blur` | `60` | Blur radius of the ambient light in pixels. |
+| `spread` | `1.1` | Scale factor of the ambient light spread. |
+| `intensity` | `0.7` | Peak opacity of the ambient glow, from 0 to 1. |
+| `saturation` | `1.4` | Color saturation multiplier. |
+| `fps` | `15` | Sampling refresh rate in frames per second for video content. |

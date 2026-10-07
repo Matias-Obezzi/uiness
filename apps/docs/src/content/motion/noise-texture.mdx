@@ -1,0 +1,30 @@
+A decorative procedural film grain overlay powered by an inline SVG turbulence filter.
+
+<ComponentPreview name="noise-texture-demo" />
+
+## Installation
+
+<Install name="noise-texture" />
+
+## Usage
+
+```tsx
+import { NoiseTexture } from '@/components/ui/noise-texture'
+
+<div className="relative overflow-hidden bg-background">
+  <NoiseTexture opacity={0.15} animated />
+  ...
+</div>
+```
+
+Generated entirely as a CSS data-URL with SVG `feTurbulence`, producing identical server and client HTML without hydration mismatches or network asset requests. The animated mode shifts an oversized layer using stepped keyframes, automatically pausing into a static texture under `prefers-reduced-motion`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `opacity` | `0.12` | Opacity of the noise grain overlay, from 0 to 1. |
+| `frequency` | `0.8` | Base frequency of the SVG turbulence filter. |
+| `octaves` | `4` | Number of fractal noise octaves. |
+| `blend` | `'overlay'` | CSS `mix-blend-mode` for blending over backgrounds. |
+| `animated` | `false` | Whether the grain steps through random positional offsets. |
