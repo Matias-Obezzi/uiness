@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { disposeObject, fitDistance, shouldContinueLoop } from './core'
+import { disposeObject, fitDistance, shouldContinueLoop, zoomsOnWheel } from './core'
 
 describe('fitDistance', () => {
   it('calculates the correct distance for a square aspect ratio', () => {
@@ -170,5 +170,20 @@ describe('disposeObject', () => {
     expect(() =>
       disposeObject({ traverse: () => {} } as unknown as import('three').Object3D),
     ).not.toThrow()
+  })
+})
+
+describe('zoomsOnWheel', () => {
+  const plain = { ctrlKey: false, metaKey: false }
+  it('leaves a plain wheel to the page unless told to always zoom', () => {
+    expect(zoomsOnWheel('modifier', plain)).toBe(false)
+    expect(zoomsOnWheel('never', plain)).toBe(false)
+    expect(zoomsOnWheel('always', plain)).toBe(true)
+  })
+
+  it('zooms with Ctrl, ⌘ or a pinch, which arrives with Ctrl', () => {
+    expect(zoomsOnWheel('modifier', { ctrlKey: true, metaKey: false })).toBe(true)
+    expect(zoomsOnWheel('modifier', { ctrlKey: false, metaKey: true })).toBe(true)
+    expect(zoomsOnWheel('never', { ctrlKey: true, metaKey: false })).toBe(false)
   })
 })

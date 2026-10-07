@@ -453,9 +453,28 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
   }
 }
 
+/**
+ * When the wheel zooms the model. `'modifier'`: with Ctrl or ⌘ held, which is also what a
+ * trackpad pinch sends, and the page scrolls otherwise. `'always'`: every wheel turn over the
+ * model zooms, and the page cannot scroll past it. `'never'`: the wheel only scrolls.
+ */
+export type WheelZoom = 'modifier' | 'always' | 'never'
+
+/** Whether a wheel event over the model should zoom it rather than scroll the page. */
+export function zoomsOnWheel(
+  mode: WheelZoom,
+  event: Pick<WheelEvent, 'ctrlKey' | 'metaKey'>,
+): boolean {
+  if (mode === 'always') return true
+  if (mode === 'never') return false
+  return event.ctrlKey || event.metaKey
+}
+
 export interface ViewerOptions extends StageOptions {
   src?: string | Object3D
   autoRotate?: boolean
+  /** When the wheel zooms the model. Default `'modifier'`. */
+  wheelZoom?: WheelZoom
   environment?: 'room' | 'none' | Texture
   shadows?: boolean
   dracoPath?: string
@@ -498,6 +517,14 @@ export function createViewer(
 
   camera.fov = options.fov ?? 45
   camera.updateProjectionMatrix()
+
+  // Registered before the controls, so it runs before their wheel listener and can keep the
+  // event from them: a wheel that does not zoom must scroll the page, not stop at the model.
+  const wheelZoom = options.wheelZoom ?? 'modifier'
+  const onWheel = (event: WheelEvent) => {
+    if (!zoomsOnWheel(wheelZoom, event)) event.stopImmediatePropagation()
+  }
+  canvas.addEventListener('wheel', onWheel, { capture: true })
 
   const controls = new OrbitControls(camera, canvas)
   controls.enableDamping = !reducedMotion
@@ -872,6 +899,7 @@ export function createViewer(
   const originalDispose = stage.dispose
   function disposeViewer(): void {
     unsubscribeFrame()
+    canvas.removeEventListener('wheel', onWheel, { capture: true })
     controls.dispose()
     if (dracoLoader) {
       dracoLoader.dispose()

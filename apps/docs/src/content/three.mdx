@@ -43,9 +43,13 @@ The registry component pairs `<Viewer />` with `<ViewerToolbar />`, a floating R
 - **Screenshot**: Captures a crisp PNG download instantly without the overhead of `preserveDrawingBuffer`.
 - **Fullscreen**: Expands the viewer container using the Fullscreen API.
 
+### Wheel and pinch
+
+The wheel scrolls the page past the model, and zooms it with Ctrl or ⌘ held, which is also what a trackpad pinch sends, like a map. Set `wheelZoom` to `'always'` for a viewer that owns the wheel, such as a full screen one, or `'never'` to zoom only with the toolbar and the keyboard. Touch pinch always zooms.
+
 ### Keyboard shortcuts
 
-When the viewer container has focus (`tabIndex={0}`), shortcuts allow fast navigation:
+When the viewer container has focus (`tabIndex={0}`), shortcuts allow fast navigation. Keys held with Ctrl, ⌘ or Alt are left to the browser, so Ctrl+R still reloads.
 
 | Key | Action |
 | --- | --- |
@@ -58,6 +62,18 @@ When the viewer container has focus (`tabIndex={0}`), shortcuts allow fast navig
 | `2` | Side view |
 | `3` | Top view |
 | `4` | Isometric view |
+
+Every shortcut can be changed through `shortcuts`, laid over `defaultShortcuts`: remap an action, give it `null` to drop it, or pass `false` to turn them all off. Keys are `KeyboardEvent.key` values, matched without case, and `'Space'` stands for the space bar.
+
+```tsx
+import { defaultShortcuts } from '@uiness/three'
+
+// Reset with Home too, no fullscreen key
+<ThreeViewer src="/chair.glb" shortcuts={{ reset: [...defaultShortcuts.reset, 'Home'], fullscreen: null }} />
+
+// No shortcuts at all
+<ThreeViewer src="/chair.glb" shortcuts={false} />
+```
 
 ## Custom scenes with Stage
 
@@ -145,6 +161,8 @@ The sample 3D model used in the documentation is the **Sheen Chair** by Eric Cha
 | `onError` | — | Callback fired if model loading fails. |
 | `onProgress` | — | Callback with `(loaded, total)` progress numbers. |
 | `fallback` | — | React node displayed when WebGL is unsupported or loading fails. |
+| `wheelZoom` | `'modifier'` | When the wheel zooms: `'modifier'` (Ctrl, ⌘ or a trackpad pinch), `'always'` or `'never'`. |
+| `shortcuts` | `defaultShortcuts` | Keys per action, laid over the defaults. `null` drops one, `false` drops them all. |
 
 ### `<ViewerToolbar />`
 
