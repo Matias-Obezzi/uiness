@@ -1,0 +1,33 @@
+The people behind the product. Every block takes its people through props and lays itself out by the width of its container.
+
+## Team 01
+
+A grid of photo, name, role, a line each and their links, from one column to four as the container widens. Photos turn from gray to color under the pointer; without a photo the initials stand in. An optional card after the team says you are hiring.
+
+<BlockPreview name="team-01" />
+
+<Install name="team-01" />
+
+```tsx
+import { Team01 } from '@/components/team-01'
+
+<Team01
+  title="Small team, long weeks planned"
+  members={[
+    {
+      name: 'Ana Ruiz',
+      role: 'Co-founder, product',
+      photo: '/team/ana.jpg',
+      bio: 'Spent ten years planning other people’s weeks.',
+      links: [{ label: 'Email Ana', href: 'mailto:ana@example.com', kind: 'mail' }],
+    },
+  ]}
+  hiring={{ title: 'We are hiring', description: 'Two roles, remote.', action: { label: 'See roles', href: '/jobs' } }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow`, `title`, `description` | The heading. `null` hides the eyebrow. |
+| `members` | `{ name, role, photo?, bio?, links? }[]`. Each link is `{ label, href, kind? }`, with `kind` one of `mail`, `web` or `social` for its icon; the label is what screen readers say. |
+| `hiring` | `{ title, description, action }` for the card after the team. `null` hides it. |

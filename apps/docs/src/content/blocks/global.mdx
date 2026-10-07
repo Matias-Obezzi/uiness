@@ -1,0 +1,30 @@
+Where the product is used, on a map of the world. Every block takes its places and figures through props and lays itself out by the width of its container.
+
+## Global 01
+
+A [Globe](/docs/motion/globe) that turns on its own, with a marker per city and arcs between them, beside figures per region that count up as they come into view. The globe can be dragged; the columns stack when the container is narrow.
+
+<BlockPreview name="global-01" />
+
+<Install name="global-01" />
+
+```tsx
+import { Global01 } from '@/components/global-01'
+
+<Global01
+  title="Planned in more time zones than we can keep track of"
+  regions={[
+    { name: 'Americas', value: 18, suffix: 'k', caption: 'teams across 22 countries' },
+    { name: 'Europe', value: 11, suffix: 'k' },
+  ]}
+  markers={[{ lat: -34.6, lng: -58.4, label: 'Buenos Aires' }]}
+  arcs={[{ from: [-34.6, -58.4], to: [40.7, -74] }]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow`, `title`, `description` | The heading. `null` hides the eyebrow. |
+| `regions` | `{ name, value, suffix?, caption? }[]`, shown two by two. |
+| `markers`, `arcs` | Places and lines on the globe, as the Globe takes them. |
+| `globeLabel` | What screen readers hear for the globe. |

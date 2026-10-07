@@ -1,0 +1,31 @@
+Where people change their account. Every block takes its values through props and lays itself out by the width of its container.
+
+## Settings 01
+
+A profile form that only saves when something changed and waits for your save to finish, notification switches that apply as they flip, and a danger zone whose delete button has to be held. The section list sits beside the sections when there is room, and scrolls above them when not.
+
+<BlockPreview name="settings-01" />
+
+<Install name="settings-01" />
+
+```tsx
+import { Settings01 } from '@/components/settings-01'
+
+<Settings01
+  profile={{ name: 'Ana Ruiz', email: 'ana@example.com', bio: '', avatar: '/ana.png' }}
+  onSaveProfile={(profile) => api.updateProfile(profile)}
+  notifications={[{ id: 'digest', label: 'Weekly digest', enabled: true }]}
+  onNotificationChange={(id, enabled) => api.setNotification(id, enabled)}
+  onDeleteAccount={() => api.deleteAccount()}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `title` | The page heading. |
+| `profile` | `{ name, email, bio, avatar? }`, the starting values. |
+| `onSaveProfile` | Called with the edited profile. Return a promise to keep the button busy until it settles. |
+| `notifications` | `{ id, label, description?, enabled }[]`. |
+| `onNotificationChange` | Called with the id and the new state each time a switch flips. |
+| `onDeleteAccount` | Runs once the delete button has been held. `null` hides the danger zone. |
+| `labels` | Every word on the page. |

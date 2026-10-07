@@ -65,3 +65,33 @@ import { Hero02 } from '@/components/hero-02'
 | `stats` | `{ value, label }[]` shown in a row under the buttons. `null` hides it. |
 | `image` | `{ src, alt }` for a screenshot on the tilting card. Without it, a drawn product mockup takes its place. |
 | `badge` | `{ value, label }` for the small card floating over the corner of the picture. `null` hides it. |
+
+## Hero 03
+
+A centered headline, lead and actions above a browser window, with the phone app hanging off its corner. Both rise in as they come into view; when the container is narrow the phone moves under the browser instead of covering it.
+
+<BlockPreview name="hero-03" />
+
+<Install name="hero-03" />
+
+```tsx
+import { Hero03 } from '@/components/hero-03'
+
+<Hero03
+  eyebrow="Web and mobile"
+  title="Your whole week, on every screen you own"
+  description="Plan on the big screen, check off on the go."
+  primaryAction={{ label: 'Start free', href: '/signup' }}
+  secondaryAction={{ label: 'Get the app', href: '/app' }}
+  desktop={{ url: 'app.example.com/week', src: '/week.png', alt: 'The week view' }}
+  mobile={{ src: '/today.png', alt: 'Today on the phone' }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow` | The small line above the headline. `null` hides it. |
+| `title`, `description` | The headline and the lead paragraph. |
+| `primaryAction`, `secondaryAction` | `{ label, href }` for the two buttons. `null` hides one. |
+| `desktop` | `{ url, src, alt }`: the address in the browser bar and its screenshot. |
+| `mobile` | `{ src, alt }` for the phone screenshot. `null` leaves only the browser. |
