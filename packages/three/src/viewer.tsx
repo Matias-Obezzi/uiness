@@ -10,6 +10,7 @@ import type {
   ViewerController,
   ViewerOptions,
   ViewPreset,
+  WheelZoom,
 } from './core'
 
 export type {
@@ -19,6 +20,49 @@ export type {
   ViewerController,
   ViewerOptions,
   ViewPreset,
+  WheelZoom,
+}
+
+/** What a shortcut can do. */
+export type ViewerAction =
+  | 'reset'
+  | 'zoomIn'
+  | 'zoomOut'
+  | 'autoRotate'
+  | 'fullscreen'
+  | 'front'
+  | 'right'
+  | 'top'
+  | 'iso'
+
+/**
+ * Keys for each action, as `KeyboardEvent.key` values matched without case; `'Space'` stands
+ * for the space bar. An action given `[]` or `null` has no shortcut.
+ */
+export type ViewerShortcuts = Record<ViewerAction, string[]>
+
+export const defaultShortcuts: ViewerShortcuts = {
+  reset: ['r'],
+  zoomIn: ['+', '='],
+  zoomOut: ['-', '_'],
+  autoRotate: ['Space'],
+  fullscreen: ['f'],
+  front: ['1'],
+  right: ['2'],
+  top: ['3'],
+  iso: ['4'],
+}
+
+/** The action a key runs, from the defaults with `shortcuts` laid over them. */
+export function shortcutFor(
+  key: string,
+  shortcuts: Partial<Record<ViewerAction, string[] | null>> = {},
+): ViewerAction | undefined {
+  const pressed = key === ' ' ? 'space' : key.toLowerCase()
+  const bindings = { ...defaultShortcuts, ...shortcuts }
+  return (Object.keys(bindings) as ViewerAction[]).find((action) =>
+    bindings[action]?.some((k) => k.toLowerCase() === pressed),
+  )
 }
 
 /** What `<Stage>` hands its callbacks: the stage, plus three itself so scenes need no import of it. */
@@ -88,6 +132,16 @@ export interface ViewerProps
   onProgress?: (progress: number) => void
   /** Fallback content rendered if WebGL is unavailable or loading fails. */
   fallback?: React.ReactNode
+  /**
+   * When the wheel zooms the model: `'modifier'` (default) with Ctrl or ⌘ held or a trackpad
+   * pinch, so the page scrolls past it; `'always'`; or `'never'`.
+   */
+  wheelZoom?: WheelZoom
+  /**
+   * Keyboard shortcuts while the viewer has focus, laid over `defaultShortcuts`: remap an
+   * action, give it `null` to drop it, or pass `false` for none at all.
+   */
+  shortcuts?: Partial<Record<ViewerAction, string[] | null>> | false
 }
 
 /**
@@ -107,6 +161,8 @@ export function Viewer({
   onError,
   onProgress,
   fallback,
+  wheelZoom = 'modifier',
+  shortcuts,
   className,
   children,
   ...props
@@ -210,6 +266,7 @@ export function Viewer({
           maxDpr,
           dracoPath,
           reducedMotion,
+          wheelZoom,
         })
 
         viewerRef.current = viewer
@@ -249,7 +306,7 @@ export function Viewer({
         viewerRef.current = null
       }
     }
-  }, [nearViewport, src, environment, shadows, maxDpr, dracoPath, reducedMotion])
+  }, [nearViewport, src, environment, shadows, maxDpr, dracoPath, reducedMotion, wheelZoom])
 
   React.useEffect(() => {
     viewerRef.current?.setAutoRotate(isRotating && !reducedMotion)
@@ -319,55 +376,32 @@ export function Viewer({
     [status, progress, isRotating, wireframe, fullscreen, currentView, actions],
   )
 
-  // Keyboard shortcut handler on focused wrapper
+  const run: Record<ViewerAction, () => void> = {
+    reset: actions.resetView,
+    zoomIn: () => actions.zoom(1.2),
+    zoomOut: () => actions.zoom(0.8),
+    autoRotate: actions.toggleAutoRotate,
+    fullscreen: () => {
+      actions.toggleFullscreen().catch(() => {})
+    },
+    front: () => actions.setView('front'),
+    right: () => actions.setView('right'),
+    top: () => actions.setView('top'),
+    iso: () => actions.setView('iso'),
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (shortcuts === false) return
+    // Ctrl+R still reloads and ⌘+ still zooms the page: only bare keys are the viewer's.
+    if (e.ctrlKey || e.metaKey || e.altKey) return
     const target = e.target as HTMLElement
     if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) {
       return
     }
-
-    switch (e.key) {
-      case 'r':
-      case 'R':
-        e.preventDefault()
-        actions.resetView()
-        break
-      case '+':
-      case '=':
-        e.preventDefault()
-        actions.zoom(1.2)
-        break
-      case '-':
-      case '_':
-        e.preventDefault()
-        actions.zoom(0.8)
-        break
-      case 'f':
-      case 'F':
-        e.preventDefault()
-        actions.toggleFullscreen().catch(() => {})
-        break
-      case ' ':
-        e.preventDefault()
-        actions.toggleAutoRotate()
-        break
-      case '1':
-        e.preventDefault()
-        actions.setView('front')
-        break
-      case '2':
-        e.preventDefault()
-        actions.setView('right')
-        break
-      case '3':
-        e.preventDefault()
-        actions.setView('top')
-        break
-      case '4':
-        e.preventDefault()
-        actions.setView('iso')
-        break
-    }
+    const action = shortcutFor(e.key, shortcuts)
+    if (!action) return
+    e.preventDefault()
+    run[action]()
   }
 
   return (

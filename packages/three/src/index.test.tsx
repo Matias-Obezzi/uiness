@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { renderToString } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { Stage, Viewer } from './index'
+import { defaultShortcuts, Stage, shortcutFor, Viewer } from './index'
 
 const mockViewerController = {
   resetView: vi.fn(),
@@ -175,6 +175,64 @@ describe('<Viewer />', () => {
 
     fireEvent.keyDown(viewer, { key: '4' })
     expect(mockViewerController.setView).toHaveBeenCalledWith('iso')
+  })
+})
+
+describe('shortcutFor', () => {
+  it('maps keys to actions from the defaults, without case', () => {
+    expect(shortcutFor('R')).toBe('reset')
+    expect(shortcutFor(' ')).toBe('autoRotate')
+    expect(shortcutFor('4')).toBe('iso')
+    expect(shortcutFor('x')).toBeUndefined()
+  })
+
+  it('lays the given keys over the defaults and drops nulls', () => {
+    const shortcuts = { reset: ['Home'], fullscreen: null }
+    expect(shortcutFor('Home', shortcuts)).toBe('reset')
+    expect(shortcutFor('r', shortcuts)).toBeUndefined()
+    expect(shortcutFor('f', shortcuts)).toBeUndefined()
+    expect(shortcutFor('+', shortcuts)).toBe('zoomIn')
+    expect(defaultShortcuts.reset).toEqual(['r'])
+  })
+})
+
+describe('<Viewer /> shortcuts', () => {
+  const ready = async (ui: React.ReactElement) => {
+    render(ui)
+    const core = await import('./core')
+    await vi.waitFor(() => expect(core.createViewer).toHaveBeenCalled())
+    return screen.getByRole('img').parentElement as HTMLElement
+  }
+
+  it('runs remapped keys and leaves the browser its own', async () => {
+    vi.clearAllMocks()
+    const viewer = await ready(<Viewer src="/m.glb" alt="M" shortcuts={{ reset: ['Home'] }} />)
+    fireEvent.keyDown(viewer, { key: 'r' })
+    expect(mockViewerController.resetView).not.toHaveBeenCalled()
+    fireEvent.keyDown(viewer, { key: 'Home' })
+    expect(mockViewerController.resetView).toHaveBeenCalledTimes(1)
+    // Ctrl+1 switches browser tabs; it is not the front view.
+    fireEvent.keyDown(viewer, { key: '1', ctrlKey: true })
+    expect(mockViewerController.setView).not.toHaveBeenCalled()
+  })
+
+  it('ignores every key with shortcuts off', async () => {
+    vi.clearAllMocks()
+    const viewer = await ready(<Viewer src="/m.glb" alt="M" shortcuts={false} />)
+    fireEvent.keyDown(viewer, { key: 'r' })
+    fireEvent.keyDown(viewer, { key: '1' })
+    expect(mockViewerController.resetView).not.toHaveBeenCalled()
+    expect(mockViewerController.setView).not.toHaveBeenCalled()
+  })
+
+  it('hands the wheel setting to the viewer', async () => {
+    vi.clearAllMocks()
+    await ready(<Viewer src="/m.glb" alt="M" wheelZoom="always" />)
+    const core = await import('./core')
+    expect(core.createViewer).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.objectContaining({ wheelZoom: 'always' }),
+    )
   })
 })
 

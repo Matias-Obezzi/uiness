@@ -445,12 +445,15 @@ export interface ThreeViewerProps extends ViewerProps {
 /**
  * All-in-one 3D model viewer pairing `<Viewer />` with an interactive `<ViewerToolbar />`.
  *
- * Supported keyboard shortcuts when focused:
+ * Keyboard shortcuts when focused, all remappable through `shortcuts`:
  * - `R`: Reset camera viewpoint
  * - `+` / `-`: Zoom in / Zoom out
  * - `Space`: Toggle automatic rotation
  * - `F`: Toggle fullscreen
  * - `1`–`4`: Switch to Front, Right, Top, or Isometric camera presets
+ *
+ * The wheel zooms with Ctrl or ⌘ held, or a trackpad pinch, and scrolls the page otherwise;
+ * set `wheelZoom` to change it.
  */
 export function ThreeViewer({
   toolbarPosition = 'bottom',
