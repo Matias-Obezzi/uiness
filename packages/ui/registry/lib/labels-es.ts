@@ -136,6 +136,12 @@ export const es = {
     showLess: 'Mostrar menos',
     showAll: (lines: number) => `Mostrar las ${lines} líneas`,
   },
+  'code-comparison': {
+    before: 'Antes',
+    after: 'Después',
+    copy: 'Copiar código',
+    copied: 'Copiado',
+  },
   'color-picker': {
     area: 'Saturación y brillo',
     areaRole: 'control deslizante 2D',
@@ -282,6 +288,9 @@ export const es = {
     summary: (slices: string[], caption: string, total: string) =>
       `Gráfico de anillo, ${slices.join(', ')}. ${caption} ${total}.`,
   },
+  'dotted-map': {
+    map: 'Mapa mundial',
+  },
   'expandable-card': {
     close: 'Cerrar',
   },
@@ -293,6 +302,9 @@ export const es = {
     previous: 'Imagen anterior',
     next: 'Imagen siguiente',
     show: (index: number) => `Mostrar la imagen ${index}`,
+  },
+  globe: {
+    globe: 'Globo terráqueo interactivo',
   },
   'hold-to-confirm': {
     hint: 'Mantén presionado para confirmar.',
@@ -401,6 +413,9 @@ export const es = {
     decrement: 'Disminuir',
     increment: 'Aumentar',
   },
+  'og-preview': {
+    preview: (title: string) => `Vista previa de ${title}`,
+  },
   pagination: {
     nav: 'Paginación',
     previous: 'Anterior',
@@ -466,6 +481,9 @@ export const es = {
     heading2: 'Título 2',
     heading3: 'Título 3',
     divider: 'Separador',
+  },
+  safari: {
+    search: 'Buscar o ingresar dirección web',
   },
   'search-field': {
     placeholder: 'Buscar…',
@@ -557,6 +575,14 @@ export const es = {
   },
   'tree-view': {
     loadFailed: 'no se pudo cargar, ábrelo para reintentar',
+  },
+  'tweet-card': {
+    reply: 'Responder',
+    repost: 'Republicar',
+    like: 'Me gusta',
+    views: 'Visualizaciones',
+    verified: 'Cuenta verificada',
+    quoted: 'Publicación citada',
   },
   'usage-meter': {
     warning: 'Casi lleno',

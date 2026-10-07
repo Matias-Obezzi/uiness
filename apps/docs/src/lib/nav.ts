@@ -555,12 +555,42 @@ const sections: NavSection[] = [
         'Text Morph',
         'A label that morphs into its next value, letter by letter.',
       ),
+      page('motion/globe', 'Globe', 'Pure 2D canvas globe with rotation and markers.'),
+      page('motion/dotted-map', 'Dotted Map', 'SVG world map rendered in a single path.'),
+      page('motion/tweet-card', 'Tweet Card', 'Presentational social card with tokenized links.'),
+      page(
+        'motion/og-preview',
+        'OG Preview',
+        'OpenGraph link preview card for multiple platforms.',
+      ),
+      page(
+        'motion/code-comparison',
+        'Code Comparison',
+        'Side-by-side or unified code diff comparison.',
+      ),
+      page('motion/iphone', 'iPhone', 'Pure CSS and SVG iPhone mockup with Dynamic Island.'),
+      page('motion/android', 'Android', 'Pure CSS and SVG Android mockup with punch-hole camera.'),
+      page('motion/safari', 'Safari', 'Pure CSS and SVG Safari browser mockup.'),
+      page('motion/macbook', 'MacBook', 'Pure CSS and SVG MacBook mockup with display notch.'),
+      page('motion/ipad', 'iPad', 'Pure CSS and SVG iPad mockup with orientation support.'),
     ],
   },
 ]
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-07': [
+    'motion/android',
+    'motion/code-comparison',
+    'motion/dotted-map',
+    'motion/globe',
+    'motion/ipad',
+    'motion/iphone',
+    'motion/macbook',
+    'motion/og-preview',
+    'motion/safari',
+    'motion/tweet-card',
+  ],
   '2026-10-06': ['localization', 'ai'],
   '2026-10-04': [
     'blocks/blog',
@@ -838,6 +868,17 @@ const groups: Record<string, Record<string, string[]>> = {
       'path-morph',
       'sonar',
       'terminal',
+    ],
+    Maps: ['dotted-map', 'globe'],
+    Mockups: [
+      'android',
+      'code-comparison',
+      'ipad',
+      'iphone',
+      'macbook',
+      'og-preview',
+      'safari',
+      'tweet-card',
     ],
   },
 }

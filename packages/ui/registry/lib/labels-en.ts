@@ -134,6 +134,12 @@ export const en = {
     showLess: 'Show less',
     showAll: (lines: number) => `Show all ${lines} lines`,
   },
+  'code-comparison': {
+    before: 'Before',
+    after: 'After',
+    copy: 'Copy code',
+    copied: 'Copied',
+  },
   'color-picker': {
     area: 'Saturation and brightness',
     areaRole: '2D slider',
@@ -276,6 +282,9 @@ export const en = {
     summary: (slices: string[], caption: string, total: string) =>
       `Donut chart, ${slices.join(', ')}. ${caption} ${total}.`,
   },
+  'dotted-map': {
+    map: 'World map',
+  },
   'expandable-card': {
     close: 'Close',
   },
@@ -287,6 +296,9 @@ export const en = {
     previous: 'Previous image',
     next: 'Next image',
     show: (index: number) => `Show image ${index}`,
+  },
+  globe: {
+    globe: 'Interactive 3D globe',
   },
   'hold-to-confirm': {
     hint: 'Press and hold to confirm.',
@@ -394,6 +406,9 @@ export const en = {
     decrement: 'Decrease',
     increment: 'Increase',
   },
+  'og-preview': {
+    preview: (title: string) => `Preview of ${title}`,
+  },
   pagination: {
     nav: 'Pagination',
     previous: 'Previous',
@@ -459,6 +474,9 @@ export const en = {
     heading2: 'Heading 2',
     heading3: 'Heading 3',
     divider: 'Divider',
+  },
+  safari: {
+    search: 'Search or enter website name',
   },
   'search-field': {
     placeholder: 'Search…',
@@ -550,6 +568,14 @@ export const en = {
   },
   'tree-view': {
     loadFailed: 'could not load, open to retry',
+  },
+  'tweet-card': {
+    reply: 'Reply',
+    repost: 'Repost',
+    like: 'Like',
+    views: 'Views',
+    verified: 'Verified account',
+    quoted: 'Quoted tweet',
   },
   'usage-meter': {
     warning: 'Almost full',

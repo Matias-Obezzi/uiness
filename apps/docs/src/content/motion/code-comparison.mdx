@@ -1,0 +1,37 @@
+Side-by-side or unified code diff comparison powered by longest common subsequence (LCS), with optional focus mode that dims unchanged lines until hovered.
+
+<ComponentPreview name="code-comparison-demo" />
+
+## Installation
+
+<Install name="code-comparison" />
+
+## Usage
+
+```tsx
+import { CodeComparison } from '@/components/ui/code-comparison'
+
+<CodeComparison
+  before="const a = 1"
+  after="const a = 2"
+  beforeLabel="before.ts"
+  afterLabel="after.ts"
+  language="typescript"
+  focus
+/>
+```
+
+The difference algorithm runs entirely on client and server using a clean line-based longest common subsequence matcher. On small screens, split mode automatically adapts to a single-column view to prevent horizontal scrolling.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `before` | required | Source code string before modifications. |
+| `after` | required | Source code string after modifications. |
+| `beforeLabel` | `'Before'` | Filename or header label for original code. |
+| `afterLabel` | `'After'` | Filename or header label for updated code. |
+| `language` | `'typescript'` | Programming language identifier. |
+| `highlight` | `undefined` | Optional syntax highlighter mapping lines to HTML. |
+| `mode` | `'split'` | Display layout: `'split'` or `'unified'`. |
+| `focus` | `false` | Dims and blurs unchanged lines until hovered. |

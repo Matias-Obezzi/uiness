@@ -42,6 +42,8 @@ export const selfAnimated = [
   'orbit',
   'sonar',
   'retro-grid',
+  'globe',
+  'dotted-map',
 ]
   .map((slot) => `[data-slot="${slot}"]`)
   .join(', ')

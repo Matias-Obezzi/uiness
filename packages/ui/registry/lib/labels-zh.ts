@@ -133,6 +133,12 @@ export const zh = {
     showLess: '收起',
     showAll: (lines: number) => `显示全部 ${lines} 行`,
   },
+  'code-comparison': {
+    before: '修改前',
+    after: '修改后',
+    copy: '复制代码',
+    copied: '已复制',
+  },
   'color-picker': {
     area: '饱和度和亮度',
     areaRole: '二维滑块',
@@ -276,6 +282,9 @@ export const zh = {
     summary: (slices: string[], caption: string, total: string) =>
       `环形图，${slices.join('，')}。${caption} ${total}。`,
   },
+  'dotted-map': {
+    map: '世界地图',
+  },
   'expandable-card': {
     close: '关闭',
   },
@@ -287,6 +296,9 @@ export const zh = {
     previous: '上一张图片',
     next: '下一张图片',
     show: (index: number) => `显示第 ${index} 张图片`,
+  },
+  globe: {
+    globe: '交互式 3D 地球仪',
   },
   'hold-to-confirm': {
     hint: '长按以确认。',
@@ -394,6 +406,9 @@ export const zh = {
     decrement: '减少',
     increment: '增加',
   },
+  'og-preview': {
+    preview: (title: string) => `${title} 的预览`,
+  },
   pagination: {
     nav: '分页',
     previous: '上一页',
@@ -459,6 +474,9 @@ export const zh = {
     heading2: '标题 2',
     heading3: '标题 3',
     divider: '分割线',
+  },
+  safari: {
+    search: '搜索或输入网站名称',
   },
   'search-field': {
     placeholder: '搜索…',
@@ -550,6 +568,14 @@ export const zh = {
   },
   'tree-view': {
     loadFailed: '加载失败，展开以重试',
+  },
+  'tweet-card': {
+    reply: '回复',
+    repost: '转发',
+    like: '喜欢',
+    views: '浏览量',
+    verified: '已认证账号',
+    quoted: '引用的推文',
   },
   'usage-meter': {
     warning: '即将用完',

@@ -1,0 +1,40 @@
+Presentational social post card with tokenized text for handles, hashtags and links, an adaptive media grid, and engagement metrics.
+
+<ComponentPreview name="tweet-card-demo" />
+
+## Installation
+
+<Install name="tweet-card" />
+
+## Usage
+
+```tsx
+import { TweetCard } from '@/components/ui/tweet-card'
+
+<TweetCard
+  author={{
+    name: 'Sarah Connor',
+    handle: 'sconnor',
+    avatar: '/sarah.jpg',
+    verified: true,
+  }}
+  text="Building the future with @uiness! Check #opensource at https://uiness.dev"
+  createdAt="2026-10-07"
+  metrics={{ replies: 12, reposts: 48, likes: 320, views: 15400 }}
+/>
+```
+
+The component is entirely presentational and does not connect to external Twitter or X APIs. Text is tokenized safely into React elements without using `dangerouslySetInnerHTML`. Dates and numbers format automatically according to the active locale using the browser's `Intl` API.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `author` | required | Author object: `{ name, handle, avatar, verified? }`. |
+| `text` | required | Plain text string to linkify and display. |
+| `media` | `[]` | Array of 1 to 4 media objects: `{ type, src, alt? }`. |
+| `quoted` | `undefined` | Optional nested quoted tweet object. |
+| `createdAt` | required | Creation timestamp as `Date` or ISO string. |
+| `metrics` | `undefined` | Interaction stats: `{ replies?, reposts?, likes?, views? }`. |
+| `href` | `undefined` | External URL destination for the post. |
+| `icon` | `undefined` | Slot for custom brand icon in the top right. |

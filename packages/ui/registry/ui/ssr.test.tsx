@@ -3,14 +3,24 @@ import type * as React from 'react'
 import { hydrateRoot, type Root } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { Android } from './android'
+import { CodeComparison } from './code-comparison'
+import { DottedMap } from './dotted-map'
+import { Globe } from './globe'
+import { IPad } from './ipad'
+import { IPhone } from './iphone'
+import { MacBook } from './macbook'
 import { Meteors } from './meteors'
 import { NumberTicker } from './number-ticker'
 import { Odometer } from './odometer'
+import { OgPreview } from './og-preview'
 import { Reveal } from './reveal'
+import { Safari } from './safari'
 import { ScrambleText } from './scramble-text'
 import { TextGenerate } from './text-generate'
 import { TextReveal } from './text-reveal'
 import { Timeline, TimelineItem } from './timeline'
+import { TweetCard } from './tweet-card'
 import { Typewriter } from './typewriter'
 import { VelocityMarquee } from './velocity-marquee'
 
@@ -270,6 +280,73 @@ describe('meteors', () => {
     vi.spyOn(Math, 'sin').mockImplementation((x) => sin(x) * (1 + 1e-15))
     expect(renderToString(ui)).toBe(html)
     vi.restoreAllMocks()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+})
+
+describe('Phase 4 map and mockup components SSR and hydration', () => {
+  it('renders Globe on server and hydrates cleanly', () => {
+    const ui = <Globe aria-label="Globe preview" />
+    const { el } = serverHtml(ui)
+    expect(el.querySelector('canvas')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('renders DottedMap on server with stable SVG path', () => {
+    const ui = <DottedMap step={10} aria-label="World" />
+    const { html, el } = serverHtml(ui)
+    expect(el.querySelector('path')).toBeTruthy()
+    expect(renderToString(ui)).toBe(html)
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('renders TweetCard on server without mismatch', () => {
+    const ui = (
+      <TweetCard
+        author={{ name: 'Jane', handle: 'jane', avatar: '/avatar.jpg' }}
+        text="Hello world"
+        createdAt="2026-10-07T00:00:00Z"
+      />
+    )
+    const { el } = serverHtml(ui)
+    expect(el.textContent).toContain('Hello world')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('renders OgPreview on server for all variants', () => {
+    for (const variant of ['x', 'slack', 'discord', 'imessage', 'linkedin'] as const) {
+      const ui = <OgPreview url="https://example.com" title="Example Site" variant={variant} />
+      const { el } = serverHtml(ui)
+      expect(el.textContent).toContain('Example Site')
+      expect(hydrate(ui).errors).toEqual([])
+      act(() => root?.unmount())
+      root = undefined
+    }
+  })
+
+  it('renders CodeComparison on server in split and unified modes', () => {
+    for (const mode of ['split', 'unified'] as const) {
+      const ui = <CodeComparison before="a = 1" after="a = 2" mode={mode} />
+      const { el } = serverHtml(ui)
+      expect(el.querySelector('table')).toBeTruthy()
+      expect(hydrate(ui).errors).toEqual([])
+      act(() => root?.unmount())
+      root = undefined
+    }
+  })
+
+  it('renders device mockups on server and hydrates cleanly', () => {
+    const ui = (
+      <div>
+        <IPhone src="/iphone.jpg" alt="iphone" />
+        <Android src="/android.jpg" alt="android" />
+        <IPad src="/ipad.jpg" alt="ipad" />
+        <MacBook src="/macbook.jpg" alt="macbook" />
+        <Safari src="/safari.jpg" alt="safari" />
+      </div>
+    )
+    const { el } = serverHtml(ui)
+    expect(el.querySelectorAll('img')).toHaveLength(5)
     expect(hydrate(ui).errors).toEqual([])
   })
 })

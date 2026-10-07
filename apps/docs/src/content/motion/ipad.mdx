@@ -1,0 +1,31 @@
+Pure CSS and SVG iPad tablet mockup with uniform bezels and orientation options.
+
+<ComponentPreview name="ipad-demo" />
+
+## Installation
+
+<Install name="ipad" />
+
+## Usage
+
+```tsx
+import { IPad } from '@/components/ui/ipad'
+
+<IPad
+  src="/tablet-dashboard.png"
+  alt="Tablet Dashboard"
+  orientation="landscape"
+/>
+```
+
+Adapts seamlessly between portrait and landscape orientations while preserving bezel proportions and hardware indicator placement.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `src` | `undefined` | Screenshot image URL to render on the screen. |
+| `videoSrc` | `undefined` | Video clip URL to loop on the screen. |
+| `children` | `undefined` | Interactive React elements rendered on the screen. |
+| `alt` | `'iPad screen'` | Accessible alt text for screen media. |
+| `orientation` | `'portrait'` | Orientation layout: `'portrait'` or `'landscape'`. |

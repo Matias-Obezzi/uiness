@@ -1,0 +1,53 @@
+Preview card representing how a shared link displays across messaging apps and social platforms, accurately mirroring each layout.
+
+<ComponentPreview name="og-preview-demo" />
+
+## Installation
+
+<Install name="og-preview" />
+
+## Usage
+
+```tsx
+import { OgPreview } from '@/components/ui/og-preview'
+
+<OgPreview
+  url="https://uiness.dev"
+  title="uiness — Pure CSS and Canvas Motion Primitives"
+  description="Build animated interfaces without heavy runtime dependencies."
+  image="/banner.jpg"
+  variant="x"
+/>
+```
+
+Each variant reproduces platform card specifications (such as Slack's left colored border, Discord's dark embed styling, or iMessage's rounded bubble) without bundling proprietary brand logos. The image loads with a smooth fade and blur transition, and gracefully handles missing descriptions or images.
+
+To extract OpenGraph tags from any webpage on your own server:
+
+```ts
+import * as cheerio from 'cheerio'
+
+export async function getOgMeta(url: string) {
+  const html = await fetch(url).then((r) => r.text())
+  const $ = cheerio.load(html)
+  return {
+    title: $('meta[property="og:title"]').attr('content') || $('title').text(),
+    description: $('meta[property="og:description"]').attr('content'),
+    image: $('meta[property="og:image"]').attr('content'),
+    siteName: $('meta[property="og:site_name"]').attr('content'),
+  }
+}
+```
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `url` | required | Target link address. |
+| `title` | required | OpenGraph title. |
+| `description` | `undefined` | Summary description text. |
+| `image` | `undefined` | URL to preview banner image. |
+| `siteName` | `undefined` | Website publisher name. |
+| `favicon` | `undefined` | URL to site favicon icon. |
+| `themeColor` | `undefined` | Accent border color for embeds. |
+| `variant` | `'x'` | Layout platform: `'x' \| 'slack' \| 'discord' \| 'imessage' \| 'linkedin'`. |
