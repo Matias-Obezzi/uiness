@@ -50,6 +50,7 @@ function SmoothCursor({
     const isParentScope = scope === 'parent' && el.parentElement !== null
 
     let frame = 0
+    let last = 0
     let tx = 0
     let ty = 0
     let cx = 0
@@ -57,20 +58,33 @@ function SmoothCursor({
     let vx = 0
     let vy = 0
     let currentAngle = 0
+    let scale = 1
     let pressed = false
     let interactive = false
+    // Hidden until the pointer arrives, and again after it leaves: the next arrival places the
+    // cursor under the pointer instead of flying it in from wherever it was.
+    let shown = false
+
+    const targetScale = () => (pressed ? 0.8 : interactive ? 1.4 : 1)
 
     const renderTransform = () => {
-      const scale = pressed ? 0.8 : interactive ? 1.4 : 1
       const rot = rotate && !reduced ? `rotate(${currentAngle.toFixed(1)}deg)` : ''
-      el.style.transform = `translate3d(${cx.toFixed(2)}px, ${cy.toFixed(2)}px, 0) ${rot} scale(${scale.toFixed(2)})`
+      el.style.transform = `translate3d(${cx.toFixed(2)}px, ${cy.toFixed(2)}px, 0) ${rot} scale(${scale.toFixed(3)})`
     }
 
-    const loop = () => {
+    // One spring step is a sixtieth of a second, so the feel is the same at 60 Hz and 120 Hz.
+    const step = () => {
       vx = (vx + (tx - cx) * stiffness) * damping
       vy = (vy + (ty - cy) * stiffness) * damping
       cx += vx
       cy += vy
+      scale += (targetScale() - scale) * 0.3
+    }
+
+    const loop = (now: number) => {
+      const steps = Math.min(4, Math.max(1, Math.round((now - last) / (1000 / 60))))
+      last = now
+      for (let i = 0; i < steps; i++) step()
 
       if (rotate) {
         const dx = tx - cx
@@ -86,11 +100,12 @@ function SmoothCursor({
 
       const dist = Math.hypot(tx - cx, ty - cy)
       const speed = Math.hypot(vx, vy)
-      if (dist < 0.1 && speed < 0.1) {
+      if (dist < 0.1 && speed < 0.1 && Math.abs(targetScale() - scale) < 0.005) {
         cx = tx
         cy = ty
         vx = 0
         vy = 0
+        scale = targetScale()
         frame = 0
         renderTransform()
         return
@@ -100,10 +115,15 @@ function SmoothCursor({
       frame = requestAnimationFrame(loop)
     }
 
+    const start = () => {
+      if (frame) return
+      last = performance.now()
+      frame = requestAnimationFrame(loop)
+    }
+
     const onMove = (e: Event) => {
       const pe = e as PointerEvent
       if (pe.pointerType === 'touch') return
-      el.style.opacity = '1'
 
       if (isParentScope && el.parentElement) {
         const rect = el.parentElement.getBoundingClientRect()
@@ -119,29 +139,39 @@ function SmoothCursor({
         'a, button, [role=button], [data-cursor], input, select, textarea',
       )
 
-      if (reduced) {
+      if (reduced || !shown) {
         cx = tx
         cy = ty
+        vx = 0
+        vy = 0
+        scale = targetScale()
+        shown = true
+        el.style.opacity = '1'
         renderTransform()
-        return
+        if (reduced) return
       }
 
-      if (!frame) frame = requestAnimationFrame(loop)
+      start()
     }
 
     const onDown = () => {
       pressed = true
-      if (reduced) renderTransform()
-      else if (!frame) frame = requestAnimationFrame(loop)
+      if (reduced) {
+        scale = targetScale()
+        renderTransform()
+      } else start()
     }
 
     const onUp = () => {
       pressed = false
-      if (reduced) renderTransform()
-      else if (!frame) frame = requestAnimationFrame(loop)
+      if (reduced) {
+        scale = targetScale()
+        renderTransform()
+      } else start()
     }
 
     const onLeave = () => {
+      shown = false
       el.style.opacity = '0'
     }
 
@@ -151,7 +181,7 @@ function SmoothCursor({
     if (scope === 'parent' && el.parentElement) {
       el.parentElement.addEventListener('pointerleave', onLeave)
     } else {
-      document.addEventListener('pointerleave', onLeave)
+      document.documentElement.addEventListener('pointerleave', onLeave)
     }
 
     return () => {
@@ -162,7 +192,7 @@ function SmoothCursor({
       if (scope === 'parent' && el.parentElement) {
         el.parentElement.removeEventListener('pointerleave', onLeave)
       } else {
-        document.removeEventListener('pointerleave', onLeave)
+        document.documentElement.removeEventListener('pointerleave', onLeave)
       }
     }
   }, [stiffness, damping, rotate, scope, reduced])
@@ -173,7 +203,8 @@ function SmoothCursor({
       aria-hidden="true"
       data-slot="smooth-cursor"
       className={cn(
-        'pointer-events-none z-50 opacity-0 transition-opacity duration-150 will-change-transform',
+        // The pointer sits at the element's top left corner, so it turns and scales from there.
+        'pointer-events-none z-50 origin-top-left opacity-0 transition-opacity duration-150 will-change-transform',
         scope === 'page' ? 'fixed top-0 left-0' : 'absolute top-0 left-0',
         className,
       )}

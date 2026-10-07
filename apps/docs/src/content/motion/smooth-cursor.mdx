@@ -24,4 +24,4 @@ The animation loop only runs while the spring remains unsettled, shutting down c
 | `damping` | `0.75` | Spring resistance damping from 0.5 to 0.95. |
 | `rotate` | `true` | Whether the cursor tilts toward the direction of travel. |
 | `scope` | `'page'` | Tracking boundaries: `'page'` (fixed) or `'parent'` (absolute). |
-| `children` | dot ring | Custom cursor shape or inner element. |
+| `children` | dot ring | Custom cursor shape. Its top left corner is the pointer's point, and the shape turns and scales around it: center a shape with `-translate-x-1/2 -translate-y-1/2`, or draw an arrow with its tip there. |
