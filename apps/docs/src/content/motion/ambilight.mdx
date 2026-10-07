@@ -20,6 +20,22 @@ Images project their ambient halo purely through CSS `filter: blur() saturate()`
 
 Pixels are drawn directly to the canvas and never read back with `getImageData`: this ensures cross-origin videos without CORS headers continue to display their ambient backlight without throwing browser security exceptions. The sampling loop stops automatically when the video pauses, ends, scrolls off-screen, or the browser tab becomes hidden. Under `prefers-reduced-motion`, updates occur only when the video pauses or seeks.
 
+## YouTube and other embeds
+
+No page can read the pixels of a player from another site. A YouTube player still gets a live glow: the glow is a second, muted copy of the player, blurred by CSS, that plays, pauses and seeks with the visible one over the embed's own messages. Wrap the iframe; `enablejsapi=1` is added to its URL for you.
+
+<ComponentPreview name="ambilight-youtube" />
+
+```tsx
+<Ambilight>
+  <iframe src="https://www.youtube-nocookie.com/embed/PWgvGjAhvIw" title="..." allowFullScreen />
+</Ambilight>
+```
+
+The copy is laid out at a quarter of the size and scaled up, and YouTube streams by the player's size, so it costs the lowest quality on top of the video. It pauses while the player is off screen. Under `prefers-reduced-motion` the glow is the video's thumbnail instead.
+
+For other embeds, like a Vimeo player, pass `glow` an image to light the glow with, such as the video's poster. That glow stays still.
+
 ## Props
 
 | Prop | Default | Description |
@@ -29,3 +45,4 @@ Pixels are drawn directly to the canvas and never read back with `getImageData`:
 | `intensity` | `0.7` | Peak opacity of the ambient glow, from 0 to 1. |
 | `saturation` | `1.4` | Color saturation multiplier. |
 | `fps` | `15` | Sampling refresh rate in frames per second for video content. |
+| `glow` | — | An image to light the glow with instead of the content, for embeds no page can read. |

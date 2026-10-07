@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { Ambilight } from './ambilight'
+import { Ambilight, followCommands } from './ambilight'
 import { Lens } from './lens'
 import { NoiseTexture } from './noise-texture'
 import { Particles } from './particles'
@@ -230,6 +230,53 @@ describe('Ambilight', () => {
     expect(glow?.getAttribute('aria-hidden')).toBe('true')
     expect(glow?.getAttribute('style')).toContain('blur(50px)')
     expect(glow?.getAttribute('style')).toContain('scale(1.2)')
+  })
+
+  it('lights a video from a canvas and never clones the video', () => {
+    render(
+      <Ambilight>
+        <video src="/clip.webm" muted />
+      </Ambilight>,
+    )
+    expect(document.querySelectorAll('video')).toHaveLength(1)
+    expect(document.querySelectorAll('[data-slot="ambilight-glow"] canvas')).toHaveLength(2)
+  })
+
+  it('lights a YouTube player with a muted copy of it', () => {
+    render(
+      <Ambilight>
+        <iframe src="https://www.youtube-nocookie.com/embed/PWgvGjAhvIw" title="Player" />
+      </Ambilight>,
+    )
+    const [player, mirror] = [
+      document.querySelector<HTMLIFrameElement>('[data-slot="ambilight-content"] iframe'),
+      document.querySelector<HTMLIFrameElement>('[data-slot="ambilight-glow"] iframe'),
+    ]
+    expect(player?.src).toContain('enablejsapi=1')
+    expect(mirror?.src).toContain('/embed/PWgvGjAhvIw?enablejsapi=1&mute=1&controls=0')
+    expect(mirror?.tabIndex).toBe(-1)
+    expect(mirror?.closest('[inert]')).toBeTruthy()
+  })
+
+  it('tells the copy to play, pause and catch up with the player', () => {
+    const at = (state: number, time: number) => ({ state, time })
+    expect(followCommands(at(1, 10), at(2, 10), true)).toEqual([['playVideo', []]])
+    expect(followCommands(at(2, 10), at(1, 10), true)).toEqual([['pauseVideo', []]])
+    expect(followCommands(at(1, 10), at(1, 10), false)).toEqual([['pauseVideo', []]])
+    expect(followCommands(at(1, 42), at(1, 10.2), true)).toEqual([['seekTo', [42, true]]])
+    expect(followCommands(at(1, 10.3), at(1, 10), true)).toEqual([])
+  })
+
+  it('lights the glow from an image when the content cannot be read', () => {
+    render(
+      <Ambilight glow="/thumb.jpg">
+        <iframe src="https://player.vimeo.com/video/1" title="Player" />
+      </Ambilight>,
+    )
+    expect(document.querySelectorAll('iframe')).toHaveLength(1)
+    expect(document.querySelector('[data-slot="ambilight-glow"] img')?.getAttribute('src')).toBe(
+      '/thumb.jpg',
+    )
   })
 })
 
