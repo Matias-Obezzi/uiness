@@ -1,6 +1,9 @@
 import { Stage } from '@uiness/three'
+import { useRef } from 'react'
+import type { Mesh } from 'three'
 
 export default function ThreeStageDemo() {
+  const knot = useRef<Mesh | null>(null)
   return (
     <div className="relative aspect-[4/3] w-full max-w-2xl overflow-hidden rounded-xl border bg-muted/20">
       <Stage
@@ -16,6 +19,7 @@ export default function ThreeStageDemo() {
             metalness: 0.8,
           })
           const mesh = new THREE.Mesh(geometry, material)
+          knot.current = mesh
           scene.add(mesh)
 
           const light1 = new THREE.DirectionalLight(0xffffff, 2.5)
@@ -33,15 +37,11 @@ export default function ThreeStageDemo() {
             scene.remove(light2)
           }
         }}
-        onFrame={(ctx, delta) => {
-          const mesh = ctx.scene.children.find(
-            (c) => 'isMesh' in c && Boolean((c as { isMesh?: boolean }).isMesh),
-          )
-          if (mesh) {
-            mesh.rotation.x += delta * 0.4
-            mesh.rotation.y += delta * 0.6
-            return true
-          }
+        onFrame={(_, delta) => {
+          if (!knot.current) return
+          knot.current.rotation.x += delta * 0.4
+          knot.current.rotation.y += delta * 0.6
+          return true
         }}
       />
     </div>

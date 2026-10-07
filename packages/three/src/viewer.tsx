@@ -3,8 +3,8 @@
 import * as React from 'react'
 import type * as THREE from 'three'
 import type {
+  StageContext as CoreStageContext,
   LoopState,
-  StageContext,
   StageController,
   StageOptions,
   ViewerController,
@@ -14,13 +14,15 @@ import type {
 
 export type {
   LoopState,
-  StageContext,
   StageController,
   StageOptions,
   ViewerController,
   ViewerOptions,
   ViewPreset,
 }
+
+/** What `<Stage>` hands its callbacks: the stage, plus three itself so scenes need no import of it. */
+export type StageContext = CoreStageContext & { THREE: typeof THREE }
 
 export type ViewerStatus = 'idle' | 'loading' | 'ready' | 'error'
 
@@ -88,28 +90,6 @@ export interface ViewerProps
   fallback?: React.ReactNode
 }
 
-function isWebGLAvailable(): boolean {
-  if (typeof window === 'undefined') return false
-  try {
-    const canvas = document.createElement('canvas')
-    return (
-      Boolean(
-        (window.WebGLRenderingContext || window.WebGL2RenderingContext) &&
-          (canvas.getContext('webgl2') ||
-            canvas.getContext('webgl') ||
-            canvas.getContext('experimental-webgl')),
-      ) ||
-      Boolean(
-        canvas.getContext('webgl2') ||
-          canvas.getContext('webgl') ||
-          canvas.getContext('experimental-webgl'),
-      )
-    )
-  } catch {
-    return false
-  }
-}
-
 /**
  * Headless 3D model viewer. Defers loading Three.js until approaching the viewport,
  * renders on demand, and provides camera, lighting, and shadow management.
@@ -142,6 +122,21 @@ export function Viewer({
   const [fullscreen, setFullscreen] = React.useState(false)
   const [currentView, setCurrentView] = React.useState<ViewPreset>('iso')
   const [nearViewport, setNearViewport] = React.useState(false)
+
+  // A new `autoRotate` prop turns the rotation on or off, without building the viewer again.
+  const [autoRotateProp, setAutoRotateProp] = React.useState(autoRotate)
+  if (autoRotate !== autoRotateProp) {
+    setAutoRotateProp(autoRotate)
+    setIsRotating(autoRotate)
+  }
+
+  // Callbacks and the rotation are read when needed, not depended on: an inline callback is a new
+  // function on every render, and building the viewer again means a new WebGL context, a new
+  // download of the model and new shaders.
+  const latest = React.useRef({ onLoad, onError, onProgress, isRotating })
+  React.useEffect(() => {
+    latest.current = { onLoad, onError, onProgress, isRotating }
+  })
 
   // Track reduced motion preference
   const [reducedMotion, setReducedMotion] = React.useState(false)
@@ -198,13 +193,6 @@ export function Viewer({
     if (!nearViewport || !canvasRef.current) return
 
     let isCancelled = false
-
-    if (!isWebGLAvailable()) {
-      setStatus('error')
-      onError?.(new Error('WebGL is not available in this browser environment.'))
-      return
-    }
-
     setStatus('loading')
 
     // Dynamic import to satisfy zero-weight initial bundle rule
@@ -212,9 +200,11 @@ export function Viewer({
       .then((core) => {
         if (isCancelled || !canvasRef.current) return
 
+        // Creating the renderer is the test for WebGL: it throws without it, and probing first
+        // would spend a context of the few a page gets.
         const viewer = core.createViewer(canvasRef.current, {
           src,
-          autoRotate: Boolean(autoRotate && !reducedMotion),
+          autoRotate: latest.current.isRotating && !reducedMotion,
           environment,
           shadows,
           maxDpr,
@@ -227,28 +217,28 @@ export function Viewer({
         viewer.on('progress', (p) => {
           if (!isCancelled) {
             setProgress(p)
-            onProgress?.(p)
+            latest.current.onProgress?.(p)
           }
         })
 
         viewer.on('load', (model) => {
           if (!isCancelled) {
             setStatus('ready')
-            onLoad?.(model)
+            latest.current.onLoad?.(model)
           }
         })
 
         viewer.on('error', (err) => {
           if (!isCancelled) {
             setStatus('error')
-            onError?.(err)
+            latest.current.onError?.(err)
           }
         })
       })
       .catch((err) => {
         if (!isCancelled) {
           setStatus('error')
-          onError?.(err instanceof Error ? err : new Error(String(err)))
+          latest.current.onError?.(err instanceof Error ? err : new Error(String(err)))
         }
       })
 
@@ -259,19 +249,11 @@ export function Viewer({
         viewerRef.current = null
       }
     }
-  }, [
-    nearViewport,
-    src,
-    autoRotate,
-    environment,
-    shadows,
-    maxDpr,
-    dracoPath,
-    reducedMotion,
-    onLoad,
-    onError,
-    onProgress,
-  ])
+  }, [nearViewport, src, environment, shadows, maxDpr, dracoPath, reducedMotion])
+
+  React.useEffect(() => {
+    viewerRef.current?.setAutoRotate(isRotating && !reducedMotion)
+  }, [isRotating, reducedMotion])
 
   const actions = React.useMemo<ViewerActions>(
     () => ({
@@ -288,11 +270,7 @@ export function Viewer({
       },
       toggleAutoRotate: () => {
         if (reducedMotion) return
-        setIsRotating((prev) => {
-          const next = !prev
-          viewerRef.current?.setAutoRotate(next)
-          return next
-        })
+        setIsRotating((prev) => !prev)
       },
       toggleWireframe: () => {
         setWireframe((prev) => {
@@ -540,6 +518,12 @@ export function Stage({
   const stageRef = React.useRef<StageController | null>(null)
   const [inView, setInView] = React.useState(false)
 
+  // Inline callbacks are new on every render; reading them through a ref keeps one stage alive.
+  const latest = React.useRef({ onSetup, onFrame })
+  React.useEffect(() => {
+    latest.current = { onSetup, onFrame }
+  })
+
   React.useEffect(() => {
     const el = wrapperRef.current
     if (!el || typeof window === 'undefined') return
@@ -573,7 +557,8 @@ export function Stage({
     let unmountCleanup: (() => void) | undefined
     let isCancelled = false
 
-    import('./core').then((core) => {
+    // All of three comes only with a custom scene, which may use any of it.
+    Promise.all([import('./core'), import('three')]).then(([core, THREE]) => {
       if (isCancelled || !canvasRef.current) return
 
       const stage = core.createStage(canvasRef.current, {
@@ -583,20 +568,16 @@ export function Stage({
 
       stageRef.current = stage
 
-      if (onSetup) {
-        cleanupSetup = onSetup({
-          THREE: stage.THREE,
-          scene: stage.scene,
-          camera: stage.camera,
-          renderer: stage.renderer,
-          canvas: stage.canvas,
-          invalidate: stage.invalidate,
-        })
+      const ctx: StageContext = {
+        THREE,
+        scene: stage.scene,
+        camera: stage.camera,
+        renderer: stage.renderer,
+        canvas: stage.canvas,
+        invalidate: stage.invalidate,
       }
-
-      if (onFrame) {
-        unmountCleanup = stage.onFrame(onFrame)
-      }
+      cleanupSetup = latest.current.onSetup?.(ctx)
+      unmountCleanup = stage.onFrame((_, dt) => latest.current.onFrame?.(ctx, dt))
     })
 
     return () => {
@@ -612,7 +593,7 @@ export function Stage({
         stageRef.current = null
       }
     }
-  }, [inView, frameloop, maxDpr, onSetup, onFrame])
+  }, [inView, frameloop, maxDpr])
 
   return (
     <StageContextInstance.Provider value={{ stage: stageRef.current }}>

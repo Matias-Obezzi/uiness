@@ -122,6 +122,23 @@ describe('<Viewer />', () => {
     })
   })
 
+  it('keeps one viewer across renders with new callbacks and a new autoRotate', async () => {
+    const core = await import('./core')
+    window.matchMedia = vi.fn().mockReturnValue({
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })
+    const { rerender } = render(<Viewer src="/m.glb" alt="M" onLoad={() => {}} />)
+    await vi.waitFor(() => expect(core.createViewer).toHaveBeenCalledTimes(1))
+    rerender(<Viewer src="/m.glb" alt="M" onLoad={() => {}} onProgress={() => {}} autoRotate />)
+    rerender(<Viewer src="/m.glb" alt="M" onLoad={() => {}} />)
+    await act(async () => {})
+    expect(core.createViewer).toHaveBeenCalledTimes(1)
+    expect(mockViewerController.setAutoRotate).toHaveBeenCalledWith(true)
+    expect(mockViewerController.setAutoRotate).toHaveBeenLastCalledWith(false)
+  })
+
   it('handles keyboard shortcuts when viewer container is focused', async () => {
     render(<Viewer src="/models/chair.glb" alt="Lounge chair" />)
 
@@ -162,6 +179,25 @@ describe('<Viewer />', () => {
 })
 
 describe('<Stage />', () => {
+  it('keeps one stage across renders with new inline callbacks', async () => {
+    const core = await import('./core')
+    vi.mocked(core.createStage).mockClear()
+    const { rerender } = render(<Stage onSetup={() => undefined} onFrame={() => false} />)
+    await vi.waitFor(() => expect(core.createStage).toHaveBeenCalledTimes(1))
+    rerender(<Stage onSetup={() => undefined} onFrame={() => true} />)
+    await act(async () => {})
+    expect(core.createStage).toHaveBeenCalledTimes(1)
+  })
+
+  it('hands the scene setup three itself', async () => {
+    const onSetup = vi.fn(() => undefined)
+    render(<Stage onSetup={onSetup} />)
+    await vi.waitFor(() => expect(onSetup).toHaveBeenCalled())
+    expect(
+      (onSetup.mock.calls[0] as unknown as [{ THREE: { Mesh: unknown } }])[0].THREE.Mesh,
+    ).toBeTypeOf('function')
+  })
+
   it('calls onSetup and cleans up on unmount', async () => {
     const onSetup = vi.fn(() => vi.fn())
 

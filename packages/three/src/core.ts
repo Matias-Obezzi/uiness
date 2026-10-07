@@ -1,11 +1,29 @@
-import * as THREE from 'three'
+// Named imports, never `import * as THREE`: a namespace that escapes the module keeps all of
+// three in the bundle, about a fifth more than the viewer uses.
+import {
+  ACESFilmicToneMapping,
+  Box3,
+  Color,
+  DirectionalLight,
+  Mesh,
+  type Object3D,
+  PCFSoftShadowMap,
+  PerspectiveCamera,
+  PlaneGeometry,
+  PMREMGenerator,
+  Scene,
+  ShadowMaterial,
+  Sphere,
+  SRGBColorSpace,
+  Texture,
+  Vector3,
+  WebGLRenderer,
+} from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js'
-import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
+import type { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader.js'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-
-export { THREE }
 
 export type ViewPreset = 'front' | 'back' | 'left' | 'right' | 'top' | 'iso'
 
@@ -77,7 +95,7 @@ const TEXTURE_PROPERTIES = [
 /**
  * Traverses a 3D object and disposes of all geometries, materials, and associated textures.
  */
-export function disposeObject(obj: THREE.Object3D): void {
+export function disposeObject(obj: Object3D): void {
   if (!obj) return
 
   obj.traverse((child) => {
@@ -116,7 +134,7 @@ export function disposeObject(obj: THREE.Object3D): void {
 
 export type EventMap = {
   progress: [progress: number]
-  load: [model: THREE.Object3D]
+  load: [model: Object3D]
   error: [error: Error]
   change: []
 }
@@ -127,24 +145,22 @@ export interface StageOptions {
   antialias?: boolean
   alpha?: boolean
   powerPreference?: WebGLPowerPreference
-  camera?: THREE.PerspectiveCamera
-  scene?: THREE.Scene
+  camera?: PerspectiveCamera
+  scene?: Scene
 }
 
 export interface StageContext {
-  THREE: typeof THREE
-  scene: THREE.Scene
-  camera: THREE.PerspectiveCamera
-  renderer: THREE.WebGLRenderer
+  scene: Scene
+  camera: PerspectiveCamera
+  renderer: WebGLRenderer
   canvas: HTMLCanvasElement
   invalidate: () => void
 }
 
 export interface StageController {
-  THREE: typeof THREE
-  scene: THREE.Scene
-  camera: THREE.PerspectiveCamera
-  renderer: THREE.WebGLRenderer
+  scene: Scene
+  camera: PerspectiveCamera
+  renderer: WebGLRenderer
   canvas: HTMLCanvasElement
   invalidate: () => void
   on: <K extends keyof EventMap>(event: K, handler: (...args: EventMap[K]) => void) => () => void
@@ -160,34 +176,36 @@ export interface StageController {
  * Creates a lightweight, demand-rendered Three.js stage controller without React.
  */
 export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): StageController {
-  const antialias = options?.antialias ?? true
+  const maxDpr = options?.maxDpr ?? 2
+  const initialDpr = Math.min(
+    typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
+    maxDpr,
+  )
+  // At two device pixels per CSS pixel the edges are already fine, and multisampling would
+  // still cost four samples for each of four times the pixels.
+  const antialias = options?.antialias ?? initialDpr < 2
   const alpha = options?.alpha ?? true
-  const powerPreference = options?.powerPreference ?? 'high-performance'
+  // 'high-performance' wakes the discrete GPU on laptops that have two, for a product shot.
+  const powerPreference = options?.powerPreference ?? 'default'
   let frameloop = options?.frameloop ?? 'demand'
 
-  const renderer = new THREE.WebGLRenderer({
+  const renderer = new WebGLRenderer({
     canvas,
     antialias,
     alpha,
     powerPreference,
   })
 
-  renderer.outputColorSpace = THREE.SRGBColorSpace
-  renderer.toneMapping = THREE.ACESFilmicToneMapping
-
-  const maxDpr = options?.maxDpr ?? 2
-  const initialDpr = Math.min(
-    typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
-    maxDpr,
-  )
+  renderer.outputColorSpace = SRGBColorSpace
+  renderer.toneMapping = ACESFilmicToneMapping
   renderer.setPixelRatio(initialDpr)
 
-  const scene = options?.scene ?? new THREE.Scene()
+  const scene = options?.scene ?? new Scene()
   const initialWidth = canvas.clientWidth || 300
   const initialHeight = canvas.clientHeight || 150
   const camera =
     options?.camera ??
-    new THREE.PerspectiveCamera(45, initialWidth / Math.max(1, initialHeight), 0.1, 1000)
+    new PerspectiveCamera(45, initialWidth / Math.max(1, initialHeight), 0.1, 1000)
 
   renderer.setSize(initialWidth, initialHeight, false)
 
@@ -225,7 +243,6 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
   }
 
   const stageCtx: StageContext = {
-    THREE,
     scene,
     camera,
     renderer,
@@ -254,13 +271,11 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
 
     render()
 
-    const shouldContinue =
-      frameloop === 'always' ||
-      shouldContinueLoop({
-        hasActiveFrame,
-        inView,
-        isVisible,
-      })
+    const shouldContinue = shouldContinueLoop({
+      hasActiveFrame: hasActiveFrame || frameloop === 'always',
+      inView,
+      isVisible,
+    })
 
     if (shouldContinue) {
       rafId = requestAnimationFrame(tick)
@@ -307,9 +322,9 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
       }
     }
 
+    // The canvas itself: its parent's box also holds padding and overlays like the toolbar.
     resizeObserver = new ResizeObserver(handleResize)
-    const targetElement = canvas.parentElement || canvas
-    resizeObserver.observe(targetElement)
+    resizeObserver.observe(canvas)
 
     if ('IntersectionObserver' in window) {
       intersectionObserver = new IntersectionObserver((entries) => {
@@ -361,7 +376,6 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
   invalidate()
 
   return {
-    THREE,
     scene,
     camera,
     renderer,
@@ -378,9 +392,9 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
 }
 
 export interface ViewerOptions extends StageOptions {
-  src?: string | THREE.Object3D
+  src?: string | Object3D
   autoRotate?: boolean
-  environment?: 'room' | 'none' | THREE.Texture
+  environment?: 'room' | 'none' | Texture
   shadows?: boolean
   dracoPath?: string
   fov?: number
@@ -391,7 +405,7 @@ export interface ViewerOptions extends StageOptions {
 
 export interface ViewerController extends StageController {
   controls: OrbitControls
-  load: (src: string | THREE.Object3D) => Promise<THREE.Object3D>
+  load: (src: string | Object3D) => Promise<Object3D>
   fit: () => void
   resetView: () => void
   setView: (preset: ViewPreset) => void
@@ -400,8 +414,8 @@ export interface ViewerController extends StageController {
   setWireframe: (enabled: boolean) => void
   setBackground: (color: string | number | null) => void
   screenshot: (options?: { scale?: number; type?: string }) => Promise<Blob>
-  getModel: () => THREE.Object3D | null
-  getBounds: () => { center: THREE.Vector3; radius: number; min: THREE.Vector3; max: THREE.Vector3 }
+  getModel: () => Object3D | null
+  getBounds: () => { center: Vector3; radius: number; min: Vector3; max: Vector3 }
 }
 
 /** Easing function for smooth viewpoint transitions: easeOutCubic. */
@@ -435,16 +449,16 @@ export function createViewer(
 
   // Environment lighting
   let roomEnv: RoomEnvironment | null = null
-  let pmremGenerator: THREE.PMREMGenerator | null = null
-  let envTexture: THREE.Texture | null = null
+  let pmremGenerator: PMREMGenerator | null = null
+  let envTexture: Texture | null = null
 
   if (options.environment === 'none') {
     scene.environment = null
-  } else if (options.environment instanceof THREE.Texture) {
+  } else if (options.environment instanceof Texture) {
     scene.environment = options.environment
   } else {
     // Default 'room' environment with PMREMGenerator
-    pmremGenerator = new THREE.PMREMGenerator(renderer)
+    pmremGenerator = new PMREMGenerator(renderer)
     roomEnv = new RoomEnvironment()
     envTexture = pmremGenerator.fromScene(roomEnv).texture
     scene.environment = envTexture
@@ -452,19 +466,22 @@ export function createViewer(
 
   // Background
   if (options.backgroundColor !== undefined && options.backgroundColor !== null) {
-    scene.background = new THREE.Color(options.backgroundColor)
+    scene.background = new Color(options.backgroundColor)
   }
 
   // Directional Light & Contact Shadow
   const enableShadows = options.shadows !== false
-  let dirLight: THREE.DirectionalLight | null = null
-  let shadowPlane: THREE.Mesh | null = null
+  let dirLight: DirectionalLight | null = null
+  let shadowPlane: Mesh | null = null
 
   if (enableShadows) {
     renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap
+    renderer.shadowMap.type = PCFSoftShadowMap
+    // The light and the model stay put while the camera orbits, so the shadow is drawn once
+    // per model instead of once per frame.
+    renderer.shadowMap.autoUpdate = false
 
-    dirLight = new THREE.DirectionalLight(0xffffff, 2.5)
+    dirLight = new DirectionalLight(0xffffff, 2.5)
     dirLight.castShadow = true
     dirLight.shadow.mapSize.width = 1024
     dirLight.shadow.mapSize.height = 1024
@@ -472,37 +489,37 @@ export function createViewer(
     scene.add(dirLight)
     scene.add(dirLight.target)
 
-    const shadowGeo = new THREE.PlaneGeometry(1, 1)
+    const shadowGeo = new PlaneGeometry(1, 1)
     shadowGeo.rotateX(-Math.PI / 2)
-    const shadowMat = new THREE.ShadowMaterial({ opacity: 0.25 })
-    shadowPlane = new THREE.Mesh(shadowGeo, shadowMat)
+    const shadowMat = new ShadowMaterial({ opacity: 0.25 })
+    shadowPlane = new Mesh(shadowGeo, shadowMat)
     shadowPlane.receiveShadow = true
     scene.add(shadowPlane)
   }
 
   // Model bounds
-  let currentModel: THREE.Object3D | null = null
+  let currentModel: Object3D | null = null
   const bounds = {
-    center: new THREE.Vector3(0, 0, 0),
+    center: new Vector3(0, 0, 0),
     radius: 1,
-    min: new THREE.Vector3(-0.5, -0.5, -0.5),
-    max: new THREE.Vector3(0.5, 0.5, 0.5),
+    min: new Vector3(-0.5, -0.5, -0.5),
+    max: new Vector3(0.5, 0.5, 0.5),
   }
 
   // Initial camera pose for resetView
   const initialPose = {
-    position: new THREE.Vector3(0, 0, 3),
-    target: new THREE.Vector3(0, 0, 0),
+    position: new Vector3(0, 0, 3),
+    target: new Vector3(0, 0, 0),
   }
 
   // View transition tweening state
   let tween: {
     startTime: number
     duration: number
-    startPos: THREE.Vector3
-    endPos: THREE.Vector3
-    startTarget: THREE.Vector3
-    endTarget: THREE.Vector3
+    startPos: Vector3
+    endPos: Vector3
+    startTarget: Vector3
+    endTarget: Vector3
   } | null = null
 
   // Register frame loop to drive controls damping and view transitions
@@ -538,7 +555,7 @@ export function createViewer(
     const dist = fitDistance(bounds.radius, camera.fov, camera.aspect, margin)
 
     // Position camera along isometric angle relative to model center
-    const isoDir = new THREE.Vector3(Math.SQRT1_2, 0.5, Math.SQRT1_2).normalize()
+    const isoDir = new Vector3(Math.SQRT1_2, 0.5, Math.SQRT1_2).normalize()
     camera.position.copy(bounds.center).addScaledVector(isoDir, dist)
     controls.target.copy(bounds.center)
 
@@ -582,7 +599,7 @@ export function createViewer(
         pos.z += 0.0001
         break
       case 'iso': {
-        const isoDir = new THREE.Vector3(Math.SQRT1_2, 0.5, Math.SQRT1_2).normalize()
+        const isoDir = new Vector3(Math.SQRT1_2, 0.5, Math.SQRT1_2).normalize()
         pos.addScaledVector(isoDir, dist)
         break
       }
@@ -671,7 +688,7 @@ export function createViewer(
     if (color === null || color === undefined) {
       scene.background = null
     } else {
-      scene.background = new THREE.Color(color)
+      scene.background = new Color(color)
     }
     invalidate()
   }
@@ -690,7 +707,7 @@ export function createViewer(
     })
   }
 
-  function setupLoadedModel(model: THREE.Object3D): void {
+  function setupLoadedModel(model: Object3D): void {
     if (currentModel) {
       scene.remove(currentModel)
       disposeObject(currentModel)
@@ -716,9 +733,9 @@ export function createViewer(
     }
 
     // Compute bounding box and sphere
-    const box = new THREE.Box3().setFromObject(model)
+    const box = new Box3().setFromObject(model)
     box.getCenter(bounds.center)
-    const sphere = box.getBoundingSphere(new THREE.Sphere())
+    const sphere = box.getBoundingSphere(new Sphere())
     bounds.radius = sphere.radius || 1
     bounds.min.copy(box.min)
     bounds.max.copy(box.max)
@@ -744,6 +761,7 @@ export function createViewer(
       dirLight.shadow.camera.near = 0.1
       dirLight.shadow.camera.far = lightDist * 4
       dirLight.shadow.camera.updateProjectionMatrix()
+      renderer.shadowMap.needsUpdate = true
     }
 
     // biome-ignore lint/suspicious/noFocusedTests: internal method to auto-frame camera to model bounds
@@ -753,23 +771,23 @@ export function createViewer(
 
   let dracoLoader: DRACOLoader | null = null
 
-  async function load(src: string | THREE.Object3D): Promise<THREE.Object3D> {
+  async function load(src: string | Object3D): Promise<Object3D> {
     if (typeof src !== 'string') {
       setupLoadedModel(src)
       return src
     }
 
-    return new Promise<THREE.Object3D>((resolve, reject) => {
+    // Only models compressed with Draco need its loader, so only they download it.
+    if (options.dracoPath && !dracoLoader) {
+      const { DRACOLoader } = await import('three/examples/jsm/loaders/DRACOLoader.js')
+      dracoLoader = new DRACOLoader()
+      dracoLoader.setDecoderPath(options.dracoPath)
+    }
+
+    return new Promise<Object3D>((resolve, reject) => {
       const loader = new GLTFLoader()
       loader.setMeshoptDecoder(MeshoptDecoder)
-
-      if (options.dracoPath) {
-        if (!dracoLoader) {
-          dracoLoader = new DRACOLoader()
-          dracoLoader.setDecoderPath(options.dracoPath)
-        }
-        loader.setDRACOLoader(dracoLoader)
-      }
+      if (dracoLoader) loader.setDRACOLoader(dracoLoader)
 
       loader.load(
         src,
