@@ -3599,6 +3599,161 @@
       ]
     },
     {
+      "name": "hero-03",
+      "type": "registry:block",
+      "title": "Hero 03",
+      "description": "A hero above a browser window with the phone app hanging off its corner, both rising in as they come into view.",
+      "categories": ["hero"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/iphone",
+        "@uiness/pattern",
+        "@uiness/reveal",
+        "@uiness/safari"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/hero-03.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "testimonials-02",
+      "type": "registry:block",
+      "title": "Testimonials 02",
+      "description": "A masonry wall of posts from customers that folds after a few, with a button for the rest.",
+      "categories": ["testimonials"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/tweet-card"],
+      "files": [
+        {
+          "path": "registry/blocks/testimonials-02.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "team-01",
+      "type": "registry:block",
+      "title": "Team 01",
+      "description": "The people behind the product in a grid: photo, role, a line each and their links, with a hiring card.",
+      "categories": ["team"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button", "@uiness/reveal"],
+      "files": [
+        {
+          "path": "registry/blocks/team-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "global-01",
+      "type": "registry:block",
+      "title": "Global 01",
+      "description": "A turning globe with a marker per city and arcs between them, beside figures per region that count up.",
+      "categories": ["global"],
+      "registryDependencies": ["@uiness/utils", "@uiness/globe", "@uiness/number-ticker"],
+      "files": [
+        {
+          "path": "registry/blocks/global-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "dashboard-01",
+      "type": "registry:block",
+      "title": "Dashboard 01",
+      "description": "A store overview: four figures with their change and sparkline, revenue over time and recent orders, for 7, 30 or 90 days.",
+      "categories": ["dashboard"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/badge",
+        "@uiness/button",
+        "@uiness/line-chart",
+        "@uiness/metric-card",
+        "@uiness/segmented-control",
+        "@uiness/sparkline"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/dashboard-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "settings-01",
+      "type": "registry:block",
+      "title": "Settings 01",
+      "description": "Account settings: a profile form that waits for its save, notification switches and a delete button you hold.",
+      "categories": ["settings"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/avatar",
+        "@uiness/button",
+        "@uiness/hold-to-confirm",
+        "@uiness/input",
+        "@uiness/label",
+        "@uiness/switch",
+        "@uiness/textarea"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/settings-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "product-01",
+      "type": "registry:block",
+      "title": "Product 01",
+      "description": "A product page with the 3D model and its toolbar, colors with sold out ones crossed, add to cart, perks and details.",
+      "categories": ["product"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/accordion",
+        "@uiness/badge",
+        "@uiness/button",
+        "@uiness/radio-group",
+        "@uiness/three-viewer"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/product-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "not-found-01",
+      "type": "registry:block",
+      "title": "Not Found 01",
+      "description": "A 404 that scrambles into place, with a search that works without script, popular pages and the way home.",
+      "categories": ["not-found"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/input",
+        "@uiness/pattern",
+        "@uiness/scramble-text"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/not-found-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "uiness-skill",
       "type": "registry:file",
       "title": "uiness agent skill",

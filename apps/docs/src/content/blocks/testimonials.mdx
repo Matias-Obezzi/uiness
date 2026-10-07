@@ -37,3 +37,36 @@ import { Testimonials01 } from '@/components/testimonials-01'
 | `description` | The lead under the heading. `null` hides it. |
 | `testimonials` | `{ quote, name, role?, image?: { src, alt? }, rating? }[]`, split between the two rows alternately. Without `image` the avatar shows initials; without `rating` no stars. |
 | `duration` | Seconds for one loop of a row. Default `60`. |
+
+## Testimonials 02
+
+A masonry wall of posts: one column when narrow, up to three with room. It folds after a few behind a fade, with a button that shows the rest and tells screen readers what it controls.
+
+<BlockPreview name="testimonials-02" />
+
+<Install name="testimonials-02" />
+
+```tsx
+import { Testimonials02 } from '@/components/testimonials-02'
+
+<Testimonials02
+  title="People talk about their week"
+  initial={6}
+  posts={[
+    {
+      id: '1',
+      author: { name: 'Ana Ruiz', handle: 'anaruiz', avatar: '/ana.png', verified: true },
+      text: 'Monday planning went from an hour to ten minutes.',
+      createdAt: '2026-09-12',
+      metrics: { likes: 402 },
+    },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow`, `title`, `description` | The heading. `null` hides the eyebrow. |
+| `posts` | `{ id, author, text, createdAt, media?, metrics?, href? }[]`, as the [Tweet Card](/docs/motion/tweet-card) takes them. |
+| `initial` | How many show before "Show more". `0` shows them all. Default 6. |
+| `labels` | `{ showMore, showLess }`. |

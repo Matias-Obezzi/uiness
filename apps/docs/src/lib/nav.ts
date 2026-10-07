@@ -479,6 +479,16 @@ const sections: NavSection[] = [
         'File Upload',
         'Dropped files with progress, errors, retry and a total.',
       ),
+      page('blocks/team', 'Team', 'The people behind the product, with a hiring card.'),
+      page('blocks/global', 'Global', 'A turning globe of cities beside figures per region.'),
+      page(
+        'blocks/dashboard',
+        'Dashboard',
+        'Figures, revenue over time and recent orders, by range.',
+      ),
+      page('blocks/settings', 'Settings', 'Profile, notification switches and a held delete.'),
+      page('blocks/product', 'Product', 'A 3D model beside colors, price and add to cart.'),
+      page('blocks/not-found', 'Not Found', 'A 404 with search, popular pages and the way home.'),
     ],
   },
   {
@@ -621,6 +631,12 @@ const sections: NavSection[] = [
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
   '2026-10-07': [
+    'blocks/dashboard',
+    'blocks/global',
+    'blocks/not-found',
+    'blocks/product',
+    'blocks/settings',
+    'blocks/team',
     'motion/ambilight',
     'motion/lens',
     'motion/noise-texture',
@@ -868,15 +884,27 @@ const groups: Record<string, Record<string, string[]>> = {
       'faq',
       'features',
       'footer',
+      'global',
       'hero',
       'logos',
       'navbar',
       'newsletter',
       'pricing',
       'stats',
+      'team',
       'testimonials',
     ],
-    Application: ['auth', 'command-palette', 'file-upload', 'notifications', 'page-header'],
+    Application: [
+      'auth',
+      'command-palette',
+      'dashboard',
+      'file-upload',
+      'not-found',
+      'notifications',
+      'page-header',
+      'product',
+      'settings',
+    ],
   },
   Motion: {
     Text: [

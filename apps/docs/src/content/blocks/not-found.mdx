@@ -1,0 +1,30 @@
+The page for a link that leads nowhere. Every block takes its words through props and lays itself out by the width of its container.
+
+## Not Found 01
+
+The code scrambles into place, then a search, a few pages people usually want, and the way home. The search is a plain `GET` form that sends `q`, so it works before any script runs; pass `onSearch` to handle it in the page instead.
+
+<BlockPreview name="not-found-01" />
+
+<Install name="not-found-01" />
+
+```tsx
+import { NotFound01 } from '@/components/not-found-01'
+
+<NotFound01
+  title="This page took a day off"
+  searchAction="/search"
+  links={[{ label: 'Documentation', description: 'Guides and the API.', href: '/docs' }]}
+  home={{ label: 'Back to home', href: '/' }}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `code` | The big figure. Default `404`. |
+| `title`, `description` | The heading and the paragraph under it. |
+| `searchAction` | Where the search goes, with the query as `q`. `null` hides the search. |
+| `onSearch` | Called with the query instead of navigating. |
+| `links` | `{ label, description?, href }[]` for the popular pages. |
+| `home` | `{ label, href }` for the way back. `null` hides it. |
+| `labels` | `{ search, searchPlaceholder, submit, popular }`. |

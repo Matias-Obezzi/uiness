@@ -1,0 +1,35 @@
+The first screen after signing in. Every block takes its data through props and lays itself out by the width of its container.
+
+## Dashboard 01
+
+A store overview: revenue, orders, conversion and average order, each with its change against the previous period and a sparkline; revenue over time; and the latest orders. The range switch recomputes all of it from the daily rows. The figures go from one column to two to four, and the table scrolls sideways rather than squeezing.
+
+<BlockPreview name="dashboard-01" />
+
+<Install name="dashboard-01" />
+
+```tsx
+import { Dashboard01 } from '@/components/dashboard-01'
+
+<Dashboard01
+  title="Overview"
+  days={days} // { date, revenue, orders, visitors }[], oldest first
+  orders={orders} // { id, customer, date, amount, status }[], newest first
+  defaultRange="30d"
+  onExport={(rows) => download(rows)}
+  currency="USD"
+  locale="en-US"
+/>
+```
+
+The default data is made up from a formula, not random numbers, so the server and the browser render the same page.
+
+| Prop | Description |
+| --- | --- |
+| `title`, `description` | The heading. `null` hides the description. |
+| `days` | One row per day, oldest first: `{ date, revenue, orders, visitors }`. The range shows the last 7, 30 or 90, and compares them with the same span before. |
+| `orders` | `{ id, customer, date, amount, status }[]`, with `status` one of `paid`, `pending` or `refunded`. |
+| `defaultRange` | `7d`, `30d` or `90d`. Default `30d`. |
+| `onExport` | Called with the rows in the range. Without it, the button is hidden. |
+| `currency`, `locale` | How money and dates are written. |
+| `labels` | Every word on the page, including `ranges` and `statuses`. |

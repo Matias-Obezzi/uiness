@@ -1,0 +1,36 @@
+A product to look at from every side before buying it. Every block takes its product through props and lays itself out by the width of its container.
+
+## Product 01
+
+The 3D model with its toolbar on one side, from [@uiness/three](/docs/three); name, price, colors, the buy button, perks and details that open in place on the other. A sold out color stays visible, crossed through, but cannot be picked, and a color can carry its own price. The model stays in view while the details scroll when there is room; the columns stack when the container is narrow.
+
+<BlockPreview name="product-01" />
+
+<Install name="product-01" />
+
+```tsx
+import { Product01 } from '@/components/product-01'
+
+<Product01
+  name="Sheen lounge chair"
+  price={1290}
+  model={{ src: '/models/chair.glb', poster: '/models/chair.webp', alt: 'The chair in 3D' }}
+  colors={[
+    { id: 'mango', name: 'Mango velvet', swatch: '#e8823a' },
+    { id: 'night', name: 'Night linen', swatch: '#2a2a33', inStock: false },
+  ]}
+  onAddToCart={(color) => cart.add('sheen-chair', color.id)}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `category`, `name`, `description` | The line above the name, the name and the paragraph under the price. |
+| `price`, `currency`, `locale` | The price and how it is written. |
+| `badge` | A small tag beside the price. `null` hides it. |
+| `model` | `{ src, poster?, alt }` for the 3D viewer. |
+| `colors` | `{ id, name, swatch, price?, inStock? }[]`. |
+| `perks` | `{ icon, label }[]`, with `icon` one of `shipping`, `returns` or `warranty`. |
+| `details` | `{ title, content }[]` for the sections that open in place. |
+| `onAddToCart` | Called with the chosen color. Return a promise to keep the button busy until it settles. |
+| `labels` | `{ color, soldOut, addToCart, added }`. |
