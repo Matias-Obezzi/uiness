@@ -14,6 +14,7 @@ import { SpinningText } from './spinning-text'
 import { TextGenerate } from './text-generate'
 import { Highlighter } from './text-highlighter'
 import { TextReveal } from './text-reveal'
+import { ThreeViewer } from './three-viewer'
 import { Timeline, TimelineItem } from './timeline'
 import { Typewriter } from './typewriter'
 import { VelocityMarquee } from './velocity-marquee'
@@ -308,5 +309,18 @@ describe('motion text SSR', () => {
     const ui = <Highlighter action="highlight">Marked</Highlighter>
     expect(serverHtml(ui).el.textContent).toContain('Marked')
     expect(hydrate(ui).errors).toEqual([])
+  })
+})
+
+describe('ThreeViewer SSR', () => {
+  it('renders deterministically on the server and matches across runs', () => {
+    const ui = (
+      <ThreeViewer src="/models/chair.glb" alt="Lounge chair in 3D" poster="/models/chair.webp" />
+    )
+    const { html } = serverHtml(ui)
+    expect(html).toContain('role="img"')
+    expect(html).toContain('aria-label="Lounge chair in 3D"')
+    expect(html).toContain('/models/chair.webp')
+    expect(renderToString(ui)).toBe(html)
   })
 })
