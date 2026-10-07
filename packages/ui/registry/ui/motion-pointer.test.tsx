@@ -166,6 +166,61 @@ describe('SmoothCursor', () => {
     expect(cursor.style.transform).toContain('translate3d(120.00px, 180.00px, 0)')
     expect(raf).not.toHaveBeenCalled()
   })
+
+  it('appears under the pointer, springs after it and turns on the hotspot', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query.includes('pointer: fine'),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }))
+    const frames: FrameRequestCallback[] = []
+    vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => frames.push(cb))
+    vi.stubGlobal('cancelAnimationFrame', vi.fn())
+    const move = (x: number, y: number) =>
+      act(() => {
+        window.dispatchEvent(
+          new PointerEvent('pointermove', { clientX: x, clientY: y, pointerType: 'mouse' }),
+        )
+      })
+
+    const { unmount } = render(<SmoothCursor data-testid="cursor" />)
+    const cursor = screen.getByTestId('cursor')
+    expect(cursor.className).toContain('origin-top-left')
+    // The system cursor is hidden over the page while it is mounted, and back after.
+    expect(document.documentElement.hasAttribute('data-smooth-cursor')).toBe(true)
+    expect(document.head.textContent).toContain('[data-smooth-cursor]')
+
+    // First arrival: placed under the pointer, not flown in from the corner.
+    move(300, 200)
+    expect(cursor.style.transform).toContain('translate3d(300.00px, 200.00px, 0)')
+
+    // Then it trails: one frame later it is on its way, not there yet.
+    move(400, 200)
+    const t = performance.now()
+    act(() => frames.shift()?.(t + 1000 / 60))
+    const x = Number(/translate3d\(([\d.]+)px/.exec(cursor.style.transform)?.[1])
+    expect(x).toBeGreaterThan(300)
+    expect(x).toBeLessThan(400)
+
+    // Over a text field the circle steps aside for the system's caret.
+    const input = document.createElement('input')
+    document.body.append(input)
+    act(() => {
+      input.dispatchEvent(
+        new PointerEvent('pointermove', {
+          bubbles: true,
+          clientX: 10,
+          clientY: 10,
+          pointerType: 'mouse',
+        }),
+      )
+    })
+    expect(cursor.style.opacity).toBe('0')
+    input.remove()
+
+    unmount()
+    expect(document.documentElement.hasAttribute('data-smooth-cursor')).toBe(false)
+  })
 })
 
 describe('Particles', () => {
