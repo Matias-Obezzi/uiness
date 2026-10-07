@@ -805,6 +805,20 @@
       ]
     },
     {
+      "name": "three-viewer",
+      "type": "registry:ui",
+      "title": "Three Viewer",
+      "description": "3D model viewer with orbit controls, lighting, contact shadows, view transitions, and a floating toolbar. Installs @uiness/three.",
+      "dependencies": ["@uiness/three", "three", "radix-ui", "lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/three-viewer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "gallery-grid",
       "type": "registry:ui",
       "title": "Gallery Grid",

@@ -58,7 +58,7 @@ function baseAssets(): Plugin {
     transform(code, id) {
       if (base === '/' || !id.includes('/apps/docs/src/') || id.includes('?raw')) return null
       if (!/\.(tsx|ts|mdx)$/.test(id)) return null
-      return code.replace(/(['"`])\/(img|slow)\//g, `$1${base}$2/`)
+      return code.replace(/(['"`])\/(img|slow|models)\//g, `$1${base}$2/`)
     },
   }
 }
@@ -90,6 +90,8 @@ export default defineConfig({
       '@uiness/scroll': `${root}../../packages/scroll/src/index.ts`,
       '@uiness/dnd': `${root}../../packages/dnd/src/index.ts`,
       '@uiness/choreo': `${root}../../packages/choreo/src/index.ts`,
+      '@uiness/three/core': `${root}../../packages/three/src/core.ts`,
+      '@uiness/three': `${root}../../packages/three/src/index.ts`,
       '@/components/ui': `${root}../../packages/ui/registry/ui`,
       '@': `${root}../../packages/ui/registry`,
       '~': `${root}src`,
