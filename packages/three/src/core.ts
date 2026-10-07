@@ -340,7 +340,10 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
       isVisible,
     })
 
-    if (shouldContinue) {
+    // The frame may have scheduled the next one already: moving the camera in a frame callback
+    // fires the controls' change, which invalidates. A second request on top doubled the loops
+    // every frame while anything moved, until the page froze.
+    if (shouldContinue && rafId === null) {
       rafId = requestAnimationFrame(tick)
     }
   }
