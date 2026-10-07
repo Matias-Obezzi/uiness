@@ -270,6 +270,24 @@
   }
 }
 
+@keyframes line-shadow {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 100% -100%;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Theme Switch draws its own reveal over the page, so the browser's cross fade is switched off
  * while one of its view transitions runs, and only then. Color transitions are held too: the
  * new theme is a live picture, and buttons still fading from the old colors would show in it. */

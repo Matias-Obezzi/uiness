@@ -805,6 +805,20 @@
       ]
     },
     {
+      "name": "three-viewer",
+      "type": "registry:ui",
+      "title": "Three Viewer",
+      "description": "3D model viewer with orbit controls, lighting, contact shadows, view transitions, and a floating toolbar. Installs @uiness/three.",
+      "dependencies": ["@uiness/three", "three", "radix-ui", "lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/three-viewer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "gallery-grid",
       "type": "registry:ui",
       "title": "Gallery Grid",
@@ -2897,6 +2911,104 @@
       "files": [
         {
           "path": "registry/ui/scroll-progress.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "line-shadow-text",
+      "type": "registry:ui",
+      "title": "Line Shadow Text",
+      "description": "Text with an animated diagonal-striped shadow.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "css": {
+        "@keyframes line-shadow": {
+          "0%": {
+            "background-position": "0 0"
+          },
+          "100%": {
+            "background-position": "100% -100%"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/line-shadow-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "video-text",
+      "type": "registry:ui",
+      "title": "Video Text",
+      "description": "A video playing through letterforms with SVG clipPath.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/video-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "morphing-text",
+      "type": "registry:ui",
+      "title": "Morphing Text",
+      "description": "Liquid, gooey morph transition between words with SVG filters.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-motion-ready",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/morphing-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spinning-text",
+      "type": "registry:ui",
+      "title": "Spinning Text",
+      "description": "Characters revolving around a circle.",
+      "registryDependencies": ["@uiness/utils"],
+      "css": {
+        "@keyframes spin": {
+          "from": {
+            "transform": "rotate(0deg)"
+          },
+          "to": {
+            "transform": "rotate(360deg)"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/spinning-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "text-highlighter",
+      "type": "registry:ui",
+      "title": "Text Highlighter",
+      "description": "Hand-drawn highlights, circles, boxes and underlines.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/text-highlighter.tsx",
           "type": "registry:ui"
         }
       ]

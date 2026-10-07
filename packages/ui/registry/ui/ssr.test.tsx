@@ -5,7 +5,9 @@ import { renderToString } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Ambilight } from './ambilight'
 import { Lens } from './lens'
+import { LineShadowText } from './line-shadow-text'
 import { Meteors } from './meteors'
+import { MorphingText } from './morphing-text'
 import { NoiseTexture } from './noise-texture'
 import { NumberTicker } from './number-ticker'
 import { Odometer } from './odometer'
@@ -15,11 +17,15 @@ import { Reveal } from './reveal'
 import { ScrambleText } from './scramble-text'
 import { ScrollProgress } from './scroll-progress'
 import { SmoothCursor } from './smooth-cursor'
+import { SpinningText } from './spinning-text'
 import { TextGenerate } from './text-generate'
+import { Highlighter } from './text-highlighter'
 import { TextReveal } from './text-reveal'
+import { ThreeViewer } from './three-viewer'
 import { Timeline, TimelineItem } from './timeline'
 import { Typewriter } from './typewriter'
 import { VelocityMarquee } from './velocity-marquee'
+import { VideoText } from './video-text'
 
 let root: Root | undefined
 let host: HTMLElement | undefined
@@ -340,5 +346,50 @@ describe('motion pointer components SSR', () => {
     const circle = <ScrollProgress variant="circle" />
     expect(serverHtml(circle).el.querySelector('[data-slot=scroll-progress]')).toBeTruthy()
     expect(hydrate(circle).errors).toEqual([])
+  })
+})
+
+describe('motion text SSR', () => {
+  it('line-shadow-text hydrates cleanly without errors', () => {
+    const ui = <LineShadowText>Heading</LineShadowText>
+    expect(serverHtml(ui).el.textContent).toContain('Heading')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('video-text hydrates cleanly without errors', () => {
+    const ui = <VideoText src="/video.mp4">CLIP</VideoText>
+    expect(serverHtml(ui).el.textContent).toContain('CLIP')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('morphing-text renders initial word and hydrates cleanly without errors', () => {
+    const ui = <MorphingText texts={['One', 'Two']} />
+    expect(serverHtml(ui).el.textContent).toContain('One')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('spinning-text renders text accessible label and hydrates cleanly without errors', () => {
+    const ui = <SpinningText>RING</SpinningText>
+    expect(serverHtml(ui).html).toContain('aria-label="RING"')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('text-highlighter hydrates cleanly without errors', () => {
+    const ui = <Highlighter action="highlight">Marked</Highlighter>
+    expect(serverHtml(ui).el.textContent).toContain('Marked')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+})
+
+describe('ThreeViewer SSR', () => {
+  it('renders deterministically on the server and matches across runs', () => {
+    const ui = (
+      <ThreeViewer src="/models/chair.glb" alt="Lounge chair in 3D" poster="/models/chair.webp" />
+    )
+    const { html } = serverHtml(ui)
+    expect(html).toContain('role="img"')
+    expect(html).toContain('aria-label="Lounge chair in 3D"')
+    expect(html).toContain('/models/chair.webp')
+    expect(renderToString(ui)).toBe(html)
   })
 })

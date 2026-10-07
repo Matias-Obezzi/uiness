@@ -545,6 +545,23 @@ export const fr = {
   'theme-switch': {
     darkMode: 'Mode sombre',
   },
+  'three-viewer': {
+    reset: 'Réinitialiser la vue',
+    zoomIn: 'Zoom avant',
+    zoomOut: 'Zoom arrière',
+    autoRotate: 'Rotation automatique',
+    views: 'Vues de la caméra',
+    viewFront: 'Vue de face',
+    viewBack: 'Vue arrière',
+    viewLeft: 'Vue gauche',
+    viewRight: 'Vue droite',
+    viewTop: 'Vue de dessus',
+    viewIso: 'Vue isométrique',
+    wireframe: 'Basculer le fil de fer',
+    background: 'Changer le fond',
+    screenshot: 'Capture d’écran',
+    fullscreen: 'Plein écran',
+  },
   'time-picker': {
     hour: 'Heures',
     minute: 'Minutes',

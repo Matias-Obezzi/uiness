@@ -1,0 +1,53 @@
+Hand-drawn highlights, underlines, boxes, circles and brackets with zero dependencies.
+
+<ComponentPreview name="text-highlighter-demo" />
+
+## Installation
+
+<Install name="text-highlighter" />
+
+## Usage
+
+```tsx
+import { Highlighter } from '@/components/ui/text-highlighter'
+
+<p>
+  Draw attention with a{' '}
+  <Highlighter action="highlight" color="#fef08a">
+    marker highlight
+  </Highlighter>{' '}
+  or circle items in a{' '}
+  <Highlighter action="circle" color="#ef4444">
+    sketchy circle
+  </Highlighter>.
+</p>
+```
+
+Text Highlighter provides rough, expressive annotation effects without third-party canvas or annotation libraries.
+
+Linear annotations (`highlight`, `underline`, `strike-through`) animate CSS linear gradients with `box-decoration-break: clone`, wrapping seamlessly across multi-line text without measuring or JS layout.
+
+Enclosing annotations (`box`, `circle`, `bracket`, `crossed-off`) measure client rects and render deterministic SVG paths with subtle hand-drawn jitter using a seeded random generator.
+
+## Behavior
+
+- **SSR determinism**: Hand-drawn jitter uses a fixed seed per shape, ensuring server HTML and client output match identically.
+- **Reduced motion**: When reduced motion is preferred, shapes render fully drawn immediately without stroke animations.
+- **Multi-line support**: Both gradient backgrounds and SVG overlays support sentences that wrap across multiple lines.
+- **Scroll trigger**: By default, animations trigger once when the element scrolls into view (`trigger="view"`). Pass `trigger="mount"` to draw immediately on mount.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `children` | | Content to annotate. |
+| `action` | `highlight` | Annotation style: `highlight`, `underline`, `strike-through`, `box`, `circle`, `bracket`, `crossed-off`. |
+| `color` | `currentColor` | Stroke or fill color. |
+| `strokeWidth` | `2` | Stroke width in pixels. |
+| `duration` | `600` | Duration of the drawing animation in milliseconds. |
+| `delay` | `0` | Delay before drawing starts in milliseconds. |
+| `padding` | `2` | Padding around the annotated text in pixels. |
+| `iterations` | `1` | Number of sketch lines drawn for rough shapes. |
+| `trigger` | `view` | Trigger mechanism: `view` (scroll into view) or `mount`. |
+| `brackets` | `both` | Sides to bracket when action is `bracket`: `left`, `right`, or `both`. |
+| `seed` | `42` | Seed for the deterministic pseudo-random jitter. |

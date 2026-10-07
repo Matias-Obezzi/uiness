@@ -1,0 +1,40 @@
+Plays a video through the shapes of letterforms using an inline SVG clipping path.
+
+<ComponentPreview name="video-text-demo" />
+
+## Installation
+
+<Install name="video-text" />
+
+## Usage
+
+```tsx
+import { VideoText } from '@/components/ui/video-text'
+
+<div className="relative h-72 w-full overflow-hidden rounded-2xl">
+  <VideoText src="/ocean.webm" poster="/ocean.webp" fontWeight={900}>
+    OCEAN
+  </VideoText>
+</div>
+```
+
+An inline SVG `<clipPath>` references the text node directly from the DOM, allowing it to inherit the page's web fonts. The text scales dynamically with container width via `ResizeObserver`.
+
+## Behavior
+
+- **Accessibility**: A visually hidden `sr-only` span exposes the text once to assistive technology, while the video and SVG mask are marked `aria-hidden`.
+- **Viewport pausing**: Video playback halts when the container scrolls out of view or the browser tab becomes hidden.
+- **Reduced motion**: Playback remains frozen on the poster image instead of continuously running.
+- **Performance**: Zero canvas decoding overhead; uses hardware-accelerated SVG clipPath on the native video element.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `src` | | URL of the video source. |
+| `children` | | The text string that masks the video. |
+| `poster` | | Poster image displayed before playback or under reduced motion. |
+| `type` | | MIME type of the video stream (e.g. `'video/webm'`). |
+| `fontSize` | auto | Font size of the text. Scales to container width if omitted. |
+| `fontWeight` | `bold` | Font weight applied to the text mask. |
+| `as` | `div` | HTML element for the root container. |
