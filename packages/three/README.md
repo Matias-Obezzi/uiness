@@ -52,7 +52,7 @@ import { Stage } from '@uiness/three'
 />
 ```
 
-The setup callback receives `{ THREE, scene, camera, renderer, invalidate }`, so your application does not need a static import of `three` either.
+The setup callback receives `{ THREE, scene, camera, renderer, invalidate }`, so your application does not need a static import of `three` either. The renderer is shared by every stage on the page, so settings made on it apply to all of them.
 
 ## Without React
 
