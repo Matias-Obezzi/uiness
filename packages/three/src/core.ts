@@ -142,11 +142,13 @@ export type EventMap = {
 export interface StageOptions {
   maxDpr?: number
   frameloop?: 'demand' | 'always'
-  antialias?: boolean
-  alpha?: boolean
-  powerPreference?: WebGLPowerPreference
   camera?: PerspectiveCamera
   scene?: Scene
+  /**
+   * Shadows that only change when told with `updateShadows()`, for scenes whose lights and
+   * casters hold still. Default false: they are drawn every frame.
+   */
+  staticShadows?: boolean
 }
 
 export interface StageContext {
@@ -168,8 +170,64 @@ export interface StageController {
   onFrame: (callback: (ctx: StageContext, dt: number) => boolean | undefined) => () => void
   setFrameloop: (frameloop: 'demand' | 'always') => void
   render: () => void
+  /** Draws the shadows again on the next frame, for a stage with `staticShadows`. */
+  updateShadows: () => void
   dispose: () => void
   isInView: () => boolean
+}
+
+/**
+ * Every stage on the page draws with one renderer. Each renderer is a WebGL context with its
+ * own compiled shaders and its own lighting environment: one per stage meant compiling all of
+ * them again for every viewer, a stall of a hundred milliseconds or more each, and spending
+ * contexts of the handful a page gets. A stage renders here and copies the picture to its canvas.
+ */
+let shared: { renderer: WebGLRenderer; users: number; room: Texture | null } | null = null
+
+function acquireRenderer(): WebGLRenderer {
+  if (!shared) {
+    const dpr = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1
+    const renderer = new WebGLRenderer({
+      // At two device pixels per CSS pixel the edges are already fine, and multisampling
+      // would cost four samples for each of four times the pixels.
+      antialias: dpr < 2,
+      alpha: true,
+      // 'high-performance' wakes the discrete GPU on laptops that have two, for a product shot.
+      powerPreference: 'default',
+    })
+    renderer.outputColorSpace = SRGBColorSpace
+    renderer.toneMapping = ACESFilmicToneMapping
+    renderer.setClearColor(0x000000, 0)
+    renderer.shadowMap.enabled = true
+    renderer.shadowMap.type = PCFSoftShadowMap
+    renderer.shadowMap.autoUpdate = false
+    shared = { renderer, users: 0, room: null }
+  }
+  shared.users++
+  return shared.renderer
+}
+
+function releaseRenderer(): void {
+  if (!shared) return
+  shared.users--
+  if (shared.users > 0) return
+  shared.room?.dispose()
+  shared.renderer.dispose()
+  shared.renderer.forceContextLoss()
+  shared = null
+}
+
+/** The neutral studio light, prefiltered once for the page. */
+function roomEnvironment(): Texture | null {
+  if (!shared) return null
+  if (!shared.room) {
+    const pmrem = new PMREMGenerator(shared.renderer)
+    const room = new RoomEnvironment()
+    shared.room = pmrem.fromScene(room, 0.04).texture
+    disposeObject(room)
+    pmrem.dispose()
+  }
+  return shared.room
 }
 
 /**
@@ -177,37 +235,25 @@ export interface StageController {
  */
 export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): StageController {
   const maxDpr = options?.maxDpr ?? 2
-  const initialDpr = Math.min(
-    typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1,
-    maxDpr,
-  )
-  // At two device pixels per CSS pixel the edges are already fine, and multisampling would
-  // still cost four samples for each of four times the pixels.
-  const antialias = options?.antialias ?? initialDpr < 2
-  const alpha = options?.alpha ?? true
-  // 'high-performance' wakes the discrete GPU on laptops that have two, for a product shot.
-  const powerPreference = options?.powerPreference ?? 'default'
+  const dpr = Math.min(typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1, maxDpr)
   let frameloop = options?.frameloop ?? 'demand'
+  const staticShadows = options?.staticShadows ?? false
+  let shadowsDirty = true
 
-  const renderer = new WebGLRenderer({
-    canvas,
-    antialias,
-    alpha,
-    powerPreference,
-  })
-
-  renderer.outputColorSpace = SRGBColorSpace
-  renderer.toneMapping = ACESFilmicToneMapping
-  renderer.setPixelRatio(initialDpr)
+  const renderer = acquireRenderer()
+  const picture = canvas.getContext('2d')
 
   const scene = options?.scene ?? new Scene()
-  const initialWidth = canvas.clientWidth || 300
-  const initialHeight = canvas.clientHeight || 150
-  const camera =
-    options?.camera ??
-    new PerspectiveCamera(45, initialWidth / Math.max(1, initialHeight), 0.1, 1000)
+  const camera = options?.camera ?? new PerspectiveCamera(45, 1, 0.1, 1000)
 
-  renderer.setSize(initialWidth, initialHeight, false)
+  // Sizes are in device pixels: the shared renderer keeps a pixel ratio of 1.
+  function setSize(width: number, height: number): void {
+    canvas.width = Math.max(1, Math.round(width * dpr))
+    canvas.height = Math.max(1, Math.round(height * dpr))
+    camera.aspect = width / Math.max(1, height)
+    camera.updateProjectionMatrix()
+  }
+  setSize(canvas.clientWidth || 300, canvas.clientHeight || 150)
 
   let inView = true
   let isVisible = typeof document !== 'undefined' ? document.visibilityState !== 'hidden' : true
@@ -251,8 +297,25 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
   }
 
   function render(): void {
-    if (isDisposed) return
+    if (isDisposed || !picture) return
+    const { width, height } = canvas
+    const out = renderer.domElement
+    // Grown, never shrunk: stages of different sizes take turns, and resizing reallocates.
+    if (out.width < width || out.height < height) {
+      renderer.setSize(Math.max(out.width, width), Math.max(out.height, height), false)
+    }
+    renderer.setViewport(0, 0, width, height)
+    renderer.shadowMap.needsUpdate = !staticShadows || shadowsDirty
+    shadowsDirty = false
     renderer.render(scene, camera)
+    // The viewport sits at the bottom of the shared canvas, where WebGL starts counting.
+    picture.clearRect(0, 0, width, height)
+    picture.drawImage(out, 0, out.height - height, width, height, 0, 0, width, height)
+  }
+
+  function updateShadows(): void {
+    shadowsDirty = true
+    invalidate()
   }
 
   function tick(now: number): void {
@@ -313,9 +376,7 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
       for (const entry of entries) {
         const { width, height } = entry.contentRect
         if (width > 0 && height > 0) {
-          renderer.setSize(width, height, false)
-          camera.aspect = width / height
-          camera.updateProjectionMatrix()
+          setSize(width, height)
           invalidate()
           emit('change')
         }
@@ -369,7 +430,7 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
     listeners.clear()
 
     disposeObject(scene)
-    renderer.dispose()
+    releaseRenderer()
   }
 
   // Initial schedule
@@ -386,6 +447,7 @@ export function createStage(canvas: HTMLCanvasElement, options?: StageOptions): 
     onFrame,
     setFrameloop,
     render,
+    updateShadows,
     dispose,
     isInView: () => inView,
   }
@@ -430,7 +492,8 @@ export function createViewer(
   options: ViewerOptions = {},
 ): ViewerController {
   const reducedMotion = options.reducedMotion ?? false
-  const stage = createStage(canvas, options)
+  // The lights and the model hold still while the camera orbits: shadows are drawn per model.
+  const stage = createStage(canvas, { staticShadows: true, ...options })
   const { scene, camera, renderer, invalidate, emit } = stage
 
   camera.fov = options.fov ?? 45
@@ -448,20 +511,12 @@ export function createViewer(
   })
 
   // Environment lighting
-  let roomEnv: RoomEnvironment | null = null
-  let pmremGenerator: PMREMGenerator | null = null
-  let envTexture: Texture | null = null
-
   if (options.environment === 'none') {
     scene.environment = null
   } else if (options.environment instanceof Texture) {
     scene.environment = options.environment
   } else {
-    // Default 'room' environment with PMREMGenerator
-    pmremGenerator = new PMREMGenerator(renderer)
-    roomEnv = new RoomEnvironment()
-    envTexture = pmremGenerator.fromScene(roomEnv).texture
-    scene.environment = envTexture
+    scene.environment = roomEnvironment()
   }
 
   // Background
@@ -475,12 +530,6 @@ export function createViewer(
   let shadowPlane: Mesh | null = null
 
   if (enableShadows) {
-    renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = PCFSoftShadowMap
-    // The light and the model stay put while the camera orbits, so the shadow is drawn once
-    // per model instead of once per frame.
-    renderer.shadowMap.autoUpdate = false
-
     dirLight = new DirectionalLight(0xffffff, 2.5)
     dirLight.castShadow = true
     dirLight.shadow.mapSize.width = 1024
@@ -707,6 +756,32 @@ export function createViewer(
     })
   }
 
+  /** Shadow flags first: they change the shaders, and those are compiled before showing. */
+  function prepareModel(model: Object3D): void {
+    if (!enableShadows) return
+    model.traverse((node) => {
+      const mesh = node as unknown as {
+        isMesh?: boolean
+        castShadow?: boolean
+        receiveShadow?: boolean
+      }
+      if (mesh.isMesh) {
+        mesh.castShadow = true
+        mesh.receiveShadow = true
+      }
+    })
+  }
+
+  /**
+   * Compiles the model's shaders off the main thread where the browser can
+   * (KHR_parallel_shader_compile), instead of in its first frame, which froze the page.
+   * Shaders another viewer on the page already compiled come for free.
+   */
+  async function compile(model: Object3D): Promise<void> {
+    prepareModel(model)
+    await renderer.compileAsync(model, camera, scene)
+  }
+
   function setupLoadedModel(model: Object3D): void {
     if (currentModel) {
       scene.remove(currentModel)
@@ -715,22 +790,8 @@ export function createViewer(
     }
 
     currentModel = model
+    prepareModel(model)
     scene.add(model)
-
-    // Enable shadows on model meshes
-    if (enableShadows) {
-      model.traverse((node) => {
-        const mesh = node as unknown as {
-          isMesh?: boolean
-          castShadow?: boolean
-          receiveShadow?: boolean
-        }
-        if (mesh.isMesh) {
-          mesh.castShadow = true
-          mesh.receiveShadow = true
-        }
-      })
-    }
 
     // Compute bounding box and sphere
     const box = new Box3().setFromObject(model)
@@ -761,7 +822,7 @@ export function createViewer(
       dirLight.shadow.camera.near = 0.1
       dirLight.shadow.camera.far = lightDist * 4
       dirLight.shadow.camera.updateProjectionMatrix()
-      renderer.shadowMap.needsUpdate = true
+      stage.updateShadows()
     }
 
     // biome-ignore lint/suspicious/noFocusedTests: internal method to auto-frame camera to model bounds
@@ -773,6 +834,7 @@ export function createViewer(
 
   async function load(src: string | Object3D): Promise<Object3D> {
     if (typeof src !== 'string') {
+      await compile(src)
       setupLoadedModel(src)
       return src
     }
@@ -784,29 +846,22 @@ export function createViewer(
       dracoLoader.setDecoderPath(options.dracoPath)
     }
 
-    return new Promise<Object3D>((resolve, reject) => {
-      const loader = new GLTFLoader()
-      loader.setMeshoptDecoder(MeshoptDecoder)
-      if (dracoLoader) loader.setDRACOLoader(dracoLoader)
+    const loader = new GLTFLoader()
+    loader.setMeshoptDecoder(MeshoptDecoder)
+    if (dracoLoader) loader.setDRACOLoader(dracoLoader)
 
-      loader.load(
-        src,
-        (gltf) => {
-          setupLoadedModel(gltf.scene)
-          resolve(gltf.scene)
-        },
-        (xhr) => {
-          if (xhr.lengthComputable && xhr.total > 0) {
-            emit('progress', xhr.loaded / xhr.total)
-          }
-        },
-        (err) => {
-          const error = err instanceof Error ? err : new Error(String(err))
-          emit('error', error)
-          reject(error)
-        },
-      )
-    })
+    try {
+      const gltf = await loader.loadAsync(src, (xhr) => {
+        if (xhr.lengthComputable && xhr.total > 0) emit('progress', xhr.loaded / xhr.total)
+      })
+      await compile(gltf.scene)
+      setupLoadedModel(gltf.scene)
+      return gltf.scene
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err))
+      emit('error', error)
+      throw error
+    }
   }
 
   // Auto-load initial src if provided
@@ -828,15 +883,6 @@ export function createViewer(
     }
     if (shadowPlane) {
       disposeObject(shadowPlane)
-    }
-    if (envTexture) {
-      envTexture.dispose()
-    }
-    if (roomEnv) {
-      disposeObject(roomEnv)
-    }
-    if (pmremGenerator) {
-      pmremGenerator.dispose()
     }
     originalDispose()
   }

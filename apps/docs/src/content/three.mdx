@@ -118,7 +118,8 @@ viewer.dispose()
 
 - **Lazy loading**: Three.js, loaders, and decoders are loaded dynamically via `import()` only when the viewer comes within 200px of the viewport.
 - **Render on demand**: Frames render strictly when camera angles change, controls update, auto-rotate is active, or when an `onFrame` callback returns `true`. When idle, the loop pauses completely.
-- **Context limit protection**: Browsers cap WebGL contexts at 8–16 per page. Viewers defer context initialization until needed, preventing context loss on content-heavy pages.
+- **One renderer per page**: every viewer and stage draws with the same WebGL renderer and copies its picture to its own canvas. Shaders and the studio lighting are prepared once for the page, so the second viewer starts in a few milliseconds instead of the first one's hundred or more, and a page of viewers spends one WebGL context of the handful a browser allows. Settings made on `ctx.renderer` in a `<Stage>` apply to every stage on the page.
+- **No frozen first frame**: a model's shaders compile with `compileAsync` before it shows, off the main thread where the browser supports it, while the poster stays up.
 - **Disposal**: `dispose()` recursively frees geometry buffers, materials, textures, and controls listeners to prevent memory leaks.
 - **Compression**: Meshopt decoding is included out of the box. Draco compression can be enabled by supplying `dracoPath`.
 
