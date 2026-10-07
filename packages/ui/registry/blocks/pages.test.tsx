@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import type * as React from 'react'
 import { beforeAll, describe, expect, it, vi } from 'vitest'
@@ -70,6 +70,20 @@ describe('Dashboard01', () => {
     await user.click(screen.getByRole('radio', { name: '7 days' }))
     await user.click(screen.getByRole('button', { name: 'Export' }))
     expect(onExport.mock.lastCall?.[0]).toHaveLength(7)
+  })
+
+  it('reads out a day and its value from each sparkline', () => {
+    render(<Dashboard01 />)
+    const sparks = document.querySelectorAll<SVGElement>(
+      '[data-slot=block-dashboard-01] svg[role=img][tabindex="0"]',
+    )
+    expect(sparks).toHaveLength(4)
+    act(() => (sparks[0] as SVGElement).focus())
+    const tip = document.querySelector('[data-slot=sparkline-tooltip]')
+    // The last day of the default data, with the revenue in dollars.
+    expect(tip?.textContent).toMatch(/^\$[\d,]+Oct 6$/)
+    act(() => (sparks[2] as SVGElement).focus())
+    expect(document.querySelector('[data-slot=sparkline-tooltip]')?.textContent).toMatch(/%Oct 6$/)
   })
 
   it('hides export without a handler', () => {

@@ -178,10 +178,29 @@ function Dashboard01({
     timeZone: 'UTC',
   })
 
-  // Sparklines show the same days in at most 30 points, so 90 days stay readable.
+  // Sparklines show the same days in at most 30 points, so 90 days stay readable; hovering or
+  // arrowing through one reads out the day and its value.
   const step = Math.max(1, Math.ceil(current.length / 30))
-  const trend = (pick: (day: DashboardDay) => number) =>
-    current.filter((_, i) => i % step === 0).map(pick)
+  const sampled = current.filter((_, i) => i % step === 0)
+  const sampledDates = sampled.map((day) => formatDate.format(new Date(day.date)))
+  const formatter = (options: Intl.NumberFormatOptions) => {
+    const f = new Intl.NumberFormat(locale, options)
+    return (value: number) => f.format(value)
+  }
+  const trend = (
+    pick: (day: DashboardDay) => number,
+    format: (value: number) => string,
+    variant?: 'line' | 'area' | 'bar',
+  ) => (
+    <Sparkline
+      data={sampled.map(pick)}
+      labels={sampledDates}
+      format={format}
+      tooltip
+      variant={variant}
+      height={32}
+    />
+  )
 
   return (
     <section
@@ -228,7 +247,7 @@ function Dashboard01({
             format={money}
             delta={change(revenue, previousRevenue)}
             comparison={comparison}
-            sparkline={<Sparkline data={trend((d) => d.revenue)} variant="area" height={32} />}
+            sparkline={trend((d) => d.revenue, formatter(money), 'area')}
           />
           <MetricCard
             label={labels.orders}
@@ -236,7 +255,7 @@ function Dashboard01({
             locale={locale}
             delta={change(orderCount, previousOrders)}
             comparison={comparison}
-            sparkline={<Sparkline data={trend((d) => d.orders)} height={32} />}
+            sparkline={trend((d) => d.orders, formatter({}))}
           />
           <MetricCard
             label={labels.conversion}
@@ -245,13 +264,11 @@ function Dashboard01({
             format={{ style: 'percent', maximumFractionDigits: 2 }}
             delta={change(conversion, previousConversion)}
             comparison={comparison}
-            sparkline={
-              <Sparkline
-                data={trend((d) => (d.visitors ? (d.orders / d.visitors) * 100 : 0))}
-                variant="bar"
-                height={32}
-              />
-            }
+            sparkline={trend(
+              (d) => (d.visitors ? d.orders / d.visitors : 0),
+              formatter({ style: 'percent', maximumFractionDigits: 2 }),
+              'bar',
+            )}
           />
           <MetricCard
             label={labels.averageOrder}
@@ -260,9 +277,10 @@ function Dashboard01({
             format={{ style: 'currency', currency, maximumFractionDigits: 2 }}
             delta={change(average, previousAverage)}
             comparison={comparison}
-            sparkline={
-              <Sparkline data={trend((d) => (d.orders ? d.revenue / d.orders : 0))} height={32} />
-            }
+            sparkline={trend(
+              (d) => (d.orders ? d.revenue / d.orders : 0),
+              formatter({ style: 'currency', currency, maximumFractionDigits: 2 }),
+            )}
           />
         </div>
 
