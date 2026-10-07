@@ -1,6 +1,6 @@
 {
   "name": "@uiness/three",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Headless Three.js viewer and stage for React: 3D model viewer with orbit controls, lighting, contact shadows, render on demand, and lazy loading. Zero dependencies beyond Three.js.",
   "keywords": [
     "react",
