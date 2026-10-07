@@ -7,8 +7,7 @@ export default function TweetCardDemo() {
         author={{
           name: 'Guillermo Rauch',
           handle: 'rauchg',
-          avatar:
-            '/img/gallery-1-tiny.png',
+          avatar: '/img/gallery-1-tiny.png',
           verified: true,
         }}
         text="The fastest way to build modern web interfaces with pure animations and zero runtime weight: check @uiness at https://uiness.vercel.app #webdev"
