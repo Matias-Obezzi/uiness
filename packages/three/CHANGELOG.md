@@ -1,5 +1,15 @@
 # @uiness/three
 
+## 0.3.0
+
+### Minor Changes
+
+- f4a423b: The wheel scrolls the page past a viewer and zooms it only with Ctrl or ⌘ held, which is also what a trackpad pinch sends; `wheelZoom` sets `'modifier'` (default), `'always'` or `'never'`. Keyboard shortcuts are configurable through `shortcuts`, laid over the exported `defaultShortcuts`: remap an action, drop one with `null`, or turn them all off with `false`. Keys held with Ctrl, ⌘ or Alt are left to the browser.
+
+### Patch Changes
+
+- f550e5c: Fix a frame loop that doubled every frame while the camera moved: an auto-rotating viewer froze the whole computer within a second, and any viewer stuttered for a moment after a drag. Moving the camera in a frame fired the controls' change, which scheduled the next frame, and the loop scheduled another on top.
+
 ## 0.2.0
 
 ### Minor Changes
