@@ -1,0 +1,37 @@
+Arranges characters along a circular perimeter that continuously rotates in place.
+
+<ComponentPreview name="spinning-text-demo" />
+
+## Installation
+
+<Install name="spinning-text" />
+
+## Usage
+
+```tsx
+import { SpinningText } from '@/components/ui/spinning-text'
+
+<SpinningText radius={5} duration={10} pauseOnHover>
+  uiness • modern motion components •
+</SpinningText>
+```
+
+Characters are positioned around the circle using CSS transforms (`rotate` and `translateY`). The entire ring rotates smoothly with keyframe animations.
+
+## Behavior
+
+- **Accessibility**: The root element is assigned `role="img"` with an `aria-label` holding the complete text. Individual character nodes are marked `aria-hidden`.
+- **Reduced motion**: When `prefers-reduced-motion` is active, the circular rotation is stopped and the characters remain positioned statically along the ring.
+- **Center slot**: An optional `center` prop allows placing icons, avatars, or badges inside the circle.
+- **Hover interaction**: With `pauseOnHover`, hovering the element pauses the circular rotation.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `children` | | String whose characters are arranged around the circle. |
+| `duration` | `10` | Duration of one full 360-degree rotation in seconds. |
+| `radius` | `5` | Radius of the circle (in `em` units if a number is given). |
+| `reverse` | `false` | Whether to rotate counter-clockwise. |
+| `pauseOnHover` | `false` | Pauses the rotation on hover. |
+| `center` | | Slot for an element rendered in the center of the circle. |

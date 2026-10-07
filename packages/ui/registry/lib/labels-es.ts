@@ -485,6 +485,9 @@ export const es = {
   safari: {
     search: 'Buscar o ingresar dirección web',
   },
+  'scroll-progress': {
+    backToTop: 'Volver arriba',
+  },
   'search-field': {
     placeholder: 'Buscar…',
     clear: 'Borrar la búsqueda',
@@ -552,6 +555,23 @@ export const es = {
   },
   'theme-switch': {
     darkMode: 'Modo oscuro',
+  },
+  'three-viewer': {
+    reset: 'Restablecer vista',
+    zoomIn: 'Acercar',
+    zoomOut: 'Alejar',
+    autoRotate: 'Rotación automática',
+    views: 'Vistas de cámara',
+    viewFront: 'Vista frontal',
+    viewBack: 'Vista trasera',
+    viewLeft: 'Vista izquierda',
+    viewRight: 'Vista derecha',
+    viewTop: 'Vista superior',
+    viewIso: 'Vista isométrica',
+    wireframe: 'Alternar malla',
+    background: 'Cambiar fondo',
+    screenshot: 'Capturar pantalla',
+    fullscreen: 'Pantalla completa',
   },
   'time-picker': {
     hour: 'Horas',

@@ -1,0 +1,34 @@
+A canvas particle field that drifts in the background and reacts dynamically to cursor presence.
+
+<ComponentPreview name="particles-demo" />
+
+## Installation
+
+<Install name="particles" />
+
+## Usage
+
+```tsx
+import { Particles } from '@/components/ui/particles'
+
+<div className="relative overflow-hidden">
+  <Particles quantity={100} mode="repel" connect={80} />
+  ...
+</div>
+```
+
+The canvas caps device pixel ratio at 2 and automatically matches the theme by reading computed CSS colors. Proximity connections between particles use an O(N) spatial grid partition, preventing quadratic performance degradation even with dense particle counts. Drawing pauses when off-screen via `useInView` and when the browser tab is hidden. With reduced motion enabled, a single static frame is painted without starting an animation loop.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `quantity` | `100` | Total number of particles. |
+| `size` | `[1, 2]` | Radius in pixels, or a `[min, max]` range. |
+| `color` | foreground | Any CSS color for particles and connections. |
+| `vx` | `0.5` | Horizontal drift velocity multiplier. |
+| `vy` | `0.5` | Vertical drift velocity multiplier. |
+| `mode` | `'none'` | Reaction mode: `'attract'`, `'repel'`, or `'none'`. |
+| `staticity` | `50` | Resistance against pointer movement. |
+| `ease` | `50` | Easing rate when settling back into place. |
+| `connect` | `0` | Maximum pixel distance to draw connection lines (0 = off). |

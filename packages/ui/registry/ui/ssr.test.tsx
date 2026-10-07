@@ -3,26 +3,39 @@ import type * as React from 'react'
 import { hydrateRoot, type Root } from 'react-dom/client'
 import { renderToString } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { Ambilight } from './ambilight'
 import { Android } from './android'
 import { CodeComparison } from './code-comparison'
 import { DottedMap } from './dotted-map'
 import { Globe } from './globe'
 import { IPad } from './ipad'
 import { IPhone } from './iphone'
+import { Lens } from './lens'
+import { LineShadowText } from './line-shadow-text'
 import { MacBook } from './macbook'
 import { Meteors } from './meteors'
+import { MorphingText } from './morphing-text'
+import { NoiseTexture } from './noise-texture'
 import { NumberTicker } from './number-ticker'
 import { Odometer } from './odometer'
 import { OgPreview } from './og-preview'
+import { Particles } from './particles'
+import { Pointer } from './pointer'
 import { Reveal } from './reveal'
 import { Safari } from './safari'
 import { ScrambleText } from './scramble-text'
+import { ScrollProgress } from './scroll-progress'
+import { SmoothCursor } from './smooth-cursor'
+import { SpinningText } from './spinning-text'
 import { TextGenerate } from './text-generate'
+import { Highlighter } from './text-highlighter'
 import { TextReveal } from './text-reveal'
+import { ThreeViewer } from './three-viewer'
 import { Timeline, TimelineItem } from './timeline'
 import { TweetCard } from './tweet-card'
 import { Typewriter } from './typewriter'
 import { VelocityMarquee } from './velocity-marquee'
+import { VideoText } from './video-text'
 
 let root: Root | undefined
 let host: HTMLElement | undefined
@@ -281,6 +294,113 @@ describe('meteors', () => {
     expect(renderToString(ui)).toBe(html)
     vi.restoreAllMocks()
     expect(hydrate(ui).errors).toEqual([])
+  })
+})
+
+describe('motion pointer components SSR', () => {
+  it('hydrates Lens without mismatches', () => {
+    const ui = (
+      <Lens position={{ x: 50, y: 50 }}>
+        <span>Target</span>
+      </Lens>
+    )
+    expect(serverHtml(ui).el.textContent).toContain('Target')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates Pointer without mismatches', () => {
+    const ui = (
+      <div>
+        <Pointer />
+      </div>
+    )
+    expect(serverHtml(ui).el.querySelector('[data-slot=pointer]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates SmoothCursor without mismatches', () => {
+    const ui = <SmoothCursor />
+    expect(serverHtml(ui).el.querySelector('[data-slot=smooth-cursor]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates Particles without mismatches', () => {
+    const ui = <Particles quantity={10} />
+    expect(serverHtml(ui).el.querySelector('[data-slot=particles]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates NoiseTexture without mismatches', () => {
+    const ui = <NoiseTexture animated />
+    expect(serverHtml(ui).el.querySelector('[data-slot=noise-texture]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates Ambilight without mismatches', () => {
+    const ui = (
+      <Ambilight>
+        <img src="/sample.png" alt="Sample" />
+      </Ambilight>
+    )
+    expect(serverHtml(ui).el.querySelector('[data-slot=ambilight]')).toBeTruthy()
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('hydrates ScrollProgress in bar and circle variants without mismatches', () => {
+    const bar = <ScrollProgress variant="bar" />
+    expect(serverHtml(bar).el.querySelector('[data-slot=scroll-progress]')).toBeTruthy()
+    expect(hydrate(bar).errors).toEqual([])
+    act(() => root?.unmount())
+    root = undefined
+
+    const circle = <ScrollProgress variant="circle" />
+    expect(serverHtml(circle).el.querySelector('[data-slot=scroll-progress]')).toBeTruthy()
+    expect(hydrate(circle).errors).toEqual([])
+  })
+})
+
+describe('motion text SSR', () => {
+  it('line-shadow-text hydrates cleanly without errors', () => {
+    const ui = <LineShadowText>Heading</LineShadowText>
+    expect(serverHtml(ui).el.textContent).toContain('Heading')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('video-text hydrates cleanly without errors', () => {
+    const ui = <VideoText src="/video.mp4">CLIP</VideoText>
+    expect(serverHtml(ui).el.textContent).toContain('CLIP')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('morphing-text renders initial word and hydrates cleanly without errors', () => {
+    const ui = <MorphingText texts={['One', 'Two']} />
+    expect(serverHtml(ui).el.textContent).toContain('One')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('spinning-text renders text accessible label and hydrates cleanly without errors', () => {
+    const ui = <SpinningText>RING</SpinningText>
+    expect(serverHtml(ui).html).toContain('aria-label="RING"')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+
+  it('text-highlighter hydrates cleanly without errors', () => {
+    const ui = <Highlighter action="highlight">Marked</Highlighter>
+    expect(serverHtml(ui).el.textContent).toContain('Marked')
+    expect(hydrate(ui).errors).toEqual([])
+  })
+})
+
+describe('ThreeViewer SSR', () => {
+  it('renders deterministically on the server and matches across runs', () => {
+    const ui = (
+      <ThreeViewer src="/models/chair.glb" alt="Lounge chair in 3D" poster="/models/chair.webp" />
+    )
+    const { html } = serverHtml(ui)
+    expect(html).toContain('role="img"')
+    expect(html).toContain('aria-label="Lounge chair in 3D"')
+    expect(html).toContain('/models/chair.webp')
+    expect(renderToString(ui)).toBe(html)
   })
 })
 

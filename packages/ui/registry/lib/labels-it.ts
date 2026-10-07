@@ -487,6 +487,9 @@ export const it = {
   safari: {
     search: 'Cerca o inserisci nome del sito web',
   },
+  'scroll-progress': {
+    backToTop: "Torna all'inizio",
+  },
   'search-field': {
     placeholder: 'Cerca…',
     clear: 'Cancella la ricerca',
@@ -554,6 +557,23 @@ export const it = {
   },
   'theme-switch': {
     darkMode: 'Modalità scura',
+  },
+  'three-viewer': {
+    reset: 'Reimposta vista',
+    zoomIn: 'Ingrandisci',
+    zoomOut: 'Riduci',
+    autoRotate: 'Rotazione automatica',
+    views: 'Viste fotocamera',
+    viewFront: 'Vista frontale',
+    viewBack: 'Vista posteriore',
+    viewLeft: 'Vista sinistra',
+    viewRight: 'Vista destra',
+    viewTop: 'Vista dall’alto',
+    viewIso: 'Vista isometrica',
+    wireframe: 'Attiva/disattiva wireframe',
+    background: 'Cambia sfondo',
+    screenshot: 'Cattura schermata',
+    fullscreen: 'Schermo intero',
   },
   'time-picker': {
     hour: 'Ore',

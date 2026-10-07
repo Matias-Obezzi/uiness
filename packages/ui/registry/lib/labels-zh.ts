@@ -478,6 +478,9 @@ export const zh = {
   safari: {
     search: '搜索或输入网站名称',
   },
+  'scroll-progress': {
+    backToTop: '返回顶部',
+  },
   'search-field': {
     placeholder: '搜索…',
     clear: '清除搜索',
@@ -545,6 +548,23 @@ export const zh = {
   },
   'theme-switch': {
     darkMode: '深色模式',
+  },
+  'three-viewer': {
+    reset: '重置视角',
+    zoomIn: '放大',
+    zoomOut: '缩小',
+    autoRotate: '自动旋转',
+    views: '相机视角',
+    viewFront: '前视图',
+    viewBack: '后视图',
+    viewLeft: '左视图',
+    viewRight: '右视图',
+    viewTop: '顶视图',
+    viewIso: '等轴视图',
+    wireframe: '切换线框',
+    background: '切换背景',
+    screenshot: '截取屏幕',
+    fullscreen: '全屏模式',
   },
   'time-picker': {
     hour: '小时',
