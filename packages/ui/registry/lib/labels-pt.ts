@@ -137,6 +137,12 @@ export const pt = {
     showLess: 'Mostrar menos',
     showAll: (lines: number) => `Mostrar todas as ${lines} linhas`,
   },
+  'code-comparison': {
+    before: 'Antes',
+    after: 'Depois',
+    copy: 'Copiar código',
+    copied: 'Copiado',
+  },
   'color-picker': {
     area: 'Saturação e brilho',
     areaRole: 'controle deslizante 2D',
@@ -283,6 +289,9 @@ export const pt = {
     summary: (slices: string[], caption: string, total: string) =>
       `Gráfico de rosca, ${slices.join(', ')}. ${caption} ${total}.`,
   },
+  'dotted-map': {
+    map: 'Mapa-múndi',
+  },
   'expandable-card': {
     close: 'Fechar',
   },
@@ -294,6 +303,9 @@ export const pt = {
     previous: 'Imagem anterior',
     next: 'Próxima imagem',
     show: (index: number) => `Mostrar imagem ${index}`,
+  },
+  globe: {
+    globe: 'Globo terrestre interativo',
   },
   'hold-to-confirm': {
     hint: 'Mantenha pressionado para confirmar.',
@@ -403,6 +415,9 @@ export const pt = {
     decrement: 'Diminuir',
     increment: 'Aumentar',
   },
+  'og-preview': {
+    preview: (title: string) => `Prévia de ${title}`,
+  },
   pagination: {
     nav: 'Paginação',
     previous: 'Anterior',
@@ -468,6 +483,9 @@ export const pt = {
     heading2: 'Título 2',
     heading3: 'Título 3',
     divider: 'Divisor',
+  },
+  safari: {
+    search: 'Buscar ou digitar endereço do site',
   },
   'scroll-progress': {
     backToTop: 'Voltar ao topo',
@@ -579,6 +597,14 @@ export const pt = {
   },
   'tree-view': {
     loadFailed: 'não foi possível carregar, abra para tentar novamente',
+  },
+  'tweet-card': {
+    reply: 'Responder',
+    repost: 'Republicar',
+    like: 'Curtir',
+    views: 'Visualizações',
+    verified: 'Conta verificada',
+    quoted: 'Publicação citada',
   },
   'usage-meter': {
     warning: 'Quase cheio',

@@ -136,6 +136,12 @@ export const it = {
     showLess: 'Mostra meno',
     showAll: (lines: number) => `Mostra tutte le ${lines} righe`,
   },
+  'code-comparison': {
+    before: 'Prima',
+    after: 'Dopo',
+    copy: 'Copia codice',
+    copied: 'Copiato',
+  },
   'color-picker': {
     area: 'Saturazione e luminosità',
     areaRole: 'cursore 2D',
@@ -283,6 +289,9 @@ export const it = {
     summary: (slices: string[], caption: string, total: string) =>
       `Grafico ad anello, ${slices.join(', ')}. ${caption} ${total}.`,
   },
+  'dotted-map': {
+    map: 'Mappa del mondo',
+  },
   'expandable-card': {
     close: 'Chiudi',
   },
@@ -294,6 +303,9 @@ export const it = {
     previous: 'Immagine precedente',
     next: 'Immagine successiva',
     show: (index: number) => `Mostra l'immagine ${index}`,
+  },
+  globe: {
+    globe: 'Mappamondo 3D interattivo',
   },
   'hold-to-confirm': {
     hint: 'Tieni premuto per confermare.',
@@ -403,6 +415,9 @@ export const it = {
     decrement: 'Diminuisci',
     increment: 'Aumenta',
   },
+  'og-preview': {
+    preview: (title: string) => `Anteprima di ${title}`,
+  },
   pagination: {
     nav: 'Paginazione',
     previous: 'Precedente',
@@ -468,6 +483,9 @@ export const it = {
     heading2: 'Titolo 2',
     heading3: 'Titolo 3',
     divider: 'Separatore',
+  },
+  safari: {
+    search: 'Cerca o inserisci nome del sito web',
   },
   'scroll-progress': {
     backToTop: "Torna all'inizio",
@@ -579,6 +597,14 @@ export const it = {
   },
   'tree-view': {
     loadFailed: 'impossibile caricare, aprilo per riprovare',
+  },
+  'tweet-card': {
+    reply: 'Rispondi',
+    repost: 'Ripubblica',
+    like: 'Mi piace',
+    views: 'Visualizzazioni',
+    verified: 'Account verificato',
+    quoted: 'Post citato',
   },
   'usage-meter': {
     warning: 'Quasi pieno',

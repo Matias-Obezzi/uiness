@@ -1,0 +1,36 @@
+World map rendered in lightweight vector SVG, merging thousands of land dots into a single path node to avoid DOM bloat, paired with pulsing markers and animated arcs.
+
+<ComponentPreview name="dotted-map-demo" />
+
+## Installation
+
+<Install name="dotted-map" />
+
+## Usage
+
+```tsx
+import { DottedMap } from '@/components/ui/dotted-map'
+
+<DottedMap
+  markers={[
+    { lat: 40.7128, lng: -74.006, label: 'New York' },
+    { lat: 51.5074, lng: -0.1278, label: 'London' },
+  ]}
+  arcs={[
+    { from: [40.7128, -74.006], to: [51.5074, -0.1278] },
+  ]}
+/>
+```
+
+The static map renders purely through SVG paths and CSS without any runtime JavaScript loops. Land points are computed from the `world-map` library with zero hydration delay. When reduced motion is preferred, marker pulses and arc travel animations are disabled.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `step` | `2` | Sampling step for land dots in degrees. |
+| `dotColor` | `currentColor` | Fill and stroke color for land points. |
+| `dotSize` | `2` | Diameter of land dots in SVG coordinates. |
+| `crop` | `[-60, 84]` | Latitude crop range `[minLat, maxLat]`. |
+| `markers` | `[]` | Array of `{ lat, lng, size?, color?, label? }` pins. |
+| `arcs` | `[]` | Array of `{ from: [lat, lng], to: [lat, lng], color? }` curve lines. |

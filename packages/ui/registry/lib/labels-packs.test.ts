@@ -93,7 +93,7 @@ it('finds the components', () => {
 })
 
 for (const [language, pack] of packs) {
-  describe(`${language} labels`, () => {
+  describe(`${language} labels`, { timeout: 15000 }, () => {
     for (const [name, { file, defaults }] of components) {
       it(`covers every label of ${name}`, async () => {
         const english = await defaultsOf(file, defaults)

@@ -1,0 +1,39 @@
+Pure 2D canvas globe with land dots, rotation, inertia dragging, pulsing markers and great-circle arcs. Rendered without WebGL or third-party 3D libraries.
+
+<ComponentPreview name="globe-demo" />
+
+## Installation
+
+<Install name="globe" />
+
+## Usage
+
+```tsx
+import { Globe } from '@/components/ui/globe'
+
+<Globe
+  markers={[
+    { lat: 37.7749, lng: -122.4194, label: 'San Francisco' },
+    { lat: 35.6762, lng: 139.6503, label: 'Tokyo' },
+  ]}
+  arcs={[
+    { from: [37.7749, -122.4194], to: [35.6762, 139.6503] },
+  ]}
+/>
+```
+
+Land points are sourced from the compact `world-map` bitset, pre-projected into unit vectors to eliminate per-frame trigonometry. The animation loop automatically pauses when off-screen via `useInView` and when the browser tab is hidden. When `prefers-reduced-motion` is enabled, automatic rotation stops while touch and mouse dragging remain fully interactive.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `speed` | `0.003` | Rotation speed in radians per frame. |
+| `tilt` | `0.25` | Vertical tilt angle in radians. |
+| `dotSize` | `1.4` | Radius of land dots in pixels. |
+| `dotColor` | `currentColor` | Color of land dots. |
+| `glow` | `true` | Radial atmosphere glow around the sphere. |
+| `markers` | `[]` | Array of `{ lat, lng, size?, color?, label? }` pins. |
+| `arcs` | `[]` | Array of `{ from: [lat, lng], to: [lat, lng], color? }` elevated arcs. |
+| `initialRotation` | `[0, 0.25]` | Initial `[yaw, tilt]` angles in radians. |
+| `draggable` | `true` | Allows rotating the globe with mouse or touch gestures. |

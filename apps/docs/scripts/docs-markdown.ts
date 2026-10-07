@@ -46,7 +46,11 @@ const context: MarkdownContext = {
 }
 
 /** Items whose page none of the rules below would find. */
-const pageOf: Record<string, string> = { theme: 'theming', utils: 'installation' }
+const pageOf: Record<string, string> = {
+  theme: 'theming',
+  utils: 'installation',
+  'world-map': 'motion/globe',
+}
 
 /**
  * The page that documents each registry item: the one named after it, else the first that

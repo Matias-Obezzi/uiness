@@ -288,6 +288,12 @@
   }
 }
 
+@keyframes dotted-map-arc {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+
 /* Theme Switch draws its own reveal over the page, so the browser's cross fade is switched off
  * while one of its view transitions runs, and only then. Color transitions are held too: the
  * new theme is a live picture, and buttons still fading from the old colors would show in it. */

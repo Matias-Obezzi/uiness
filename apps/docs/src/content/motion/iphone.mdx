@@ -1,0 +1,27 @@
+Pure CSS and SVG iPhone device mockup with Dynamic Island, side hardware buttons, and responsive screen frame.
+
+<ComponentPreview name="iphone-demo" />
+
+## Installation
+
+<Install name="iphone" />
+
+## Usage
+
+```tsx
+import { IPhone } from '@/components/ui/iphone'
+
+<IPhone src="/app-preview.png" alt="Mobile App Screen" />
+```
+
+The device chassis scales automatically with its parent container using modern CSS aspect ratios. Combine it with `reveal` or `tilt-card` for interactive landing page presentations.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `src` | `undefined` | Screenshot image URL to render on the screen. |
+| `videoSrc` | `undefined` | Video clip URL to loop on the screen. |
+| `children` | `undefined` | Interactive React elements rendered on the screen. |
+| `alt` | `'iPhone screen'` | Accessible alt text for screen media. |
+| `color` | `undefined` | Custom chassis color override. |

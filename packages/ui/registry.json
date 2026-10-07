@@ -268,6 +268,165 @@
       ]
     },
     {
+      "name": "world-map",
+      "type": "registry:lib",
+      "title": "World map data",
+      "description": "Compact rasterized 1-degree land bitset for canvas and SVG maps without external geo data.",
+      "files": [
+        {
+          "path": "registry/lib/world-map.ts",
+          "type": "registry:lib",
+          "target": "lib/world-map.ts"
+        }
+      ]
+    },
+    {
+      "name": "globe",
+      "type": "registry:ui",
+      "title": "Globe",
+      "description": "Pure 2D canvas globe with land dots, rotation and markers.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/world-map",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/globe.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dotted-map",
+      "type": "registry:ui",
+      "title": "Dotted Map",
+      "description": "World map rendered in SVG with all dots combined into a single path.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/world-map"],
+      "css": {
+        "@keyframes dotted-map-arc": {
+          "to": {
+            "stroke-dashoffset": "-24"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/dotted-map.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tweet-card",
+      "type": "registry:ui",
+      "title": "Tweet Card",
+      "description": "Presentational social post card with tokenized links and media grid.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-in-view"],
+      "files": [
+        {
+          "path": "registry/ui/tweet-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "og-preview",
+      "type": "registry:ui",
+      "title": "OG Preview",
+      "description": "OpenGraph link preview card for multiple platforms.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/og-preview.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "code-comparison",
+      "type": "registry:ui",
+      "title": "Code Comparison",
+      "description": "Side-by-side or unified code difference comparison using LCS.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/copy-button"],
+      "files": [
+        {
+          "path": "registry/ui/code-comparison.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "iphone",
+      "type": "registry:ui",
+      "title": "iPhone",
+      "description": "Pure CSS and SVG iPhone mockup with Dynamic Island and hardware buttons.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/iphone.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "android",
+      "type": "registry:ui",
+      "title": "Android",
+      "description": "Pure CSS and SVG Android device mockup with centered punch-hole camera.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/android.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ipad",
+      "type": "registry:ui",
+      "title": "iPad",
+      "description": "Pure CSS and SVG iPad mockup with uniform bezels and orientation support.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/ipad.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "macbook",
+      "type": "registry:ui",
+      "title": "MacBook",
+      "description": "Pure CSS and SVG MacBook mockup with display notch and aluminum chassis.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/macbook.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "safari",
+      "type": "registry:ui",
+      "title": "Safari",
+      "description": "Pure CSS and SVG Safari browser mockup with window chrome and address bar.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/safari.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "button",
       "type": "registry:ui",
       "title": "Button",

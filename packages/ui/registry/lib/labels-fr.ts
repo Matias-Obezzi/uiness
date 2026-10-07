@@ -141,6 +141,12 @@ export const fr = {
     showLess: 'Afficher moins',
     showAll: (lines: number) => `Afficher les ${lines} lignes`,
   },
+  'code-comparison': {
+    before: 'Avant',
+    after: 'Après',
+    copy: 'Copier le code',
+    copied: 'Copié',
+  },
   'color-picker': {
     area: 'Saturation et luminosité',
     areaRole: 'curseur 2D',
@@ -287,6 +293,9 @@ export const fr = {
     summary: (slices: string[], caption: string, total: string) =>
       `Graphique en anneau, ${slices.join(', ')}. ${caption} ${total}.`,
   },
+  'dotted-map': {
+    map: 'Carte du monde',
+  },
   'expandable-card': {
     close: 'Fermer',
   },
@@ -298,6 +307,9 @@ export const fr = {
     previous: 'Image précédente',
     next: 'Image suivante',
     show: (index: number) => `Afficher l’image ${index}`,
+  },
+  globe: {
+    globe: 'Globe 3D interactif',
   },
   'hold-to-confirm': {
     hint: 'Maintenez appuyé pour confirmer.',
@@ -408,6 +420,9 @@ export const fr = {
     decrement: 'Diminuer',
     increment: 'Augmenter',
   },
+  'og-preview': {
+    preview: (title: string) => `Aperçu de ${title}`,
+  },
   pagination: {
     nav: 'Pagination',
     previous: 'Précédent',
@@ -473,6 +488,9 @@ export const fr = {
     heading2: 'Titre 2',
     heading3: 'Titre 3',
     divider: 'Séparateur',
+  },
+  safari: {
+    search: 'Rechercher ou entrer le nom du site',
   },
   'scroll-progress': {
     backToTop: 'Retour en haut',
@@ -584,6 +602,14 @@ export const fr = {
   },
   'tree-view': {
     loadFailed: 'échec du chargement, ouvrez pour réessayer',
+  },
+  'tweet-card': {
+    reply: 'Répondre',
+    repost: 'Reposter',
+    like: "J'aime",
+    views: 'Vues',
+    verified: 'Compte vérifié',
+    quoted: 'Publication citée',
   },
   'usage-meter': {
     warning: 'Presque plein',

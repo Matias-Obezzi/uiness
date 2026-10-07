@@ -1,0 +1,33 @@
+Pure CSS and SVG Safari browser window mockup with traffic light controls, address bar, and mobile mode.
+
+<ComponentPreview name="safari-demo" />
+
+## Installation
+
+<Install name="safari" />
+
+## Usage
+
+```tsx
+import { Safari } from '@/components/ui/safari'
+
+<Safari
+  url="uiness.vercel.app"
+  src="/website-preview.png"
+  alt="Website Preview"
+/>
+```
+
+Features authentic macOS traffic lights and address bar layout, with support for dark mode and mobile browser variants.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `url` | `'example.com'` | Web address shown in the address bar. |
+| `mode` | `undefined` | Theme appearance override: `'light'` or `'dark'`. |
+| `variant` | `'desktop'` | Browser layout style: `'desktop'` or `'mobile'`. |
+| `src` | `undefined` | Screenshot image URL to render on the screen. |
+| `videoSrc` | `undefined` | Video clip URL to loop on the screen. |
+| `children` | `undefined` | Interactive React elements rendered on the screen. |
+| `alt` | `'Safari browser preview'` | Accessible alt text for screen media. |
