@@ -1,0 +1,154 @@
+A headless 3D model viewer and stage with lazy loading, render on demand, orbit controls, lighting, and contact shadows. Zero Three.js bytes are loaded on initial render until the viewer approaches the viewport.
+
+<ComponentPreview name="three-demo" />
+
+## Installation
+
+<Install name="three-viewer" extra="Installs @uiness/three and the full-featured ThreeViewer component with an accessible toolbar." />
+
+Or the headless package on its own:
+
+<InstallPackage name="@uiness/three" />
+
+## Usage
+
+```tsx
+import { ThreeViewer } from '@/components/ui/three-viewer'
+
+export function ProductPage() {
+  return (
+    <div className="aspect-[4/3] w-full max-w-xl">
+      <ThreeViewer
+        src="/models/chair.glb"
+        alt="Sheen modern armchair"
+        poster="/models/chair.webp"
+        autoRotate
+      />
+    </div>
+  )
+}
+```
+
+The viewer displays a poster image immediately while waiting for user interaction or viewport entry. When the model is loaded, the poster smoothly fades out.
+
+## Viewer toolbar
+
+The registry component pairs `<Viewer />` with `<ViewerToolbar />`, a floating Radix toolbar with arrow-key navigation and localized tooltips:
+
+- **Reset view**: Smoothly transitions the camera back to the initial bounding-fit position.
+- **Camera presets**: Switch between front, back, left, right, top, and isometric angles.
+- **Auto-rotate**: Continuous turntable rotation, automatically disabled when `prefers-reduced-motion` is detected.
+- **Wireframe**: Toggles material wireframe mode across all meshes in the model.
+- **Background**: Cycles between transparent, light, and dark backdrop modes.
+- **Screenshot**: Captures a crisp PNG download instantly without the overhead of `preserveDrawingBuffer`.
+- **Fullscreen**: Expands the viewer container using the Fullscreen API.
+
+### Keyboard shortcuts
+
+When the viewer container has focus (`tabIndex={0}`), shortcuts allow fast navigation:
+
+| Key | Action |
+| --- | --- |
+| `R` | Reset camera view |
+| `+` / `=` | Zoom in |
+| `-` | Zoom out |
+| `Space` | Toggle auto-rotate |
+| `F` | Toggle fullscreen |
+| `1` | Front view |
+| `2` | Side view |
+| `3` | Top view |
+| `4` | Isometric view |
+
+## Custom scenes with Stage
+
+`<Stage />` provides a lightweight canvas wrapper for custom Three.js scenes. It injects the loaded `THREE` namespace directly into `onSetup` and `onFrame`, avoiding any static imports in your bundle.
+
+<ComponentPreview name="three-stage" />
+
+```tsx
+import { Stage } from '@uiness/three'
+
+export function AnimatedScene() {
+  return (
+    <Stage
+      frameloop="demand"
+      onSetup={({ THREE, scene, camera }) => {
+        camera.position.set(0, 0, 4)
+        const geometry = new THREE.TorusKnotGeometry(0.9, 0.3, 128, 32)
+        const material = new THREE.MeshStandardMaterial({ color: 0x6366f1 })
+        const mesh = new THREE.Mesh(geometry, material)
+        scene.add(mesh)
+
+        return () => {
+          geometry.dispose()
+          material.dispose()
+          scene.remove(mesh)
+        }
+      }}
+      onFrame={(ctx, delta) => {
+        // Return true to keep the animation loop running
+        return true
+      }}
+    />
+  )
+}
+```
+
+## Without React
+
+The `@uiness/three/core` entry point provides headless controllers that run in any vanilla JavaScript or TypeScript environment:
+
+<ComponentPreview name="three-core" />
+
+```ts
+import { createViewer } from '@uiness/three/core'
+
+const canvas = document.querySelector('canvas')!
+const viewer = createViewer(canvas, {
+  src: '/models/chair.glb',
+  autoRotate: true,
+  shadows: true,
+})
+
+// Clean up WebGL resources when done
+viewer.dispose()
+```
+
+## Performance and architecture
+
+- **Lazy loading**: Three.js, loaders, and decoders are loaded dynamically via `import()` only when the viewer comes within 200px of the viewport.
+- **Render on demand**: Frames render strictly when camera angles change, controls update, auto-rotate is active, or when an `onFrame` callback returns `true`. When idle, the loop pauses completely.
+- **Context limit protection**: Browsers cap WebGL contexts at 8–16 per page. Viewers defer context initialization until needed, preventing context loss on content-heavy pages.
+- **Disposal**: `dispose()` recursively frees geometry buffers, materials, textures, and controls listeners to prevent memory leaks.
+- **Compression**: Meshopt decoding is included out of the box. Draco compression can be enabled by supplying `dracoPath`.
+
+## Asset attribution
+
+The sample 3D model used in the documentation is the **Sheen Chair** by Eric Chadwick / Wayfair, LLC, released into the public domain under the [Creative Commons CC0 1.0 Universal License](https://creativecommons.org/publicdomain/zero/1.0/).
+
+## Props
+
+### `<ThreeViewer />` / `<Viewer />`
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `src` | — | URL of a `.glb` or `.gltf` model. |
+| `alt` | — | Accessible label for the 3D canvas element. |
+| `poster` | — | Poster image URL shown while loading or offscreen. |
+| `autoRotate` | `false` | Rotates the model continuously (disabled with reduced motion). |
+| `environment` | `'room'` | Lighting environment: `'room'`, `'none'`, or a custom texture. |
+| `shadows` | `true` | Enables directional light and contact shadow plane. |
+| `maxDpr` | `2` | Clamps the device pixel ratio to prevent GPU strain on retina screens. |
+| `dracoPath` | — | Path to Draco decoder files if using Draco-compressed models. |
+| `onLoad` | — | Callback fired when the model finishes loading. |
+| `onError` | — | Callback fired if model loading fails. |
+| `onProgress` | — | Callback with `(loaded, total)` progress numbers. |
+| `fallback` | — | React node displayed when WebGL is unsupported or loading fails. |
+
+### `<ViewerToolbar />`
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `position` | `'bottom'` | Toolbar placement: `'bottom'`, `'top'`, `'left'`, or `'right'`. |
+| `actions` | `all` | Array of actions to render: `'reset'`, `'views'`, `'zoom'`, `'rotate'`, `'wireframe'`, `'background'`, `'screenshot'`, `'fullscreen'`. |
+| `autoHide` | `true` | Fades out the toolbar after 2.5s without pointer movement. |
