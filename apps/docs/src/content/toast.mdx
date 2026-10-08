@@ -48,6 +48,23 @@ The toast starts as loading and turns into success or error with the resolved va
 
 <ComponentPreview name="toast-custom" />
 
+## Undo, repeats and time left
+
+`toast.undo()` says something happened with an Undo button, and resolves `true` when it was used, `false` once the toast leaves any other way, so the change can be made right away and taken back if asked. A toast with the same type, title and description as one already showing folds into it instead of stacking: it counts up (×3) and starts its time again. `dedupe: false` keeps them apart. `progress` adds a bar that empties as the time runs out, and waits with the timer while the pointer is over the toasts.
+
+<ComponentPreview name="toast-more" />
+
+```tsx
+archive(message)
+if (await toast.undo('Message archived')) unarchive(message)
+
+toast('Draft saved', { progress: true })
+
+const id = toast.loading('Uploading')
+toast.update(id, { title: 'Uploaded', type: 'success' })
+toast.isActive(id) // false once it leaves
+```
+
 ## Options
 
 | Option | Description |
@@ -61,6 +78,8 @@ The toast starts as loading and turns into success or error with the resolved va
 | `dismissible` | Swipe and close button. Default true. |
 | `closeButton`, `position`, `important` | Per toast overrides of the Toaster settings. |
 | `onDismiss`, `onAutoClose` | Callbacks. |
+| `progress` | A bar that empties as the time runs out. Overrides the Toaster setting. |
+| `dedupe` | Fold into an identical toast already showing. Default `true`, for string titles. |
 
 `toast.dismiss(id)` closes one toast, `toast.dismiss()` closes them all.
 
@@ -78,6 +97,8 @@ The toast starts as loading and turns into success or error with the resolved va
 | `icons` | | Custom icons per type. |
 | `toastClassName`, `toastStyle` | | Applied to every card. |
 | `label`, `closeLabel` | `'Notifications'`, `'Close'` | Names of the region and of the close button. The registry `Toaster` fills them from its [labels](#labels). |
+| `progress` | `false` | A bar on every toast that empties as its time runs out. Hidden with reduced motion. |
+| `hotkey` | `['altKey', 'KeyT']` | Keys that move focus to the toasts. `false` turns it off. |
 
 ## Theming
 
@@ -92,6 +113,8 @@ The wrapper maps the cards to `--popover`, `--border`, `--radius` and the action
 ## Accessibility
 
 The region is labelled "Notifications". Each toast is a polite live region, or assertive with `important`. Timers pause while hovering and while the page is hidden, and swipe is only one way to dismiss: the close button and the actions work with a keyboard too.
+
+Alt+T moves focus to the toasts, announced through `aria-keyshortcuts`. While focus is inside, the stack stays open and the timers wait, the way they do under the pointer, so there is time to reach an action with Tab. Change the keys with `hotkey`, as `KeyboardEvent.code` with modifier names, or turn it off with `false`.
 
 ## Toast or Island?
 

@@ -48,6 +48,13 @@ export interface ToastOptions {
   onAutoClose?: (toast: Toast) => void
   /** Replace the whole card with your own markup. */
   render?: (toast: Toast) => ReactNode
+  /** A bar along the bottom that empties as the time runs out. Overrides the Toaster setting. */
+  progress?: boolean
+  /**
+   * Fold a toast with the same type, title and description into the one already showing,
+   * which counts up and starts its time again. Only for string titles. Default true.
+   */
+  dedupe?: boolean
 }
 
 export interface Toast extends ToastOptions {
@@ -55,6 +62,10 @@ export interface Toast extends ToastOptions {
   type: ToastType
   dismissible: boolean
   createdAt: number
+  /** Changes on every update, so anything timed from the toast can start over. */
+  updatedAt: number
+  /** How many identical toasts were folded into this one, itself included. */
+  count: number
   /** Set while the exit animation plays. */
   removing?: boolean
 }
