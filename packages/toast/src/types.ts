@@ -24,7 +24,7 @@ export interface ToastOptions {
   /** Replaces the type icon. `null` hides it. */
   icon?: ReactNode | null
   /**
-   * Auto dismiss delay in ms. `Infinity` keeps the toast until dismissed.
+   * Auto dismiss delay in ms. `0` or `Infinity` keeps the toast until it is closed.
    * Defaults to the Toaster duration; loading toasts default to `Infinity`.
    */
   duration?: number

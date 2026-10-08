@@ -73,7 +73,7 @@ toast.isActive(id) // false once it leaves
 | `title`, `description` | Content. |
 | `type` | `default`, `success`, `error`, `info`, `warning`, `loading`. Also available as `toast.success()` and friends. |
 | `icon` | Replace the type icon, `null` hides it. |
-| `duration` | Auto dismiss in ms, `Infinity` to keep. Loading toasts default to `Infinity`. |
+| `duration` | Auto dismiss in ms, overriding the Toaster's. `0` (or `Infinity`) keeps the toast until it is closed or an action is used. Loading toasts default to keeping. |
 | `action`, `cancel` | `{ label, onClick }` buttons. |
 | `dismissible` | Swipe and close button. Default true. |
 | `closeButton`, `position`, `important` | Per toast overrides of the Toaster settings. |
@@ -92,7 +92,7 @@ toast.isActive(id) // false once it leaves
 | `visibleToasts` | `3` | Toasts visible in the collapsed stack. |
 | `richColors` | `false` | Colored backgrounds for success, error, info and warning. |
 | `closeButton` | `false` | Close button on every toast. This site turns it on. |
-| `duration` | `4000` | Default auto dismiss delay. |
+| `duration` | `4000` | Auto dismiss delay in ms for every toast without its own. `0` keeps them all until closed. |
 | `gap`, `offset` | `14`, `24` | Spacing in px. |
 | `icons` | | Custom icons per type. |
 | `toastClassName`, `toastStyle` | | Applied to every card. |

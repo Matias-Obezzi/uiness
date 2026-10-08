@@ -95,6 +95,34 @@ describe('undo', () => {
   })
 })
 
+describe('duration', () => {
+  it('is set for every toast on the Toaster, per toast in the call, and 0 keeps it', () => {
+    vi.useFakeTimers()
+    render(<Toaster store={store} duration={1000} />)
+    act(() => {
+      toast('Default')
+      toast('Longer', { duration: 3000 })
+      toast('Until closed', { duration: 0 })
+    })
+    act(() => vi.advanceTimersByTime(1000))
+    expect(live().map((t) => t.title)).toEqual(['Longer', 'Until closed'])
+    act(() => vi.advanceTimersByTime(2000))
+    expect(live().map((t) => t.title)).toEqual(['Until closed'])
+    act(() => vi.advanceTimersByTime(60_000))
+    expect(live().map((t) => t.title)).toEqual(['Until closed'])
+  })
+
+  it('0 on the Toaster keeps every toast until it is closed', () => {
+    vi.useFakeTimers()
+    render(<Toaster store={store} duration={0} />)
+    act(() => {
+      toast('Stays')
+    })
+    act(() => vi.advanceTimersByTime(60_000))
+    expect(live()).toHaveLength(1)
+  })
+})
+
 describe('update and isActive', () => {
   it('change a toast in place and tell whether it is showing', () => {
     vi.useFakeTimers()

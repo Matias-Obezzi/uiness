@@ -28,7 +28,7 @@ export interface ToasterProps {
   richColors?: boolean
   /** Close button on every toast. */
   closeButton?: boolean
-  /** Default auto dismiss delay in ms. Default 4000. */
+  /** Auto dismiss delay in ms for toasts without their own. `0` keeps them until closed. Default 4000. */
   duration?: number
   /** Space between toasts when expanded, in px. Default 14. */
   gap?: number
