@@ -60,7 +60,8 @@ export function observeScrollVelocity(
   }
 }
 
-export type ScrollDirection = 'up' | 'down'
+/** `down` and `up` on the vertical axis, `right` and `left` on the horizontal one. */
+export type ScrollDirection = 'up' | 'down' | 'left' | 'right'
 
 export interface DirectionOptions extends ScrollSourceOptions {
   /** Pixels to travel the other way before the direction flips. Default 8. */
@@ -68,7 +69,8 @@ export interface DirectionOptions extends ScrollSourceOptions {
 }
 
 /**
- * Follow which way the page (or `container`) scrolls: `down` towards the end, `up` back.
+ * Follow which way the page (or `container`) scrolls: `down` towards the end, `up` back, or
+ * `right` and `left` on the horizontal axis.
  * The callback runs only when it changes, after `threshold` pixels the other way, so a
  * trackpad's jitter does not flip a header back and forth. Returns a function that stops it.
  */
@@ -90,7 +92,8 @@ export function observeScrollDirection(
       return
     }
     anchor = position
-    const next: ScrollDirection = travelled > 0 ? 'down' : 'up'
+    const next: ScrollDirection =
+      axis === 'y' ? (travelled > 0 ? 'down' : 'up') : travelled > 0 ? 'right' : 'left'
     if (next !== current) {
       current = next
       callback(next)
@@ -225,4 +228,40 @@ export function isStuck(element: Element, axis: Axis = 'y'): boolean {
   // Pinned means held at its offset while the content scrolls on; at the very start nothing
   // has scrolled, so an element resting there naturally is not stuck.
   return Math.abs(at - edge) < 1 && positionOf(container, axis) > 0
+}
+
+export interface ScrollEdges {
+  /** Scrolled all the way to the start: nothing more before. */
+  atStart: boolean
+  /** Scrolled all the way to the end: nothing more after. */
+  atEnd: boolean
+}
+
+/** Whether `element` sits at the start or the end of its own scroll along `axis`. */
+export function scrollEdges(element: Element, axis: Axis = 'x'): ScrollEdges {
+  const position = axis === 'x' ? Math.abs(element.scrollLeft) : element.scrollTop
+  const room =
+    axis === 'x'
+      ? element.scrollWidth - element.clientWidth
+      : element.scrollHeight - element.clientHeight
+  // A pixel of slack: zoomed pages scroll by fractions and stop half a pixel short.
+  return { atStart: position <= 1, atEnd: position >= room - 1 }
+}
+
+/**
+ * Let a vertical mouse wheel scroll `element` sideways, for a row of cards with no vertical
+ * scroll of its own. Trackpads that already scroll sideways are left alone, and at either end
+ * the wheel goes back to scrolling the page. Returns a function that stops it.
+ */
+export function wheelToHorizontal(element: HTMLElement): () => void {
+  const onWheel = (event: WheelEvent) => {
+    if (event.ctrlKey || Math.abs(event.deltaX) >= Math.abs(event.deltaY)) return
+    const { atStart, atEnd } = scrollEdges(element, 'x')
+    if ((event.deltaY < 0 && atStart) || (event.deltaY > 0 && atEnd)) return
+    event.preventDefault()
+    // deltaMode 1 counts lines: about 16 pixels each.
+    element.scrollLeft += event.deltaMode === 1 ? event.deltaY * 16 : event.deltaY
+  }
+  element.addEventListener('wheel', onWheel, { passive: false })
+  return () => element.removeEventListener('wheel', onWheel)
 }

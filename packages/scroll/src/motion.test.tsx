@@ -1,13 +1,16 @@
 import { render } from '@testing-library/react'
 import { useRef } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { activeIndexAt } from './core'
 import { useParallax } from './hooks'
 import {
   isStuck,
   lockScroll,
   observeScrollDirection,
   observeScrollVelocity,
+  scrollEdges,
   scrollToElement,
+  wheelToHorizontal,
 } from './motion'
 
 afterEach(() => {
@@ -179,5 +182,72 @@ describe('useParallax', () => {
     const { getByTestId } = render(<Layer />)
     window.dispatchEvent(new Event('scroll'))
     expect(getByTestId('layer').style.translate).toBe('')
+  })
+})
+
+describe('horizontal', () => {
+  const row = (scrollWidth = 1000, clientWidth = 300) => {
+    const el = document.createElement('div')
+    document.body.append(el)
+    vi.spyOn(el, 'scrollWidth', 'get').mockReturnValue(scrollWidth)
+    vi.spyOn(el, 'clientWidth', 'get').mockReturnValue(clientWidth)
+    return el
+  }
+
+  it('names directions left and right on the x axis', () => {
+    const el = row()
+    const seen: string[] = []
+    observeScrollDirection((d) => seen.push(d), { container: el, axis: 'x', threshold: 5 })
+    el.scrollLeft = 50
+    el.dispatchEvent(new Event('scroll'))
+    el.scrollLeft = 20
+    el.dispatchEvent(new Event('scroll'))
+    expect(seen).toEqual(['right', 'left'])
+  })
+
+  it('picks the card under a line running top to bottom', () => {
+    const cards = [0, 1, 2].map((i) => {
+      const card = document.createElement('div')
+      vi.spyOn(card, 'getBoundingClientRect').mockReturnValue({
+        left: i * 200,
+        right: i * 200 + 180,
+        top: 0,
+        bottom: 100,
+      } as DOMRect)
+      return card
+    })
+    const el = row(600, 400)
+    vi.spyOn(el, 'getBoundingClientRect').mockReturnValue({ top: 0, left: 0 } as DOMRect)
+    // The middle of a 400 px wide row is x = 200: the second card.
+    expect(activeIndexAt(cards, 0.5, el, 'x')).toBe(1)
+    expect(activeIndexAt(cards, 0, el, 'x')).toBe(0)
+  })
+
+  it('tells the start and the end of a row', () => {
+    const el = row(1000, 300)
+    expect(scrollEdges(el)).toEqual({ atStart: true, atEnd: false })
+    el.scrollLeft = 350
+    expect(scrollEdges(el)).toEqual({ atStart: false, atEnd: false })
+    el.scrollLeft = 700
+    expect(scrollEdges(el)).toEqual({ atStart: false, atEnd: true })
+  })
+
+  it('turns a vertical wheel sideways, and hands it back at the ends', () => {
+    const el = row(1000, 300)
+    const stop = wheelToHorizontal(el)
+    const wheel = (deltaY: number, deltaX = 0) => {
+      const event = new WheelEvent('wheel', { deltaY, deltaX, cancelable: true })
+      el.dispatchEvent(event)
+      return event.defaultPrevented
+    }
+    expect(wheel(100)).toBe(true)
+    expect(el.scrollLeft).toBe(100)
+    // A trackpad already scrolling sideways is left alone.
+    expect(wheel(10, 80)).toBe(false)
+    // Back at the start, scrolling up belongs to the page.
+    el.scrollLeft = 0
+    expect(wheel(-100)).toBe(false)
+    stop()
+    expect(wheel(100)).toBe(false)
   })
 })

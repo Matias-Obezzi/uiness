@@ -8,6 +8,7 @@ import {
   type ProgressInfo,
   type ProgressOptions,
   scrollParent,
+  scrolls,
 } from './core'
 import {
   type DirectionOptions,
@@ -16,7 +17,10 @@ import {
   observeScrollDirection,
   observeScrollVelocity,
   type ScrollDirection,
+  type ScrollEdges,
   type ScrollSourceOptions,
+  scrollEdges,
+  wheelToHorizontal,
 } from './motion'
 
 type Ref<T> = React.RefObject<T | null>
@@ -109,15 +113,17 @@ export interface ActiveSectionOptions {
    * Pass `null` to measure against the window whatever the list sits inside.
    */
   container?: HTMLElement | null
+  /** `x` for a row: the line runs top to bottom and `anchor` 0 is the left edge. Default `y`. */
+  axis?: Axis
 }
 
 /**
  * Index of the child of `ref` closest to a line across the viewport. Drives sticky panels
- * that change with the section being read.
+ * that change with the section being read, or the dots under a row of cards.
  */
 export function useActiveSection(
   ref: Ref<HTMLElement>,
-  { anchor = 0.5, selector, container }: ActiveSectionOptions = {},
+  { anchor = 0.5, selector, container, axis = 'y' }: ActiveSectionOptions = {},
 ): number {
   const [active, setActive] = React.useState(0)
   useIsoLayoutEffect(() => {
@@ -125,13 +131,15 @@ export function useActiveSection(
     if (!root) return
     // Same rule as the progress hooks: a list inside a scrolling panel is read against that
     // panel unless the caller says otherwise.
-    const resolved = container === undefined ? scrollParent(root, 'y') : container
+    // A row of cards is often its own scroller: then the list is what to measure against.
+    const resolved =
+      container === undefined ? (scrolls(root, axis) ? root : scrollParent(root, axis)) : container
     const scroller: EventTarget = resolved ?? window
     let frame = 0
     const update = () => {
       frame = 0
       const sections = selector ? root.querySelectorAll(selector) : root.children
-      const next = activeIndexAt(sections, anchor, resolved)
+      const next = activeIndexAt(sections, anchor, resolved, axis)
       setActive((prev) => (next === -1 || next === prev ? prev : next))
     }
     const schedule = () => {
@@ -145,7 +153,7 @@ export function useActiveSection(
       scroller.removeEventListener('scroll', schedule)
       window.removeEventListener('resize', schedule)
     }
-  }, [ref, anchor, selector, container])
+  }, [ref, anchor, selector, container, axis])
   return active
 }
 
@@ -209,4 +217,39 @@ export function useStuck(ref: Ref<Element>, axis: Axis = 'y'): boolean {
 /** Keep the page from scrolling while `active`, for a modal or a drawer. */
 export function useScrollLock(active = true) {
   useIsoLayoutEffect(() => (active ? lockScroll() : undefined), [active])
+}
+
+/**
+ * Whether the scrolling element in `ref` is at the start or the end of its own scroll, for
+ * the arrows or fades of a row of cards. Updates on scroll and on resize.
+ */
+export function useScrollEdges(ref: Ref<HTMLElement>, axis: Axis = 'x'): ScrollEdges {
+  const [edges, setEdges] = React.useState<ScrollEdges>({ atStart: true, atEnd: false })
+  useIsoLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const update = () =>
+      setEdges((prev) => {
+        const next = scrollEdges(el, axis)
+        return prev.atStart === next.atStart && prev.atEnd === next.atEnd ? prev : next
+      })
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    const observer = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(update) : null
+    observer?.observe(el)
+    return () => {
+      el.removeEventListener('scroll', update)
+      observer?.disconnect()
+    }
+  }, [ref, axis])
+  return edges
+}
+
+/** Let a vertical mouse wheel scroll the row in `ref` sideways, handing back to the page at the ends. */
+export function useHorizontalWheel(ref: Ref<HTMLElement>) {
+  React.useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    return wheelToHorizontal(el)
+  }, [ref])
 }
