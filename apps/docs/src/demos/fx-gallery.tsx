@@ -1,12 +1,16 @@
 import {
   dither,
+  duotone,
   edge,
   Fx,
   glitch,
   halftone,
+  hueRotate,
+  kaleidoscope,
   palette,
   palettes,
   pixelate,
+  pixelSort,
   posterize,
   saturate,
   sepia,
@@ -22,6 +26,10 @@ const presets = [
   { title: 'sepia + vignette', effects: [sepia(), vignette(0.7)] },
   { title: 'saturate + posterize', effects: [saturate(1.8), posterize(3)] },
   { title: 'glitch (animated)', effects: [glitch({ intensity: 0.7 })] },
+  { title: 'duotone', effects: [duotone('#1e1b4b', '#fde68a')] },
+  { title: 'hueRotate(150)', effects: [hueRotate(150)] },
+  { title: 'kaleidoscope(8)', effects: [kaleidoscope(8)], resolution: 360 },
+  { title: 'pixelSort', effects: [pixelSort({ low: 80, high: 230 })], resolution: 320 },
 ]
 
 export default function FxGallery() {

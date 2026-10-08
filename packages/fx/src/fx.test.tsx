@@ -1,11 +1,12 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { grayscale, invert, posterize, threshold } from './effects/color'
 import { dither, palette, palettes } from './effects/dither'
 import { cellLuminance, chromatic, crt, noise, scanlines } from './effects/retro'
 import { blur, edge } from './effects/stylize'
+import { duotone, hueRotate, kaleidoscope, pixelSort, sharpen } from './effects/tone'
 import { Fx } from './fx'
-import { fitRect, isAnimated, needsPixels } from './render'
+import { fitRect, isAnimated, needsPixels, ScratchPool } from './render'
 import {
   createRandom,
   type EffectEnv,
@@ -157,6 +158,70 @@ describe('retro and stylize', () => {
   })
 })
 
+describe('tone and geometry', () => {
+  it('duotone maps black to the dark color and white to the light one', () => {
+    const p = pixels(2, 1, (x) => (x === 0 ? [0, 0, 0] : [255, 255, 255]))
+    duotone('#102030', [200, 100, 50]).pixel?.(p, env())
+    expect(px(p, 0, 0)).toEqual([16, 32, 48])
+    expect(px(p, 1, 0)).toEqual([200, 100, 50])
+  })
+
+  it('hueRotate by 120 degrees turns red towards green and leaves gray alone', () => {
+    const p = pixels(2, 1, (x) => (x === 0 ? [255, 0, 0] : [128, 128, 128]))
+    hueRotate(120).pixel?.(p, env())
+    const [r, g] = px(p, 0, 0) as number[]
+    expect(g).toBeGreaterThan(r as number)
+    expect(px(p, 1, 0)).toEqual([128, 128, 128])
+    // A full turn is the identity.
+    const q = pixels(1, 1, () => [200, 40, 90])
+    hueRotate(360).pixel?.(q, env())
+    expect(px(q, 0, 0)).toEqual([200, 40, 90])
+  })
+
+  it('sharpen deepens the step between two flat areas and leaves flat areas alone', () => {
+    const p = pixels(4, 1, (x) => (x < 2 ? [100, 100, 100] : [150, 150, 150]))
+    sharpen(1).pixel?.(p, env())
+    expect(px(p, 0, 0)).toEqual([100, 100, 100])
+    expect((px(p, 1, 0) as number[])[0]).toBeLessThan(100)
+    expect((px(p, 2, 0) as number[])[0]).toBeGreaterThan(150)
+  })
+
+  it('kaleidoscope makes the image symmetric across the center', () => {
+    const p = pixels(9, 9, (x, y) => [x * 20, y * 20, 0])
+    kaleidoscope(4).pixel?.(p, env())
+    // Four mirrored wedges: left and right halves match.
+    for (let y = 0; y < 9; y++) {
+      for (let x = 0; x < 4; x++) expect(px(p, x, y)).toEqual(px(p, 8 - x, y))
+    }
+  })
+
+  it('pixelSort orders runs inside the band and leaves pixels outside it in place', () => {
+    const values = [10, 200, 90, 150, 250, 120, 80]
+    const p = pixels(values.length, 1, (x) => {
+      const v = values[x] as number
+      return [v, v, v]
+    })
+    pixelSort({ low: 60, high: 220 }).pixel?.(p, env())
+    expect(Array.from({ length: values.length }, (_, x) => (px(p, x, 0) as number[])[0])).toEqual([
+      10, 90, 150, 200, 250, 80, 120,
+    ])
+  })
+})
+
+describe('ScratchPool', () => {
+  it('keeps at most eight sizes, dropping the least recently used', () => {
+    const pool = new ScratchPool()
+    const first = pool.get(1, 1)
+    const second = pool.get(2, 2)
+    for (let i = 3; i <= 8; i++) pool.get(i, i)
+    // Using 1x1 again makes 2x2 the oldest, so the ninth size pushes 2x2 out.
+    expect(pool.get(1, 1)).toBe(first)
+    pool.get(9, 9)
+    expect(pool.get(1, 1)).toBe(first)
+    expect(pool.get(2, 2)).not.toBe(second)
+  })
+})
+
 describe('composition', () => {
   it('flattens nested lists and builds stable keys', () => {
     const list = flattenEffects([grayscale(), [crt(), null], false, [[invert()]]])
@@ -186,5 +251,53 @@ describe('<Fx>', () => {
     const canvas = screen.getByRole('img', { name: 'A photo' })
     expect(canvas.tagName).toBe('CANVAS')
     expect(canvas.getAttribute('data-status')).toBe('loading')
+  })
+
+  describe('the animation loop', () => {
+    afterEach(() => vi.unstubAllGlobals())
+
+    const setup = ({ reduced = false, onScreen = true } = {}) => {
+      // Frames asked for and not cancelled: a running loop always has one.
+      const pending = new Set<number>()
+      let next = 0
+      vi.stubGlobal('requestAnimationFrame', () => {
+        pending.add(++next)
+        return next
+      })
+      vi.stubGlobal('cancelAnimationFrame', (id: number) => pending.delete(id))
+      vi.stubGlobal('matchMedia', (query: string) => ({
+        matches: reduced && query.includes('reduce'),
+        addEventListener() {},
+        removeEventListener() {},
+      }))
+      vi.stubGlobal(
+        'IntersectionObserver',
+        class {
+          constructor(private cb: IntersectionObserverCallback) {}
+          observe() {
+            this.cb(
+              [{ isIntersecting: onScreen } as IntersectionObserverEntry],
+              this as unknown as IntersectionObserver,
+            )
+          }
+          disconnect() {}
+        },
+      )
+      // An already loaded source, so the effect runs right away.
+      render(<Fx src={document.createElement('canvas')} effects={noise(0.2, { animated: true })} />)
+      return pending
+    }
+
+    it('runs for animated effects on screen', () => {
+      expect(setup().size).toBe(1)
+    })
+
+    it('stays on one frame with reduced motion', () => {
+      expect(setup({ reduced: true }).size).toBe(0)
+    })
+
+    it('stays on one frame off screen', () => {
+      expect(setup({ onScreen: false }).size).toBe(0)
+    })
   })
 })

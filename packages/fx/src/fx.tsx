@@ -30,7 +30,10 @@ export interface FxProps extends Omit<ComponentPropsWithoutRef<'canvas'>, 'width
   fit?: Fit
   /** Needed for cross origin images when effects read pixels. Default 'anonymous'. */
   crossOrigin?: 'anonymous' | 'use-credentials'
-  /** Render continuously. Defaults to true when an effect is animated. */
+  /**
+   * Render continuously. Defaults to true when an effect is animated, unless the reader asks
+   * for reduced motion. Either way the loop pauses while the canvas is off screen.
+   */
   animate?: boolean
   /** Frames per second for animated renders. Default 30. */
   fps?: number
@@ -52,6 +55,39 @@ export interface FxHandle {
 }
 
 const MAX_DISPLAY_RESOLUTION = 1600
+
+function useReducedMotion(): boolean {
+  // Read on mount, so a reader who asked for less motion never sees the loop start.
+  const [reduced, setReduced] = useState(
+    () =>
+      typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+  useEffect(() => {
+    if (typeof matchMedia !== 'function') return
+    const query = matchMedia('(prefers-reduced-motion: reduce)')
+    setReduced(query.matches)
+    const onChange = () => setReduced(query.matches)
+    query.addEventListener?.('change', onChange)
+    return () => query.removeEventListener?.('change', onChange)
+  }, [])
+  return reduced
+}
+
+/** Whether the canvas is on screen; true where IntersectionObserver is missing. */
+function useOnScreen(ref: { current: Element | null }): boolean {
+  const [onScreen, setOnScreen] = useState(true)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof IntersectionObserver === 'undefined') return
+    const observer = new IntersectionObserver((entries) => {
+      const entry = entries[entries.length - 1]
+      if (entry) setOnScreen(entry.isIntersecting)
+    })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [ref])
+  return onScreen
+}
 
 function useSource(src: string | Source, crossOrigin: FxProps['crossOrigin']) {
   const [state, setState] = useState<{ source: Source | null; status: FxStatus }>({
@@ -119,7 +155,9 @@ export const Fx = forwardRef<FxHandle, FxProps>(function Fx(
   const key = effectsKey(effects)
   // biome-ignore lint/correctness/useExhaustiveDependencies: `key` captures the effect list identity
   const stableEffects = useMemo(() => effects, [key])
-  const animated = animate ?? isAnimated(stableEffects)
+  const reducedMotion = useReducedMotion()
+  const onScreen = useOnScreen(canvasRef)
+  const animated = animate ?? (isAnimated(stableEffects) && !reducedMotion)
   const [failed, setFailed] = useState<string | null>(null)
 
   const callbacks = useRef({ onStatusChange, onRender })
@@ -189,6 +227,9 @@ export const Fx = forwardRef<FxHandle, FxProps>(function Fx(
     }
     // First frame right away, so the canvas is never blank while waiting for the loop.
     renderFrame.current(0, 0)
+    // Off screen the last frame stays: reading and writing every pixel thirty times a second
+    // for nobody is the most expensive thing on the page.
+    if (!onScreen) return
     let raf = 0
     let frame = 1
     let last = 0
@@ -202,7 +243,7 @@ export const Fx = forwardRef<FxHandle, FxProps>(function Fx(
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [source, stableEffects, animated, fps, resolution, fit, seed, smooth])
+  }, [source, stableEffects, animated, onScreen, fps, resolution, fit, seed, smooth])
 
   // Follow the displayed size: re-render when the resolution tracks it, and keep the
   // pixelated / smooth choice right in every case.
