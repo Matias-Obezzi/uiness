@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 
 export type IslandMode = 'compact' | 'expanded'
 
-export type IslandRole = 'status' | 'alert' | 'dialog' | 'alertdialog'
+export type IslandRole = 'status' | 'alert' | 'dialog' | 'alertdialog' | 'timer'
 
 export interface IslandOptions {
   /** Reuse an id to update an entry in place instead of stacking a new one. */
@@ -72,6 +72,69 @@ export interface AlertOptions {
   dismissible?: boolean
 }
 
+export interface PromptOptions {
+  title: ReactNode
+  description?: ReactNode
+  icon?: ReactNode
+  /** Accessible name of the field. Defaults to the title when it is a string. */
+  label?: string
+  placeholder?: string
+  defaultValue?: string
+  type?: 'text' | 'email' | 'number' | 'password' | 'url' | 'search' | 'tel'
+  confirmText?: ReactNode
+  cancelText?: ReactNode
+  width?: number | string
+  /** Allow Escape and outside clicks to cancel. Default true. */
+  dismissible?: boolean
+}
+
+export interface Choice<T> {
+  label: ReactNode
+  value: T
+  /** Styles the button as destructive. */
+  destructive?: boolean
+}
+
+export interface ChooseOptions<T> {
+  title: ReactNode
+  description?: ReactNode
+  icon?: ReactNode
+  choices: Choice<T>[]
+  /** Label of the button that resolves `null`. `null` hides it. Default "Cancel". */
+  cancelText?: ReactNode | null
+  width?: number | string
+  /** Allow Escape and outside clicks to cancel. Default true. */
+  dismissible?: boolean
+}
+
+export interface UndoOptions {
+  id?: string
+  icon?: ReactNode
+  /** How long the chance to undo lasts, in ms. Default 5000. */
+  duration?: number
+  /** Default "Undo". */
+  undoText?: ReactNode
+}
+
+export interface ProgressOptions extends Omit<IslandOptions, 'leading' | 'duration'> {
+  /** 0 to 1. Leave it out for a spinner until the first `set`. */
+  value?: number
+}
+
+export interface ProgressHandle extends IslandHandle {
+  /** Move the ring, 0 to 1. */
+  set: (value: number) => void
+  /** Show a check and leave after `duration` ms, default 2000. */
+  done: (patch?: Partial<IslandOptions>) => void
+}
+
+export interface TimerOptions extends Omit<IslandOptions, 'trailing' | 'duration'> {
+  /** Seconds to count down from. */
+  seconds: number
+  /** Called when it reaches zero, before the entry leaves. */
+  onEnd?: () => void
+}
+
 export type PromiseState<T = unknown> =
   | ReactNode
   | IslandOptions
@@ -108,4 +171,14 @@ export interface IslandStore {
     promise: Promise<T> | (() => Promise<T>),
     states: PromiseStates<T, E>,
   ) => Promise<T>
+  /** Ask for a line of text. Resolves `null` when cancelled. */
+  prompt: (options: PromptOptions) => Promise<string | null>
+  /** Ask to pick one of a few options. Resolves `null` when cancelled. */
+  choose: <T>(options: ChooseOptions<T>) => Promise<T | null>
+  /** Say something happened, with a button to take it back. Resolves true when undone. */
+  undo: (message: ReactNode, options?: UndoOptions) => Promise<boolean>
+  /** A ring that fills as work progresses. */
+  progress: (options: ProgressOptions) => ProgressHandle
+  /** A live countdown that leaves when it reaches zero. */
+  timer: (options: TimerOptions) => IslandHandle
 }

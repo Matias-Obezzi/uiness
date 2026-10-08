@@ -413,8 +413,10 @@ export function Island({
   // Focus management for dialogs.
   const isDialog =
     entry?.mode === 'expanded' && (entry.role === 'dialog' || entry.role === 'alertdialog')
+  // Waits for the box to be visible: with `idle={false}` it is `visibility: hidden` until the
+  // first entry shows, and nothing hidden can take focus, so the dialog opened unfocused.
   useEffect(() => {
-    if (!isDialog) return
+    if (!isDialog || !visible) return
     const previous = document.activeElement
     const box = boxRef.current
     const focusable = box?.querySelector<HTMLElement>(
@@ -426,7 +428,7 @@ export function Island({
         previous.focus({ preventScroll: true })
       }
     }
-  }, [isDialog])
+  }, [isDialog, visible])
 
   const onPointerEnter = useCallback(() => {
     if (pauseOnHover && entry) store.pause(entry.id)

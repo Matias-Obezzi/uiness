@@ -1,13 +1,29 @@
-import { AlertContent, ConfirmContent } from './content'
+import type { ReactNode } from 'react'
+import {
+  AlertContent,
+  Check,
+  ChooseContent,
+  ConfirmContent,
+  Countdown,
+  ProgressRing,
+  PromptContent,
+  Spinner,
+} from './content'
 import type {
   AlertOptions,
+  ChooseOptions,
   ConfirmOptions,
   IslandEntry,
   IslandHandle,
   IslandOptions,
   IslandStore,
+  ProgressHandle,
+  ProgressOptions,
   PromiseState,
   PromiseStates,
+  PromptOptions,
+  TimerOptions,
+  UndoOptions,
 } from './types'
 
 let counter = 0
@@ -39,17 +55,43 @@ export function createIsland(): IslandStore {
     for (const listener of listeners) listener()
   }
 
+  // Entries paused by the caller (the pointer over the island), apart from the ones waiting
+  // under another: only the entry on screen counts down, so nothing expires unseen.
+  const held = new Set<string>()
+
   const clearTimer = (id: string) => {
     const timer = timers.get(id)
     if (timer?.handle) clearTimeout(timer.handle)
     timers.delete(id)
   }
 
+  const stop = (timer: Timer) => {
+    if (!timer.handle) return
+    clearTimeout(timer.handle)
+    timer.handle = null
+    timer.remaining = Math.max(0, timer.remaining - (Date.now() - timer.startedAt))
+  }
+
+  const run = (id: string, timer: Timer) => {
+    if (timer.handle) return
+    timer.startedAt = Date.now()
+    timer.handle = setTimeout(() => dismiss(id), timer.remaining)
+  }
+
+  /** Run the visible entry's timer, unless held, and stop every other. */
+  const sync = () => {
+    const top = getCurrent()?.id
+    for (const [id, timer] of timers) {
+      if (id === top && !held.has(id)) run(id, timer)
+      else stop(timer)
+    }
+  }
+
   const startTimer = (id: string, remaining: number) => {
     clearTimer(id)
     if (!(remaining > 0)) return
-    const handle = setTimeout(() => dismiss(id), remaining)
-    timers.set(id, { handle, remaining, startedAt: Date.now() })
+    timers.set(id, { handle: null, remaining, startedAt: Date.now() })
+    sync()
   }
 
   const normalize = (options: IslandOptions, id: string, createdAt: number): IslandEntry => {
@@ -93,7 +135,9 @@ export function createIsland(): IslandStore {
     const entry = stack.find((item) => item.id === target)
     if (!entry) return
     clearTimer(target)
+    held.delete(target)
     stack = stack.filter((item) => item.id !== target)
+    sync()
     emit()
     entry.onDismiss?.()
   }
@@ -101,6 +145,7 @@ export function createIsland(): IslandStore {
   const dismissAll = () => {
     const removed = stack
     for (const entry of removed) clearTimer(entry.id)
+    held.clear()
     stack = []
     emit()
     for (const entry of removed) entry.onDismiss?.()
@@ -114,6 +159,7 @@ export function createIsland(): IslandStore {
     } else {
       stack = [...stack, normalize(options, id, Date.now())]
       startTimer(id, options.duration ?? 0)
+      sync()
       emit()
     }
     return {
@@ -124,17 +170,13 @@ export function createIsland(): IslandStore {
   }
 
   const pause = (id: string) => {
-    const timer = timers.get(id)
-    if (!timer?.handle) return
-    clearTimeout(timer.handle)
-    timer.handle = null
-    timer.remaining = Math.max(0, timer.remaining - (Date.now() - timer.startedAt))
+    held.add(id)
+    sync()
   }
 
   const resume = (id: string) => {
-    const timer = timers.get(id)
-    if (!timer || timer.handle) return
-    startTimer(id, timer.remaining)
+    held.delete(id)
+    sync()
   }
 
   const confirm = (options: ConfirmOptions) =>
@@ -209,6 +251,108 @@ export function createIsland(): IslandStore {
     return pending
   }
 
+  /** A dialog entry that settles once, with whatever ended it. */
+  const ask = <T,>(
+    options: { dismissible?: boolean; width?: number | string },
+    content: (finish: (value: T | null) => void) => ReactNode,
+  ) =>
+    new Promise<T | null>((resolve) => {
+      let settled = false
+      const finish = (value: T | null) => {
+        if (settled) return
+        settled = true
+        resolve(value)
+        handle.dismiss()
+      }
+      const handle = show({
+        mode: 'expanded',
+        role: 'dialog',
+        dismissible: options.dismissible ?? true,
+        width: options.width,
+        onDismiss: () => finish(null),
+        content: content(finish),
+      })
+    })
+
+  const prompt = (options: PromptOptions) =>
+    ask<string>(options, (finish) => (
+      <PromptContent {...options} onSubmit={finish} onCancel={() => finish(null)} />
+    ))
+
+  const choose = <T,>(options: ChooseOptions<T>) =>
+    ask<T>(options, (finish) => (
+      <ChooseContent<T> {...options} onChoose={finish} onCancel={() => finish(null)} />
+    ))
+
+  const undo = (message: ReactNode, options: UndoOptions = {}) =>
+    new Promise<boolean>((resolve) => {
+      let undone = false
+      const handle = show({
+        id: options.id,
+        mode: 'compact',
+        role: 'status',
+        leading: options.icon,
+        content: message,
+        duration: options.duration ?? 5000,
+        onDismiss: () => resolve(undone),
+        trailing: (
+          <button
+            type="button"
+            data-island-undo=""
+            onClick={() => {
+              undone = true
+              handle.dismiss()
+            }}
+            style={{
+              font: 'inherit',
+              fontSize: 13,
+              fontWeight: 600,
+              padding: '4px 10px',
+              borderRadius: 999,
+              border: 'none',
+              cursor: 'pointer',
+              color: 'inherit',
+              background: 'var(--island-muted, rgba(255, 255, 255, 0.14))',
+            }}
+          >
+            {options.undoText ?? 'Undo'}
+          </button>
+        ),
+      })
+    })
+
+  const progress = ({ value, ...options }: ProgressOptions): ProgressHandle => {
+    const ring = (v: number | undefined) =>
+      v === undefined ? <Spinner /> : <ProgressRing value={v} />
+    const handle = show({ mode: 'compact', role: 'status', ...options, leading: ring(value) })
+    return {
+      ...handle,
+      set: (next) => handle.update({ leading: ring(next) }),
+      done: (patch = {}) => handle.update({ leading: <Check />, duration: 2000, ...patch }),
+    }
+  }
+
+  const timer = ({ seconds, onEnd, ...options }: TimerOptions): IslandHandle => {
+    const endsAt = Date.now() + seconds * 1000
+    // Its own clock, not the entry's duration: a countdown keeps going under the pointer and
+    // under other entries, where an auto dismiss waits.
+    const end = setTimeout(() => {
+      onEnd?.()
+      handle.dismiss()
+    }, seconds * 1000)
+    const handle = show({
+      mode: 'compact',
+      role: 'timer',
+      ...options,
+      trailing: <Countdown endsAt={endsAt} />,
+      onDismiss: () => {
+        clearTimeout(end)
+        options.onDismiss?.()
+      },
+    })
+    return handle
+  }
+
   return {
     getStack,
     getCurrent,
@@ -222,6 +366,11 @@ export function createIsland(): IslandStore {
     confirm,
     alert,
     promise,
+    prompt,
+    choose,
+    undo,
+    progress,
+    timer,
   }
 }
 

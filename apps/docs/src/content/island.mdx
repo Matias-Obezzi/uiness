@@ -66,9 +66,54 @@ Expanded with an icon, title and description, or compact with icon and title onl
 
 <ComponentPreview name="island-alert" />
 
+## Prompt and choose
+
+`prompt()` asks for a line of text and resolves it, or `null` when cancelled. `choose()` offers a few options and resolves the value of the one picked, or `null`. Both are dialogs: focus moves to the field or the first option, Escape and a click outside cancel.
+
+<ComponentPreview name="island-prompt" />
+
+```tsx
+const name = await island.prompt({ title: 'Rename the board', defaultValue: 'Roadmap' })
+
+const format = await island.choose({
+  title: 'Export as',
+  choices: [
+    { label: 'PDF', value: 'pdf' },
+    { label: 'Delete instead', value: 'delete', destructive: true },
+  ],
+})
+```
+
+`label`, `placeholder`, `type` and `defaultValue` shape the field; `cancelText={null}` leaves `choose()` without a cancel button.
+
+## Undo
+
+`undo()` says something happened, with a button to take it back for five seconds. It resolves `true` when undone and `false` once the chance is gone, so the change can be made right away and reverted if asked.
+
+<ComponentPreview name="island-undo" />
+
+```tsx
+removeTask(task)
+if (await island.undo('Task deleted')) restoreTask(task)
+```
+
+## Progress and timer
+
+`progress()` shows a ring that fills as work goes; its handle has `set(value)` from 0 to 1 and `done()`, which shows a check and leaves after two seconds. Without a starting `value` it shows a spinner until the first `set`. `timer()` counts down from `seconds` beside the content and leaves at zero, calling `onEnd`; unlike an auto dismiss, it keeps counting under the pointer and under other entries.
+
+<ComponentPreview name="island-progress" />
+
+```tsx
+const upload = island.progress({ content: 'Uploading video', value: 0 })
+upload.set(0.4)
+upload.done({ content: 'Uploaded' })
+
+island.timer({ content: 'Break', seconds: 300, onEnd: () => ring() })
+```
+
 ## Entries and the stack
 
-Entries stack: a confirm pushed on top of a live activity gives the activity back when it closes. Timers pause while the pointer is over the island.
+Entries stack: a confirm pushed on top of a live activity gives the activity back when it closes. Only the entry on screen counts down its `duration`: one covered by another waits, and finishes its time once it is back on top, so nothing expires unseen. Timers also pause while the pointer is over the island.
 
 | Option | Description |
 | --- | --- |
@@ -77,7 +122,7 @@ Entries stack: a confirm pushed on top of a live activity gives the activity bac
 | `content` | Center content in compact mode, the whole panel in expanded mode. |
 | `duration` | Auto dismiss in ms. |
 | `dismissible` | Escape and outside click. Default `true` for expanded, `false` for compact. |
-| `role` | `status`, `alert`, `dialog` or `alertdialog`. Dialogs receive focus and give it back. |
+| `role` | `status`, `alert`, `dialog`, `alertdialog` or `timer`. Dialogs receive focus and give it back. |
 | `width` | Width of the expanded panel. |
 | `onDismiss` | Called when the entry leaves, whatever the reason. |
 
@@ -97,10 +142,10 @@ Entries stack: a confirm pushed on top of a live activity gives the activity bac
 
 ## Theming
 
-The wrapper maps the island to your tokens: background from `--foreground`, text from `--background`, confirm buttons from `--primary` and `--destructive`. Override any of the island variables through `style`:
+The wrapper maps the island to your tokens: background from `--foreground`, text from `--background`, confirm buttons from `--primary` (with `--primary-foreground` text) and `--destructive`. Override any of the island variables through `style`:
 
 ```css
---island-bg, --island-color, --island-shadow, --island-accent, --island-danger,
+--island-bg, --island-color, --island-shadow, --island-accent, --island-accent-color, --island-danger,
 --island-muted, --island-padding, --island-max-width, --island-font
 ```
 
