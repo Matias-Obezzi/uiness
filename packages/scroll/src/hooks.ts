@@ -117,6 +117,14 @@ export interface ActiveSectionOptions {
   axis?: Axis
 }
 
+/** Start and end of a container's scroll, or the page's; null when there is nothing to scroll. */
+function edgesOf(container: HTMLElement | null, axis: Axis): ScrollEdges | null {
+  const el = container ?? document.scrollingElement
+  if (!el) return null
+  const room = axis === 'x' ? el.scrollWidth - el.clientWidth : el.scrollHeight - el.clientHeight
+  return room > 1 ? scrollEdges(el, axis) : null
+}
+
 /**
  * Index of the child of `ref` closest to a line across the viewport. Drives sticky panels
  * that change with the section being read, or the dots under a row of cards.
@@ -139,7 +147,14 @@ export function useActiveSection(
     const update = () => {
       frame = 0
       const sections = selector ? root.querySelectorAll(selector) : root.children
-      const next = activeIndexAt(sections, anchor, resolved, axis)
+      let next = activeIndexAt(sections, anchor, resolved, axis)
+      // At either end of the scroll the first or the last section is the one being read, even
+      // when it is too short to ever reach the anchor line, as the last ones of a row are.
+      const edges = edgesOf(resolved, axis)
+      if (edges && sections.length > 0) {
+        if (edges.atEnd) next = sections.length - 1
+        else if (edges.atStart) next = 0
+      }
       setActive((prev) => (next === -1 || next === prev ? prev : next))
     }
     const schedule = () => {

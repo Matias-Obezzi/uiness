@@ -1,4 +1,5 @@
 import {
+  activeIndexAt,
   scrollToElement,
   useActiveSection,
   useHorizontalWheel,
@@ -13,14 +14,20 @@ const cards = ['Plan', 'Write', 'Review', 'Ship', 'Measure', 'Learn', 'Repeat']
 
 export default function ScrollHorizontal() {
   const row = useRef<HTMLDivElement>(null)
-  // The card under the middle of the row, read left to right; the row is its own scroller.
-  const active = useActiveSection(row, { axis: 'x' })
+  // The card at the left edge of the row, which is where the arrows bring a card. Measuring
+  // the middle instead would put the arrows one card off. The row is its own scroller.
+  const active = useActiveSection(row, { axis: 'x', anchor: 0.1 })
   const { atStart, atEnd } = useScrollEdges(row)
   useHorizontalWheel(row)
 
-  const go = (index: number) => {
-    const card = row.current?.children[index]
-    if (card) scrollToElement(card, { container: row.current, axis: 'x', offset: 16 })
+  // From the card actually at the left edge: at the end of the row the dots mark the last
+  // card, which never reaches the edge, and stepping from it would go nowhere.
+  const step = (by: number) => {
+    const el = row.current
+    if (!el) return
+    const left = activeIndexAt(el.children, 0.1, el, 'x')
+    const card = el.children[Math.min(cards.length - 1, Math.max(0, left + by))]
+    if (card) scrollToElement(card, { container: el, axis: 'x', offset: 16 })
   }
 
   return (
@@ -59,7 +66,7 @@ export default function ScrollHorizontal() {
             size="icon"
             aria-label="Previous"
             disabled={atStart}
-            onClick={() => go(Math.max(0, active - 1))}
+            onClick={() => step(-1)}
           >
             <ChevronLeftIcon />
           </Button>
@@ -68,7 +75,7 @@ export default function ScrollHorizontal() {
             size="icon"
             aria-label="Next"
             disabled={atEnd}
-            onClick={() => go(Math.min(cards.length - 1, active + 1))}
+            onClick={() => step(1)}
           >
             <ChevronRightIcon />
           </Button>

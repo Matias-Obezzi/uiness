@@ -1,8 +1,8 @@
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react'
 import { useRef } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { activeIndexAt } from './core'
-import { useParallax } from './hooks'
+import { useActiveSection, useParallax } from './hooks'
 import {
   isStuck,
   lockScroll,
@@ -249,5 +249,45 @@ describe('horizontal', () => {
     expect(wheel(-100)).toBe(false)
     stop()
     expect(wheel(100)).toBe(false)
+  })
+})
+
+describe('useActiveSection at the ends of a row', () => {
+  it('picks the last card at the end and the first at the start', () => {
+    vi.useFakeTimers({ toFake: ['requestAnimationFrame', 'cancelAnimationFrame'] })
+    let scrolled = 0
+    function Row() {
+      const ref = useRef<HTMLDivElement>(null)
+      const active = useActiveSection(ref, { axis: 'x', anchor: 0.1 })
+      return (
+        <>
+          <div ref={ref} data-testid="row" style={{ overflowX: 'auto' }}>
+            {[0, 1, 2, 3].map((i) => (
+              <section key={i} data-index={i} />
+            ))}
+          </div>
+          <output>{active}</output>
+        </>
+      )
+    }
+    vi.spyOn(HTMLElement.prototype, 'scrollWidth', 'get').mockReturnValue(1000)
+    vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(400)
+    vi.spyOn(HTMLElement.prototype, 'scrollLeft', 'get').mockImplementation(() => scrolled)
+    // Cards 250 px apart; at the end the left edge shows card 2, card 3 never reaches it.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      const i = Number(this.dataset.index ?? -1)
+      const left = i < 0 ? 0 : i * 250 - scrolled
+      return { left, right: left + 230, top: 0, bottom: 100 } as DOMRect
+    })
+    const { getByTestId, getByRole } = render(<Row />)
+    expect(getByRole('status').textContent).toBe('0')
+    scrolled = 600
+    act(() => {
+      getByTestId('row').dispatchEvent(new Event('scroll'))
+      vi.advanceTimersByTime(20)
+    })
+    expect(getByRole('status').textContent).toBe('3')
   })
 })
