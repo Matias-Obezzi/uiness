@@ -84,6 +84,17 @@ export function mapRange(
   return clamp(out, lo, hi)
 }
 
+/**
+ * Where the scrolling area of `container` starts on screen, or 0 for the page. Inside the
+ * border: scroll positions and sticky offsets count from there, while the bounding box starts
+ * at the border's outer edge.
+ */
+export function scrollportStart(container: HTMLElement | null, axis: Axis): number {
+  if (!container) return 0
+  const rect = container.getBoundingClientRect()
+  return axis === 'y' ? rect.top + container.clientTop : rect.left + container.clientLeft
+}
+
 interface Geometry {
   position: number
   size: number
@@ -93,10 +104,10 @@ interface Geometry {
 function measure(target: Element, axis: Axis, container?: HTMLElement | null): Geometry {
   const rect = target.getBoundingClientRect()
   if (container) {
-    const c = container.getBoundingClientRect()
+    const start = scrollportStart(container, axis)
     return axis === 'y'
-      ? { position: rect.top - c.top, size: rect.height, viewport: container.clientHeight }
-      : { position: rect.left - c.left, size: rect.width, viewport: container.clientWidth }
+      ? { position: rect.top - start, size: rect.height, viewport: container.clientHeight }
+      : { position: rect.left - start, size: rect.width, viewport: container.clientWidth }
   }
   return axis === 'y'
     ? { position: rect.top, size: rect.height, viewport: window.innerHeight }
@@ -242,7 +253,7 @@ export function activeIndexAt(
 ): number {
   if (elements.length === 0) return -1
   const line = container
-    ? container.getBoundingClientRect().top + container.clientHeight * anchor
+    ? scrollportStart(container, 'y') + container.clientHeight * anchor
     : window.innerHeight * anchor
   let best = 0
   let bestDistance = Number.POSITIVE_INFINITY

@@ -2,12 +2,22 @@
 
 import * as React from 'react'
 import {
+  type Axis,
   activeIndexAt,
   observeScrollProgress,
   type ProgressInfo,
   type ProgressOptions,
   scrollParent,
 } from './core'
+import {
+  type DirectionOptions,
+  isStuck,
+  lockScroll,
+  observeScrollDirection,
+  observeScrollVelocity,
+  type ScrollDirection,
+  type ScrollSourceOptions,
+} from './motion'
 
 type Ref<T> = React.RefObject<T | null>
 
@@ -48,18 +58,40 @@ export interface ParallaxOptions extends ProgressOptions {
   speed?: number
 }
 
+function useReducedMotion(): boolean {
+  // Read on mount, so the first frame already stays put.
+  const [reduced, setReduced] = React.useState(
+    () =>
+      typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
+  React.useEffect(() => {
+    if (typeof matchMedia !== 'function') return
+    const query = matchMedia('(prefers-reduced-motion: reduce)')
+    setReduced(query.matches)
+    const onChange = () => setReduced(query.matches)
+    query.addEventListener?.('change', onChange)
+    return () => query.removeEventListener?.('change', onChange)
+  }, [])
+  return reduced
+}
+
 /**
  * Move an element at a different rate than the page while it scrolls by. Writes a
- * `translate` to the element directly, so nothing re-renders.
+ * `translate` to the element directly, so nothing re-renders. Stays put for readers who ask
+ * for reduced motion.
  */
 export function useParallax(ref: Ref<HTMLElement>, options: ParallaxOptions = {}) {
   const { speed = 0.2, ...rest } = options
   const axis = rest.axis ?? 'y'
+  const reduced = useReducedMotion()
+  useIsoLayoutEffect(() => {
+    if (reduced && ref.current) ref.current.style.translate = ''
+  }, [reduced, ref])
   useScrollEffect(
     ref,
     ({ progress, viewport }) => {
       const el = ref.current
-      if (!el) return
+      if (!el || reduced) return
       const px = ((0.5 - progress) * speed * viewport).toFixed(2)
       el.style.translate = axis === 'y' ? `0 ${px}px` : `${px}px 0`
     },
@@ -115,4 +147,66 @@ export function useActiveSection(
     }
   }, [ref, anchor, selector, container])
   return active
+}
+
+/**
+ * How fast the page (or `container`) scrolls, in pixels per second, positive towards the end.
+ * Updates at most once per frame and settles to 0 when the scrolling stops.
+ */
+export function useScrollVelocity({ container, axis }: ScrollSourceOptions = {}): number {
+  const [velocity, setVelocity] = React.useState(0)
+  React.useEffect(
+    () => observeScrollVelocity((v) => setVelocity(Math.round(v)), { container, axis }),
+    [container, axis],
+  )
+  return velocity
+}
+
+/**
+ * Which way the page (or `container`) scrolled last: `down`, `up`, or `null` before it moved.
+ * Flips only after `threshold` pixels the other way. Hides a header on the way down.
+ */
+export function useScrollDirection({
+  container,
+  axis,
+  threshold,
+}: DirectionOptions = {}): ScrollDirection | null {
+  const [direction, setDirection] = React.useState<ScrollDirection | null>(null)
+  React.useEffect(
+    () => observeScrollDirection(setDirection, { container, axis, threshold }),
+    [container, axis, threshold],
+  )
+  return direction
+}
+
+/** Whether a `position: sticky` element is pinned at its offset right now. */
+export function useStuck(ref: Ref<Element>, axis: Axis = 'y'): boolean {
+  const [stuck, setStuck] = React.useState(false)
+  useIsoLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const scroller: EventTarget = scrollParent(el, axis) ?? window
+    let frame = 0
+    const update = () => {
+      frame = 0
+      setStuck(isStuck(el, axis))
+    }
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update)
+    }
+    update()
+    scroller.addEventListener('scroll', schedule, { passive: true })
+    window.addEventListener('resize', schedule)
+    return () => {
+      if (frame) cancelAnimationFrame(frame)
+      scroller.removeEventListener('scroll', schedule)
+      window.removeEventListener('resize', schedule)
+    }
+  }, [ref, axis])
+  return stuck
+}
+
+/** Keep the page from scrolling while `active`, for a modal or a drawer. */
+export function useScrollLock(active = true) {
+  useIsoLayoutEffect(() => (active ? lockScroll() : undefined), [active])
 }

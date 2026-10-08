@@ -20,6 +20,21 @@ export {
   type ParallaxOptions,
   useActiveSection,
   useParallax,
+  useScrollDirection,
   useScrollEffect,
+  useScrollLock,
   useScrollProgress,
+  useScrollVelocity,
+  useStuck,
 } from './hooks'
+export {
+  type DirectionOptions,
+  isStuck,
+  lockScroll,
+  observeScrollDirection,
+  observeScrollVelocity,
+  type ScrollDirection,
+  type ScrollSourceOptions,
+  type ScrollToOptions,
+  scrollToElement,
+} from './motion'

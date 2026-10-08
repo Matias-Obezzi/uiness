@@ -39,6 +39,36 @@ const active = useActiveSection(listRef, { anchor: 0.5 })
 
 The index of the child of `listRef` closest to a line across the viewport. Drives panels that change with the section being read; see [Sticky Scroll](/docs/motion/sticky-scroll).
 
+## Direction, velocity and sticky
+
+<ComponentPreview name="scroll-direction" />
+
+```tsx
+const direction = useScrollDirection({ threshold: 12 }) // 'up' | 'down' | null
+const velocity = useScrollVelocity() // px/s, 0 at rest
+const stuck = useStuck(headerRef) // pinned at its `top`
+```
+
+`useScrollDirection` flips only after `threshold` pixels the other way, so a trackpad's jitter does not hide and show a header in turn. `useScrollVelocity` reads at most once per frame and settles to 0 when the scrolling stops, for things that react to speed. `useStuck` tells whether a `position: sticky` element is pinned at its offset, to give it a shadow or a smaller size once it is. All three follow the page, or the scrolling box passed as `container`.
+
+## Scrolling to an element
+
+```tsx
+await scrollToElement(section, { offset: 64, duration: 800 })
+```
+
+`scroll-behavior: smooth` lets you choose neither the time nor the curve, and does not leave room for a sticky header. `scrollToElement` stops `offset` pixels short, takes `duration` ms with any `easing`, stops the moment the reader scrolls themselves, and jumps straight there for readers who ask for reduced motion.
+
+## Locking the page
+
+```tsx
+useScrollLock(open)
+```
+
+Stops the page from scrolling while a modal or a drawer is open, keeping the scrollbar's width as padding so the layout does not jump. Locks nest: the page scrolls again once every one is released. `lockScroll()` returns the release outside React.
+
+`useParallax` stays put for readers who ask for reduced motion.
+
 ## Without React
 
 ```ts
@@ -59,6 +89,12 @@ const stop = observeScrollProgress(el, { offset: ['start end', 'end start'] }, (
 | `useScrollEffect(ref, callback, options)` | Callback with `progress`, `size`, `viewport`, `position`. |
 | `useParallax(ref, { speed })` | Moves the element at another rate. |
 | `useActiveSection(ref, { anchor, selector })` | Index of the section under the anchor. |
+| `useScrollDirection({ threshold, container })` | `'up'`, `'down'` or `null`. |
+| `useScrollVelocity({ container })` | Pixels per second, 0 at rest. |
+| `useStuck(ref)` | Whether a sticky element is pinned. |
+| `useScrollLock(active)`, `lockScroll()` | Stop the page from scrolling. |
+| `scrollToElement(el, { offset, duration, easing })` | Scroll there over time, stopping short. |
+| `observeScrollDirection`, `observeScrollVelocity`, `isStuck` | The same without React. |
 | `scrollProgress`, `observeScrollProgress` | The same without React. |
 | `activeIndexAt`, `mapRange`, `clamp`, `lerp` | Helpers. |
 
