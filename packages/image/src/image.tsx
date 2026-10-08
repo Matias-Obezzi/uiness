@@ -41,11 +41,33 @@ export interface ImageProps
   fallback?: ReactNode
   /** Props for the wrapping `<span>` (className, style, data attributes...). */
   wrapperProps?: ComponentPropsWithoutRef<'span'>
+  /**
+   * Width over height, like `16 / 9` or `'4 / 3'`. Reserves the box before the image arrives,
+   * so nothing below it jumps. The wrapper fills its container's width; the image covers it.
+   */
+  ratio?: number | string
+  /** Try again this many times after a failed load, waiting longer each time. Default 0. */
+  retry?: number
+  /** Milliseconds before the first retry. Default 1000. */
+  retryDelay?: number
   onProgress?: (progress: number) => void
   onStatusChange?: (status: ImageStatus) => void
 }
 
 const DEFAULT_EASING = 'cubic-bezier(0.4, 0, 0.2, 1)'
+
+function useReducedMotion(): boolean {
+  const [reduced, setReduced] = useState(false)
+  useEffect(() => {
+    if (typeof matchMedia !== 'function') return
+    const query = matchMedia('(prefers-reduced-motion: reduce)')
+    setReduced(query.matches)
+    const onChange = () => setReduced(query.matches)
+    query.addEventListener?.('change', onChange)
+    return () => query.removeEventListener?.('change', onChange)
+  }, [])
+  return reduced
+}
 
 function mergeRefs<T>(...refs: Array<ForwardedRef<T> | ((node: T | null) => void) | undefined>) {
   return (node: T | null) => {
@@ -63,13 +85,16 @@ function ImageInner(
     alt = '',
     placeholder,
     variant: variantProp,
-    duration = 600,
+    duration: durationProp = 600,
     easing = DEFAULT_EASING,
     progressive = false,
     fetchInit,
     color,
     fallback,
     wrapperProps,
+    ratio,
+    retry,
+    retryDelay,
     onProgress,
     onStatusChange,
     onLoad,
@@ -84,6 +109,9 @@ function ImageInner(
   forwardedRef: ForwardedRef<HTMLImageElement>,
 ) {
   const variant = useMemo(() => resolveVariant(variantProp), [variantProp])
+  // With reduced motion the image just appears: no transition, no overlay animation.
+  const reducedMotion = useReducedMotion()
+  const duration = reducedMotion ? 0 : durationProp
 
   const { status, progress, error, imgProps } = useImageLoad({
     src,
@@ -93,6 +121,8 @@ function ImageInner(
     fetchInit,
     crossOrigin,
     lazy: loading === 'lazy',
+    retry,
+    retryDelay,
     onProgress,
     onStatusChange,
   })
@@ -102,7 +132,7 @@ function ImageInner(
   const settled = settledFor === src
   const settle = useCallback(() => setSettledFor(src), [src])
 
-  const hasOverlay = Boolean(variant.overlay)
+  const hasOverlay = Boolean(variant.overlay) && !reducedMotion
   useEffect(() => {
     if (status !== 'loaded' || hasOverlay || settled) return
     const timer = setTimeout(settle, duration)
@@ -130,7 +160,7 @@ function ImageInner(
     objectFit,
   }
 
-  const Overlay = variant.overlay
+  const Overlay = reducedMotion ? undefined : variant.overlay
   const showPlaceholder = Boolean(placeholder) && !settled
   const showFallback = status === 'error' && fallback != null
 
@@ -143,11 +173,13 @@ function ImageInner(
     verticalAlign: 'middle',
     isolation: 'isolate',
     backgroundColor: settled ? undefined : color,
+    ...(ratio !== undefined && { display: 'block', width: '100%', aspectRatio: String(ratio) }),
     ...variant.wrapper?.(ctx),
     ...wrapperProps?.style,
   }
 
   const imageStyle: CSSProperties = {
+    ...(ratio !== undefined && { width: '100%', height: '100%', objectFit }),
     ...variant.image?.(ctx),
     ...style,
     ...(showFallback ? { display: 'none' } : null),

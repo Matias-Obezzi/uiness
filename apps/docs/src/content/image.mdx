@@ -38,7 +38,11 @@ Give the image a size, with `width` and `height` or with CSS, so the box exists 
 | `pixelate` | Low resolution mosaic that refines into the final image. Canvas based, works with or without a placeholder. |
 | `reveal` | Clip path wipe from any edge. |
 | `bar` | Thin progress bar along the bottom edge. Pairs with `progressive`. |
+| `zoom` | Fades in while settling from a slight zoom. `zoom({ from: 1.2 })` sets where it starts. |
+| `grayscale` | Fades in without color, then the color comes in, like a print developing. |
 | `none` | No animation. |
+
+With `prefers-reduced-motion` every variant gives way to the image the moment it loads: no transition, no overlay animation.
 
 Built-in variants accept options through their factories:
 
@@ -59,6 +63,32 @@ Browsers give no progress events for `<img>`. With `progressive`, the file is do
 
 Two trade-offs: the image host must allow CORS for your origin, and `srcSet` and `sizes` are ignored because the request goes to `src` only. `loading="lazy"` is honored with an intersection observer, so the download waits until the image is near the viewport.
 
+## Retry
+
+`retry` tries a failed image again that many times, waiting `retryDelay` ms (default 1000) before the first retry and twice as long before each next one. The URL is set again exactly as given, so signed URLs keep working, and the error state with its `fallback` only shows once the retries run out. `useImageLoad` also returns `retry()`, to load again on demand.
+
+```tsx
+<Image src={url} retry={3} fallback={<Broken />} />
+```
+
+## Reserving the space
+
+`ratio` gives the wrapper an aspect ratio before the image arrives, so the text below it does not jump when it loads. The wrapper fills the width of its container and the image covers it.
+
+```tsx
+<Image src="/hero.jpg" ratio="16 / 9" alt="" />
+```
+
+## Preloading
+
+`preloadImage(src, { srcSet, sizes })` downloads and decodes an image ahead of time and resolves with it, so the next photo of a gallery shows instantly. `preloadImages([...])` does several in parallel.
+
+```tsx
+import { preloadImage } from '@/components/ui/image'
+
+onPointerEnter={() => preloadImage(photos[index + 1].src)}
+```
+
 ## Props
 
 | Prop | Default | Description |
@@ -69,7 +99,10 @@ Two trade-offs: the image host must allow CORS for your origin, and `srcSet` and
 | `duration` | `600` | Transition length in ms once the image is decoded. |
 | `easing` | `cubic-bezier(0.4, 0, 0.2, 1)` | CSS easing for the transition. |
 | `progressive` | `false` | Stream with `fetch` for real progress. |
-| `fetchInit` | | Extra `RequestInit` for the progressive request. |
+| `fetchInit` | | Extra `RequestInit` for the progressive request, read when the download starts. |
+| `ratio` | | Width over height, like `16 / 9`, reserved before the image loads. |
+| `retry` | `0` | Times to try again after a failed load. |
+| `retryDelay` | `1000` | Milliseconds before the first retry, doubling after. |
 | `fallback` | | Node rendered inside the wrapper when the image fails. |
 | `wrapperProps` | | Props for the wrapping `<span>`. |
 | `onProgress` | | `(progress: number) => void`, 0 to 1. |

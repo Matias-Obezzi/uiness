@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { blur, Image, pixelate, reveal } from '@/components/ui/image'
+import { blur, grayscale, Image, pixelate, reveal, zoom } from '@/components/ui/image'
 
 const src = import.meta.env.DEV ? '/slow/3000/photo.png' : '/img/photo.png'
 
@@ -13,6 +13,8 @@ const variants = [
     variant: reveal({ from: 'bottom' }),
     color: 'var(--muted)',
   },
+  { label: 'zoom({ from: 1.2 })', variant: zoom({ from: 1.2 }), color: 'var(--muted)' },
+  { label: 'grayscale', variant: grayscale, color: 'var(--muted)' },
 ]
 
 export default function ImageVariants() {

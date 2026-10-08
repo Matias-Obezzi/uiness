@@ -129,6 +129,34 @@ export function bar({ thickness = 3 }: BarOptions = {}): ImageVariant {
   }
 }
 
+export interface ZoomOptions {
+  /** Scale the image starts at. Default 1.12. */
+  from?: number
+}
+
+/** Fades in while settling from a slight zoom, like a camera finding focus. */
+export function zoom({ from = 1.12 }: ZoomOptions = {}): ImageVariant {
+  return {
+    name: 'zoom',
+    image: (ctx) => ({
+      opacity: loaded(ctx),
+      transform: ctx.settled ? undefined : `scale(${loaded(ctx) ? 1 : from})`,
+      transition: transition(ctx, ['opacity', 'transform']),
+    }),
+  }
+}
+
+/** Fades in without color, then the color comes in, like a print developing. */
+export const grayscale: ImageVariant = {
+  name: 'grayscale',
+  image: (ctx) => ({
+    opacity: loaded(ctx),
+    // Starts while the fade does, so the color arrives last.
+    filter: ctx.settled ? undefined : `grayscale(${ctx.status === 'loaded' ? 0 : 1})`,
+    transition: `opacity ${ctx.duration / 2}ms ${ctx.easing}, filter ${ctx.duration}ms ${ctx.easing} ${ctx.duration / 3}ms`,
+  }),
+}
+
 export const variants = {
   none,
   fade,
@@ -136,6 +164,8 @@ export const variants = {
   pixelate: pixelate(),
   reveal: reveal(),
   bar: bar(),
+  zoom: zoom(),
+  grayscale,
 } satisfies Record<string, ImageVariant>
 
 export type VariantName = keyof typeof variants
