@@ -312,10 +312,17 @@ describe('<Island>', () => {
       return a as unknown as Animation
     }
     // jsdom reports zero sizes; give elements a size that depends on their text so a morph runs.
+    const widthOf = (el: HTMLElement) => 100 + (el.textContent?.length ?? 0) * 7
+    vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockImplementation(function (
+      this: HTMLElement,
+    ) {
+      return widthOf(this)
+    })
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(40)
     vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (
       this: HTMLElement,
     ) {
-      const width = 100 + (this.textContent?.length ?? 0) * 7
+      const width = widthOf(this)
       return { x: 0, y: 0, top: 0, left: 0, right: width, bottom: 40, width, height: 40 } as DOMRect
     })
     let rerender: () => void = () => {}
@@ -336,6 +343,43 @@ describe('<Island>', () => {
       await Promise.resolve()
     })
     expect(box().style.visibility).toBe('hidden')
+    proto.animate = undefined
+  })
+
+  it('does not morph towards content that its own entrance has scaled down', () => {
+    const morphs: string[] = []
+    const proto = HTMLElement.prototype as unknown as { animate?: unknown }
+    proto.animate = function (this: HTMLElement, frames: Keyframe[]) {
+      if (this.hasAttribute('data-uiness-island')) morphs.push(String(frames.at(-1)?.width))
+      return {
+        cancel() {},
+        finished: Promise.resolve(),
+        onfinish: null,
+        oncancel: null,
+      } as unknown as Animation
+    }
+    vi.spyOn(HTMLElement.prototype, 'offsetWidth', 'get').mockReturnValue(300)
+    vi.spyOn(HTMLElement.prototype, 'offsetHeight', 'get').mockReturnValue(80)
+    // The bounding box of the content mid-entrance: scaled to 0.9.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockReturnValue({
+      width: 270,
+      height: 72,
+      top: 0,
+      left: 0,
+    } as DOMRect)
+    let rerender: () => void = () => {}
+    function Host() {
+      const [, setTick] = useState(0)
+      rerender = () => setTick((t) => t + 1)
+      return <Island store={store} />
+    }
+    render(<Host />)
+    act(() => {
+      store.show({ content: 'panel' })
+    })
+    act(() => rerender())
+    expect(morphs.length).toBeGreaterThan(0)
+    expect(morphs.every((width) => width === '300px')).toBe(true)
     proto.animate = undefined
   })
 

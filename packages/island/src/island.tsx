@@ -240,8 +240,10 @@ export function Island({
     const content = contentRef.current
     if (!box || !content) return
     const radius = mode === 'expanded' || (stack && entry) ? expandedRadius : idleHeight / 2
-    const rect = content.getBoundingClientRect()
-    const last: Size = { width: rect.width, height: rect.height, radius }
+    // Layout size, not the bounding box: the incoming content scales up from 0.85 while this
+    // runs, and a re-render mid-way (the outgoing content leaving does one) measured it shrunk,
+    // morphed the box down to that, clipped the padding, then jumped back when it ended.
+    const last: Size = { width: content.offsetWidth, height: content.offsetHeight, radius }
     const target = sizeRef.current
     sizeRef.current = last
     if (!target) return

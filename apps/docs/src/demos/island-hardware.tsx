@@ -40,7 +40,9 @@ export default function IslandHardware() {
 
   return (
     <div className="flex w-full flex-col gap-4">
-      <Island store={store} position={position} hardware={hardware} />
+      {/* Nothing while idle: an empty pill fixed at the top sat over the site's own island,
+          which shows every other demo on this page. */}
+      <Island store={store} position={position} hardware={hardware} idle={false} />
 
       <div className="flex flex-wrap items-end gap-4">
         <div className="flex flex-col gap-2">
