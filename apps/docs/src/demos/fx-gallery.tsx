@@ -29,7 +29,11 @@ const presets = [
   { title: 'duotone', effects: [duotone('#1e1b4b', '#fde68a')] },
   { title: 'hueRotate(150)', effects: [hueRotate(150)] },
   { title: 'kaleidoscope(8)', effects: [kaleidoscope(8)], resolution: 360 },
-  { title: 'pixelSort', effects: [pixelSort({ low: 80, high: 230 })], resolution: 320 },
+  {
+    title: "pixelSort({ direction: 'y' })",
+    effects: [pixelSort({ direction: 'y', reverse: true })],
+    resolution: 320,
+  },
 ]
 
 export default function FxGallery() {

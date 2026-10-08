@@ -64,7 +64,7 @@ A pixel effect gets the RGBA buffer and an env with `random()`, `time`, `frame`,
 | `duotone(dark, light)` | pixels | Two colors by luminance, hex or `[r, g, b]`. |
 | `hueRotate(degrees)` | pixels | The CSS `hue-rotate()` matrix. |
 | `kaleidoscope(segments, rotation)` | pixels | One wedge mirrored around the center. |
-| `pixelSort({ low, high, direction, reverse })` | pixels | Runs between `low` and `high` luminance sorted along rows or columns. |
+| `pixelSort({ low, high, direction, reverse })` | pixels | Runs between `low` and `high` luminance sorted along rows (`x`) or columns (`y`). Sort the way the image changes: a landscape varies top to bottom, so its rows are nearly flat and `direction: 'y'` is what shows. |
 | `crt()` | combo | chromatic, scanlines, vignette and live grain. |
 
 ## Props
