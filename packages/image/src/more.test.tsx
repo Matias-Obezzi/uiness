@@ -57,7 +57,7 @@ describe('retry', () => {
       .fn()
       .mockResolvedValueOnce(new Response(null, { status: 503 }))
       .mockResolvedValueOnce(
-        new Response(new Blob([new Uint8Array(4)]), {
+        new Response(new Uint8Array(4), {
           status: 200,
           headers: { 'content-type': 'image/png' },
         }),
