@@ -67,7 +67,13 @@ const CSS = `
 
 function useInjectStyles() {
   useEffect(() => {
-    if (document.getElementById(STYLE_ID)) return
+    // Rewritten when it differs: a tag left by another version of the package (a hot reload,
+    // two copies on one page) would otherwise keep its rules and miss the newer ones.
+    const existing = document.getElementById(STYLE_ID)
+    if (existing) {
+      if (existing.textContent !== CSS) existing.textContent = CSS
+      return
+    }
     const style = document.createElement('style')
     style.id = STYLE_ID
     style.textContent = CSS
@@ -416,7 +422,7 @@ function ToastCard({
             bottom: 0,
             height: 3,
             background: 'currentColor',
-            opacity: 0.25,
+            opacity: 0.4,
             transformOrigin: 'left',
             animation: `uiness-toast-progress ${duration}ms linear forwards`,
             animationPlayState: paused ? 'paused' : 'running',

@@ -50,7 +50,7 @@ The toast starts as loading and turns into success or error with the resolved va
 
 ## Undo, repeats and time left
 
-`toast.undo()` says something happened with an Undo button, and resolves `true` when it was used, `false` once the toast leaves any other way, so the change can be made right away and taken back if asked. A toast with the same type, title and description as one already showing folds into it instead of stacking: it counts up (×3) and starts its time again. `dedupe: false` keeps them apart. `progress` adds a bar that empties as the time runs out, and waits with the timer while the pointer is over the toasts.
+`toast.undo()` says something happened with an Undo button, and resolves `true` when it was used, `false` once the toast leaves any other way, so the change can be made right away and taken back if asked. A plain toast with the same type, title and description as one already showing folds into it instead of stacking: it counts up (×3) and starts its time again. Toasts with an action, a cancel, a custom render or callbacks never fold, since each stands for one thing that happened; `dedupe: false` keeps any toast apart. `progress` adds a bar that empties as the time runs out, and waits with the timer while the pointer is over the toasts.
 
 <ComponentPreview name="toast-more" />
 

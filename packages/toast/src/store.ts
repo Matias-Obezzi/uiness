@@ -94,12 +94,28 @@ export function createToastStore(): ToastStore {
   }
 
   const add = (options: ToastOptions): string => {
-    if (options.id === undefined && options.dedupe !== false && typeof options.title === 'string') {
+    // Only plain messages fold. A toast with its own action, cancel, render or callbacks
+    // stands for one thing that happened: three archived messages need three Undo buttons.
+    const plain =
+      !options.action &&
+      !options.cancel &&
+      !options.render &&
+      !options.onDismiss &&
+      !options.onAutoClose
+    if (
+      options.id === undefined &&
+      options.dedupe !== false &&
+      plain &&
+      typeof options.title === 'string'
+    ) {
       const type = options.type ?? 'default'
       const twin = toasts.find(
         (t) =>
           !t.removing &&
           t.dedupe !== false &&
+          !t.action &&
+          !t.cancel &&
+          !t.render &&
           t.type === type &&
           t.title === options.title &&
           t.description === options.description,

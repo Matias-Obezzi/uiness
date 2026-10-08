@@ -49,6 +49,28 @@ describe('dedupe', () => {
     expect(live()).toHaveLength(0)
   })
 
+  it('never folds toasts that carry their own action or callbacks', () => {
+    const undo = { label: 'Undo', onClick: () => {} }
+    toast('Message archived', { action: undo })
+    toast('Message archived', { action: undo })
+    toast('Saved', { onDismiss: () => {} })
+    toast('Saved', { onDismiss: () => {} })
+    expect(live()).toHaveLength(4)
+    // A plain one does not fold into one with an action either.
+    toast('Message archived')
+    expect(live()).toHaveLength(5)
+  })
+
+  it('rewrites a style tag left by another version', () => {
+    const stale = document.createElement('style')
+    stale.id = 'uiness-toast-styles'
+    stale.textContent = '/* old */'
+    document.head.append(stale)
+    render(<Toaster store={store} />)
+    expect(stale.textContent).toContain('uiness-toast-progress')
+    stale.remove()
+  })
+
   it('keeps apart different types, descriptions, ids and opt-outs', () => {
     toast.error('Could not save')
     toast.success('Could not save')

@@ -52,7 +52,8 @@ export interface ToastOptions {
   progress?: boolean
   /**
    * Fold a toast with the same type, title and description into the one already showing,
-   * which counts up and starts its time again. Only for string titles. Default true.
+   * which counts up and starts its time again. Only plain toasts fold: a string title and no
+   * action, cancel, render or callbacks. Default true.
    */
   dedupe?: boolean
 }
