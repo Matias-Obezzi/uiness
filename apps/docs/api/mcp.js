@@ -1,6 +1,8 @@
 // The uiness MCP server, as a Vercel Function at /api/mcp. It answers from the registry JSON
 // and the Markdown pages this same deployment serves, fetched once per instance.
+import { waitUntil } from '@vercel/functions'
 import { createCatalog } from './_lib/catalog.js'
+import { save } from './_lib/events.js'
 import { handleMcpRequest, httpLoader } from './_lib/server.js'
 
 /** Production, where every deployment can read the docs from when its own files are protected. */
@@ -37,7 +39,21 @@ function catalogFor(/** @type {Request} */ request) {
   return catalog
 }
 
-const handle = (/** @type {Request} */ request) => handleMcpRequest(request, catalogFor(request))
+/** What agents read: the tool, and the item, page or search it was about. */
+const onToolCall = (/** @type {string} */ name, /** @type {Record<string, unknown>} */ args) => {
+  const about = args.name ?? args.slug ?? args.query ?? args.type
+  save(
+    {
+      type: 'mcp',
+      path: `/mcp/${name}`,
+      value: typeof about === 'string' ? about.slice(0, 100) : undefined,
+    },
+    waitUntil,
+  )
+}
+
+const handle = (/** @type {Request} */ request) =>
+  handleMcpRequest(request, catalogFor(request), { onToolCall })
 
 export const GET = handle
 export const POST = handle

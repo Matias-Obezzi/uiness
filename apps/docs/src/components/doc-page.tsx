@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/ui/copy-button'
 import { markdownPath } from '~/lib/markdown'
+import { track } from '~/lib/metrics'
 import { findPage, isNew, nav, pageHref, pages } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { mdxComponents } from './mdx-components'
@@ -57,15 +58,7 @@ export function DocPage() {
   if (firstInSection) return <Navigate replace to={`${pageHref(firstInSection)}${hash}`} />
 
   if (!page || !Content) {
-    return (
-      <div className="prose">
-        <h1>Not found</h1>
-        <p>There is no page at this address.</p>
-        <Button asChild variant="outline">
-          <Link to="/docs">Back to the docs</Link>
-        </Button>
-      </div>
-    )
+    return <NotFound />
   }
 
   const index = pages.indexOf(page)
@@ -149,14 +142,35 @@ function PageMarkdown({ slug }: { slug: string }) {
   }
   return (
     <div className="flex shrink-0 items-center gap-1">
-      <CopyButton value={load} size="sm" className={quiet} label="Copy page as Markdown">
+      <CopyButton
+        value={load}
+        size="sm"
+        className={quiet}
+        label="Copy page as Markdown"
+        onCopy={() => track('copy-page')}
+      >
         <span className="sr-only sm:not-sr-only">Copy page</span>
       </CopyButton>
       <Button asChild variant="ghost" size="sm" className={quiet}>
-        <a href={href} target="_blank" rel="noreferrer">
+        <a href={href} target="_blank" rel="noreferrer" onClick={() => track('markdown')}>
           <FileTextIcon aria-hidden />
           <span className="sr-only sm:not-sr-only">Markdown</span>
         </a>
+      </Button>
+    </div>
+  )
+}
+
+/** A docs address with no page. Counted, so broken links show up. */
+function NotFound() {
+  const { pathname } = useLocation()
+  useEffect(() => track('not-found', { path: pathname }), [pathname])
+  return (
+    <div className="prose">
+      <h1>Not found</h1>
+      <p>There is no page at this address.</p>
+      <Button asChild variant="outline">
+        <Link to="/docs">Back to the docs</Link>
       </Button>
     </div>
   )

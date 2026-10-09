@@ -21,6 +21,7 @@ import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmente
 import { useThemeTransition } from '@/components/ui/theme-switch'
 import { cn } from '@/lib/utils'
 import { hexToOklch, oklchToHex, parseOklch } from '~/lib/color'
+import { track } from '~/lib/metrics'
 import { type SiteTheme, useTheme } from '~/lib/theme'
 import { setThemeChoice, useThemeChoice } from '~/lib/theme-choice'
 import {
@@ -162,7 +163,10 @@ export function PresetGrid({ compact, className }: { compact?: boolean; classNam
           mode={theme}
           compact={compact}
           active={sameTheme(preset.theme, choice)}
-          onClick={() => setThemeChoice(preset.theme)}
+          onClick={() => {
+            setThemeChoice(preset.theme)
+            track('theme', { value: preset.name })
+          }}
         />
       ))}
     </div>
@@ -309,7 +313,16 @@ export function ResetTheme(props: ButtonProps) {
 export function CopyThemeCss(props: Omit<CopyButtonProps, 'value'>) {
   const choice = useThemeChoice()
   return (
-    <CopyButton variant="default" value={() => themeCss(choice)} label="Copy theme CSS" {...props}>
+    <CopyButton
+      variant="default"
+      value={() => themeCss(choice)}
+      label="Copy theme CSS"
+      {...props}
+      onCopy={(text) => {
+        track('theme-css', { value: themeName(choice) })
+        props.onCopy?.(text)
+      }}
+    >
       Copy theme CSS
     </CopyButton>
   )
@@ -343,7 +356,12 @@ export function ThemeCodeDialog({ trigger }: { trigger?: ReactNode }) {
           className="max-h-[55vh] overflow-y-auto"
         />
         <DialogFooter>
-          <CopyButton variant="default" value={css} label="Copy CSS">
+          <CopyButton
+            variant="default"
+            value={css}
+            label="Copy CSS"
+            onCopy={() => track('theme-css', { value: themeName(choice) })}
+          >
             Copy CSS
           </CopyButton>
         </DialogFooter>

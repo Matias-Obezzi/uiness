@@ -2,7 +2,7 @@
 // gone out, so nobody waits on the database and a slow or broken one costs them nothing.
 import { neon } from '@neondatabase/serverless'
 
-/** @typedef {{ type: string, path: string }} UsageEvent */
+/** @typedef {{ type: string, path: string, value?: string }} UsageEvent */
 
 /** @type {ReturnType<typeof neon> | undefined} */
 let sql
@@ -12,16 +12,22 @@ let ready
 async function record(/** @type {UsageEvent} */ event, /** @type {string} */ url) {
   sql ??= neon(url)
   // Once per instance, so a fresh database needs no setup. Forgotten on failure, to try again.
-  ready ??= sql`create table if not exists events (
-    at timestamptz not null default now(),
-    type text not null,
-    path text not null
-  )`.catch((error) => {
+  ready ??= (async () => {
+    const db = /** @type {NonNullable<typeof sql>} */ (sql)
+    await db`create table if not exists events (
+      at timestamptz not null default now(),
+      type text not null,
+      path text not null,
+      value text
+    )`
+    // Tables made before there was a value: what was searched, which preset, which tool.
+    await db`alter table events add column if not exists value text`
+  })().catch((error) => {
     ready = undefined
     throw error
   })
   await ready
-  await sql`insert into events (type, path) values (${event.type}, ${event.path})`
+  await sql`insert into events (type, path, value) values (${event.type}, ${event.path}, ${event.value ?? null})`
 }
 
 /**

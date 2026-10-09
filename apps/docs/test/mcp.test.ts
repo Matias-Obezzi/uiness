@@ -76,6 +76,21 @@ async function call(name: string, args: Record<string, unknown> = {}) {
 }
 
 describe('the MCP endpoint', () => {
+  it('tells whoever asks which tool was called, with what', async () => {
+    const calls: [string, Record<string, unknown>][] = []
+    await handleMcpRequest(
+      post({
+        jsonrpc: '2.0',
+        id: nextId++,
+        method: 'tools/call',
+        params: { name: 'get_item', arguments: { name: 'button' } },
+      }),
+      catalog,
+      { onToolCall: (name, args) => calls.push([name, args]) },
+    )
+    expect(calls).toEqual([['get_item', { name: 'button' }]])
+  })
+
   it('initializes without a session, in JSON', async () => {
     const response = await handleMcpRequest(
       post(

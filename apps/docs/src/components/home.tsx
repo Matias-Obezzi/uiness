@@ -1,11 +1,13 @@
 import { crt, Fx, palette, palettes, pixelate } from '@uiness/fx'
-import { ArrowRightIcon } from 'lucide-react'
+import { ArrowRightIcon, DownloadIcon, TrendingUpIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Choreo } from '@/components/ui/choreo'
+import { findPage, pageHref } from '~/lib/nav'
 import { site } from '~/lib/site'
+import { mostInstalled, useUsage } from '~/lib/usage'
 import { CodeBlock } from './code-block'
 import { Logo } from './logo'
 
@@ -170,6 +172,74 @@ export function Home() {
           </Link>
         ))}
       </section>
+
+      <Popular />
     </Choreo>
+  )
+}
+
+/**
+ * What people use: the pages installed most this month and the ones whose views grew most this
+ * week, from the site's own counts. Each list shows only once there is something in it.
+ */
+function Popular() {
+  const usage = useUsage()
+  const installed = mostInstalled(usage, 5)
+  const trending = (usage?.trending ?? [])
+    .map(({ path, week, before }) => ({
+      page: findPage(path.replace(/^\/docs\/?/, '')),
+      growth: week - before,
+    }))
+    .filter((t): t is { page: NonNullable<typeof t.page>; growth: number } => Boolean(t.page))
+  if (installed.length === 0 && trending.length === 0) return null
+  return (
+    <section className="mt-16 grid gap-6 sm:grid-cols-2">
+      {installed.length > 0 && (
+        <div>
+          <h2 className="mb-3 flex items-center gap-2 font-semibold">
+            <DownloadIcon aria-hidden className="size-4 text-muted-foreground" />
+            Most installed this month
+          </h2>
+          <ol className="divide-y overflow-hidden rounded-xl border">
+            {installed.map(({ page, installs }) => (
+              <li key={page.slug}>
+                <Link
+                  to={pageHref(page)}
+                  className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-accent/40"
+                >
+                  <span className="truncate">{page.title}</span>
+                  <span className="shrink-0 text-muted-foreground tabular-nums">
+                    {installs.toLocaleString('en')}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+      {trending.length > 0 && (
+        <div>
+          <h2 className="mb-3 flex items-center gap-2 font-semibold">
+            <TrendingUpIcon aria-hidden className="size-4 text-muted-foreground" />
+            Trending this week
+          </h2>
+          <ol className="divide-y overflow-hidden rounded-xl border">
+            {trending.map(({ page, growth }) => (
+              <li key={page.slug}>
+                <Link
+                  to={pageHref(page)}
+                  className="flex items-center justify-between gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-accent/40"
+                >
+                  <span className="truncate">{page.title}</span>
+                  <span className="shrink-0 text-muted-foreground tabular-nums">
+                    +{growth.toLocaleString('en')} views
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+    </section>
   )
 }

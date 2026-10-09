@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { findPage } from '~/lib/nav'
 import { site } from '~/lib/site'
+import { installsOf, useJson, useUsage } from '~/lib/usage'
 import { GithubIcon } from './github-icon'
 
 /** The page's own headings, not the ones inside a demo. */
@@ -53,32 +54,6 @@ function useHeadings(main: RefObject<HTMLElement | null>) {
   return headings
 }
 
-const requests = new Map<string, Promise<unknown>>()
-
-/** JSON from one of the site's functions, fetched once per visit. Null until then, or without it. */
-function useJson<T>(url: string) {
-  const [data, setData] = useState<T | null>(null)
-  useEffect(() => {
-    let live = true
-    if (!requests.has(url)) {
-      requests.set(
-        url,
-        fetch(url)
-          .then((res) => (res.ok ? res.json() : null))
-          // Locally there are no functions, and the dev server answers with the page.
-          .catch(() => null),
-      )
-    }
-    requests.get(url)?.then((value) => {
-      if (live) setData(value as T)
-    })
-    return () => {
-      live = false
-    }
-  }, [url])
-  return data
-}
-
 const count = (n: number) => n.toLocaleString('en')
 
 /**
@@ -98,10 +73,10 @@ export function PageAside({
   const info = page ? meta[page.file] : undefined
   const headings = useHeadings(main)
   const active = useActiveSection(main, { selector: HEADINGS, anchor: 0.2, container: null })
-  const installs = useJson<Record<string, number>>('/api/installs')
+  const usage = useUsage()
   const downloads = useJson<{ packages: Record<string, number> }>('/api/downloads')
 
-  const installed = info?.items.reduce((sum, name) => sum + (installs?.[name] ?? 0), 0) ?? 0
+  const installed = page ? installsOf(page, usage?.installs) : 0
   const npm = info?.npm ? downloads?.packages[info.npm] : undefined
 
   return (
@@ -155,7 +130,7 @@ export function PageAside({
         {installed > 0 && (
           <p className="flex items-center gap-2 tabular-nums">
             <DownloadIcon className="size-3.5" aria-hidden />
-            {count(installed)} {installed === 1 ? 'install' : 'installs'} with the CLI
+            {count(installed)} {installed === 1 ? 'install' : 'installs'}
           </p>
         )}
         {npm !== undefined && (
