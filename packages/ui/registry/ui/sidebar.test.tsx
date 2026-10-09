@@ -350,12 +350,18 @@ describe('SidebarViews', () => {
   })
 
   it('keeps the old view inert while it slides out, then unmounts it', async () => {
-    const animations: { onfinish: (() => void) | null; frames: Keyframe[] }[] = []
-    HTMLElement.prototype.animate = vi.fn((frames: Keyframe[]) => {
-      const a = { onfinish: null as (() => void) | null, cancel() {}, frames }
-      animations.push(a)
-      return a as unknown as Animation
-    })
+    const animations: {
+      onfinish: (() => void) | null
+      frames: Keyframe[]
+      options: KeyframeAnimationOptions
+    }[] = []
+    HTMLElement.prototype.animate = vi.fn(
+      (frames: Keyframe[], options: KeyframeAnimationOptions) => {
+        const a = { onfinish: null as (() => void) | null, cancel() {}, frames, options }
+        animations.push(a)
+        return a as unknown as Animation
+      },
+    )
     const user = userEvent.setup()
     render(<Views />)
     await user.click(screen.getByRole('link', { name: 'Settings' }))
@@ -365,9 +371,16 @@ describe('SidebarViews', () => {
     expect(leaving?.getAttribute('aria-hidden')).toBe('true')
     expect(screen.queryByRole('link', { name: 'Home' })).toBeNull()
     // Going deeper: the old view leaves to the left, the new one comes from the right.
-    expect(animations.map((a) => a.frames.at(-1)?.transform ?? a.frames[0]?.transform)).toEqual(
-      expect.arrayContaining(['translateX(-100%)']),
-    )
+    const [out, into] = [
+      animations.find((a) => a.frames.at(-1)?.opacity === 0),
+      animations.find((a) => a.frames.at(-1)?.opacity === undefined),
+    ]
+    expect(out?.frames.at(-1)?.transform).toMatch(/^translateX\(-/)
+    expect(into?.frames[0]?.transform).toBe('translateX(100%)')
+    // The view that left holds its last frame until it unmounts, or it flashes back for one.
+    expect(out?.options.fill).toBe('forwards')
+    // The coming view stays opaque all the way: two views fading at once left a blank frame.
+    expect(into?.frames.every((f) => f.opacity === undefined)).toBe(true)
     // Focus does not get lost with the view that left.
     expect(document.activeElement?.textContent).toBe('All')
 
@@ -423,7 +436,7 @@ describe('SidebarViews', () => {
     }
     const views = () => document.querySelector<HTMLElement>('[data-slot=sidebar-views]')
     const leftward = () =>
-      animations.some((a) => a.frames.at(-1)?.transform === 'translateX(-100%)')
+      animations.some((a) => String(a.frames.at(-1)?.transform).startsWith('translateX(-'))
     expect(views()?.dataset.direction).toBeUndefined()
 
     go('settings')
