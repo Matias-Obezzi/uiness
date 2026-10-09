@@ -200,7 +200,7 @@ function Popular() {
             <DownloadIcon aria-hidden className="size-4 text-muted-foreground" />
             Most installed this month
           </h2>
-          <ol className="divide-y rounded-xl border">
+          <ol className="divide-y overflow-hidden rounded-xl border">
             {installed.map(({ page, installs }) => (
               <li key={page.slug}>
                 <Link
@@ -223,7 +223,7 @@ function Popular() {
             <TrendingUpIcon aria-hidden className="size-4 text-muted-foreground" />
             Trending this week
           </h2>
-          <ol className="divide-y rounded-xl border">
+          <ol className="divide-y overflow-hidden rounded-xl border">
             {trending.map(({ page, growth }) => (
               <li key={page.slug}>
                 <Link
