@@ -65,6 +65,42 @@ const drag = useDraggable({ id: 'dialog', bounds: 'parent' })
 
 Leave `position` out and the hook owns it. Pass it and the hook becomes controlled, and you update it from `onPositionChange`. Either way `setPosition` moves the element without a drag, and a cancelled drag returns it to where it was picked up.
 
+## Grid and drop targets
+
+`grid` snaps a free-dragged element to cells, one size or `[x, y]` in pixels, and the arrow keys then move one cell. `useDropTarget` makes any element a place to drop on, like a bin or a folder: it lights up while a draggable's center is over it, gets the draggable's `id` in `onDrop`, and the draggable gets the target's in `onDropOn`. `accepts` limits which ones it takes.
+
+<ComponentPreview name="dnd-targets" align="start" />
+
+```tsx
+const trash = useDropTarget({ id: 'trash', onDrop: (id) => remove(id) })
+const note = useDraggable({ id: 'note-1', grid: 24 })
+
+<div ref={trash.ref} data-over={trash.isOver || undefined} />
+```
+
+## Long press and touch
+
+On a phone a handle that takes the drag right away also takes the scroll: a list of cards whose whole card is the handle could not be scrolled by touch. `activationDelay` waits for a long press instead, for touch and pen only: a mouse drag starts right away. Moving more than `activationTolerance` pixels (default 5) before it gives the swipe back to the page, so it scrolls; holding still picks the item up where the finger is, and from then on the page stays put. `haptics` adds a short buzz when it picks up and when it drops, on phones that have one. Both work on every hook.
+
+```tsx
+useSortable({ items, onReorder, activationDelay: 200, haptics: true })
+```
+
+## Files from outside
+
+`useDropZone` takes files dropped from the desktop or another app, matched against `accept` the way a file input does (`'image/*'`, `'.pdf'`). It stays over while the files move across its children, hands the matching ones to `onDrop` and the rest to `onReject`, and comes with a hidden input and `open()`, since dropping is not the only way to add a file.
+
+<ComponentPreview name="dnd-files" />
+
+```tsx
+const zone = useDropZone({ accept: 'image/*', onDrop: (files) => upload(files) })
+
+<div {...zone.getZoneProps()}>
+  <input {...zone.getInputProps()} />
+  <button onClick={zone.open}>Browse</button>
+</div>
+```
+
 ## The raw gesture
 
 `useDragGesture` is what the others are built on: pointer and keyboard handling for one element, no lists, no drop targets, no announcements. It reports deltas and you decide what they mean — a resize handle, a slider, a canvas pan.
@@ -132,6 +168,9 @@ import { arrayMove, insertionIndex, dragReducer, idleDragState } from '@uiness/d
 | `useSortableGroups(options)` | Several containers. Returns `groups`, `from`, `over` and the getters. |
 | `useDraggable(options)` | One element. Returns `position`, `setPosition` and the getters. |
 | `useDragGesture(options)` | Deltas from the pointer and the keyboard, nothing else. |
+| `useDropTarget({ id, onDrop, accepts })` | A place to drop a `useDraggable` on. Returns `isOver` and `ref`. |
+| `useDropZone({ accept, multiple, onDrop, onReject })` | Files dropped from outside. Returns `isOver`, `open` and the getters. |
+| `matchesAccept(file, accept)` | Whether a file fits an `accept` list. |
 | `useReducedMotion()`, `prefersReducedMotion()` | Whether to animate at all. |
 | `defaultAnnouncements` | The four English messages, to wrap instead of replace. |
 

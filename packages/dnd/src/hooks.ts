@@ -31,6 +31,7 @@ import {
   rectFrom,
   scrollableAncestors,
 } from './core'
+import { type Target, targetAt } from './targets'
 
 // -- shared props -----------------------------------------------------------------------------
 
@@ -111,7 +112,10 @@ const getLiveRegionProps = (): LiveRegionProps => liveRegionProps
 const zero: Point = { x: 0, y: 0 }
 const freeLocation: DragLocation = { containerId: '', index: -1 }
 
-const touchActionFor = (axis: Axis) => (axis === 'x' ? 'pan-y' : axis === 'y' ? 'pan-x' : 'none')
+const touchActionFor = (axis: Axis, delay = 0) =>
+  // With a long press the page keeps its scroll until the drag starts, then touch moves are
+  // held in script: a CSS touch-action cannot change in the middle of a gesture.
+  delay > 0 ? 'manipulation' : axis === 'x' ? 'pan-y' : axis === 'y' ? 'pan-x' : 'none'
 
 const arrowDirection = (key: string): Direction | null =>
   key === 'ArrowUp'
@@ -131,6 +135,51 @@ interface Pending {
   pointerId: number
   origin: Point
   target: HTMLElement
+  /** False while a long press is still being held: until then, moving away lets it scroll. */
+  armed: boolean
+  /** Latest pointer position while pending, where a long press starts the drag. */
+  last: Point
+}
+
+/** A short buzz on phones that have one, so a long press is felt when it picks up. */
+const buzz = (enabled: boolean | undefined, ms: number) => {
+  if (enabled && typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function')
+    navigator.vibrate(ms)
+}
+
+/**
+ * Wait for a long press before a drag. Moving more than `tolerance` before `delay` gives the
+ * gesture back to the page, so a list of handles can still be scrolled by touch; once the drag
+ * starts, touch moves are held so the page does not scroll under it. Returns the teardown.
+ */
+function holdFor(
+  held: Pending,
+  delay: number,
+  tolerance: number,
+  isDragging: () => boolean,
+  activate: () => void,
+  giveUp: () => void,
+): () => void {
+  const timer = setTimeout(() => {
+    held.armed = true
+    activate()
+  }, delay)
+  const view = held.target.ownerDocument.defaultView ?? window
+  const onMove = (event: PointerEvent) => {
+    if (held.armed || event.pointerId !== held.pointerId) return
+    held.last = { x: event.clientX, y: event.clientY }
+    if (distance(held.last, held.origin) > tolerance) giveUp()
+  }
+  const holdTouch = (event: TouchEvent) => {
+    if (isDragging() && event.cancelable) event.preventDefault()
+  }
+  view.addEventListener('pointermove', onMove)
+  view.addEventListener('touchmove', holdTouch, { passive: false })
+  return () => {
+    clearTimeout(timer)
+    view.removeEventListener('pointermove', onMove)
+    view.removeEventListener('touchmove', holdTouch)
+  }
 }
 
 function release(pending: Pending | null) {
@@ -213,6 +262,16 @@ export interface DragGestureOptions {
   disabled?: boolean
   /** Pixels the pointer must travel before the drag starts. Default 4. */
   activationDistance?: number
+  /**
+   * Milliseconds a touch or a pen must be held still before the drag starts, a long press.
+   * Moving away earlier scrolls the page instead, which lets a list of handles scroll by touch.
+   * A mouse drag starts right away. Default 0: the drag starts by moving.
+   */
+  activationDelay?: number
+  /** Pixels the pointer may wander during `activationDelay`. Default 5. */
+  activationTolerance?: number
+  /** Buzz the phone when the drag picks up and when it drops. Default false. */
+  haptics?: boolean
   /** Pixels one arrow key press moves the element. Default 20. */
   keyboardStep?: number
   /** What a screen reader calls the handle. Default `draggable`. */
@@ -292,11 +351,21 @@ export function useDragGesture(options: DragGestureOptions = {}): DragGestureRes
       return
     }
     emit('onEnd')
+    buzz(optionsRef.current.haptics, 15)
     const held = pending.current
     pending.current = null
     release(held)
     send({ type: 'drop' })
   }, [emit, send, stopListening])
+
+  const startPointer = React.useCallback(
+    (held: Pending) => {
+      send({ type: 'start', id: held.id, from: freeLocation, mode: 'pointer', point: held.origin })
+      buzz(optionsRef.current.haptics, 10)
+      emit('onStart')
+    },
+    [emit, send],
+  )
 
   const handleMove = React.useCallback(
     (event: PointerEvent) => {
@@ -304,20 +373,14 @@ export function useDragGesture(options: DragGestureOptions = {}): DragGestureRes
       if (!held || held.pointerId !== event.pointerId) return
       const point = { x: event.clientX, y: event.clientY }
       if (stateRef.current.phase === 'idle') {
+        if (!held.armed) return
         if (distance(point, held.origin) < (optionsRef.current.activationDistance ?? 4)) return
-        send({
-          type: 'start',
-          id: held.id,
-          from: freeLocation,
-          mode: 'pointer',
-          point: held.origin,
-        })
-        emit('onStart')
+        startPointer(held)
       }
       send({ type: 'move', point })
       emit('onMove')
     },
-    [emit, send],
+    [emit, send, startPointer],
   )
 
   const handleUp = React.useCallback(
@@ -343,16 +406,42 @@ export function useDragGesture(options: DragGestureOptions = {}): DragGestureRes
       const target = event.currentTarget
       // Capture keeps touch and pen gestures coming to us instead of turning into a scroll.
       if (typeof target.setPointerCapture === 'function') target.setPointerCapture(event.pointerId)
-      pending.current = {
+      const origin = { x: event.clientX, y: event.clientY }
+      // A mouse has no scroll to protect: the long press is for touch and pen.
+      const delay = event.pointerType === 'mouse' ? 0 : (optionsRef.current.activationDelay ?? 0)
+      const held: Pending = {
         id: 'item',
         pointerId: event.pointerId,
-        origin: { x: event.clientX, y: event.clientY },
+        origin,
         target,
+        armed: delay <= 0,
+        last: origin,
       }
+      pending.current = held
       stopListening()
-      unlisten.current = listen(target, { move: handleMove, up: handleUp, cancel: handleCancel })
+      const stop = listen(target, { move: handleMove, up: handleUp, cancel: handleCancel })
+      const stopHold =
+        delay > 0
+          ? holdFor(
+              held,
+              delay,
+              optionsRef.current.activationTolerance ?? 5,
+              () => stateRef.current.phase === 'dragging',
+              () => {
+                startPointer(held)
+                // Where the finger is now, so the element does not jump to the press point.
+                send({ type: 'move', point: held.last })
+                emit('onMove')
+              },
+              () => cancel(),
+            )
+          : null
+      unlisten.current = () => {
+        stop()
+        stopHold?.()
+      }
     },
-    [handleCancel, handleMove, handleUp, stopListening],
+    [cancel, emit, handleCancel, handleMove, handleUp, send, startPointer, stopListening],
   )
 
   const onKeyDown = React.useCallback(
@@ -410,7 +499,11 @@ export function useDragGesture(options: DragGestureOptions = {}): DragGestureRes
     'aria-pressed': dragging,
     ...(options.disabled ? { 'aria-disabled': true as const } : null),
     ...(dragging ? { 'data-dragging': '' as const } : null),
-    style: { touchAction: touchActionFor(axis), userSelect: 'none', WebkitUserSelect: 'none' },
+    style: {
+      touchAction: touchActionFor(axis, options.activationDelay),
+      userSelect: 'none',
+      WebkitUserSelect: 'none',
+    },
     onPointerDown,
     onKeyDown,
     onBlur,
@@ -440,6 +533,13 @@ export interface DraggableOptions extends DragGestureOptions {
   onDragEnd?: (position: Point) => void
   /** Keep the element inside a box: a rect in viewport pixels, or its offset parent. */
   bounds?: Rect | 'parent' | null
+  /**
+   * Snap to a grid: one size for both axes or `[x, y]`, in pixels. Arrow keys then move one
+   * cell unless `keyboardStep` says otherwise.
+   */
+  grid?: number | [number, number]
+  /** Dropped on a `useDropTarget`, with its id. */
+  onDropOn?: (targetId: string) => void
   announcements?: DragAnnouncements
 }
 
@@ -452,6 +552,8 @@ export interface DraggableResult {
   reducedMotion: boolean
   /** Latest message for the live region. */
   announcement: string
+  /** Id of the `useDropTarget` the element is over during a drag. */
+  over: string | null
   /** Move the element without a drag. */
   setPosition: (position: Point) => void
   cancel: () => void
@@ -475,6 +577,22 @@ export function useDraggable(options: DraggableOptions = {}): DraggableResult {
   const origin = React.useRef<{ base: Point; rect: Rect; bounds: Rect | null } | null>(null)
   const [announcement, announce] = useAnnouncer(options.announcements)
   const reducedMotion = useReducedMotion()
+  const overTarget = React.useRef<Target | null>(null)
+  const [over, setOver] = React.useState<string | null>(null)
+  const grid =
+    options.grid === undefined
+      ? null
+      : Array.isArray(options.grid)
+        ? options.grid
+        : [options.grid, options.grid]
+
+  const point = React.useCallback((target: Target | null) => {
+    if (overTarget.current === target) return
+    overTarget.current?.setOver(false)
+    target?.setOver(true)
+    overTarget.current = target
+    setOver(target?.id ?? null)
+  }, [])
 
   const setPosition = React.useCallback((next: Point) => {
     positionRef.current = next
@@ -497,21 +615,39 @@ export function useDraggable(options: DraggableOptions = {}): DraggableResult {
     (delta: Point) => {
       const start = origin.current
       if (!start) return
-      const moved = { ...start.rect, x: start.rect.x + delta.x, y: start.rect.y + delta.y }
+      const cell = optionsRef.current.grid
+      const [gx, gy] = cell === undefined ? [0, 0] : Array.isArray(cell) ? cell : [cell, cell]
+      // Snapped on the offset, so the cells line up with where the element can rest.
+      const snap = (value: number, base: number, size: number) =>
+        size > 0 ? Math.round((base + value) / size) * size - base : value
+      const snapped = {
+        x: snap(delta.x, start.base.x, gx),
+        y: snap(delta.y, start.base.y, gy),
+      }
+      const moved = { ...start.rect, x: start.rect.x + snapped.x, y: start.rect.y + snapped.y }
       const placed = start.bounds ? clampToBounds(moved, start.bounds) : moved
       setPosition({
         x: start.base.x + placed.x - start.rect.x,
         y: start.base.y + placed.y - start.rect.y,
       })
+      point(
+        targetAt(
+          { x: placed.x + moved.width / 2, y: placed.y + moved.height / 2 },
+          optionsRef.current.id ?? 'item',
+        ),
+      )
     },
-    [setPosition],
+    [setPosition, point],
   )
 
   const gesture = useDragGesture({
     axis: options.axis,
     disabled: options.disabled,
     activationDistance: options.activationDistance,
-    keyboardStep: options.keyboardStep,
+    activationDelay: options.activationDelay,
+    activationTolerance: options.activationTolerance,
+    haptics: options.haptics,
+    keyboardStep: options.keyboardStep ?? grid?.[0],
     roleDescription: options.roleDescription,
     onStart: (event) => {
       const element = node.current
@@ -530,7 +666,13 @@ export function useDraggable(options: DraggableOptions = {}): DraggableResult {
     onEnd: (event) => {
       announce('drop', context(event.delta))
       origin.current = null
+      const target = overTarget.current
+      point(null)
       optionsRef.current.onDragEnd?.(positionRef.current)
+      if (target) {
+        target.options.current.onDrop?.(optionsRef.current.id ?? 'item')
+        optionsRef.current.onDropOn?.(target.id)
+      }
       optionsRef.current.onEnd?.(event)
     },
     onCancel: (event) => {
@@ -538,6 +680,7 @@ export function useDraggable(options: DraggableOptions = {}): DraggableResult {
       if (base) setPosition(base)
       announce('cancel', context(zero))
       origin.current = null
+      point(null)
       optionsRef.current.onCancel?.(event)
     },
   })
@@ -563,6 +706,7 @@ export function useDraggable(options: DraggableOptions = {}): DraggableResult {
     delta: gesture.delta,
     reducedMotion,
     announcement,
+    over,
     setPosition,
     cancel: gesture.cancel,
     getElementProps,
@@ -595,6 +739,9 @@ interface CollectionOptions {
   columns: number | undefined
   disabled: boolean
   activationDistance: number
+  activationDelay: number
+  activationTolerance: number
+  haptics: boolean
   collisionDetection: CollisionDetector
   autoScroll: AutoScrollOptions | null
   announcements: DragAnnouncements | undefined
@@ -785,6 +932,7 @@ function useDragCollection(options: CollectionOptions): Collection {
     const changed =
       current.to.containerId !== current.from.containerId || current.to.index !== current.from.index
     send({ type: 'drop' })
+    buzz(optionsRef.current.haptics, 15)
     snapshot.current = null
     if (changed) optionsRef.current.onCommit(current.activeId, current.from, current.to)
   }, [announce, previewOf, send, stopListening])
@@ -855,12 +1003,14 @@ function useDragCollection(options: CollectionOptions): Collection {
       if (!held || held.pointerId !== event.pointerId) return
       const point = { x: event.clientX, y: event.clientY }
       if (stateRef.current.phase === 'idle') {
+        if (!held.armed) return
         if (distance(point, held.origin) < optionsRef.current.activationDistance) return
         if (!begin(held.id, 'pointer', held.origin)) {
           pending.current = null
           stopListening()
           return
         }
+        buzz(optionsRef.current.haptics, 10)
       }
       send({ type: 'move', point })
       updateOver(point)
@@ -918,18 +1068,43 @@ function useDragCollection(options: CollectionOptions): Collection {
           if (typeof target.setPointerCapture === 'function') {
             target.setPointerCapture(event.pointerId)
           }
-          pending.current = {
+          const origin = { x: event.clientX, y: event.clientY }
+          const delay = event.pointerType === 'mouse' ? 0 : optionsRef.current.activationDelay
+          const held: Pending = {
             id,
             pointerId: event.pointerId,
-            origin: { x: event.clientX, y: event.clientY },
+            origin,
             target,
+            armed: delay <= 0,
+            last: origin,
           }
+          pending.current = held
           stopListening()
-          unlisten.current = listen(target, {
+          const stop = listen(target, {
             move: handleMove,
             up: handleUp,
             cancel: handleCancel,
           })
+          const stopHold =
+            delay > 0
+              ? holdFor(
+                  held,
+                  delay,
+                  optionsRef.current.activationTolerance,
+                  () => stateRef.current.phase === 'dragging',
+                  () => {
+                    if (!begin(held.id, 'pointer', held.origin)) return cancel()
+                    buzz(optionsRef.current.haptics, 10)
+                    send({ type: 'move', point: held.last })
+                    updateOver(held.last)
+                  },
+                  () => cancel(),
+                )
+              : null
+          unlisten.current = () => {
+            stop()
+            stopHold?.()
+          }
         },
         onKeyDown: (event) => {
           if (optionsRef.current.disabled) return
@@ -950,7 +1125,18 @@ function useDragCollection(options: CollectionOptions): Collection {
       bounds.current.set(id, bound)
       return bound
     },
-    [begin, commit, handleCancel, handleMove, handleUp, step, stopListening],
+    [
+      begin,
+      cancel,
+      commit,
+      handleCancel,
+      handleMove,
+      handleUp,
+      send,
+      step,
+      stopListening,
+      updateOver,
+    ],
   )
 
   const containerRefFor = React.useCallback((containerId: string) => {
@@ -1033,7 +1219,7 @@ function useDragCollection(options: CollectionOptions): Collection {
 
   const dragging = state.phase === 'dragging'
   const activeRect = state.activeId ? (snapshot.current?.rects.get(state.activeId) ?? null) : null
-  const touchAction = touchActionFor(options.axis)
+  const touchAction = touchActionFor(options.axis, options.activationDelay)
 
   const getHandleProps = (id: string): DragHandleProps => {
     const bound = boundFor(id)
@@ -1125,6 +1311,16 @@ export interface SortableOptions {
   disabled?: boolean
   /** Pixels the pointer must travel before the drag starts. Default 4. */
   activationDistance?: number
+  /**
+   * Milliseconds a touch or a pen must hold before the drag starts, a long press: moving away
+   * earlier scrolls the page instead, so a list can still be scrolled by touch. A mouse drag
+   * starts right away. Default 0.
+   */
+  activationDelay?: number
+  /** Pixels the pointer may wander during `activationDelay`. Default 5. */
+  activationTolerance?: number
+  /** Buzz the phone when an item picks up and when it drops. Default false. */
+  haptics?: boolean
   /** Scroll the nearest scrollable ancestor near its edges. Default true. */
   autoScroll?: boolean | AutoScrollOptions
   /** Override any of the four screen reader messages. */
@@ -1198,6 +1394,9 @@ export function useSortable(options: SortableOptions): SortableResult {
     columns: options.columns,
     disabled: options.disabled ?? false,
     activationDistance: options.activationDistance ?? 4,
+    activationDelay: options.activationDelay ?? 0,
+    activationTolerance: options.activationTolerance ?? 5,
+    haptics: options.haptics ?? false,
     collisionDetection: closestContainer,
     autoScroll: resolveAutoScroll(options.autoScroll),
     announcements: options.announcements,
@@ -1249,6 +1448,12 @@ export interface SortableGroupsOptions {
   disabled?: boolean
   /** Pixels the pointer must travel before the drag starts. Default 4. */
   activationDistance?: number
+  /** Milliseconds to hold before the drag starts, a long press. Default 0. */
+  activationDelay?: number
+  /** Pixels the pointer may wander during `activationDelay`. Default 5. */
+  activationTolerance?: number
+  /** Buzz the phone when an item picks up and when it drops. Default false. */
+  haptics?: boolean
   /** Which container the pointer is over. Default `closestContainer`. */
   collisionDetection?: CollisionDetector
   /** Scroll the nearest scrollable ancestor near its edges. Default true. */
@@ -1320,6 +1525,9 @@ export function useSortableGroups(options: SortableGroupsOptions): SortableGroup
     columns: options.columns,
     disabled: options.disabled ?? false,
     activationDistance: options.activationDistance ?? 4,
+    activationDelay: options.activationDelay ?? 0,
+    activationTolerance: options.activationTolerance ?? 5,
+    haptics: options.haptics ?? false,
     collisionDetection: options.collisionDetection ?? closestContainer,
     autoScroll: resolveAutoScroll(options.autoScroll),
     announcements: options.announcements,

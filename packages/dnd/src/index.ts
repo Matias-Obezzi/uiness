@@ -40,6 +40,14 @@ export {
   scrollableAncestors,
 } from './core'
 export {
+  type DropZoneInputProps,
+  type DropZoneOptions,
+  type DropZoneProps,
+  type DropZoneResult,
+  matchesAccept,
+  useDropZone,
+} from './drop-zone'
+export {
   type DragContainerProps,
   type DragElementProps,
   type DragGestureEvent,
@@ -63,3 +71,4 @@ export {
   useSortable,
   useSortableGroups,
 } from './hooks'
+export { type DropTargetOptions, type DropTargetResult, useDropTarget } from './targets'
