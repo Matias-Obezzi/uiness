@@ -124,8 +124,12 @@ function Collapse({ id, open, children }: { id: string; open: boolean; children:
     >
       {/* Open, it clips rather than hides: a hidden box is a scroller of its own, and the
           sticky group headings inside would stick to it instead of to the sidebar. Closed, it
-          hides, since what a clip cuts off still counts towards the sidebar's scroll height. */}
-      <div className={cn('min-h-0', open ? 'overflow-clip' : 'overflow-hidden')}>{children}</div>
+          hides, since what a clip cuts off still counts towards the sidebar's scroll height.
+          Positioned, so the screen reader text inside (absolutely placed) is clipped too:
+          otherwise it escapes to the sidebar and leaves it scrolling with everything closed. */}
+      <div className={cn('relative min-h-0', open ? 'overflow-clip' : 'overflow-hidden')}>
+        {children}
+      </div>
     </div>
   )
 }
