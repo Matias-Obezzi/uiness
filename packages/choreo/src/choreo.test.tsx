@@ -369,10 +369,9 @@ describe('choreograph', () => {
     const el = root.children[0] as HTMLElement
     enter(el)
     expect(el.textContent).toBe('0+')
-    await new Promise((r) => setTimeout(r, 20))
-    expect(el.textContent).not.toBe('0+')
-    await new Promise((r) => setTimeout(r, 40))
-    expect(el.textContent).toBe('1,500+')
+    // Waits on the frames rather than a fixed time: Windows timers are coarse.
+    await vi.waitFor(() => expect(el.textContent).not.toBe('0+'))
+    await vi.waitFor(() => expect(el.textContent).toBe('1,500+'))
   })
 
   it('is inert without a document root', () => {

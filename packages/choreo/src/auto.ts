@@ -10,7 +10,8 @@ declare global {
 /**
  * The drop-in build: `<script src=".../auto.global.js" defer></script>` and the page is
  * choreographed. Options come from `data-*` attributes on the script tag, such as
- * `data-debug`, `data-once="false"`, `data-duration="900"` or `data-exclude=".no-motion"`.
+ * `data-debug`, `data-once="false"`, `data-duration="900"`, `data-scrub` or
+ * `data-exclude=".no-motion"`.
  */
 function start() {
   const script = document.currentScript ?? document.querySelector('script[data-choreo-auto]')
@@ -23,11 +24,16 @@ function start() {
     intro: flag(data.intro),
     hover: flag(data.hover),
     counters: flag(data.counters),
+    observe: flag(data.observe),
+    scrub: flag(data.scrub),
     duration: number(data.duration),
     stagger: number(data.stagger),
+    maxStagger: number(data.maxStagger),
     distance: number(data.distance),
+    offset: number(data.offset),
     exclude: data.exclude,
     easing: data.easing,
+    reducedMotion: data.reducedMotion as ChoreoOptions['reducedMotion'],
   }
   for (const key of Object.keys(options) as (keyof ChoreoOptions)[]) {
     if (options[key] === undefined) delete options[key]

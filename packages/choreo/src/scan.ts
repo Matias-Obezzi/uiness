@@ -25,6 +25,9 @@ const EFFECTS = new Set<string>([
   'zoom',
   'clip',
   'draw',
+  'rotate',
+  'flip',
+  'words',
   'none',
 ])
 

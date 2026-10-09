@@ -22,6 +22,10 @@ export type Effect =
   | 'zoom'
   | 'clip'
   | 'draw'
+  | 'rotate'
+  | 'flip'
+  /** Word by word, for headings and short lines. */
+  | 'words'
   | 'none'
 
 /** A touch added on hover or press, through a stylesheet rather than script. */
@@ -78,6 +82,14 @@ export interface ChoreoOptions extends ScanOptions {
   reducedMotion?: 'skip' | 'fade'
   /** Outline every element found, colored by role, with a legend. */
   debug?: boolean
+  /**
+   * Tie each entrance to the scroll position instead of a clock: it plays forward as the
+   * element scrolls in and backward as it scrolls out. Needs scroll driven animations
+   * (`ViewTimeline`); without them entrances play on their own as usual.
+   */
+  scrub?: boolean
+  /** Called as an element starts to come in, before its delay. */
+  onEnter?: (item: PlanItem) => void
   /** Called with the plan every time it changes. */
   onPlan?: (plan: PlanItem[]) => void
 }
@@ -89,6 +101,11 @@ export interface Choreography {
   replay(): void
   /** Inspect the page again for elements that were not there before. */
   refresh(): void
+  /**
+   * Plays what is on screen out, in reverse, and resolves when it is gone: await it before
+   * navigating away. Everything stays hidden until `replay()`.
+   */
+  leave(): Promise<void>
   /** Show everything, remove every trace and stop watching. */
   stop(): void
 }

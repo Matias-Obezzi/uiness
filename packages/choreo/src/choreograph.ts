@@ -10,7 +10,11 @@ interface Entry {
   /** Whether the observer has reported on it yet. */
   seen: boolean
   stopCounts: (() => void)[]
+  /** Puts the text back after a word by word entrance. */
+  unsplit?: () => void
 }
+
+type ViewTimelineClass = new (options: { subject: Element }) => AnimationTimeline
 
 const FALLBACK_EASING = 'cubic-bezier(0.16, 1, 0.3, 1)'
 
@@ -68,6 +72,7 @@ function acquireStyle() {
 const inert: Choreography = {
   plan: [],
   replay() {},
+  leave: () => Promise.resolve(),
   refresh() {},
   stop() {},
 }
@@ -76,6 +81,49 @@ const easeOutCubic = (t: number) => 1 - (1 - t) ** 3
 
 function token(name: string) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+}
+
+/** Top to bottom in rows, then left to right: the order a cascade plays in. */
+function readingOrder(a: { item: PlanItem }, b: { item: PlanItem }) {
+  const ra = a.item.element.getBoundingClientRect()
+  const rb = b.item.element.getBoundingClientRect()
+  return Math.round(ra.top / 8) - Math.round(rb.top / 8) || ra.left - rb.left
+}
+
+/**
+ * Wraps every word under `el` in its own inline box, and returns how to put the original
+ * text nodes back, the same nodes, so a framework holding them still finds them.
+ */
+function splitWords(el: HTMLElement) {
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
+  const texts: Text[] = []
+  for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+    if (node.nodeValue?.trim()) texts.push(node as Text)
+  }
+  const words: HTMLElement[] = []
+  const swaps: [Text, Node[]][] = []
+  for (const text of texts) {
+    const parts = (text.nodeValue ?? '')
+      .split(/(\s+)/)
+      .filter(Boolean)
+      .map((part) => {
+        if (!part.trim()) return document.createTextNode(part)
+        const word = document.createElement('span')
+        word.style.display = 'inline-block'
+        word.textContent = part
+        words.push(word)
+        return word
+      })
+    text.replaceWith(...parts)
+    swaps.push([text, parts])
+  }
+  const restore = () => {
+    for (const [text, parts] of swaps) {
+      parts[0]?.parentNode?.insertBefore(text, parts[0])
+      for (const part of parts) part.parentNode?.removeChild(part)
+    }
+  }
+  return { words, restore }
 }
 
 function documentOrder(a: PlanItem, b: PlanItem) {
@@ -106,6 +154,7 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
     reducedMotion = 'skip',
     counters = true,
     debug = false,
+    onEnter,
     onPlan,
   } = options
 
@@ -115,10 +164,14 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
   const fadeOnly = reduced && reducedMotion === 'fade'
   const canAnimate = enabled && typeof (root as HTMLElement).animate === 'function'
   const canObserve = typeof IntersectionObserver === 'function'
+  const ViewTimeline = (globalThis as { ViewTimeline?: ViewTimelineClass }).ViewTimeline
+  const scrubbing = !!options.scrub && canAnimate && typeof ViewTimeline === 'function'
   let easing = options.easing || token('--easing-emphasized') || FALLBACK_EASING
 
   const scanner = createScanner(options)
   const entries = new Map<Element, Entry>()
+  // Words in a cascade wait on top of the delay the whole element gets.
+  const lag = new WeakMap<Animation, number>()
   const units = new WeakSet<Element>()
   const releaseStyle = acquireStyle()
   let legend: HTMLElement | null = null
@@ -138,6 +191,21 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
     entry.animations = []
     for (const stopCount of entry.stopCounts) stopCount()
     entry.stopCounts = []
+    entry.unsplit?.()
+    entry.unsplit = undefined
+  }
+
+  /** Starts `frames` on `target`, paused unless the scroll drives it. */
+  const run = (
+    target: Element,
+    frames: ReturnType<typeof framesFor>,
+    timing: KeyframeAnimationOptions,
+  ) => {
+    const list = [animateSafely(target, frames.own, timing)]
+    if (frames.added)
+      list.push(animateSafely(target, frames.added, { ...timing, composite: 'add' }))
+    if (!timing.timeline) for (const animation of list) animation.pause()
+    return list
   }
 
   /** Holds the element on its first frame until it is time to play. */
@@ -151,23 +219,45 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
       entry.state = 'done'
       return
     }
-    const frames = framesFor(entry.item.effect, {
+    // Words are only split once they play: until then the element waits whole, faded out.
+    const effect = entry.item.effect === 'words' ? 'fade' : entry.item.effect
+    const frames = framesFor(effect, {
       distance: entry.item.role === 'button' ? distance / 2 : distance,
       opacity: Number.isNaN(opacity) ? 1 : opacity,
       fadeOnly,
     })
-    const timing: KeyframeAnimationOptions = {
-      duration: fadeOnly ? Math.min(duration, 250) : duration,
-      fill: 'both',
-    }
-    const own = animateSafely(el, frames.own, timing)
-    own.pause()
-    entry.animations.push(own)
-    if (frames.added) {
-      const added = animateSafely(el, frames.added, { ...timing, composite: 'add' })
-      added.pause()
-      entry.animations.push(added)
-    }
+    const timing = (
+      scrubbing && ViewTimeline
+        ? {
+            fill: 'both',
+            timeline: new ViewTimeline({ subject: el }),
+            rangeStart: 'entry 0%',
+            rangeEnd: 'cover 40%',
+          }
+        : { duration: fadeOnly ? Math.min(duration, 250) : duration, fill: 'both' }
+    ) as KeyframeAnimationOptions
+    entry.animations = run(el, frames, timing)
+  }
+
+  /**
+   * Swaps the whole element's fade for one per word.
+   * shortcut: the words stay split for the length of the entrance, so a framework rewriting
+   * that text in that window writes to the detached original; split later if that bites.
+   */
+  const splitIntoWords = (entry: Entry) => {
+    const el = entry.item.element
+    if (entry.item.effect !== 'words' || fadeOnly || !(el instanceof HTMLElement)) return
+    const { words, restore } = splitWords(el)
+    if (words.length === 0) return
+    for (const animation of entry.animations) animation.cancel()
+    entry.unsplit = restore
+    const step = Math.min(stagger / 2, maxStagger / words.length)
+    const frames = framesFor('words', { distance, opacity: 1, fadeOnly })
+    entry.animations = words.flatMap((word, i) => {
+      const list = run(word, frames, { duration, fill: 'both' })
+      for (const animation of list) lag.set(animation, i * step)
+      return list
+    })
   }
 
   const show = (entry: Entry) => {
@@ -209,23 +299,27 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
   const play = (entry: Entry, delay: number) => {
     if (entry.state !== 'hidden') return
     entry.state = 'playing'
+    onEnter?.(entry.item)
     const total = delay + entry.item.delay
+    splitIntoWords(entry)
     const animations = entry.animations
     for (const animation of animations) {
-      animation.effect?.updateTiming({ delay: total })
+      animation.effect?.updateTiming({ delay: total + (lag.get(animation) ?? 0) })
       animation.play()
     }
     if (counters && !reduced) for (const el of entry.item.numbers) count(entry, el, total)
-    const first = animations[0]
-    if (!first) {
+    if (animations.length === 0) {
       entry.state = 'done'
     } else {
-      first.finished
+      // Every one, not the first: the last word ends well after the first.
+      Promise.all(animations.map((animation) => animation.finished))
         .then(() => {
           // Drop the fill so the element answers to its own styles again.
           if (entry.animations !== animations) return
           for (const animation of animations) animation.cancel()
           entry.animations = []
+          entry.unsplit?.()
+          entry.unsplit = undefined
           entry.state = 'done'
         })
         .catch(() => {})
@@ -251,11 +345,7 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
             else if (inside) arriving.push(entry)
             else if (!once && !record.isIntersecting && entry.state === 'done') hide(entry)
           }
-          arriving.sort((a, b) => {
-            const ra = a.item.element.getBoundingClientRect()
-            const rb = b.item.element.getBoundingClientRect()
-            return Math.round(ra.top / 8) - Math.round(rb.top / 8) || ra.left - rb.left
-          })
+          arriving.sort(readingOrder)
           arriving.forEach((entry, i) => {
             play(entry, Math.min(i * stagger, maxStagger))
           })
@@ -280,7 +370,10 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
       const entry: Entry = { item, animations: [], state: 'hidden', seen: false, stopCounts: [] }
       entries.set(item.element, entry)
       mark(item)
-      if (io) {
+      if (scrubbing) {
+        // The scroll plays it; there is nothing to wait for.
+        hide(entry)
+      } else if (io) {
         hide(entry)
         io.observe(item.element)
       } else {
@@ -398,6 +491,7 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
       if (stopped) return
       for (const entry of entries.values()) {
         hide(entry)
+        if (scrubbing) continue
         entry.seen = true
         io?.unobserve(entry.item.element)
         io?.observe(entry.item.element)
@@ -408,6 +502,37 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
       for (const el of Array.from(entries.keys())) if (!el.isConnected) drop(el)
       register(scanner.rescan(root, units))
       changed()
+    },
+    leave() {
+      if (stopped || !canAnimate || scrubbing) return Promise.resolve()
+      const leaving = Array.from(entries.values())
+        .filter((entry) => {
+          if (entry.state === 'hidden') return false
+          const r = entry.item.element.getBoundingClientRect()
+          return r.bottom > 0 && r.right > 0 && r.top < innerHeight && r.left < innerWidth
+        })
+        .sort(readingOrder)
+      return Promise.all(
+        leaving.map((entry, i) => {
+          hide(entry)
+          // Not hidden, so the observer cannot start it again halfway out.
+          entry.state = 'playing'
+          const animations = entry.animations
+          for (const animation of animations) {
+            // Played backward, the end delay is what waits first.
+            animation.effect?.updateTiming({
+              duration: duration / 2,
+              endDelay: Math.min(i * stagger, maxStagger) / 2,
+            })
+            animation.reverse()
+          }
+          return Promise.all(animations.map((animation) => animation.finished))
+            .then(() => {
+              if (entry.animations === animations) hide(entry)
+            })
+            .catch(() => {})
+        }),
+      ).then(() => {})
     },
     stop() {
       if (stopped) return

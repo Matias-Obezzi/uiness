@@ -57,7 +57,7 @@ Or with no build step at all, options on the tag:
 - **Adds touches.** A lift on cards and a press on buttons, only where the element has no transitions of its own.
 - **Respects the reader.** Nothing moves with `prefers-reduced-motion`, or only fades with `reducedMotion: 'fade'`. Printing shows everything.
 
-Steer it from the markup with `data-choreo="off"`, `data-choreo="left"` (any effect), `data-choreo="group"` and `data-choreo-delay="200"`, or from options: `effects`, `exclude`, `duration`, `stagger`, `distance`, `easing`, `offset`, `once`, `intro`, `observe`, `hover`, `counters`, `max`, `reducedMotion` and `debug`, which outlines everything found by role.
+Steer it from the markup with `data-choreo="off"`, `data-choreo="left"` (any effect), `data-choreo="group"` and `data-choreo-delay="200"`, or from options: `effects`, `exclude`, `duration`, `stagger`, `distance`, `easing`, `offset`, `once`, `intro`, `observe`, `hover`, `counters`, `max`, `reducedMotion`, `scrub` (entrances follow the scroll), `onEnter` and `debug`, which outlines everything found by role. Besides the directions there are `rotate`, `flip` and `words`, which brings a line in word by word. `leave()` plays what is on screen out before navigating away.
 
 `scan(root)` only inspects and returns the plan without touching the page.
 

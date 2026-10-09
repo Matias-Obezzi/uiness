@@ -17,6 +17,8 @@ export interface ChoreoControls {
   replay(): void
   /** Inspect the page again for elements that were not there before. */
   refresh(): void
+  /** Play what is on screen out, resolving when it is gone. */
+  leave(): Promise<void>
   /** What was found, updated as the page changes. */
   plan: PlanItem[]
 }
@@ -32,12 +34,15 @@ export function useChoreo({
   root,
   enabled = true,
   onPlan,
+  onEnter,
   ...options
 }: UseChoreoOptions = {}): ChoreoControls {
   const instance = React.useRef<Choreography | null>(null)
   const [plan, setPlan] = React.useState<PlanItem[]>([])
   const onPlanRef = React.useRef(onPlan)
   onPlanRef.current = onPlan
+  const onEnterRef = React.useRef(onEnter)
+  onEnterRef.current = onEnter
   // Options arrive as a fresh object every render; only their content should restart it.
   const key = JSON.stringify(options)
 
@@ -52,6 +57,7 @@ export function useChoreo({
         setPlan(next)
         onPlanRef.current?.(next)
       },
+      onEnter: (item) => onEnterRef.current?.(item),
     })
     instance.current = choreo
     return () => {
@@ -64,6 +70,7 @@ export function useChoreo({
     () => ({
       replay: () => instance.current?.replay(),
       refresh: () => instance.current?.refresh(),
+      leave: () => instance.current?.leave() ?? Promise.resolve(),
       plan,
     }),
     [plan],
@@ -96,6 +103,8 @@ export function Choreo({
   observe,
   reducedMotion,
   debug,
+  scrub,
+  onEnter,
   onPlan,
   enabled,
   ...props
@@ -120,6 +129,8 @@ export function Choreo({
     observe,
     reducedMotion,
     debug,
+    scrub,
+    onEnter,
     onPlan,
     enabled,
   })

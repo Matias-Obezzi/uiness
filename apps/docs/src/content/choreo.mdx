@@ -45,9 +45,10 @@ import { choreograph } from '@uiness/choreo/core'
 
 const choreo = choreograph({ root: document.querySelector('main') })
 
-choreo.replay()  // hide everything and play it again
-choreo.refresh() // look for elements added since
-choreo.stop()    // show everything and remove every trace
+choreo.replay()      // hide everything and play it again
+choreo.refresh()     // look for elements added since
+await choreo.leave() // play what is on screen out
+choreo.stop()        // show everything and remove every trace
 ```
 
 For a site without a bundler there is a build that runs on its own. Options go on the script tag:
@@ -55,6 +56,8 @@ For a site without a bundler there is a build that runs on its own. Options go o
 ```html
 <script src="https://unpkg.com/@uiness/choreo/dist/auto.iife.js" data-duration="800" defer></script>
 ```
+
+Every option that is a number, a flag or a word works there: `data-max-stagger="400"`, `data-offset="0.2"`, `data-scrub`, `data-reduced-motion="fade"`.
 
 It exposes the running instance as `window.choreo`.
 
@@ -92,7 +95,33 @@ Or change the defaults for a role:
 <Choreo effects={{ heading: 'up', media: 'clip' }} exclude=".no-motion" />
 ```
 
-Effects are `fade`, `up`, `down`, `left`, `right`, `scale`, `blur`, `zoom`, `clip`, `draw` and `none`.
+Effects are `fade`, `up`, `down`, `left`, `right`, `scale`, `blur`, `zoom`, `clip`, `draw`, `rotate`, `flip`, `words` and `none`.
+
+## Words, scrubbing and leaving
+
+<ComponentPreview name="choreo-more" align="start" />
+
+`words` brings a line in word by word, for headings and short copy. Each word is wrapped in its own box only while it plays, then the original text nodes are put back, the same nodes, so React still owns them.
+
+```tsx
+<Choreo effects={{ heading: 'words' }} />
+<h1 data-choreo="words">Every word on its own</h1>
+```
+
+`scrub` ties each entrance to the scroll position instead of a clock: it plays forward as the element scrolls in and backward as it scrolls out. It needs scroll driven animations; where a browser has none, entrances play on their own as usual.
+
+`leave()` plays what is on screen out, in reverse and in reading order, and resolves when it is gone. Await it before navigating to get an exit, and call `replay()` to bring everything back:
+
+```tsx
+const choreo = useChoreo()
+
+async function go(to: string) {
+  await choreo.leave()
+  navigate(to)
+}
+```
+
+`onEnter` is called with each element as it starts to come in, for analytics or anything else that should happen alongside.
 
 ## Props
 
@@ -114,9 +143,11 @@ Effects are `fade`, `up`, `down`, `left`, `right`, `scale`, `blur`, `zoom`, `cli
 | `max` | `400` | Stop after this many elements. |
 | `reducedMotion` | `'skip'` | With reduced motion asked for, do nothing, or `'fade'` only. |
 | `debug` | `false` | Outline everything found, colored by role, with a legend. |
+| `scrub` | `false` | Tie entrances to the scroll position. Needs scroll driven animations. |
+| `onEnter` | | Called with each element as it starts to come in. |
 | `onPlan` | | Called with the plan each time it changes. |
 
-`useChoreo(options)` does the same from a hook and returns `replay`, `refresh` and the current `plan`. `scan(root)` only inspects: it returns the plan without touching the page.
+`useChoreo(options)` does the same from a hook and returns `replay`, `refresh`, `leave` and the current `plan`. `scan(root)` only inspects: it returns the plan without touching the page.
 
 ## Notes
 

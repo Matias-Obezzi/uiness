@@ -50,6 +50,28 @@ export function framesFor(
         ],
         added: [{ transform: `translateY(${distance}px)` }, { transform: 'none' }],
       }
+    case 'rotate':
+      return {
+        own: fade,
+        added: [{ transform: `translateY(${d}) rotate(-4deg)` }, { transform: 'none' }],
+      }
+    case 'flip':
+      return {
+        own: [
+          { opacity: 0, transformOrigin: 'center top' },
+          { opacity, transformOrigin: 'center top' },
+        ],
+        added: [{ transform: 'perspective(800px) rotateX(-60deg)' }, { transform: 'none' }],
+      }
+    case 'words':
+      // Each word gets this; the element itself stays put.
+      return {
+        own: [
+          { opacity: 0, filter: 'blur(6px)' },
+          { opacity: 1, filter: 'blur(0px)' },
+        ],
+        added: [{ transform: 'translateY(0.35em)' }, { transform: 'none' }],
+      }
     case 'draw':
       return {
         own: [
