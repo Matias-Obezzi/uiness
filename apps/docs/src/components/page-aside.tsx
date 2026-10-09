@@ -143,10 +143,13 @@ export function PageAside({
         {info?.updated && (
           <p className="flex items-center gap-2">
             <CalendarIcon className="size-3.5" aria-hidden />
-            Updated{' '}
-            <time dateTime={info.updated}>
-              {new Date(info.updated).toLocaleDateString('en', { dateStyle: 'medium' })}
-            </time>
+            {/* One flex item, or the gap would add to the space before the date. */}
+            <span>
+              Updated{' '}
+              <time dateTime={info.updated}>
+                {new Date(info.updated).toLocaleDateString('en', { dateStyle: 'medium' })}
+              </time>
+            </span>
           </p>
         )}
         {installed > 0 && (
