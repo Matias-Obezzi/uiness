@@ -8,7 +8,7 @@ import { Choreo } from '@/components/ui/choreo'
 import { findPage, pageHref } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { mostInstalled, useUsage } from '~/lib/usage'
-import { CodeBlock } from './code-block'
+import { HeroCommand } from './hero-command'
 import { Logo } from './logo'
 
 const features = [
@@ -111,21 +111,14 @@ export function Home() {
             component registry that plays well with the tools you already use. Open source, zero
             runtime dependencies.
           </p>
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-wrap items-center gap-3">
+            <HeroCommand className="w-full max-w-md flex-1 sm:w-auto" />
             <Button asChild size="lg">
               <Link to="/docs/installation">
                 Get started <ArrowRightIcon />
               </Link>
             </Button>
-            <Button asChild size="lg" variant="outline">
-              <Link to="/docs/components/button">Browse components</Link>
-            </Button>
           </div>
-          <CodeBlock
-            code={`npx shadcn@latest add ${site.registryNamespace}/island`}
-            lang="bash"
-            className="max-w-md"
-          />
           <p className="h-5 text-muted-foreground text-sm tabular-nums">
             {downloads &&
               downloads.total > 0 &&
