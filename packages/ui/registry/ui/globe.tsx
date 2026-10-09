@@ -387,10 +387,11 @@ function Globe({
     const dy = e.clientY - lastPointerRef.current.y
     lastPointerRef.current = { x: e.clientX, y: e.clientY }
 
+    // The surface follows the pointer: a larger tilt moves the facing side down the screen.
     yawRef.current += dx * 0.006
-    tiltRef.current -= dy * 0.006
+    tiltRef.current += dy * 0.006
     velXRef.current = dx * 0.006
-    velYRef.current = -dy * 0.006
+    velYRef.current = dy * 0.006
   }
 
   const onPointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
