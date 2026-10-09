@@ -7,6 +7,7 @@ export default function ThreeStageDemo() {
   return (
     <div className="relative aspect-[4/3] w-full max-w-2xl overflow-hidden rounded-xl border bg-muted/20">
       <Stage
+        className="size-full"
         frameloop="demand"
         onSetup={(ctx) => {
           const { THREE, scene, camera } = ctx
