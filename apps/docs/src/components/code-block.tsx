@@ -2,10 +2,16 @@ import { type ReactNode, useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { CopyButton } from '@/components/ui/copy-button'
 import { cn } from '@/lib/utils'
+import { track } from '../lib/metrics'
 
 /** The registry's copy button, sized down for a code block's corner. */
 const copyClass =
   "size-7 text-muted-foreground hover:text-foreground [&_svg:not([class*='size-'])]:size-3.5"
+
+const INSTALL = /^(npx|npm|pnpm|yarn|bunx?)\s/
+
+/** Install commands count apart from the rest of the code. */
+const copied = (text: string) => track(INSTALL.test(text) ? 'install' : 'code')
 
 type Highlighter = Awaited<ReturnType<typeof createCore>>
 let highlighterPromise: Promise<Highlighter> | null = null
@@ -91,7 +97,7 @@ export function CodeBlock({
       {toolbar ? (
         <div className="flex items-center justify-between gap-2 border-b py-1.5 pr-2 pl-3">
           {toolbar}
-          <CopyButton value={trimmed} label="Copy code" className={copyClass} />
+          <CopyButton value={trimmed} label="Copy code" className={copyClass} onCopy={copied} />
         </div>
       ) : (
         <>
@@ -103,6 +109,7 @@ export function CodeBlock({
           <CopyButton
             value={trimmed}
             label="Copy code"
+            onCopy={copied}
             className={cn(
               copyClass,
               'absolute top-2 right-2 z-(--z-raised,10) opacity-0 transition-opacity focus-visible:opacity-100 group-hover:opacity-100 data-[state=copied]:opacity-100',
