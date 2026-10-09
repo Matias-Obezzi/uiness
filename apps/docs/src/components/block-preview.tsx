@@ -3,7 +3,8 @@ import { type ComponentType, useState } from 'react'
 import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmented-control'
 import { cn } from '@/lib/utils'
 import { toProjectImports } from '~/lib/registry'
-import { themeScope } from '~/lib/themes'
+import { useThemeChoice } from '~/lib/theme-choice'
+import { defaultTheme, presetCss, presets, sameTheme, themeScope } from '~/lib/themes'
 import { CodeBlock } from './code-block'
 
 // The tests sit next to the blocks; importing them would pull vitest into the page, which
@@ -40,18 +41,25 @@ type Width = (typeof widths)[number]['id']
 export interface BlockPreviewProps {
   /** Registry name of the block, like `hero-01`. */
   name: string
+  /**
+   * A preset the block is shown in, like `Neon`, while the reader keeps the default theme. A
+   * theme they pick in Customize replaces it.
+   */
+  theme?: string
 }
 
 /**
  * A block at full width, with the viewport widths it adapts to and its source. Blocks lay
  * themselves out with container queries, so narrowing the frame here is the real thing.
  */
-export function BlockPreview({ name }: BlockPreviewProps) {
+export function BlockPreview({ name, theme }: BlockPreviewProps) {
   const key = `../../../../packages/ui/registry/blocks/${name}.tsx`
   const Block = modules[key]?.[exportName(name)] as ComponentType | undefined
   const source = sources[key]
   const [tab, setTab] = useState<'preview' | 'code'>('preview')
   const [width, setWidth] = useState<Width>('desktop')
+  const choice = useThemeChoice()
+  const preset = sameTheme(choice, defaultTheme) ? presets.find((p) => p.name === theme) : undefined
 
   if (!Block || source === undefined) {
     return (
@@ -105,8 +113,10 @@ export function BlockPreview({ name }: BlockPreviewProps) {
       </div>
       {tab === 'preview' ? (
         <div className="mt-3 overflow-hidden rounded-xl border bg-muted/30">
+          {preset && <style>{presetCss(preset)}</style>}
           <div
             {...themeScope}
+            data-preset={preset?.name}
             className={cn(
               'mx-auto overflow-hidden bg-background transition-[max-width] duration-(--duration-slow,300ms) ease-(--easing-emphasized,ease-out)',
               width !== 'desktop' && 'border-x',
@@ -115,6 +125,11 @@ export function BlockPreview({ name }: BlockPreviewProps) {
           >
             <Block />
           </div>
+          {preset && (
+            <p className="border-t px-3 py-2 text-muted-foreground text-xs">
+              Shown in the {preset.name} theme. Pick one in Customize and it takes over.
+            </p>
+          )}
         </div>
       ) : (
         <CodeBlock code={toProjectImports(source)} className="mt-3" />

@@ -274,6 +274,55 @@ export const presets: ThemePreset[] = [
   { name: 'Rosé', theme: { base: 'zinc', accent: 'rose', radius: 1, custom: noCustom() } },
   { name: 'Lemon', theme: { base: 'gray', accent: 'yellow', radius: 0.3, custom: noCustom() } },
   { name: 'Mono', theme: { base: 'neutral', accent: 'none', radius: 0, custom: noCustom() } },
+  {
+    // For games: an electric cyan on deep violet, sharp corners, and charts that read as
+    // rarities (blue rare, magenta epic, gold legendary) and as win and loss.
+    name: 'Neon',
+    theme: {
+      base: 'zinc',
+      accent: 'none',
+      radius: 0.3,
+      custom: {
+        light: {
+          background: 'oklch(0.985 0.006 285)',
+          primary: 'oklch(0.58 0.14 215)',
+          'primary-foreground': 'oklch(0.985 0.01 200)',
+          ring: 'oklch(0.58 0.14 215)',
+          'chart-1': 'oklch(0.55 0.2 255)',
+          'chart-2': 'oklch(0.6 0.18 150)',
+          'chart-3': 'oklch(0.72 0.17 75)',
+          'chart-4': 'oklch(0.55 0.26 320)',
+          'chart-5': 'oklch(0.6 0.23 15)',
+          'sidebar-primary': 'oklch(0.58 0.14 215)',
+          'sidebar-ring': 'oklch(0.58 0.14 215)',
+        },
+        dark: {
+          background: 'oklch(0.14 0.035 285)',
+          card: 'oklch(0.18 0.045 285)',
+          popover: 'oklch(0.18 0.045 285)',
+          primary: 'oklch(0.86 0.16 195)',
+          'primary-foreground': 'oklch(0.18 0.05 220)',
+          secondary: 'oklch(0.24 0.05 285)',
+          muted: 'oklch(0.24 0.05 285)',
+          'muted-foreground': 'oklch(0.72 0.05 285)',
+          accent: 'oklch(0.24 0.05 285)',
+          border: 'oklch(0.75 0.12 300 / 18%)',
+          input: 'oklch(0.75 0.12 300 / 24%)',
+          ring: 'oklch(0.86 0.16 195)',
+          'chart-1': 'oklch(0.7 0.19 245)',
+          'chart-2': 'oklch(0.84 0.22 150)',
+          'chart-3': 'oklch(0.86 0.17 85)',
+          'chart-4': 'oklch(0.7 0.28 320)',
+          'chart-5': 'oklch(0.68 0.25 15)',
+          sidebar: 'oklch(0.18 0.045 285)',
+          'sidebar-primary': 'oklch(0.86 0.16 195)',
+          'sidebar-accent': 'oklch(0.24 0.05 285)',
+          'sidebar-border': 'oklch(0.75 0.12 300 / 18%)',
+          'sidebar-ring': 'oklch(0.86 0.16 195)',
+        },
+      },
+    },
+  },
 ]
 
 export const sameTheme = (a: ThemeChoice, b: ThemeChoice) => JSON.stringify(a) === JSON.stringify(b)
@@ -445,6 +494,20 @@ const SCOPE = '[data-theme-scope]'
  * site's own overlays (marked on the element, or inside it for a popper wrapper).
  */
 const PORTALS = `body > :not(#root, script, style, .${siteChrome}, :has(.${siteChrome}))`
+
+/**
+ * A preset worn by one preview, through `data-preset`, while the reader keeps the default
+ * theme: a block made for a look can show in it without changing anyone's choice.
+ */
+export function presetCss(preset: ThemePreset) {
+  const { light, dark } = themeVars(preset.theme)
+  const scope = `[data-preset="${preset.name}"]`
+  return [
+    block(scope, light),
+    block(`.dark ${scope}`, dark),
+    `${scope} {\n  color: var(--foreground);\n}`,
+  ].join('\n')
+}
 
 /**
  * The reader's theme, scoped to previews and to what demos open in portals. The site's chrome
