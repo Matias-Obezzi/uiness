@@ -3343,6 +3343,20 @@
       ]
     },
     {
+      "name": "video-player",
+      "type": "registry:ui",
+      "title": "Video Player",
+      "description": "A video with its own controls: a seek bar with what has loaded, volume, speed, captions, picture in picture, full screen and keyboard shortcuts.",
+      "dependencies": ["lucide-react", "radix-ui"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/video-player.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "hero-01",
       "type": "registry:block",
       "title": "Hero 01",

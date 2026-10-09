@@ -1,0 +1,54 @@
+A video with controls of its own, drawn with your theme: a seek bar that shows what has loaded and the time under the pointer, volume, playback speed, captions when the video has them, picture in picture and full screen. The controls hide while it plays and come back with any movement.
+
+<ComponentPreview name="video-player-demo" />
+
+## Installation
+
+<Install name="video-player" />
+
+## Usage
+
+```tsx
+import { VideoPlayer } from '@/components/ui/video-player'
+
+<VideoPlayer src="/launch.mp4" poster="/launch.jpg" className="aspect-video w-full">
+  <track kind="captions" src="/launch.vtt" srcLang="en" label="English" />
+</VideoPlayer>
+```
+
+It takes every attribute a `<video>` does (`src`, `poster`, `autoPlay`, `muted`, `loop`, `preload`, events) and passes them on; `<source>` and `<track>` go inside it. `className` sizes the frame around the video.
+
+## Keyboard
+
+The player takes focus, and these work anywhere inside it:
+
+| Keys | Action |
+| --- | --- |
+| <kbd>Space</kbd> or <kbd>K</kbd> | Play or pause |
+| <kbd>J</kbd> / <kbd>L</kbd> | Back or forward 10 seconds |
+| <kbd>←</kbd> / <kbd>→</kbd> | Back or forward 5 seconds |
+| <kbd>↑</kbd> / <kbd>↓</kbd> | Volume up or down |
+| <kbd>M</kbd> | Mute |
+| <kbd>F</kbd> | Full screen |
+| <kbd>C</kbd> | Captions, when there are some |
+| <kbd>0</kbd> to <kbd>9</kbd> | Jump to that tenth of the video |
+| <kbd>,</kbd> / <kbd>.</kbd> | One frame back or forward, paused |
+
+On the seek and volume sliders the arrows move the slider instead.
+
+## Notes
+
+- The controls are light on dark whatever the theme, since they sit on the picture; the played part of the seek bar takes the primary color.
+- Playback speed steps through `rates` with one button rather than a menu: a menu opens outside the player, where it would not show in full screen.
+- On a phone, a first tap brings the controls back instead of pausing, and full screen on iPhone hands the video to the system player.
+- Words go through `labels`, in every language pack.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `rates` | `[0.5, 1, 1.25, 1.5, 2]` | Rates the speed button steps through. |
+| `frameRate` | `30` | Frames per second, for stepping one frame with <kbd>,</kbd> and <kbd>.</kbd>. Browsers do not report it. |
+| `hideAfter` | `2500` | Milliseconds of stillness before the controls hide while playing. |
+| `videoClassName` | | Classes for the `<video>` itself. |
+| `labels` | | `{ player, play, pause, replay, mute, unmute, volume, seek, fullscreen, exitFullscreen, pictureInPicture, captions, speed(rate), progress(current, total) }`. |
