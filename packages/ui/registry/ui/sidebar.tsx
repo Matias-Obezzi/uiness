@@ -920,22 +920,26 @@ function SidebarView({ name, back, className, children, ...props }: SidebarViewP
       return
     }
     const sign = direction === 'forward' ? 1 : -1
+    // The coming view slides in whole and opaque; the one leaving moves a third as far and is
+    // gone by a third of the way, as stacked menus do on phones. Both crossing the full width
+    // while fading left the menu nearly empty for a frame halfway, which read as a flash.
     const frames =
       role === 'leaving'
         ? [
             { transform: 'translateX(0)', opacity: 1 },
-            { transform: `translateX(${-sign * 100}%)`, opacity: 0 },
+            { transform: `translateX(${-sign * 10}%)`, opacity: 0, offset: 0.35 },
+            { transform: `translateX(${-sign * 30}%)`, opacity: 0 },
           ]
-        : [
-            { transform: `translateX(${sign * 100}%)`, opacity: 0 },
-            { transform: 'translateX(0)', opacity: 1 },
-          ]
+        : [{ transform: `translateX(${sign * 100}%)` }, { transform: 'translateX(0)' }]
     const easing =
       getComputedStyle(el).getPropertyValue('--easing-sheet').trim() ||
       'cubic-bezier(0.32, 0.72, 0, 1)'
     const animation = el.animate(frames, {
       duration: tokenMs(el, '--duration-slow', 300),
       easing,
+      // The view that left holds its last frame until React unmounts it. Without this it
+      // snapped back, whole and in place over the new view, for the frame in between.
+      fill: role === 'leaving' ? 'forwards' : 'none',
     })
     if (role === 'leaving') animation.onfinish = () => finish(name)
     return () => {
