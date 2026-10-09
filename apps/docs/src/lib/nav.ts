@@ -354,6 +354,11 @@ const sections: NavSection[] = [
         'What fills an allowance, as one stacked bar with a legend.',
       ),
       page(
+        'components/video-player',
+        'Video Player',
+        'A video with its own controls, captions and keyboard shortcuts.',
+      ),
+      page(
         'components/button-group',
         'Button Group',
         'Related buttons in one surface, with a highlight that glides between them.',
@@ -674,6 +679,7 @@ const sections: NavSection[] = [
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
   '2026-10-09': [
+    'components/video-player',
     'motion/animated-beam',
     'motion/flickering-grid',
     'motion/flip-clock',
@@ -923,6 +929,7 @@ const groups: Record<string, Record<string, string[]>> = {
       'metric-card',
       'table',
       'usage-meter',
+      'video-player',
     ],
     Charts: ['bar-chart', 'chart', 'donut-chart', 'line-chart', 'sparkline'],
     Feedback: [
