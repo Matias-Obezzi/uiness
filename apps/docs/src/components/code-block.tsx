@@ -93,6 +93,12 @@ export function CodeBlock({
         'not-prose group relative overflow-hidden rounded-lg border bg-muted/40 text-sm dark:bg-black/40',
         className,
       )}
+      // Copying a selection with Ctrl+C counts like the button. Judged by the whole block, so
+      // part of an install command is still an install; the button writes to the clipboard
+      // directly and fires no copy event here, so nothing counts twice.
+      onCopy={() => {
+        if (document.getSelection()?.toString().trim()) copied(trimmed)
+      }}
     >
       {toolbar ? (
         <div className="flex items-center justify-between gap-2 border-b py-1.5 pr-2 pl-3">
