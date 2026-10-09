@@ -1,5 +1,5 @@
 import { ChevronRightIcon, MenuIcon, PaletteIcon, SearchIcon } from 'lucide-react'
-import { type ReactNode, useEffect, useId, useRef, useState } from 'react'
+import { type ReactNode, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import {
@@ -288,10 +288,10 @@ function SidebarNav({ onNavigate, className }: { onNavigate?: () => void; classN
   }, [pathname])
 
   // Bring the current link into view inside the sidebar, without moving the page itself.
-  // Waits for the fold to finish opening, so the link is where it will stay.
+  const mounted = useRef(false)
   // biome-ignore lint/correctness/useExhaustiveDependencies: each new page is the trigger
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  useLayoutEffect(() => {
+    const reveal = (behavior: ScrollBehavior) => {
       const nav = ref.current
       const link = nav?.querySelector<HTMLElement>('[aria-current="page"]')
       const scroller = nav?.closest<HTMLElement>('[data-sidebar-scroll]')
@@ -300,8 +300,19 @@ function SidebarNav({ onNavigate, className }: { onNavigate?: () => void; classN
       const at = link.getBoundingClientRect()
       // The sticky headings cover the top, so the link has to be clear of them too.
       if (at.top >= box.top + 96 && at.bottom <= box.bottom - 48) return
-      scroller.scrollTop += at.top - box.top - box.height / 2 + at.height / 2
-    }, 220)
+      const top = scroller.scrollTop + at.top - box.top - box.height / 2 + at.height / 2
+      scroller.scrollTo({ top, behavior })
+    }
+    // Mounting, the sidebar or the menu's copy of it: it sits on the link before the first
+    // paint instead of jumping there once shown.
+    if (!mounted.current) {
+      mounted.current = true
+      reveal('instant')
+    }
+    // Then, and on every new page, wait for a section that opens to finish, and glide to the
+    // link rather than jump. Already in view, nothing moves.
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches
+    const timer = setTimeout(() => reveal(reduce ? 'instant' : 'smooth'), 220)
     return () => clearTimeout(timer)
   }, [pathname])
 
