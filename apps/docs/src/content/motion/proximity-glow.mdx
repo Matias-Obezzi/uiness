@@ -1,0 +1,28 @@
+A group of cards whose borders light up near the pointer, brightest where it is closest, across every card at once, like a torch moved over them. Unlike [Spotlight](/docs/motion/spotlight)'s cards, which each light up only while the pointer is on them, the cards next to it glow too.
+
+<ComponentPreview name="proximity-glow-demo" />
+
+## Installation
+
+<Install name="proximity-glow" />
+
+## Usage
+
+```tsx
+import { ProximityGlow, ProximityGlowItem } from '@/components/ui/proximity-glow'
+
+<ProximityGlow className="grid gap-3 sm:grid-cols-3">
+  <ProximityGlowItem className="p-5">Ship fast</ProximityGlowItem>
+  <ProximityGlowItem className="p-5">Secure</ProximityGlowItem>
+  <ProximityGlowItem className="p-5">Quick</ProximityGlowItem>
+</ProximityGlow>
+```
+
+The pointer is followed without re-rendering React: each card gets its position as CSS variables, once a frame.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `radius` | `240` | How far from the pointer an edge still glows, in pixels. |
+| `color` | primary | Any CSS color. |

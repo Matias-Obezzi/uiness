@@ -1,0 +1,29 @@
+A star field flying at the viewer, each star a streak that grows as it nears. Press and hold on the area under it to jump to light speed.
+
+<ComponentPreview name="warp-demo" />
+
+## Installation
+
+<Install name="warp" />
+
+## Usage
+
+```tsx
+import { Warp } from '@/components/ui/warp'
+
+<section className="relative">
+  <Warp speed={1.5} />
+  <h2 className="relative">Into the void</h2>
+</section>
+```
+
+It fills its positioned parent and takes no clicks; the press is heard on the parent. It stops drawing off screen and in background tabs, and holds still with reduced motion.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `stars` | `400` | Stars in the field. |
+| `speed` | `1` | How fast they come. |
+| `boost` | `8` | Speed while pressed. `1` turns the jump off. |
+| `color` | foreground | Any CSS color. |

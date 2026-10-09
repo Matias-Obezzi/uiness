@@ -478,6 +478,10 @@ export const zh = {
   safari: {
     search: '搜索或输入网站名称',
   },
+  'scratch-reveal': {
+    hint: '刮开查看',
+    reveal: '显示隐藏的内容',
+  },
   'scroll-progress': {
     backToTop: '返回顶部',
   },

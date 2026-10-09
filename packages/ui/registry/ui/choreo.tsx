@@ -33,6 +33,7 @@ export const selfAnimated = [
   'parallax-grid',
   'compare',
   'scramble-text',
+  'split-text',
   'text-reveal',
   'odometer',
   'animated-list',

@@ -3173,6 +3173,176 @@
       ]
     },
     {
+      "name": "roll-text",
+      "type": "registry:ui",
+      "title": "Roll Text",
+      "description": "Letters that roll up on hover, each replaced by its copy from below, also as the label of a link or button.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/roll-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "split-text",
+      "type": "registry:ui",
+      "title": "Split Text",
+      "description": "Scattered, turned letters that fly together into the text as it comes into view.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/split-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "flickering-grid",
+      "type": "registry:ui",
+      "title": "Flickering Grid",
+      "description": "A canvas background of small squares flickering on and off.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/flickering-grid.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "warp",
+      "type": "registry:ui",
+      "title": "Warp",
+      "description": "A star field flying at the viewer, with a jump to light speed while pressed.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/warp.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "proximity-glow",
+      "type": "registry:ui",
+      "title": "Proximity Glow",
+      "description": "Card borders that light up near the pointer, across a whole group at once.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/proximity-glow.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pixel-trail",
+      "type": "registry:ui",
+      "title": "Pixel Trail",
+      "description": "A trail of square pixels behind the pointer that fade away.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/pixel-trail.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "scratch-reveal",
+      "type": "registry:ui",
+      "title": "Scratch Reveal",
+      "description": "A scratch card: content under a cover the pointer scratches off, or Enter reveals.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/scratch-reveal.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "animated-beam",
+      "type": "registry:ui",
+      "title": "Animated Beam",
+      "description": "A line between two elements with a pulse of light running along it.",
+      "registryDependencies": ["@uiness/utils"],
+      "css": {
+        "@keyframes animated-beam": {
+          "from": {
+            "stroke-dashoffset": "var(--beam-from)"
+          },
+          "to": {
+            "stroke-dashoffset": "var(--beam-to)"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/animated-beam.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "flip-clock",
+      "type": "registry:ui",
+      "title": "Flip Clock",
+      "description": "A split-flap display whose characters fall over to show the new value.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "css": {
+        "@keyframes flip-clock-top": {
+          "from": {
+            "transform": "rotateX(0deg)"
+          },
+          "to": {
+            "transform": "rotateX(-90deg)"
+          }
+        },
+        "@keyframes flip-clock-bottom": {
+          "from": {
+            "transform": "rotateX(90deg)"
+          },
+          "to": {
+            "transform": "rotateX(0deg)"
+          }
+        }
+      },
+      "files": [
+        {
+          "path": "registry/ui/flip-clock.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "stack-scroll",
+      "type": "registry:ui",
+      "title": "Stack Scroll",
+      "description": "Cards that pile up as the page scrolls, the ones underneath shrinking and dimming.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/stack-scroll.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "hero-01",
       "type": "registry:block",
       "title": "Hero 01",

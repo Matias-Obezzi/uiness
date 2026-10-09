@@ -1,0 +1,33 @@
+Cards that pile up as the page scrolls: each one sticks a little under the last, and the ones underneath shrink and dim as more land on them.
+
+<ComponentPreview name="stack-scroll-demo" />
+
+## Installation
+
+<Install name="stack-scroll" />
+
+## Usage
+
+```tsx
+import { StackScroll, StackScrollItem } from '@/components/ui/stack-scroll'
+
+<StackScroll top={96} offset={16}>
+  {steps.map((step, i) => (
+    <StackScrollItem key={step.title} index={i} className="h-64 rounded-2xl border bg-card p-6">
+      {step.title}
+    </StackScrollItem>
+  ))}
+</StackScroll>
+```
+
+It works in the page or in any scroller around it, as long as nothing between them clips with `overflow: hidden`, which would stop the cards from sticking. With reduced motion they still stack, without shrinking.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `top` | `96` | Where the first card sticks, in pixels from the top of the scroller. |
+| `offset` | `16` | How much of each card stays showing above the next. |
+| `shrink` | `0.05` | How much a card shrinks for each card stacked on it. |
+
+`StackScrollItem` takes its `index` in the stack.

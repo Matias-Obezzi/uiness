@@ -1,0 +1,30 @@
+A background of small squares flickering on and off, drawn on a canvas. Mask it to fade at the edges.
+
+<ComponentPreview name="flickering-grid-demo" />
+
+## Installation
+
+<Install name="flickering-grid" />
+
+## Usage
+
+```tsx
+import { FlickeringGrid } from '@/components/ui/flickering-grid'
+
+<section className="relative">
+  <FlickeringGrid className="[mask-image:radial-gradient(black,transparent_75%)]" />
+  <h2 className="relative">Signal acquired</h2>
+</section>
+```
+
+It fills its positioned parent and takes no clicks. It stops drawing off screen and in background tabs, and holds one still frame with reduced motion.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `squareSize` | `4` | Side of each square, in pixels. |
+| `gap` | `6` | Space between squares, in pixels. |
+| `flickerChance` | `0.3` | How often a square changes, per second. |
+| `maxOpacity` | `0.3` | Opacity of the brightest square. |
+| `color` | foreground | Any CSS color. |

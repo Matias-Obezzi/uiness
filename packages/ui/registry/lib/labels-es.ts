@@ -485,6 +485,10 @@ export const es = {
   safari: {
     search: 'Buscar o ingresar dirección web',
   },
+  'scratch-reveal': {
+    hint: 'Raspá para descubrir',
+    reveal: 'Mostrar el contenido oculto',
+  },
   'scroll-progress': {
     backToTop: 'Volver arriba',
   },

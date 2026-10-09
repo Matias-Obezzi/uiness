@@ -1,0 +1,27 @@
+Text whose letters roll up on hover, each one replaced by its copy from below, one after another. It also rolls when a link or button around it is hovered or focused, so it can be a button's label.
+
+<ComponentPreview name="roll-text-demo" />
+
+## Installation
+
+<Install name="roll-text" />
+
+## Usage
+
+```tsx
+import { RollText } from '@/components/ui/roll-text'
+
+<Button>
+  <RollText text="Get started" />
+</Button>
+```
+
+Screen readers read the text once, not letter by letter. With reduced motion it stays put.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `text` | | The words, as plain text. |
+| `stagger` | `25` | Milliseconds between one letter and the next. |
+| `duration` | `350` | Milliseconds each letter takes to roll. |

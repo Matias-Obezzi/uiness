@@ -478,6 +478,10 @@ export const en = {
   safari: {
     search: 'Search or enter website name',
   },
+  'scratch-reveal': {
+    hint: 'Scratch to reveal',
+    reveal: 'Reveal the hidden content',
+  },
   'scroll-progress': {
     backToTop: 'Back to top',
   },

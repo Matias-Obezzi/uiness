@@ -487,6 +487,10 @@ export const pt = {
   safari: {
     search: 'Buscar ou digitar endereço do site',
   },
+  'scratch-reveal': {
+    hint: 'Raspe para revelar',
+    reveal: 'Mostrar o conteúdo oculto',
+  },
   'scroll-progress': {
     backToTop: 'Voltar ao topo',
   },

@@ -1,0 +1,37 @@
+A line between two elements with a pulse of light running along it, for diagrams of what talks to what.
+
+<ComponentPreview name="animated-beam-demo" />
+
+## Installation
+
+<Install name="animated-beam" />
+
+## Usage
+
+```tsx
+import { AnimatedBeam } from '@/components/ui/animated-beam'
+
+const box = useRef(null)
+const from = useRef(null)
+const to = useRef(null)
+
+<div ref={box} className="relative">
+  <div ref={from}>App</div>
+  <div ref={to}>API</div>
+  <AnimatedBeam containerRef={box} fromRef={from} toRef={to} curvature={-40} />
+</div>
+```
+
+Put the nodes above the beam (`relative z-10`) so it runs under them. It follows both ends as the layout changes. With reduced motion only the line is drawn.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `containerRef`, `fromRef`, `toRef` | | The positioned container and both ends inside it. |
+| `curvature` | `0` | How far the line bows, in pixels; negative bows the other way. |
+| `duration` | `3` | Seconds for a pulse to travel the line. |
+| `delay` | `0` | Seconds before the first pulse. |
+| `reverse` | `false` | Travel from `to` to `from`. |
+| `pulse` | `0.25` | Length of the pulse, as a share of the line. |
+| `color` | primary | Any CSS color. |

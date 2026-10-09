@@ -1,0 +1,25 @@
+A split-flap display, like an old airport board: when a character changes, its top half falls to show the new one. Give it a time, a countdown or any short text.
+
+<ComponentPreview name="flip-clock-demo" />
+
+## Installation
+
+<Install name="flip-clock" />
+
+## Usage
+
+```tsx
+import { FlipClock } from '@/components/ui/flip-clock'
+
+<FlipClock value={`${hours}:${minutes}:${seconds}`} className="text-5xl" />
+```
+
+Only the characters that change flip. Colons, dots and spaces sit between flaps. Screen readers read the value, not the flaps; with reduced motion characters change in place.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` | | What it shows, a string or a number. |
+| `duration` | `600` | Milliseconds for a flap to fall. |
+| `separators` | `':.,/ -'` | Characters that sit between flaps instead of in one. |
