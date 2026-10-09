@@ -8,16 +8,29 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
+    env:
+      # A pull request checks the packages it changes and the ones that depend on them. Main,
+      # after a merge, checks everything.
+      AFFECTED: ${{ github.event_name == 'pull_request' && '--affected' || '' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Turbo compares against the base branch, so it needs the history back to it.
+          fetch-depth: 0
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      # Builds of unchanged packages are replayed from the last run instead of redone.
+      - uses: actions/cache@v4
+        with:
+          path: .turbo/cache
+          key: turbo-${{ runner.os }}-${{ github.sha }}
+          restore-keys: turbo-${{ runner.os }}-
       - run: pnpm lint
       - run: pnpm lint:react
-      - run: pnpm typecheck
-      - run: pnpm test
-      - run: pnpm build
+      - run: pnpm typecheck $AFFECTED
+      - run: pnpm test $AFFECTED
+      - run: pnpm build $AFFECTED
