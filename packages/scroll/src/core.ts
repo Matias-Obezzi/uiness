@@ -84,6 +84,17 @@ export function mapRange(
   return clamp(out, lo, hi)
 }
 
+/**
+ * Where the scrolling area of `container` starts on screen, or 0 for the page. Inside the
+ * border: scroll positions and sticky offsets count from there, while the bounding box starts
+ * at the border's outer edge.
+ */
+export function scrollportStart(container: HTMLElement | null, axis: Axis): number {
+  if (!container) return 0
+  const rect = container.getBoundingClientRect()
+  return axis === 'y' ? rect.top + container.clientTop : rect.left + container.clientLeft
+}
+
 interface Geometry {
   position: number
   size: number
@@ -93,10 +104,10 @@ interface Geometry {
 function measure(target: Element, axis: Axis, container?: HTMLElement | null): Geometry {
   const rect = target.getBoundingClientRect()
   if (container) {
-    const c = container.getBoundingClientRect()
+    const start = scrollportStart(container, axis)
     return axis === 'y'
-      ? { position: rect.top - c.top, size: rect.height, viewport: container.clientHeight }
-      : { position: rect.left - c.left, size: rect.width, viewport: container.clientWidth }
+      ? { position: rect.top - start, size: rect.height, viewport: container.clientHeight }
+      : { position: rect.left - start, size: rect.width, viewport: container.clientWidth }
   }
   return axis === 'y'
     ? { position: rect.top, size: rect.height, viewport: window.innerHeight }
@@ -131,15 +142,20 @@ export function progressFrom(
 export function scrollParent(target: Element, axis: Axis = 'y'): HTMLElement | null {
   if (typeof getComputedStyle !== 'function') return null
   for (let el = target.parentElement; el; el = el.parentElement) {
-    const style = getComputedStyle(el)
-    const overflow = axis === 'y' ? style.overflowY : style.overflowX
-    if (overflow !== 'auto' && overflow !== 'scroll' && overflow !== 'overlay') continue
-    // Declaring `overflow: auto` is not the same as having somewhere to go: a box that fits its
-    // content never scrolls, and picking it would freeze the element against a still container.
-    const room = axis === 'y' ? el.scrollHeight > el.clientHeight : el.scrollWidth > el.clientWidth
-    if (room) return el
+    if (scrolls(el, axis)) return el
   }
   return null
+}
+
+/** Whether `el` itself scrolls on `axis`: it allows it and has more than it shows. */
+export function scrolls(el: Element, axis: Axis): boolean {
+  if (typeof getComputedStyle !== 'function') return false
+  const style = getComputedStyle(el)
+  const overflow = axis === 'y' ? style.overflowY : style.overflowX
+  if (overflow !== 'auto' && overflow !== 'scroll' && overflow !== 'overlay') return false
+  // Declaring `overflow: auto` is not the same as having somewhere to go: a box that fits its
+  // content never scrolls, and picking it would freeze the element against a still container.
+  return axis === 'y' ? el.scrollHeight > el.clientHeight : el.scrollWidth > el.clientWidth
 }
 
 /**
@@ -232,26 +248,35 @@ export function observeScrollProgress(
 }
 
 /**
- * Which of several elements is closest to a line across the viewport, at `anchor`
- * (0 top, 1 bottom, default 0.5). Returns -1 when the list is empty.
+ * Which of several elements is closest to a line across the viewport, at `anchor` (0 at the
+ * start, 1 at the end, default 0.5). On `axis` `x` the line runs top to bottom and the start is
+ * the left edge. Returns -1 when the list is empty.
  */
 export function activeIndexAt(
   elements: ArrayLike<Element>,
   anchor = 0.5,
   container?: HTMLElement | null,
+  axis: Axis = 'y',
 ): number {
   if (elements.length === 0) return -1
-  const line = container
-    ? container.getBoundingClientRect().top + container.clientHeight * anchor
-    : window.innerHeight * anchor
+  const extent = container
+    ? axis === 'y'
+      ? container.clientHeight
+      : container.clientWidth
+    : axis === 'y'
+      ? window.innerHeight
+      : window.innerWidth
+  const line = scrollportStart(container ?? null, axis) + extent * anchor
   let best = 0
   let bestDistance = Number.POSITIVE_INFINITY
   for (let i = 0; i < elements.length; i++) {
     const el = elements[i]
     if (!el) continue
     const rect = el.getBoundingClientRect()
+    const start = axis === 'y' ? rect.top : rect.left
+    const end = axis === 'y' ? rect.bottom : rect.right
     // Zero while the line is inside the element, else the distance to the nearest edge.
-    const distance = line < rect.top ? rect.top - line : line > rect.bottom ? line - rect.bottom : 0
+    const distance = line < start ? start - line : line > end ? line - end : 0
     if (distance < bestDistance) {
       bestDistance = distance
       best = i
