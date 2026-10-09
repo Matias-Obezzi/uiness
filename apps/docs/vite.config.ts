@@ -6,6 +6,7 @@ import react from '@vitejs/plugin-react'
 import remarkGfm from 'remark-gfm'
 import { defineConfig, type Plugin } from 'vite'
 import { docsMarkdown } from './scripts/docs-markdown.ts'
+import { pageMeta } from './scripts/page-meta.ts'
 
 const root = fileURLToPath(new URL('.', import.meta.url))
 
@@ -80,6 +81,7 @@ export default defineConfig({
     tailwindcss(),
     slowImages(),
     docsMarkdown(),
+    pageMeta(),
   ],
   resolve: {
     alias: {
