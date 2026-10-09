@@ -68,6 +68,18 @@ describe('VideoPlayer', () => {
     expect(video.muted).toBe(true)
   })
 
+  it('steps one frame at a time with comma and period, paused', () => {
+    const { video, player, time } = setup(<VideoPlayer src="/clip.webm" frameRate={25} />)
+    fireEvent.keyDown(player, { key: 'k' })
+    fireEvent.keyDown(player, { key: '5' })
+    fireEvent.keyDown(player, { key: '.' })
+    expect(video.pause).toHaveBeenCalled()
+    expect(time()).toBeCloseTo(50.04, 5)
+    fireEvent.keyDown(player, { key: ',' })
+    fireEvent.keyDown(player, { key: ',' })
+    expect(time()).toBeCloseTo(49.96, 5)
+  })
+
   it('leaves the arrows to a focused slider', () => {
     const { time } = setup()
     const seek = screen.getByRole('slider', { name: 'Seek' })

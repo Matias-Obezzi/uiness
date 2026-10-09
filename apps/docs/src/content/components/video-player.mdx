@@ -32,6 +32,7 @@ The player takes focus, and these work anywhere inside it:
 | <kbd>F</kbd> | Full screen |
 | <kbd>C</kbd> | Captions, when there are some |
 | <kbd>0</kbd> to <kbd>9</kbd> | Jump to that tenth of the video |
+| <kbd>,</kbd> / <kbd>.</kbd> | One frame back or forward, paused |
 
 On the seek and volume sliders the arrows move the slider instead.
 
@@ -47,6 +48,7 @@ On the seek and volume sliders the arrows move the slider instead.
 | Prop | Default | Description |
 | --- | --- | --- |
 | `rates` | `[0.5, 1, 1.25, 1.5, 2]` | Rates the speed button steps through. |
+| `frameRate` | `30` | Frames per second, for stepping one frame with <kbd>,</kbd> and <kbd>.</kbd>. Browsers do not report it. |
 | `hideAfter` | `2500` | Milliseconds of stillness before the controls hide while playing. |
 | `videoClassName` | | Classes for the `<video>` itself. |
 | `labels` | | `{ player, play, pause, replay, mute, unmute, volume, seek, fullscreen, exitFullscreen, pictureInPicture, captions, speed(rate), progress(current, total) }`. |

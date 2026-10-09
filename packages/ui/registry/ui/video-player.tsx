@@ -59,6 +59,11 @@ export const defaultVideoPlayerLabels: VideoPlayerLabels = {
 export interface VideoPlayerProps extends Omit<React.ComponentProps<'video'>, 'controls'> {
   /** Rates the speed button steps through. Default 0.5, 1, 1.25, 1.5 and 2. */
   rates?: number[]
+  /**
+   * Frames per second of the video, for stepping one frame with `,` and `.`. Browsers do not
+   * report it, so give it when the video is not 30. Default 30.
+   */
+  frameRate?: number
   /** Milliseconds of stillness before the controls hide while playing. Default 2500. */
   hideAfter?: number
   /** Classes for the `<video>` itself; `className` goes on the frame around it. */
@@ -260,11 +265,13 @@ const control =
  * the pointer, volume, speed, captions when the video has them, picture in picture and full
  * screen. The controls hide while it plays and come back on any movement. Keyboard: Space or
  * K plays, J and L jump 10 seconds, the arrows seek and set the volume, M mutes, F goes full
- * screen, C toggles captions and 0 to 9 jump to that tenth. Put `<track>` and `<source>`
- * elements inside it as you would in a `<video>`.
+ * screen, C toggles captions, 0 to 9 jump to that tenth, and comma and period step one frame
+ * back or forward, paused. Put `<track>` and `<source>` elements inside it as you would in a
+ * `<video>`.
  */
 function VideoPlayer({
   rates = [0.5, 1, 1.25, 1.5, 2],
+  frameRate = 30,
   hideAfter = 2500,
   className,
   videoClassName,
@@ -384,6 +391,13 @@ function VideoPlayer({
     if (key === 'j') return run(() => seekBy(-10))
     if (key === 'l') return run(() => seekBy(10))
     if (key === 'm') return run(toggleMute)
+    // One frame at a time, as in other players: it pauses first, a step only means anything still.
+    if (key === ',' || key === '.') {
+      return run(() => {
+        v.pause()
+        seekBy((key === '.' ? 1 : -1) / frameRate)
+      })
+    }
     if (key === 'f') return run(toggleFullscreen)
     if (key === 'c' && state.hasCaptions) return run(toggleCaptions)
     if (onSlider) return
