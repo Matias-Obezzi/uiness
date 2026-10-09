@@ -1,0 +1,33 @@
+A game's item shop. Every block takes its words through props and lays itself out by the width of its container. The gaming blocks share a look: corners cut at 45°, mono labels, glows in the primary color, and rarities drawn with the theme's chart colors, so they follow any theme.
+
+## Shop 01
+
+A featured item on a card that tilts toward the pointer, the daily items by rarity, the player's balance and a clock to the next rotation. Buying takes the price off and marks the item owned at once; items the player cannot afford stay disabled. Items without a picture get their icon on a glow in the color of their rarity.
+
+<BlockPreview name="shop-01" />
+
+<Install name="shop-01" />
+
+```tsx
+import { Shop01 } from '@/components/shop-01'
+
+<Shop01
+  resetsAt={nextRotation}
+  balance={wallet.credits}
+  owned={inventory.ids}
+  featured={{ id: 'phantom', name: 'Phantom Drift', type: 'Car bundle', rarity: 'legendary', price: 1800, originalPrice: 2400, image: '/shop/phantom.png' }}
+  items={daily}
+  onBuy={(item) => purchase(item.id)}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `title` | The heading. |
+| `resetsAt` | When the shop rotates: a `Date`, a timestamp or an ISO string. Default six hours from now. |
+| `balance`, `currency` | Credits to spend, and their name for screen readers. |
+| `featured` | The big item. `null` hides it. |
+| `items` | `{ id, name, type, rarity, price, originalPrice?, image?, icon? }[]`. |
+| `owned` | Ids already owned. |
+| `onBuy` | Called with the item bought, to charge for it. |
+| `labels` | `{ resetsIn, balance, featured, daily, buy, owned, notEnough, rarity }`. |

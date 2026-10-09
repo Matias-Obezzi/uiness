@@ -1,0 +1,28 @@
+A player's profile card. Every block takes its words through props and lays itself out by the width of its container. The gaming blocks share a look: corners cut at 45°, mono labels, glows in the primary color, and rarities drawn with the theme's chart colors, so they follow any theme.
+
+## Player 01
+
+Level on a hexagon frame, experience as a bar of segments filling up, the rank emblem and points, career figures, achievements with how close the locked ones are, and the last matches with a stripe for each win, loss or draw.
+
+<BlockPreview name="player-01" />
+
+<Install name="player-01" />
+
+```tsx
+import { Player01 } from '@/components/player-01'
+
+<Player01
+  player={{ name: 'Hexa', tag: 'EU', level: 47, xp: 6400, xpToNext: 9000, rank: { name: 'Diamond II', points: 2184 } }}
+  stats={[{ label: 'K/D', value: '1.84' }]}
+  achievements={[{ id: 'ace', name: 'Ace', icon: <CrosshairIcon />, unlocked: true }]}
+  matches={[{ id: '1', result: 'win', mode: 'Ranked', score: '13 – 9', kda: '24 / 11 / 6', when: '2h ago' }]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `player` | `{ name, tag?, avatar?, level, xp, xpToNext, rank? }`, with `rank` as `{ name, points }`. |
+| `stats` | `{ label, value }[]`, values as already written text. |
+| `achievements` | `{ id, name, description?, icon?, unlocked, progress? }[]`; `progress` goes 0 to 1 on locked ones. |
+| `matches` | `{ id, result, mode, score, kda?, when }[]`, `result` being `win`, `loss` or `draw`. |
+| `labels` | `{ level, xp, stats, achievements, unlocked, locked, matches, win, loss, draw }`. |

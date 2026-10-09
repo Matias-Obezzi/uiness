@@ -1,0 +1,28 @@
+A ranked ladder for a game or a competition. Every block takes its words through props and lays itself out by the width of its container. The gaming blocks share a look: corners cut at 45°, mono labels, glows in the primary color, and rarities drawn with the theme's chart colors, so they follow any theme.
+
+## Leaderboard 01
+
+The top three stand on a podium, first in the middle, then everyone with their level, score, win rate and how many places they moved. Boards switch between scopes, like global, weekly and friends, and the reader's row is marked wherever it lands. Level and win rate step out on narrow containers.
+
+<BlockPreview name="leaderboard-01" />
+
+<Install name="leaderboard-01" />
+
+```tsx
+import { Leaderboard01 } from '@/components/leaderboard-01'
+
+<Leaderboard01
+  title="Ranked ladder"
+  description="Season 04 · Resets in 12 days"
+  boards={[{ id: 'global', label: 'Global', players }]}
+  you={session.playerId}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `title`, `description` | The heading and the line under it. |
+| `boards` | `{ id, label, players }[]`. Players are `{ id, name, tag?, avatar?, level, score, winRate, change? }`, in rank order; `winRate` goes 0 to 1 and `change` is places gained, negative for lost. |
+| `defaultBoard` | The board shown first. Default the first. |
+| `you` | The reader's player id: their row is marked. |
+| `labels` | `{ boards, rank, player, level, score, winRate, change, you, up, down }`. |
