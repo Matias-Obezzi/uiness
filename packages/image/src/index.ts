@@ -1,5 +1,6 @@
 export { Image, type ImageProps } from './image'
 export { BarOverlay, fitRect, PixelateOverlay } from './overlays'
+export { type PreloadOptions, preloadImage, preloadImages } from './preload'
 export type {
   ImageLoadState,
   ImageStatus,
@@ -21,6 +22,7 @@ export {
   blur,
   defineVariant,
   fade,
+  grayscale,
   none,
   type PixelateOptions,
   pixelate,
@@ -30,4 +32,6 @@ export {
   reveal,
   type VariantName,
   variants,
+  type ZoomOptions,
+  zoom,
 } from './variants'

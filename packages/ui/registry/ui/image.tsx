@@ -9,11 +9,15 @@ export {
   blur,
   defineVariant,
   fade,
+  grayscale,
   none,
   pixelate,
+  preloadImage,
+  preloadImages,
   reveal,
   useImageLoad,
   variants,
+  zoom,
 } from '@uiness/image'
 
 /**

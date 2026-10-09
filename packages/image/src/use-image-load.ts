@@ -22,6 +22,13 @@ export interface UseImageLoadOptions {
   lazy?: boolean
   /** Root margin used for the lazy intersection observer. */
   lazyMargin?: string
+  /**
+   * Try again this many times after a failed load, waiting `retryDelay` ms before the first
+   * retry and twice as long before each next one. Default 0.
+   */
+  retry?: number
+  /** Milliseconds before the first retry. Default 1000. */
+  retryDelay?: number
   onProgress?: (progress: number) => void
   onStatusChange?: (status: ImageStatus) => void
 }
@@ -39,10 +46,14 @@ export interface ImgProps {
 export interface UseImageLoadResult extends ImageLoadState {
   /** Spread these on the `<img>` element. */
   imgProps: ImgProps
+  /** Load the image again, after an error or any time. */
+  retry: () => void
 }
 
 interface InternalState extends ImageLoadState {
   key: string | undefined
+  /** Loads tried so far for this source, the first one included. */
+  attempt: number
 }
 
 const initialState = (key: string | undefined): InternalState => ({
@@ -50,6 +61,7 @@ const initialState = (key: string | undefined): InternalState => ({
   status: 'loading',
   progress: 0,
   error: null,
+  attempt: 1,
 })
 
 /**
@@ -68,6 +80,8 @@ export function useImageLoad(options: UseImageLoadOptions = {}): UseImageLoadRes
     crossOrigin,
     lazy = false,
     lazyMargin = '200px',
+    retry: retries = 0,
+    retryDelay = 1000,
     onProgress,
     onStatusChange,
   } = options
@@ -84,6 +98,10 @@ export function useImageLoad(options: UseImageLoadOptions = {}): UseImageLoadRes
 
   const callbacks = useRef({ onProgress, onStatusChange })
   callbacks.current = { onProgress, onStatusChange }
+  // Read when a download starts, not watched: an inline object is new on every render, and
+  // watching it restarted the download each time a chunk arrived and re-rendered.
+  const fetchInitRef = useRef(fetchInit)
+  fetchInitRef.current = fetchInit
 
   // Notify after commit, never from inside a state updater (that runs during render).
   const notified = useRef({ status: state.status, progress: state.progress })
@@ -114,6 +132,33 @@ export function useImageLoad(options: UseImageLoadOptions = {}): UseImageLoadRes
   )
   const markError = useCallback((error: Error) => update({ status: 'error', error }), [update])
 
+  const again = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      status: 'loading',
+      progress: 0,
+      error: null,
+      attempt: prev.attempt + 1,
+    }))
+  }, [])
+
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(
+    () => () => {
+      if (retryTimer.current) clearTimeout(retryTimer.current)
+    },
+    [],
+  )
+
+  // A failure with retries left waits, then loads again instead of reporting the error.
+  const failed = useCallback(
+    (error: Error) => {
+      if (state.attempt > retries) return markError(error)
+      retryTimer.current = setTimeout(again, retryDelay * 2 ** (state.attempt - 1))
+    },
+    [state.attempt, retries, retryDelay, markError, again],
+  )
+
   const setRef = useCallback((node: HTMLImageElement | null) => {
     imgRef.current = node
   }, [])
@@ -140,6 +185,7 @@ export function useImageLoad(options: UseImageLoadOptions = {}): UseImageLoadRes
   }, [lazy, visible, lazyMargin])
 
   // Progressive download.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: `state.attempt` is the trigger that downloads again on a retry
   useEffect(() => {
     if (!progressive || !src || !visible) {
       setObjectUrl(null)
@@ -151,7 +197,7 @@ export function useImageLoad(options: UseImageLoadOptions = {}): UseImageLoadRes
     const run = async () => {
       const response = await fetch(src, {
         credentials: crossOrigin === 'use-credentials' ? 'include' : undefined,
-        ...fetchInit,
+        ...fetchInitRef.current,
         signal: controller.signal,
       })
       if (!response.ok) throw new Error(`Image request failed with status ${response.status}`)
@@ -184,14 +230,14 @@ export function useImageLoad(options: UseImageLoadOptions = {}): UseImageLoadRes
 
     run().catch((error: unknown) => {
       if (controller.signal.aborted) return
-      markError(error instanceof Error ? error : new Error(String(error)))
+      failed(error instanceof Error ? error : new Error(String(error)))
     })
 
     return () => {
       controller.abort()
       if (url) URL.revokeObjectURL(url)
     }
-  }, [progressive, src, visible, crossOrigin, fetchInit, update, markError])
+  }, [progressive, src, visible, crossOrigin, state.attempt, update, failed])
 
   const effectiveSrc = progressive ? (objectUrl ?? undefined) : src
 
@@ -202,16 +248,26 @@ export function useImageLoad(options: UseImageLoadOptions = {}): UseImageLoadRes
     if (node.complete && node.naturalWidth > 0) markLoaded()
   }, [effectiveSrc, markLoaded])
 
+  // A retry of a plain `<img>`: setting `src` again, even to the same value, makes the browser
+  // fetch it anew, so the URL stays as given (a cache-busting query would break signed URLs).
+  useEffect(() => {
+    const node = imgRef.current
+    if (state.attempt === 1 || progressive || !node) return
+    const current = node.getAttribute('src')
+    if (current !== null) node.setAttribute('src', current)
+  }, [state.attempt, progressive])
+
   const onLoad = useCallback(() => markLoaded(), [markLoaded])
   const onError = useCallback(
-    () => markError(new Error(`Failed to load image${src ? `: ${src}` : ''}`)),
-    [markError, src],
+    () => failed(new Error(`Failed to load image${src ? `: ${src}` : ''}`)),
+    [failed, src],
   )
 
   return {
     status: state.status,
     progress: state.progress,
     error: state.error,
+    retry: again,
     imgProps: {
       ref: setRef,
       src: effectiveSrc,
