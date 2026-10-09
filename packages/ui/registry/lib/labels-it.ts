@@ -487,6 +487,10 @@ export const it = {
   safari: {
     search: 'Cerca o inserisci nome del sito web',
   },
+  'scratch-reveal': {
+    hint: 'Gratta per scoprire',
+    reveal: 'Mostra il contenuto nascosto',
+  },
   'scroll-progress': {
     backToTop: "Torna all'inizio",
   },

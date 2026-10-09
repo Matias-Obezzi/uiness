@@ -492,6 +492,10 @@ export const fr = {
   safari: {
     search: 'Rechercher ou entrer le nom du site',
   },
+  'scratch-reveal': {
+    hint: 'Grattez pour découvrir',
+    reveal: 'Afficher le contenu masqué',
+  },
   'scroll-progress': {
     backToTop: 'Retour en haut',
   },

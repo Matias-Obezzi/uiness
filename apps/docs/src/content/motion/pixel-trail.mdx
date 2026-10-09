@@ -1,0 +1,27 @@
+The pointer leaves a trail of square pixels over its parent that fade away behind it.
+
+<ComponentPreview name="pixel-trail-demo" />
+
+## Installation
+
+<Install name="pixel-trail" />
+
+## Usage
+
+```tsx
+import { PixelTrail } from '@/components/ui/pixel-trail'
+
+<div className="relative h-72">
+  <PixelTrail pixelSize={20} fade={800} />
+</div>
+```
+
+It follows the pointer over its positioned parent without taking clicks, fills in the cells a fast pointer jumps over, and only draws while something is fading. With reduced motion it draws nothing.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `pixelSize` | `16` | Side of each pixel, in pixels. |
+| `fade` | `600` | Milliseconds a pixel takes to fade out. |
+| `color` | primary | Any CSS color. |

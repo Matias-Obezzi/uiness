@@ -1,0 +1,29 @@
+Letters scattered and turned that fly together into the text, one after another, as it comes into view. Words never break across lines while they land.
+
+<ComponentPreview name="split-text-demo" />
+
+## Installation
+
+<Install name="split-text" />
+
+## Usage
+
+```tsx
+import { SplitText } from '@/components/ui/split-text'
+
+<h1>
+  <SplitText text="Every letter finds its place" />
+</h1>
+```
+
+The scatter comes from each letter's place, not from chance, so a server render matches the browser. Screen readers read the text once; with reduced motion it is simply there.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `text` | | The words, as plain text. |
+| `spread` | `80` | How far letters start from their place, in pixels. |
+| `stagger` | `30` | Milliseconds between letters. |
+| `duration` | `700` | Milliseconds each letter takes to land. |
+| `trigger` | `'view'` | `view` plays when it scrolls into view, `mount` as soon as it renders. |

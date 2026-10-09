@@ -1,0 +1,29 @@
+A scratch card: content under a cover that the pointer scratches off, the rest falling away once enough of it is gone.
+
+<ComponentPreview name="scratch-reveal-demo" />
+
+## Installation
+
+<Install name="scratch-reveal" />
+
+## Usage
+
+```tsx
+import { ScratchReveal } from '@/components/ui/scratch-reveal'
+
+<ScratchReveal className="h-44 w-80" onReveal={claim}>
+  <p>SAVE-25</p>
+</ScratchReveal>
+```
+
+The cover is a button: from the keyboard, Enter or Space reveals it at once. Until then the content is out of reach, for screen readers too. The words on the cover go through `labels`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `brush` | `28` | Width of the scratch, in pixels. |
+| `threshold` | `0.5` | Share of the cover scratched off before the rest falls away. |
+| `cover` | muted | Any CSS color for the cover. |
+| `onReveal` | | Called once, when the content is revealed. |
+| `labels` | | `{ hint, reveal }`: the words on the cover, and its name for screen readers. |
