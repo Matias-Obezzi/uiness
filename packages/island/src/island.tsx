@@ -240,8 +240,10 @@ export function Island({
     const content = contentRef.current
     if (!box || !content) return
     const radius = mode === 'expanded' || (stack && entry) ? expandedRadius : idleHeight / 2
-    const rect = content.getBoundingClientRect()
-    const last: Size = { width: rect.width, height: rect.height, radius }
+    // Layout size, not the bounding box: the incoming content scales up from 0.85 while this
+    // runs, and a re-render mid-way (the outgoing content leaving does one) measured it shrunk,
+    // morphed the box down to that, clipped the padding, then jumped back when it ended.
+    const last: Size = { width: content.offsetWidth, height: content.offsetHeight, radius }
     const target = sizeRef.current
     sizeRef.current = last
     if (!target) return
@@ -413,8 +415,10 @@ export function Island({
   // Focus management for dialogs.
   const isDialog =
     entry?.mode === 'expanded' && (entry.role === 'dialog' || entry.role === 'alertdialog')
+  // Waits for the box to be visible: with `idle={false}` it is `visibility: hidden` until the
+  // first entry shows, and nothing hidden can take focus, so the dialog opened unfocused.
   useEffect(() => {
-    if (!isDialog) return
+    if (!isDialog || !visible) return
     const previous = document.activeElement
     const box = boxRef.current
     const focusable = box?.querySelector<HTMLElement>(
@@ -426,7 +430,7 @@ export function Island({
         previous.focus({ preventScroll: true })
       }
     }
-  }, [isDialog])
+  }, [isDialog, visible])
 
   const onPointerEnter = useCallback(() => {
     if (pauseOnHover && entry) store.pause(entry.id)
