@@ -1,6 +1,6 @@
 import { crt, Fx, palette, palettes, pixelate } from '@uiness/fx'
 import { ArrowRightIcon } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,42 +12,49 @@ import { Logo } from './logo'
 const features = [
   {
     title: 'Image',
+    pkg: 'image',
     href: '/docs/image',
     description:
       'Blur, pixel and reveal transitions while an image loads, with real download progress if you want it.',
   },
   {
     title: 'Island',
+    pkg: 'island',
     href: '/docs/island',
     description:
       'A Dynamic Island for the web. Statuses, live activities, alerts and confirms that morph with a spring.',
   },
   {
     title: 'Fx',
+    pkg: 'fx',
     href: '/docs/fx',
     description:
       'Canvas effects you compose like functions: pixelate, dither to a Game Boy palette, glitch, CRT, ASCII.',
   },
   {
     title: 'Toast',
+    pkg: 'toast',
     href: '/docs/toast',
     description:
       'Notifications that stack with the newest in front, expand on hover, swipe away and follow your promises.',
   },
   {
     title: 'Scroll',
+    pkg: 'scroll',
     href: '/docs/scroll',
     description:
       'Progress of any element through the viewport, parallax that writes straight to the DOM, and the section being read.',
   },
   {
     title: 'Drag and drop',
+    pkg: 'dnd',
     href: '/docs/dnd',
     description:
       'Sortable lists, boards, grids and free dragging. Headless hooks, and every drag also works from the keyboard.',
   },
   {
     title: 'Choreo',
+    pkg: 'choreo',
     href: '/docs/choreo',
     description:
       'Animates a whole site from what is already on the page. It reads the DOM and gives every element an entrance.',
@@ -72,9 +79,22 @@ const features = [
   },
 ]
 
+interface Downloads {
+  total: number
+  packages: Record<string, number>
+}
+
+const count = (n: number) => n.toLocaleString('en')
+
 export function Home() {
+  // Last week on npm, from a CDN-cached function. Absent locally and on failure: nothing shows.
+  const [downloads, setDownloads] = useState<Downloads | null>(null)
   useEffect(() => {
     document.title = site.name
+    fetch('/api/downloads')
+      .then((res) => (res.ok ? res.json() : null))
+      .then(setDownloads)
+      .catch(() => {})
   }, [])
   return (
     <Choreo className="mx-auto w-full max-w-6xl px-4 py-16 sm:px-6 lg:py-24">
@@ -104,6 +124,11 @@ export function Home() {
             lang="bash"
             className="max-w-md"
           />
+          <p className="h-5 text-muted-foreground text-sm tabular-nums">
+            {downloads &&
+              downloads.total > 0 &&
+              `${count(downloads.total)} npm downloads last week`}
+          </p>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <Fx
@@ -136,7 +161,11 @@ export function Home() {
                 </CardTitle>
                 <CardDescription>{f.description}</CardDescription>
               </CardHeader>
-              <CardContent />
+              <CardContent className="text-muted-foreground text-xs tabular-nums">
+                {f.pkg &&
+                  downloads?.packages[f.pkg] !== undefined &&
+                  `${count(downloads.packages[f.pkg] as number)} downloads last week`}
+              </CardContent>
             </Card>
           </Link>
         ))}
