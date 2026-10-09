@@ -65,13 +65,24 @@ export function fitRect(
   return [0, 0, sw, sh, (dw - w) / 2, (dh - h) / 2, w, h]
 }
 
+/** Canvases kept per pool. A resizing canvas asks for a new size every frame of the resize. */
+const POOL_LIMIT = 8
+
 export class ScratchPool {
   private canvases = new Map<string, HTMLCanvasElement | OffscreenCanvas>()
 
   get(width: number, height: number): HTMLCanvasElement | OffscreenCanvas {
     const key = `${width}x${height}`
     let canvas = this.canvases.get(key)
-    if (!canvas) {
+    if (canvas) {
+      // Most recently used last, so the oldest size is the one dropped.
+      this.canvases.delete(key)
+      this.canvases.set(key, canvas)
+    } else {
+      if (this.canvases.size >= POOL_LIMIT) {
+        const oldest = this.canvases.keys().next().value
+        if (oldest !== undefined) this.canvases.delete(oldest)
+      }
       canvas =
         typeof document !== 'undefined'
           ? document.createElement('canvas')

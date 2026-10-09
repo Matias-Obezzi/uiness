@@ -34,6 +34,14 @@ export {
   vignette,
 } from './effects/retro'
 export { blur, type EdgeOptions, edge, emboss } from './effects/stylize'
+export {
+  duotone,
+  hueRotate,
+  kaleidoscope,
+  type PixelSortOptions,
+  pixelSort,
+  sharpen,
+} from './effects/tone'
 export { Fx, type FxHandle, type FxProps, type FxStatus } from './fx'
 export {
   type Fit,
