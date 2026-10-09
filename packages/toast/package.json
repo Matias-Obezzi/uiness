@@ -1,6 +1,6 @@
 {
   "name": "@uiness/toast",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Toasts and notifications for React: stacked, swipeable, with promise tracking and actions. Zero dependencies.",
   "keywords": [
     "react",

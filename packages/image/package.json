@@ -1,6 +1,6 @@
 {
   "name": "@uiness/image",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "React image component with loading transitions: blur, pixelate, fade, reveal, with optional real download progress.",
   "keywords": [
     "react",
