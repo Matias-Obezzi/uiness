@@ -95,3 +95,34 @@ import { Hero03 } from '@/components/hero-03'
 | `primaryAction`, `secondaryAction` | `{ label, href }` for the two buttons. `null` hides one. |
 | `desktop` | `{ url, src, alt }`: the address in the browser bar and its screenshot. |
 | `mobile` | `{ src, alt }` for the phone screenshot. `null` leaves only the browser. |
+
+## Hero 04
+
+A launch hero for a game: the title scrambles into place over a synthwave floor, inside the brackets of a HUD, with a live season line, the platforms it runs on and counts that tick up. Corners cut at 45° and glows in the primary color give it the look of a game's menu.
+
+<BlockPreview name="hero-04" theme="Neon" />
+
+<Install name="hero-04" />
+
+```tsx
+import { Hero04 } from '@/components/hero-04'
+
+<Hero04
+  eyebrow="Season 04 · Now live"
+  title="Neon Drift"
+  tagline="// Race the grid. Own the night."
+  primaryAction={{ label: 'Play free', href: '/play' }}
+  secondaryAction={{ label: 'Watch trailer', href: '/trailer' }}
+  platforms={['PC', 'PlayStation 5', 'Xbox Series']}
+  stats={[{ label: 'Players online', value: 184320 }]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `eyebrow` | The line above the title, with a live dot. `null` hides it. |
+| `title` | The game's name, as plain text: it scrambles into place. |
+| `tagline`, `description` | The mono line under the title and the paragraph. |
+| `primaryAction`, `secondaryAction` | `{ label, href }` for the two buttons. `null` hides one. |
+| `platforms` | Where it runs, in a row. |
+| `stats` | `{ label, value, suffix? }[]`, counted up as they come into view. |

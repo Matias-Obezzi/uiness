@@ -1,0 +1,35 @@
+What changed in a game's update. Every block takes its words through props and lays itself out by the width of its container. The gaming blocks share a look: corners cut at 45°, mono labels, glows in the primary color, and rarities drawn with the theme's chart colors, so they follow any theme.
+
+## Patch Notes 01
+
+The version and its name, then every change by section, each tagged as a buff, a nerf, a fix or something new. A change can be plain text, or a value going from the old number, struck through, to the new one. The filter keeps one kind and counts each.
+
+<BlockPreview name="patch-notes-01" theme="Neon" />
+
+<Install name="patch-notes-01" />
+
+```tsx
+import { PatchNotes01 } from '@/components/patch-notes-01'
+
+<PatchNotes01
+  version="v4.2.0"
+  title="Overclock"
+  date="October 8, 2026"
+  sections={[
+    {
+      id: 'agents',
+      title: 'Agents',
+      entries: [
+        { target: 'Vex', kind: 'buff', changes: [{ label: 'Pulse Rifle damage', from: '24', to: '28' }] },
+      ],
+    },
+  ]}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `version`, `title`, `date` | The patch's number, name and when it shipped, as written text. |
+| `summary` | The paragraph under the title. |
+| `sections` | `{ id, title, entries }[]`. Entries are `{ target, kind, changes }`, `kind` being `buff`, `nerf`, `fix` or `new`, and each change a string or `{ label, from, to }`. |
+| `labels` | `{ filter, all, buff, nerf, fix, new, empty }`. |

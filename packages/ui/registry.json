@@ -3754,6 +3754,107 @@
       ]
     },
     {
+      "name": "hero-04",
+      "type": "registry:block",
+      "title": "Hero 04",
+      "description": "A game launch hero: the title scrambles in over a synthwave floor inside a HUD frame, with platforms and live player counts.",
+      "categories": ["hero", "gaming"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/number-ticker",
+        "@uiness/retro-grid",
+        "@uiness/scramble-text"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/hero-04.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "leaderboard-01",
+      "type": "registry:block",
+      "title": "Leaderboard 01",
+      "description": "A ranked ladder with the top three on a podium, levels, scores, win rates and movement, boards to switch between and the reader's row marked.",
+      "categories": ["leaderboard", "gaming"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/avatar", "@uiness/segmented-control"],
+      "files": [
+        {
+          "path": "registry/blocks/leaderboard-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "player-01",
+      "type": "registry:block",
+      "title": "Player 01",
+      "description": "A player card: level and segmented experience bar, rank emblem, career figures, achievements with progress and recent matches.",
+      "categories": ["player", "gaming"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/avatar", "@uiness/pattern"],
+      "files": [
+        {
+          "path": "registry/blocks/player-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "patch-notes-01",
+      "type": "registry:block",
+      "title": "Patch Notes 01",
+      "description": "Game patch notes by section, each change tagged buff, nerf, fix or new, numbers shown from old to new, with a filter by kind.",
+      "categories": ["patch-notes", "gaming"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/segmented-control"],
+      "files": [
+        {
+          "path": "registry/blocks/patch-notes-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "battle-pass-01",
+      "type": "registry:block",
+      "title": "Battle Pass 01",
+      "description": "A season pass: time left, tier and experience, and a scrolling track of free and premium rewards by rarity, locked until unlocked.",
+      "categories": ["battle-pass", "gaming"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/button"],
+      "files": [
+        {
+          "path": "registry/blocks/battle-pass-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
+      "name": "shop-01",
+      "type": "registry:block",
+      "title": "Shop 01",
+      "description": "An item shop: a featured item that tilts, daily items by rarity, the balance, a clock to the next rotation and buying that updates at once.",
+      "categories": ["shop", "gaming"],
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/button",
+        "@uiness/pattern",
+        "@uiness/tilt-card"
+      ],
+      "files": [
+        {
+          "path": "registry/blocks/shop-01.tsx",
+          "type": "registry:block"
+        }
+      ]
+    },
+    {
       "name": "uiness-skill",
       "type": "registry:file",
       "title": "uiness agent skill",

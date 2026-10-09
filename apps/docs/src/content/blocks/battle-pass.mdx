@@ -1,0 +1,36 @@
+A season's pass of rewards. Every block takes its words through props and lays itself out by the width of its container. The gaming blocks share a look: corners cut at 45°, mono labels, glows in the primary color, and rarities drawn with the theme's chart colors, so they follow any theme.
+
+## Battle Pass 01
+
+Time left in the season, the tier reached with a segmented bar to the next, and the track: free rewards above, premium below, colored by rarity. Reached tiers are ticked, premium ones stay locked until the pass is bought, and the track starts scrolled to the next tier to earn.
+
+<BlockPreview name="battle-pass-01" theme="Neon" />
+
+<Install name="battle-pass-01" />
+
+```tsx
+import { BattlePass01 } from '@/components/battle-pass-01'
+
+<BattlePass01
+  season="Season 04"
+  title="Neon Drift"
+  endsAt="2026-11-01T00:00:00Z"
+  tier={12}
+  xp={1350}
+  xpPerTier={2000}
+  premium={false}
+  price="950"
+  onUnlock={openCheckout}
+/>
+```
+
+| Prop | Description |
+| --- | --- |
+| `season`, `title` | The line above the name, and the name. |
+| `endsAt` | When the season ends: a `Date`, a timestamp or an ISO string. Default twelve days from now. |
+| `tier`, `xp`, `xpPerTier` | The highest tier reached and the experience towards the next. |
+| `premium` | Whether the premium track is owned. |
+| `price` | What it costs, as written text. `null` hides the button. |
+| `tiers` | `{ level, free?, premium? }[]`, rewards being `{ name, rarity, icon? }` and `rarity` one of `common`, `rare`, `epic`, `legendary`. |
+| `onUnlock` | Called from the unlock button. |
+| `labels` | `{ endsIn, tier, xp, free, premium, unlock, unlocked, claimed, locked, rewards, rarity }`. |

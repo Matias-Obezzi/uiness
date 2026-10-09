@@ -489,6 +489,19 @@ const sections: NavSection[] = [
       page('blocks/settings', 'Settings', 'Profile, notification switches and a held delete.'),
       page('blocks/product', 'Product', 'A 3D model beside colors, price and add to cart.'),
       page('blocks/not-found', 'Not Found', 'A 404 with search, popular pages and the way home.'),
+      page(
+        'blocks/leaderboard',
+        'Leaderboard',
+        'A ranked ladder with a podium, boards and your row.',
+      ),
+      page('blocks/player', 'Player', 'Level, rank, career figures, achievements and matches.'),
+      page(
+        'blocks/patch-notes',
+        'Patch Notes',
+        'Buffs, nerfs, fixes and new things, old value to new.',
+      ),
+      page('blocks/battle-pass', 'Battle Pass', 'Tiers of free and premium rewards, by rarity.'),
+      page('blocks/shop', 'Shop', 'A featured item, daily items by rarity and a balance.'),
     ],
   },
   {
@@ -630,6 +643,13 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-08': [
+    'blocks/battle-pass',
+    'blocks/leaderboard',
+    'blocks/patch-notes',
+    'blocks/player',
+    'blocks/shop',
+  ],
   '2026-10-07': [
     'blocks/dashboard',
     'blocks/global',
@@ -905,6 +925,7 @@ const groups: Record<string, Record<string, string[]>> = {
       'product',
       'settings',
     ],
+    Gaming: ['battle-pass', 'leaderboard', 'patch-notes', 'player', 'shop'],
   },
   Motion: {
     Text: [
