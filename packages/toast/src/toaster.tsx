@@ -28,7 +28,7 @@ export interface ToasterProps {
   richColors?: boolean
   /** Close button on every toast. */
   closeButton?: boolean
-  /** Default auto dismiss delay in ms. Default 4000. */
+  /** Auto dismiss delay in ms for toasts without their own. `0` keeps them until closed. Default 4000. */
   duration?: number
   /** Space between toasts when expanded, in px. Default 14. */
   gap?: number
@@ -47,11 +47,19 @@ export interface ToasterProps {
   label?: string
   /** Name of the close button. Default "Close". */
   closeLabel?: string
+  /** A bar on every toast that empties as its time runs out. Default false. */
+  progress?: boolean
+  /**
+   * Keys that move focus to the toasts, expanding and pausing them, as `KeyboardEvent.code`
+   * with modifier names. Default `['altKey', 'KeyT']`. `false` turns it off.
+   */
+  hotkey?: string[] | false
 }
 
 const STYLE_ID = 'uiness-toast-styles'
 const CSS = `
 @keyframes uiness-toast-spin{to{transform:rotate(360deg)}}
+@keyframes uiness-toast-progress{from{transform:scaleX(1)}to{transform:scaleX(0)}}
 [data-uiness-toaster]{--toast-width:356px;--toast-gap-collapsed:12px}
 [data-uiness-toaster] [data-toast]{box-sizing:border-box}
 [data-uiness-toaster] [data-toast] *{box-sizing:border-box}
@@ -59,7 +67,13 @@ const CSS = `
 
 function useInjectStyles() {
   useEffect(() => {
-    if (document.getElementById(STYLE_ID)) return
+    // Rewritten when it differs: a tag left by another version of the package (a hot reload,
+    // two copies on one page) would otherwise keep its rules and miss the newer ones.
+    const existing = document.getElementById(STYLE_ID)
+    if (existing) {
+      if (existing.textContent !== CSS) existing.textContent = CSS
+      return
+    }
     const style = document.createElement('style')
     style.id = STYLE_ID
     style.textContent = CSS
@@ -151,6 +165,9 @@ interface ToastCardProps {
   style?: CSSProperties
   store: ToastStore
   onHeight: (id: string, height: number) => void
+  progress: boolean
+  /** Timers are on hold: the progress bar waits with them. */
+  paused: boolean
 }
 
 function ToastCard({
@@ -169,6 +186,8 @@ function ToastCard({
   style,
   store,
   onHeight,
+  progress,
+  paused,
 }: ToastCardProps) {
   const ref = useRef<HTMLLIElement | null>(null)
   const [mounted, setMounted] = useState(false)
@@ -256,6 +275,10 @@ function ToastCard({
 
   const icon =
     toast.icon !== undefined ? toast.icon : (icons[toast.type] ?? defaultIcons[toast.type])
+  const duration =
+    toast.duration ?? (toast.type === 'loading' ? Number.POSITIVE_INFINITY : store.defaultDuration)
+  const showProgress =
+    (toast.progress ?? progress) && Number.isFinite(duration) && duration > 0 && !reducedMotion()
   const showClose = toast.closeButton ?? closeButton
 
   const cardStyle: CSSProperties = {
@@ -294,6 +317,8 @@ function ToastCard({
         fontFamily: 'var(--toast-font, system-ui, -apple-system, sans-serif)',
         fontSize: 14,
         lineHeight: 1.35,
+        position: 'relative',
+        overflow: 'hidden',
       }}
       className={className}
     >
@@ -306,6 +331,22 @@ function ToastCard({
         {toast.title != null && (
           <div data-toast-title="" style={{ fontWeight: 600 }}>
             {toast.title}
+            {toast.count > 1 && (
+              <span
+                data-toast-count=""
+                style={{
+                  marginLeft: 6,
+                  padding: '0 6px',
+                  borderRadius: 999,
+                  fontSize: 11,
+                  fontWeight: 600,
+                  background: 'var(--toast-border, rgba(0,0,0,0.08))',
+                  fontVariantNumeric: 'tabular-nums',
+                }}
+              >
+                ×{toast.count}
+              </span>
+            )}
           </div>
         )}
         {toast.description != null && (
@@ -368,6 +409,26 @@ function ToastCard({
           <Icon path="M18 6 6 18M6 6l12 12" />
         </button>
       )}
+      {showProgress && (
+        <span
+          // Keyed on the last update, so a toast whose time starts over gets a full bar.
+          key={toast.updatedAt}
+          aria-hidden
+          data-toast-progress=""
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 3,
+            background: 'currentColor',
+            opacity: 0.4,
+            transformOrigin: 'left',
+            animation: `uiness-toast-progress ${duration}ms linear forwards`,
+            animationPlayState: paused ? 'paused' : 'running',
+          }}
+        />
+      )}
     </div>
   )
 
@@ -405,6 +466,16 @@ const actionStyle = (primary: boolean): CSSProperties => ({
   cursor: 'pointer',
 })
 
+/** `['altKey', 'KeyT']` as `aria-keyshortcuts` writes it: `Alt+T`. */
+const keyShortcuts = (keys: string[]) =>
+  keys
+    .map((key) =>
+      key.endsWith('Key')
+        ? ({ altKey: 'Alt', ctrlKey: 'Control', metaKey: 'Meta', shiftKey: 'Shift' }[key] ?? key)
+        : key.replace(/^Key|^Digit/, ''),
+    )
+    .join('+')
+
 const EMPTY: Toast[] = []
 const getServerToasts = () => EMPTY
 
@@ -429,10 +500,37 @@ export function Toaster({
   pauseWhenPageIsHidden = true,
   label = 'Notifications',
   closeLabel = 'Close',
+  progress = false,
+  hotkey = ['altKey', 'KeyT'],
 }: ToasterProps) {
   useInjectStyles()
   const toasts = useSyncExternalStore(store.subscribe, store.getToasts, getServerToasts)
-  const [hovered, setHovered] = useState(false)
+  const [pointerOver, setHovered] = useState(false)
+  // Keyboard users reach the toasts with the hotkey; while focus is inside they stay open and
+  // keep their time, the way the pointer over them does.
+  const [focusWithin, setFocusWithin] = useState(false)
+  const hovered = pointerOver || focusWithin
+  const [pageHidden, setPageHidden] = useState(false)
+  const firstList = useRef<HTMLOListElement | null>(null)
+
+  // A string, so the default array (new on every render) does not resubscribe each time.
+  const hotkeyKeys = hotkey ? hotkey.join(' ') : ''
+  useEffect(() => {
+    if (!hotkeyKeys) return
+    const keys = hotkeyKeys.split(' ')
+    const onKeyDown = (event: KeyboardEvent) => {
+      const pressed = keys.every((key) =>
+        key.endsWith('Key') ? event[key as 'altKey'] : event.code === key,
+      )
+      if (!pressed) return
+      const list = firstList.current
+      if (!list) return
+      event.preventDefault()
+      list.focus()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [hotkeyKeys])
   const [heights, setHeights] = useState<Record<string, number>>({})
 
   useEffect(() => {
@@ -451,6 +549,7 @@ export function Toaster({
   useEffect(() => {
     if (!pauseWhenPageIsHidden) return
     const onVisibility = () => {
+      setPageHidden(document.hidden)
       if (document.hidden) store.pause()
       else if (!hovered) store.resume()
     }
@@ -496,6 +595,15 @@ export function Toaster({
         return (
           <ol
             key={pos}
+            ref={(node) => {
+              if (node && !firstList.current?.isConnected) firstList.current = node
+            }}
+            aria-keyshortcuts={hotkey ? keyShortcuts(hotkey) : undefined}
+            onFocus={() => setFocusWithin(true)}
+            onBlur={(event) => {
+              if (!event.currentTarget.contains(event.relatedTarget as Node | null))
+                setFocusWithin(false)
+            }}
             data-uiness-toaster=""
             data-position={pos}
             data-expanded={expanded ? '' : undefined}
@@ -542,6 +650,8 @@ export function Toaster({
                 style={toastStyle}
                 store={store}
                 onHeight={onHeight}
+                progress={progress}
+                paused={hovered || pageHidden}
               />
             ))}
           </ol>

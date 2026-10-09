@@ -24,7 +24,7 @@ export interface ToastOptions {
   /** Replaces the type icon. `null` hides it. */
   icon?: ReactNode | null
   /**
-   * Auto dismiss delay in ms. `Infinity` keeps the toast until dismissed.
+   * Auto dismiss delay in ms. `0` or `Infinity` keeps the toast until it is closed.
    * Defaults to the Toaster duration; loading toasts default to `Infinity`.
    */
   duration?: number
@@ -48,6 +48,14 @@ export interface ToastOptions {
   onAutoClose?: (toast: Toast) => void
   /** Replace the whole card with your own markup. */
   render?: (toast: Toast) => ReactNode
+  /** A bar along the bottom that empties as the time runs out. Overrides the Toaster setting. */
+  progress?: boolean
+  /**
+   * Fold a toast with the same type, title and description into the one already showing,
+   * which counts up and starts its time again. Only plain toasts fold: a string title and no
+   * action, cancel, render or callbacks. Default true.
+   */
+  dedupe?: boolean
 }
 
 export interface Toast extends ToastOptions {
@@ -55,6 +63,10 @@ export interface Toast extends ToastOptions {
   type: ToastType
   dismissible: boolean
   createdAt: number
+  /** Changes on every update, so anything timed from the toast can start over. */
+  updatedAt: number
+  /** How many identical toasts were folded into this one, itself included. */
+  count: number
   /** Set while the exit animation plays. */
   removing?: boolean
 }

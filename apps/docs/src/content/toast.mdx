@@ -48,6 +48,23 @@ The toast starts as loading and turns into success or error with the resolved va
 
 <ComponentPreview name="toast-custom" />
 
+## Undo, repeats and time left
+
+`toast.undo()` says something happened with an Undo button, and resolves `true` when it was used, `false` once the toast leaves any other way, so the change can be made right away and taken back if asked. A plain toast with the same type, title and description as one already showing folds into it instead of stacking: it counts up (×3) and starts its time again. Toasts with an action, a cancel, a custom render or callbacks never fold, since each stands for one thing that happened; `dedupe: false` keeps any toast apart. `progress` adds a bar that empties as the time runs out, and waits with the timer while the pointer is over the toasts.
+
+<ComponentPreview name="toast-more" />
+
+```tsx
+archive(message)
+if (await toast.undo('Message archived')) unarchive(message)
+
+toast('Draft saved', { progress: true })
+
+const id = toast.loading('Uploading')
+toast.update(id, { title: 'Uploaded', type: 'success' })
+toast.isActive(id) // false once it leaves
+```
+
 ## Options
 
 | Option | Description |
@@ -56,11 +73,13 @@ The toast starts as loading and turns into success or error with the resolved va
 | `title`, `description` | Content. |
 | `type` | `default`, `success`, `error`, `info`, `warning`, `loading`. Also available as `toast.success()` and friends. |
 | `icon` | Replace the type icon, `null` hides it. |
-| `duration` | Auto dismiss in ms, `Infinity` to keep. Loading toasts default to `Infinity`. |
+| `duration` | Auto dismiss in ms, overriding the Toaster's. `0` (or `Infinity`) keeps the toast until it is closed or an action is used. Loading toasts default to keeping. |
 | `action`, `cancel` | `{ label, onClick }` buttons. |
 | `dismissible` | Swipe and close button. Default true. |
 | `closeButton`, `position`, `important` | Per toast overrides of the Toaster settings. |
 | `onDismiss`, `onAutoClose` | Callbacks. |
+| `progress` | A bar that empties as the time runs out. Overrides the Toaster setting. |
+| `dedupe` | Fold into an identical toast already showing. Default `true`, for string titles. |
 
 `toast.dismiss(id)` closes one toast, `toast.dismiss()` closes them all.
 
@@ -73,11 +92,13 @@ The toast starts as loading and turns into success or error with the resolved va
 | `visibleToasts` | `3` | Toasts visible in the collapsed stack. |
 | `richColors` | `false` | Colored backgrounds for success, error, info and warning. |
 | `closeButton` | `false` | Close button on every toast. This site turns it on. |
-| `duration` | `4000` | Default auto dismiss delay. |
+| `duration` | `4000` | Auto dismiss delay in ms for every toast without its own. `0` keeps them all until closed. |
 | `gap`, `offset` | `14`, `24` | Spacing in px. |
 | `icons` | | Custom icons per type. |
 | `toastClassName`, `toastStyle` | | Applied to every card. |
 | `label`, `closeLabel` | `'Notifications'`, `'Close'` | Names of the region and of the close button. The registry `Toaster` fills them from its [labels](#labels). |
+| `progress` | `false` | A bar on every toast that empties as its time runs out. Hidden with reduced motion. |
+| `hotkey` | `['altKey', 'KeyT']` | Keys that move focus to the toasts. `false` turns it off. |
 
 ## Theming
 
@@ -92,6 +113,8 @@ The wrapper maps the cards to `--popover`, `--border`, `--radius` and the action
 ## Accessibility
 
 The region is labelled "Notifications". Each toast is a polite live region, or assertive with `important`. Timers pause while hovering and while the page is hidden, and swipe is only one way to dismiss: the close button and the actions work with a keyboard too.
+
+Alt+T moves focus to the toasts, announced through `aria-keyshortcuts`. While focus is inside, the stack stays open and the timers wait, the way they do under the pointer, so there is time to reach an action with Tab. Change the keys with `hotkey`, as `KeyboardEvent.code` with modifier names, or turn it off with `false`.
 
 ## Toast or Island?
 

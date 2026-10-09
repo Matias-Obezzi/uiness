@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import type {
   PromiseOptions,
   PromiseState,
@@ -72,7 +73,7 @@ export function createToastStore(): ToastStore {
     }
   }
 
-  const update = (id: string, patch: Partial<ToastOptions>) => {
+  const update = (id: string, patch: Partial<ToastOptions> & { count?: number }) => {
     const index = toasts.findIndex((t) => t.id === id)
     if (index === -1) return
     const previous = toasts[index] as Toast
@@ -82,25 +83,62 @@ export function createToastStore(): ToastStore {
       id,
       type: patch.type ?? previous.type,
       dismissible: patch.dismissible ?? previous.dismissible,
+      updatedAt: Date.now(),
       removing: false,
     }
     toasts = [...toasts.slice(0, index), merged, ...toasts.slice(index + 1)]
-    if ('duration' in patch || 'type' in patch) startTimer(id, durationOf(merged))
+    // A toast brought back while leaving lost its timer to the dismiss: give it a new one.
+    if ('duration' in patch || 'type' in patch || 'count' in patch || previous.removing)
+      startTimer(id, durationOf(merged))
     emit()
   }
 
   const add = (options: ToastOptions): string => {
+    // Only plain messages fold. A toast with its own action, cancel, render or callbacks
+    // stands for one thing that happened: three archived messages need three Undo buttons.
+    const plain =
+      !options.action &&
+      !options.cancel &&
+      !options.render &&
+      !options.onDismiss &&
+      !options.onAutoClose
+    if (
+      options.id === undefined &&
+      options.dedupe !== false &&
+      plain &&
+      typeof options.title === 'string'
+    ) {
+      const type = options.type ?? 'default'
+      const twin = toasts.find(
+        (t) =>
+          !t.removing &&
+          t.dedupe !== false &&
+          !t.action &&
+          !t.cancel &&
+          !t.render &&
+          t.type === type &&
+          t.title === options.title &&
+          t.description === options.description,
+      )
+      if (twin) {
+        update(twin.id, { count: twin.count + 1 })
+        return twin.id
+      }
+    }
     const id = options.id ?? nextId()
     if (toasts.some((t) => t.id === id)) {
       update(id, options)
       return id
     }
+    const now = Date.now()
     const toast: Toast = {
       ...options,
       id,
       type: options.type ?? 'default',
       dismissible: options.dismissible ?? true,
-      createdAt: Date.now(),
+      createdAt: now,
+      updatedAt: now,
+      count: 1,
     }
     toasts = [...toasts, toast]
     startTimer(id, durationOf(toast))
@@ -125,8 +163,11 @@ export function createToastStore(): ToastStore {
     clearTimer(target)
     toasts = toasts.map((t) => (t.id === target ? { ...t, removing: true } : t))
     emit()
-    // Without a Toaster nothing animates, so make sure it still goes away.
-    setTimeout(() => remove(target), 1000)
+    // Without a Toaster nothing animates, so make sure it still goes away. Unless it came back
+    // in the meantime: an update with the same id revives a leaving toast.
+    setTimeout(() => {
+      if (toasts.find((t) => t.id === target)?.removing) remove(target)
+    }, 1000)
   }
 
   const dismissAll = () => {
@@ -181,6 +222,18 @@ export interface ToastFunction {
     promise: Promise<T> | (() => Promise<T>),
     options: PromiseOptions<T, E>,
   ) => Promise<T>
+  /**
+   * Say something happened, with an Undo button. Resolves true when undone, false once the
+   * toast leaves any other way.
+   */
+  undo: (
+    title: ToastOptions['title'],
+    options?: ToastOptions & { undoText?: ReactNode },
+  ) => Promise<boolean>
+  /** Change a toast in place. */
+  update: (id: string, patch: Partial<ToastOptions>) => void
+  /** Whether a toast is still on screen, not leaving. */
+  isActive: (id: string) => boolean
   dismiss: (id?: string) => void
   /** The store behind this function, for `<Toaster store>` and custom renderers. */
   store: ToastStore
@@ -204,6 +257,28 @@ export function createToast(store: ToastStore): ToastFunction {
   fn.warning = withType('warning')
   fn.loading = withType('loading')
   fn.custom = (render, options = {}) => store.add({ ...options, render })
+  fn.update = (id, patch) => store.update(id, patch)
+  fn.isActive = (id) => store.getToasts().some((t) => t.id === id && !t.removing)
+  fn.undo = (title, { undoText = 'Undo', ...options } = {}) =>
+    new Promise<boolean>((resolve) => {
+      let undone = false
+      store.add({
+        ...options,
+        title,
+        // Every undo is its own chance, never folded into another.
+        dedupe: false,
+        action: {
+          label: undoText,
+          onClick: () => {
+            undone = true
+          },
+        },
+        onDismiss: (toast) => {
+          options.onDismiss?.(toast)
+          resolve(undone)
+        },
+      })
+    })
   fn.dismiss = (id) => (id ? store.dismiss(id) : store.dismissAll())
   fn.store = store
 
