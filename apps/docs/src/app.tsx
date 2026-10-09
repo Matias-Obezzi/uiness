@@ -12,7 +12,7 @@ import { themeScope } from './lib/themes'
 
 export function App() {
   const { pathname } = useLocation()
-  useEffect(() => track('view', pathname), [pathname])
+  useEffect(() => track('view', { path: pathname }), [pathname])
 
   return (
     <>

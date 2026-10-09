@@ -1,5 +1,15 @@
-import { ChevronRightIcon, MenuIcon, PaletteIcon, SearchIcon } from 'lucide-react'
-import { type ReactNode, useEffect, useId, useLayoutEffect, useRef, useState } from 'react'
+import { ChevronRightIcon, FlameIcon, MenuIcon, PaletteIcon, SearchIcon } from 'lucide-react'
+import {
+  createContext,
+  type ReactNode,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router'
 import { Button } from '@/components/ui/button'
 import {
@@ -9,6 +19,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  commandScore,
   useCommandShortcut,
 } from '@/components/ui/command'
 import {
@@ -23,11 +34,13 @@ import { ScrollFade } from '@/components/ui/scroll-fade'
 import { ThemeSwitch } from '@/components/ui/theme-switch'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+import { track } from '~/lib/metrics'
 import { isNew, nav, pageHref } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { useTheme } from '~/lib/theme'
 import { setCustomizerOpen } from '~/lib/theme-choice'
 import { siteChrome } from '~/lib/themes'
+import { installsOf, mostInstalled, useUsage } from '~/lib/usage'
 import { CustomizeDrawer } from './customize-drawer'
 import { GithubIcon } from './github-icon'
 import { Logo } from './logo'
@@ -81,11 +94,25 @@ type Page = Section['pages'][number]
 const focusRing =
   'outline-none focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:ring-inset'
 
+/** Slugs of the pages installed most this month, marked in the sidebar. */
+const PopularContext = createContext<Set<string>>(new Set())
+
+/** The mark of a page many install: a small flame. Screen readers hear "Popular". */
+function PopularMark() {
+  return (
+    <span className="inline-flex shrink-0 text-muted-foreground">
+      <FlameIcon aria-hidden className="size-3" />
+      <span className="sr-only">Popular</span>
+    </span>
+  )
+}
+
 /**
  * The links of a section or a group, along one guide line under the icon or the chevron. The
  * line darkens at the page being read. Titles stay on one line, new pages get a dot.
  */
 function PageList({ pages, onNavigate }: { pages: Page[]; onNavigate?: () => void }) {
+  const popular = useContext(PopularContext)
   return (
     <ul className="ml-2 border-l">
       {pages.map((p) => (
@@ -104,6 +131,7 @@ function PageList({ pages, onNavigate }: { pages: Page[]; onNavigate?: () => voi
           >
             <span className="truncate">{p.title}</span>
             {isNew(p) && <NewDot />}
+            {popular.has(p.slug) && <PopularMark />}
           </NavLink>
         </li>
       ))}
@@ -320,72 +348,131 @@ function SidebarNav({ onNavigate, className }: { onNavigate?: () => void; classN
     return () => clearTimeout(timer)
   }, [pathname])
 
+  const usage = useUsage()
+  const popular = useMemo(() => new Set(mostInstalled(usage).map(({ page }) => page.slug)), [usage])
+
   return (
-    <nav
-      ref={ref}
-      aria-label="Documentation"
-      className={cn('flex flex-col gap-1 text-sm', className)}
-    >
-      {nav.map((section) => (
-        <SidebarSection
-          key={section.title}
-          section={section}
-          isOpen={isOpen}
-          onToggle={(key) => save({ ...open, [key]: !isOpen(key) })}
-          onNavigate={onNavigate}
-        />
-      ))}
-    </nav>
+    <PopularContext.Provider value={popular}>
+      <nav
+        ref={ref}
+        aria-label="Documentation"
+        className={cn('flex flex-col gap-1 text-sm', className)}
+      >
+        {nav.map((section) => (
+          <SidebarSection
+            key={section.title}
+            section={section}
+            isOpen={isOpen}
+            onToggle={(key) => save({ ...open, [key]: !isOpen(key) })}
+            onNavigate={onNavigate}
+          />
+        ))}
+      </nav>
+    </PopularContext.Provider>
+  )
+}
+
+/** Marks, while mounted, that the search found nothing. Rendered inside `CommandEmpty`. */
+function EmptyMark({ flag }: { flag: { current: boolean } }) {
+  useEffect(() => {
+    flag.current = true
+    return () => {
+      flag.current = false
+    }
+  }, [flag])
+  return null
+}
+
+function SearchItem({ page, onSelect }: { page: Page; onSelect: () => void }) {
+  return (
+    <CommandItem value={page.title} keywords={[page.description, page.slug]} onSelect={onSelect}>
+      <span className="flex min-w-0 flex-col">
+        <span className="flex items-center gap-2 font-medium">
+          {page.title}
+          {isNew(page) && <NewBadge />}
+        </span>
+        <span className="line-clamp-1 text-muted-foreground text-xs">{page.description}</span>
+      </span>
+    </CommandItem>
   )
 }
 
 function Search({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const navigate = useNavigate()
+  const usage = useUsage()
+  const [query, setQuery] = useState('')
+  const empty = useRef(false)
+  const q = query.trim()
+
+  // What was searched is counted when the search closes: where it led, or that it found
+  // nothing. Searches with nothing found are the pages people want and the docs do not have.
+  const close = (chosen?: string) => {
+    const words = q.toLowerCase()
+    if (words && chosen) track('search', { path: chosen, value: words })
+    else if (words && empty.current) track('search-empty', { value: words })
+    setQuery('')
+    onOpenChange(false)
+  }
+
+  const go = (page: Page) => {
+    navigate(pageHref(page))
+    close(pageHref(page))
+  }
+
+  // With words typed, one list: best match first, and between equal matches the page installed
+  // most this month. Without, the sections in their order.
+  const ranked = useMemo(() => {
+    if (!q) return []
+    return nav
+      .flatMap((section) => section.pages)
+      .map((page) => ({
+        page,
+        score: commandScore(page.title, q, [page.description, page.slug]),
+        installs: installsOf(page, usage?.month),
+      }))
+      .filter(({ score }) => score > 0)
+      .sort((a, b) => b.score - a.score || b.installs - a.installs)
+  }, [q, usage])
 
   return (
     <CommandDialog
       open={open}
-      onOpenChange={onOpenChange}
+      onOpenChange={(next) => (next ? onOpenChange(true) : close())}
       title="Search the docs"
       description="Find a page by its name or what it does"
       contentClassName={siteChrome}
+      value={query}
+      onValueChange={setQuery}
     >
       <CommandInput placeholder="Search docs…" />
       <CommandList>
-        <CommandEmpty>No results.</CommandEmpty>
-        {nav.map((section) => (
-          <CommandGroup
-            key={section.title}
-            heading={
-              <span className="flex items-center gap-2">
-                <section.icon aria-hidden className="size-3.5" />
-                {section.title}
-              </span>
-            }
-          >
-            {section.pages.map((p) => (
-              <CommandItem
-                key={p.slug}
-                value={p.title}
-                keywords={[p.description, p.slug]}
-                onSelect={() => {
-                  navigate(pageHref(p))
-                  onOpenChange(false)
-                }}
-              >
-                <span className="flex min-w-0 flex-col">
-                  <span className="flex items-center gap-2 font-medium">
-                    {p.title}
-                    {isNew(p) && <NewBadge />}
-                  </span>
-                  <span className="line-clamp-1 text-muted-foreground text-xs">
-                    {p.description}
-                  </span>
-                </span>
-              </CommandItem>
+        <CommandEmpty>
+          <EmptyMark flag={empty} />
+          No results.
+        </CommandEmpty>
+        {q ? (
+          <CommandGroup heading="Results">
+            {ranked.map(({ page }) => (
+              <SearchItem key={page.slug} page={page} onSelect={() => go(page)} />
             ))}
           </CommandGroup>
-        ))}
+        ) : (
+          nav.map((section) => (
+            <CommandGroup
+              key={section.title}
+              heading={
+                <span className="flex items-center gap-2">
+                  <section.icon aria-hidden className="size-3.5" />
+                  {section.title}
+                </span>
+              }
+            >
+              {section.pages.map((p) => (
+                <SearchItem key={p.slug} page={p} onSelect={() => go(p)} />
+              ))}
+            </CommandGroup>
+          ))
+        )}
       </CommandList>
       <div className="flex items-center gap-4 border-t px-3 py-2 text-muted-foreground text-xs">
         <span className="flex items-center gap-1.5">

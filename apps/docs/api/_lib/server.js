@@ -140,7 +140,12 @@ export const TOOLS = [
  * A server for one request, answering from `catalog`.
  * @param {Catalog} catalog
  */
-export function createServer(catalog) {
+export function createServer(
+  /** @type {Catalog} */ catalog,
+  /** @type {{ onToolCall?: (name: string, args: Record<string, unknown>) => void }} */ {
+    onToolCall,
+  } = {},
+) {
   const server = new Server(
     {
       name: SERVER_NAME,
@@ -155,6 +160,7 @@ export function createServer(catalog) {
 
   server.setRequestHandler(CallToolRequestSchema, async (request) => {
     const args = /** @type {Record<string, unknown>} */ (request.params.arguments ?? {})
+    onToolCall?.(request.params.name, args)
     /** @type {(a: Record<string, unknown>) => Promise<import('./catalog.js').ToolOutput>} */
     let run
     switch (request.params.name) {
@@ -225,9 +231,10 @@ const json = (body, status, extra = {}) =>
  * Answers one HTTP request to the MCP endpoint.
  * @param {Request} request
  * @param {Catalog} catalog
+ * @param {{ onToolCall?: (name: string, args: Record<string, unknown>) => void }} [options]
  * @returns {Promise<Response>}
  */
-export async function handleMcpRequest(request, catalog) {
+export async function handleMcpRequest(request, catalog, options = {}) {
   if (request.method === 'OPTIONS')
     return new Response(null, { status: 204, headers: CORS_HEADERS })
 
@@ -269,7 +276,7 @@ export async function handleMcpRequest(request, catalog) {
     )
   }
 
-  const server = createServer(catalog)
+  const server = createServer(catalog, options)
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined,
     enableJsonResponse: true,

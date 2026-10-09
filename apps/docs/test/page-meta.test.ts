@@ -1,7 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { latestDates, pageMetaFrom } from '../scripts/page-meta'
 
-const rows: { path: string; n: number }[] = []
+// Both queries get these rows; the views one ignores rows without a week.
+const rows: Record<string, unknown>[] = []
 let failing = false
 vi.mock('@neondatabase/serverless', () => ({
   neon: () => async () => {
@@ -65,33 +66,38 @@ describe('page meta', () => {
   })
 })
 
-describe('GET /api/installs', () => {
+describe('GET /api/usage', () => {
   afterEach(() => {
     vi.unstubAllEnvs()
     failing = false
   })
 
-  it('counts installs per item and lets the CDN keep them for an hour', async () => {
+  it('counts installs per item and per page, all time and this month, for an hour', async () => {
     vi.stubEnv('DATABASE_URL', 'postgres://test')
     rows.splice(
       0,
       rows.length,
-      { path: '/r/button.json', n: 12 },
-      { path: '/r/hero-01.json', n: 3 },
+      { type: 'cli', path: '/r/button.json', total: 12, month: 4 },
+      { type: 'install', path: '/docs/components/button', total: 3, month: 0 },
     )
-    const { GET } = await import('../api/installs.js')
+    const { GET } = await import('../api/usage.js')
     const response = await GET()
-    expect(await response.json()).toEqual({ button: 12, 'hero-01': 3 })
+    const usage = await response.json()
+    expect(usage.installs).toEqual({
+      items: { button: 12 },
+      pages: { '/docs/components/button': 3 },
+    })
+    expect(usage.month).toEqual({ items: { button: 4 }, pages: {} })
     expect(response.headers.get('cache-control')).toContain('s-maxage=3600')
   })
 
-  it('answers empty, briefly, before the first install or with Neon down', async () => {
+  it('answers empty, briefly, before the first event or with Neon down', async () => {
     vi.stubEnv('DATABASE_URL', 'postgres://test')
     failing = true
     vi.spyOn(console, 'error').mockImplementation(() => {})
-    const { GET } = await import('../api/installs.js')
+    const { GET } = await import('../api/usage.js')
     const response = await GET()
-    expect(await response.json()).toEqual({})
+    expect((await response.json()).installs).toEqual({ items: {}, pages: {} })
     expect(response.headers.get('cache-control')).toContain('s-maxage=300')
   })
 })

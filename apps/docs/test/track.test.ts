@@ -30,7 +30,24 @@ describe('parseEvent', () => {
     expect(parseEvent('{"type":"install","path":"/"}')).toMatchObject({ type: 'install' })
   })
 
+  it('keeps a short plain value, like the words searched or a preset', () => {
+    expect(parseEvent('{"type":"search-empty","path":"/docs","value":"  date range  "}')).toEqual({
+      type: 'search-empty',
+      path: '/docs',
+      value: 'date range',
+    })
+    const long = parseEvent(JSON.stringify({ type: 'search', path: '/', value: 'x'.repeat(300) }))
+    expect(long?.value).toHaveLength(100)
+  })
+
   it.each([
+    // Escaped in the JSON, so it gets past the parser and has to be caught by the check.
+    [
+      'a value with a control character',
+      String.raw`{"type":"theme","path":"/","value":"Ne\u0000on"}`,
+    ],
+    ['a value that is not text', '{"type":"theme","path":"/","value":42}'],
+    ['a kind only the server writes', '{"type":"mcp","path":"/mcp/get_item"}'],
     ['not json', 'nope'],
     ['an unknown kind', '{"type":"drop","path":"/"}'],
     ['a full URL', '{"type":"view","path":"https://evil.test/"}'],
