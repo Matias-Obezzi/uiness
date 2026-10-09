@@ -17,17 +17,18 @@ import { ThreeViewer } from '@/components/ui/three-viewer'
 
 export function ProductPage() {
   return (
-    <div className="aspect-[4/3] w-full max-w-xl">
-      <ThreeViewer
-        src="/models/chair.glb"
-        alt="Sheen modern armchair"
-        poster="/models/chair.webp"
-        autoRotate
-      />
-    </div>
+    <ThreeViewer
+      src="/models/chair.glb"
+      alt="Sheen modern armchair"
+      poster="/models/chair.webp"
+      autoRotate
+      className="aspect-[4/3] w-full max-w-xl"
+    />
   )
 }
 ```
+
+The viewer takes the size you give it and has no height of its own, so size the viewer itself, as above, or give it `className="size-full"` inside a box that has one.
 
 The viewer displays a poster image immediately while waiting for user interaction or viewport entry. When the model is loaded, the poster smoothly fades out.
 
@@ -87,6 +88,7 @@ import { Stage } from '@uiness/three'
 export function AnimatedScene() {
   return (
     <Stage
+      className="aspect-video w-full"
       frameloop="demand"
       onSetup={({ THREE, scene, camera }) => {
         camera.position.set(0, 0, 4)
