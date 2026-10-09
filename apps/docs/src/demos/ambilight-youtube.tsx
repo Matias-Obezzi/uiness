@@ -4,7 +4,8 @@ const id = 'PWgvGjAhvIw'
 
 export default function AmbilightYoutube() {
   return (
-    <div className="flex w-full justify-center py-8">
+    // Fills the preview frame and clips there, so the glow stays inside it.
+    <div className="-m-8 flex flex-1 items-center justify-center self-stretch overflow-hidden rounded-lg p-16">
       <Ambilight className="w-full max-w-xl" intensity={0.8}>
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${id}`}
