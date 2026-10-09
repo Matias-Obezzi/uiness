@@ -70,3 +70,39 @@ describe('POST /api/track', () => {
     expect(pending).toHaveLength(0)
   })
 })
+
+describe('middleware: installs from the CLI', () => {
+  beforeEach(() => {
+    queries.length = 0
+    pending.length = 0
+    vi.stubEnv('DATABASE_URL', 'postgres://test')
+    vi.stubEnv('VERCEL_ENV', 'production')
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  const get = (path: string, headers: Record<string, string> = {}) =>
+    new Request(`https://uiness.test${path}`, { headers: { 'user-agent': 'node', ...headers } })
+
+  it('counts a tool fetching an item and lets the file through untouched', async () => {
+    const { default: middleware } = await import('../middleware.js')
+    const later: Promise<unknown>[] = []
+    const response = middleware(get('/r/button.json'), { waitUntil: (p) => later.push(p) })
+    expect(response.headers.get('x-middleware-next')).toBe('1')
+    // Handed to the middleware's own waitUntil, not awaited.
+    expect(later).toHaveLength(1)
+    expect(pending).toHaveLength(0)
+  })
+
+  it.each([
+    ['a browser', get('/r/button.json', { 'user-agent': 'Mozilla/5.0 Chrome' })],
+    ['the index a search reads', get('/r/registry.json')],
+    ['the site’s own MCP server', get('/r/button.json', { 'x-uiness-internal': '1' })],
+    ['anything that is not an item', get('/r/styles/theme.css')],
+  ])('leaves out %s', async (_, request) => {
+    const { isInstall } = await import('../middleware.js')
+    expect(isInstall(request)).toBe(false)
+  })
+})

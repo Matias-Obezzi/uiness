@@ -24,8 +24,12 @@ function catalogFor(/** @type {Request} */ request) {
     const bypass = process.env.VERCEL_AUTOMATION_BYPASS_SECRET
     catalog = createCatalog(
       httpLoader(originOf(request), {
-        // Lets a protected preview read itself when "Protection Bypass for Automation" is on.
-        headers: bypass ? { 'x-vercel-protection-bypass': bypass } : {},
+        headers: {
+          // Not an install: middleware.js leaves these reads out of the counts.
+          'x-uiness-internal': '1',
+          // Lets a protected preview read itself when "Protection Bypass for Automation" is on.
+          ...(bypass ? { 'x-vercel-protection-bypass': bypass } : {}),
+        },
         fallback: SITE,
       }),
     )

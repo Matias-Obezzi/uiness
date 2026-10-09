@@ -3,14 +3,12 @@
 
 export const EVENT_TYPES = ['view', 'install', 'code']
 
-/** @typedef {{ type: string, path: string }} TrackEvent */
-
 /** The event in a beacon's body, or null for anything else. */
 export function parseEvent(/** @type {string} */ body) {
   try {
     const { type, path } = JSON.parse(body)
     if (EVENT_TYPES.includes(type) && typeof path === 'string' && /^\/[\w\-./]{0,199}$/.test(path))
-      return /** @type {TrackEvent} */ ({ type, path })
+      return /** @type {import('./events.js').UsageEvent} */ ({ type, path })
   } catch {}
   return null
 }
