@@ -155,6 +155,29 @@ describe('ScrollFade', () => {
     expect(el.style.getPropertyValue('--scroll-fade-top-offset')).toBe('0px')
   })
 
+  it('updates in the same frame as a resize, not the next one', () => {
+    // A frame asked for from a resize callback runs a frame late: that frame would paint the
+    // old fades over the new layout, a flash as a fold opens. So no frame runs here at all.
+    vi.stubGlobal('requestAnimationFrame', () => 1)
+    let onResize: () => void = () => {}
+    vi.stubGlobal(
+      'ResizeObserver',
+      class {
+        constructor(callback: () => void) {
+          onResize = callback
+        }
+        observe() {}
+        disconnect() {}
+      },
+    )
+    const { container } = render(<ScrollFade size={32}>Content</ScrollFade>)
+    const el = container.firstElementChild as HTMLElement
+    expect(fade(el, 'bottom')).toBe('0px')
+    size(el, { scrollHeight: 500, clientHeight: 100 })
+    onResize()
+    expect(fade(el, 'bottom')).toBe('32px')
+  })
+
   it('cleans up its listeners on unmount', () => {
     const { container, unmount } = render(<ScrollFade>Content</ScrollFade>)
     const el = container.firstElementChild as HTMLElement

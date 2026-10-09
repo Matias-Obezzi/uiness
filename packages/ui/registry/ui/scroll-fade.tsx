@@ -128,8 +128,17 @@ function useScrollFade(
       el.style.setProperty('--scroll-fade-left-offset', px(offsets.left))
     }
 
+    // A scroll is handled before the frame's animation callbacks, so a frame asked for here
+    // still runs before this paint.
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update)
+    }
+    // Size and content changes are reported after them: a frame asked for there would run a
+    // frame late and paint the old fades over the new layout, a flash as a fold opens. Layout
+    // is fresh by then, so update at once.
+    const now = () => {
+      if (frame) cancelAnimationFrame(frame)
+      update()
     }
 
     collect()
@@ -137,7 +146,7 @@ function useScrollFade(
     el.addEventListener('scroll', schedule, { passive: true })
 
     // The scroller and what is inside it changing size both move the edges.
-    const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(schedule) : undefined
+    const resize = typeof ResizeObserver === 'function' ? new ResizeObserver(now) : undefined
     const observeChildren = () => {
       if (!resize) return
       resize.disconnect()
@@ -152,7 +161,7 @@ function useScrollFade(
         ? new MutationObserver(() => {
             observeChildren()
             collect()
-            schedule()
+            now()
           })
         : undefined
     mutation?.observe(el, { childList: true, subtree: true })
