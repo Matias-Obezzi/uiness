@@ -10,7 +10,7 @@ Maps for React with zero runtime dependencies. OpenStreetMap by default, any XYZ
 
 [Documentation](https://uiness.vercel.app/docs/map) · [Registry](https://uiness.vercel.app/docs/installation) · [GitHub](https://github.com/Matias-Obezzi/uiness)
 
-- Drag or touch to pan, wheel and pinch to zoom, double click to zoom in (Shift to zoom out).
+- Drag or touch to pan, pinch to zoom, the wheel zooms with Ctrl or ⌘ held and scrolls the page otherwise, double click to zoom in (Shift to zoom out).
 - Keyboard when focused: arrows pan, `+` and `-` zoom.
 - Controlled or uncontrolled `center` and `zoom`.
 - The tile service's attribution is shown in the corner, as OpenStreetMap requires.
@@ -51,6 +51,7 @@ Coordinates are `[lng, lat]`, the GeoJSON order. The map fills its box and has n
 | `defaultCenter`, `defaultZoom` | `[0, 20]`, `2` | Starting view when uncontrolled. |
 | `onViewChange` | | `({ center, zoom }) => void` on every move. |
 | `minZoom`, `maxZoom` | `0`, the provider's | Zoom range. |
+| `wheelZoom` | `'modifier'` | When the wheel zooms: `'modifier'` (Ctrl, ⌘ or a trackpad pinch), `'always'` or `'never'`. Tiles only. |
 | `provider` | `providers.osm` | Where the tiles come from. |
 | `engine` | | Draw with another platform instead, see below. |
 
@@ -105,7 +106,7 @@ const apple = appleMaps({ token: 'YOUR_MAPKIT_TOKEN' })
 </Map>
 ```
 
-Each engine loads the platform's official script the first time a map mounts, from your key or token, and tears its map down on unmount. The platform does the panning and zooming; markers, popups and controls are the same React elements, placed with the platform's projection.
+Each engine loads the platform's official script the first time a map mounts, from your key or token, and tears its map down on unmount. `googleMaps()` sets `gestureHandling: 'cooperative'`, the same Ctrl or ⌘ rule as `wheelZoom`, pass `options: { gestureHandling: 'greedy' }` to always zoom. MapKit JS has no equivalent, and `wheelZoom` is not read when an `engine` is set. The platform does the panning and zooming; markers, popups and controls are the same React elements, placed with the platform's projection.
 
 ### Writing an engine
 

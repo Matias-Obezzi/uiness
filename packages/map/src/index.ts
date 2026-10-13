@@ -1,7 +1,14 @@
 export { type AppleMapsOptions, appleMaps } from './apple'
 export { type EngineMap, loadScript, type MapEngine } from './engine'
 export { type GoogleMapsOptions, googleMaps } from './google'
-export { Map, type MapContextValue, type MapProps, useMap } from './map'
+export {
+  Map,
+  type MapContextValue,
+  type MapProps,
+  useMap,
+  type WheelZoom,
+  zoomsOnWheel,
+} from './map'
 export {
   Marker,
   type MarkerProps,

@@ -44,6 +44,23 @@ export function useMap(): MapContextValue {
   return map
 }
 
+/**
+ * When the wheel zooms the map. `'modifier'`: with Ctrl or ⌘ held, which is also what a
+ * trackpad pinch sends, and the page scrolls otherwise. `'always'`: every wheel turn over the
+ * map zooms, and the page cannot scroll past it. `'never'`: the wheel only scrolls.
+ */
+export type WheelZoom = 'modifier' | 'always' | 'never'
+
+/** Whether a wheel event over the map should zoom it rather than scroll the page. */
+export function zoomsOnWheel(
+  mode: WheelZoom,
+  event: Pick<WheelEvent, 'ctrlKey' | 'metaKey'>,
+): boolean {
+  if (mode === 'always') return true
+  if (mode === 'never') return false
+  return event.ctrlKey || event.metaKey
+}
+
 export interface MapProps extends Omit<HTMLAttributes<HTMLElement>, 'children'> {
   /** Controlled center, `[lng, lat]`. */
   center?: LngLat
@@ -59,6 +76,12 @@ export interface MapProps extends Omit<HTMLAttributes<HTMLElement>, 'children'> 
   minZoom?: number
   /** Default the provider's `maxZoom`, or 22 with an engine. */
   maxZoom?: number
+  /**
+   * When the wheel zooms the map: `'modifier'` (default) with Ctrl or ⌘ held or a trackpad
+   * pinch, so the page scrolls past it; `'always'`; or `'never'`. Tiles only: an `engine`
+   * handles its own wheel.
+   */
+  wheelZoom?: WheelZoom
   /** Where the tiles come from. Default OpenStreetMap. */
   provider?: TileProvider
   /** Draw with another platform instead of tiles, like `googleMaps()` or `appleMaps()`. */
@@ -85,6 +108,7 @@ export function Map({
   onViewChange,
   minZoom = 0,
   maxZoom,
+  wheelZoom = 'modifier',
   provider = providers.osm,
   engine,
   children,
@@ -130,11 +154,12 @@ export function Map({
     return () => observer.disconnect()
   }, [])
 
-  // The wheel needs a listener that is not passive to keep the page from scrolling.
+  // Not passive, so a wheel that zooms can keep the page from scrolling; one that does not is left alone.
   useEffect(() => {
     const el = ref.current
     if (!el || engine) return
     const wheel = (e: WheelEvent) => {
+      if (!zoomsOnWheel(wheelZoom, e)) return
       e.preventDefault()
       const { view, size, setView } = latest.current
       const rect = el.getBoundingClientRect()
@@ -145,7 +170,7 @@ export function Map({
     }
     el.addEventListener('wheel', wheel, { passive: false })
     return () => el.removeEventListener('wheel', wheel)
-  }, [engine])
+  }, [engine, wheelZoom])
 
   useEffect(() => {
     const el = engineRef.current

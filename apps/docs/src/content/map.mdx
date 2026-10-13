@@ -1,4 +1,4 @@
-Maps with no dependencies. OpenStreetMap by default, any tile service by passing an object, markers and popups that are plain React elements, and the same components on Google Maps or Apple Maps. Drag, pinch, scroll or use the keyboard: arrows pan, `+` and `-` zoom.
+Maps with no dependencies. OpenStreetMap by default, any tile service by passing an object, markers and popups that are plain React elements, and the same components on Google Maps or Apple Maps. Drag, pinch, or use the keyboard: arrows pan, `+` and `-` zoom. The wheel scrolls the page past the map and zooms it with Ctrl or ⌘ held, which is also what a trackpad pinch sends.
 
 <ComponentPreview name="map-demo" />
 
@@ -33,6 +33,8 @@ export function Office() {
 ```
 
 Coordinates are `[lng, lat]`, the GeoJSON order. The map fills its box: the wrapper makes it 20rem tall, change that with `className`.
+
+Set `wheelZoom` to `'always'` for a map that owns the wheel, such as a full screen one, or `'never'` to zoom only with the buttons and the keyboard. Touch pinch always zooms.
 
 A marker with `onClick` is a button, so give it a `label`. Without one it lets the map be dragged through it. Pass any children to draw your own pin; its bottom center sits on the coordinate. A popup shows while you render it, and `onClose` adds a close button and closes it on Escape.
 
@@ -131,7 +133,7 @@ export function Store() {
 }
 ```
 
-The platform pans and zooms with its own gestures; the keyboard and `MapZoomControl` still go through the map. Restrict your Google key to your domains, and scope your MapKit JS token to your origin.
+`googleMaps()` sets `gestureHandling: 'cooperative'`, the same Ctrl or ⌘ rule as `wheelZoom`; pass `options: { gestureHandling: 'greedy' }` to always zoom. MapKit JS has no equivalent, and `wheelZoom` is not read when an `engine` is set. The platform pans and zooms with its own gestures; the keyboard and `MapZoomControl` still go through the map. Restrict your Google key to your domains, and scope your MapKit JS token to your origin.
 
 ## Writing an engine
 
@@ -177,6 +179,7 @@ export const mapbox =
 | `defaultCenter`, `defaultZoom` | `[0, 20]`, `2` | Starting view when uncontrolled. |
 | `onViewChange` | | `({ center, zoom }) => void` on every move. |
 | `minZoom`, `maxZoom` | `0`, the provider's | Zoom range. |
+| `wheelZoom` | `'modifier'` | When the wheel zooms: `'modifier'` (Ctrl, ⌘ or a trackpad pinch), `'always'` or `'never'`. Tiles only. |
 | `provider` | `providers.osm` | `providers.osm`, `cartoLight`, `cartoDark`, `openTopoMap`, or your own. |
 | `engine` | | Another platform: `googleMaps()`, `appleMaps()` or your own. |
 

@@ -1,5 +1,5 @@
-import { fireEvent, render, screen } from '@testing-library/react'
-import { Map, Marker, ZoomControl } from './index'
+import { cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { Map, Marker, ZoomControl, zoomsOnWheel } from './index'
 
 beforeAll(() => {
   globalThis.ResizeObserver ??= class {
@@ -43,5 +43,37 @@ describe('Map', () => {
     )
     fireEvent.click(screen.getByRole('button', { name: 'Null Island' }))
     expect(onClick).toHaveBeenCalled()
+  })
+})
+
+describe('wheelZoom', () => {
+  const wheel = (init: WheelEventInit) => {
+    const onViewChange = vi.fn()
+    render(<Map defaultCenter={[0, 0]} defaultZoom={3} onViewChange={onViewChange} />)
+    const event = new WheelEvent('wheel', {
+      deltaY: -100,
+      bubbles: true,
+      cancelable: true,
+      ...init,
+    })
+    screen.getByRole('region', { name: 'Map' }).dispatchEvent(event)
+    return { event, onViewChange }
+  }
+
+  it('scrolls the page without Ctrl or ⌘, zooms with them', () => {
+    const plain = wheel({})
+    expect(plain.event.defaultPrevented).toBe(false)
+    expect(plain.onViewChange).not.toHaveBeenCalled()
+    cleanup()
+    const ctrl = wheel({ ctrlKey: true })
+    expect(ctrl.event.defaultPrevented).toBe(true)
+    expect(ctrl.onViewChange.mock.lastCall?.[0].zoom).toBeGreaterThan(3)
+  })
+
+  it('follows the mode like three', () => {
+    const plain = { ctrlKey: false, metaKey: false }
+    expect(zoomsOnWheel('always', plain)).toBe(true)
+    expect(zoomsOnWheel('never', { ctrlKey: true, metaKey: false })).toBe(false)
+    expect(zoomsOnWheel('modifier', { ctrlKey: false, metaKey: true })).toBe(true)
   })
 })

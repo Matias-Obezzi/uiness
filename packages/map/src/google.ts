@@ -7,7 +7,7 @@ type Sdk = any
 export interface GoogleMapsOptions {
   /** Maps JavaScript API key. */
   apiKey: string
-  /** Extra `google.maps.MapOptions`, such as `mapId` or `disableDefaultUI`. */
+  /** Extra `google.maps.MapOptions`, such as `mapId` or `disableDefaultUI`. `gestureHandling` is `'cooperative'` unless set: the wheel zooms with Ctrl or ⌘ and scrolls the page otherwise, `'greedy'` always zooms. */
   options?: Record<string, unknown>
 }
 
@@ -26,6 +26,7 @@ export function googleMaps({ apiKey, options }: GoogleMapsOptions): MapEngine {
     const map = new maps.Map(container, {
       center: toLatLng(view.center),
       zoom: view.zoom,
+      gestureHandling: 'cooperative',
       ...options,
     })
     const current = (): MapView => {
