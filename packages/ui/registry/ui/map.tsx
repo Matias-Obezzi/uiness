@@ -9,7 +9,7 @@ import {
   type PopupProps,
   useMap,
 } from '@uiness/map'
-import { MinusIcon, PlusIcon } from 'lucide-react'
+import { MinusIcon, PlusIcon, XIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
@@ -116,12 +116,13 @@ function MapPopup({ className, closeLabel, offset = 52, ...props }: PopupProps) 
     <Popup
       data-slot="map-popup"
       closeLabel={closeLabel ?? t.close}
+      closeIcon={<XIcon />}
       offset={offset}
       className={cn(
         'w-max max-w-64 rounded-lg border bg-popover px-3 py-2 text-popover-foreground text-sm shadow-md',
         // The tail: a rotated square sharing the card's fill and border.
         'after:absolute after:top-full after:left-1/2 after:size-2.5 after:-translate-x-1/2 after:-translate-y-[calc(50%-0.5px)] after:rotate-45 after:rounded-br-[2px] after:border-r after:border-b after:bg-popover',
-        '[&_[data-map-popup-close]]:float-right [&_[data-map-popup-close]]:-mt-0.5 [&_[data-map-popup-close]]:-mr-1.5 [&_[data-map-popup-close]]:ml-2 [&_[data-map-popup-close]]:flex [&_[data-map-popup-close]]:size-6 [&_[data-map-popup-close]]:cursor-pointer [&_[data-map-popup-close]]:items-center [&_[data-map-popup-close]]:justify-center [&_[data-map-popup-close]]:rounded-md [&_[data-map-popup-close]]:text-base [&_[data-map-popup-close]]:text-muted-foreground [&_[data-map-popup-close]]:leading-none [&_[data-map-popup-close]]:outline-none [&_[data-map-popup-close]]:transition-[color,background-color,box-shadow] [&_[data-map-popup-close]]:hover:bg-accent [&_[data-map-popup-close]]:hover:text-foreground [&_[data-map-popup-close]]:focus-visible:ring-[3px] [&_[data-map-popup-close]]:focus-visible:ring-ring/50',
+        '[&_[data-map-popup-close]]:float-right [&_[data-map-popup-close]]:-mt-0.5 [&_[data-map-popup-close]]:-mr-1.5 [&_[data-map-popup-close]]:ml-2 [&_[data-map-popup-close]]:flex [&_[data-map-popup-close]]:size-6 [&_[data-map-popup-close]]:cursor-pointer [&_[data-map-popup-close]]:items-center [&_[data-map-popup-close]]:justify-center [&_[data-map-popup-close]]:rounded-md [&_[data-map-popup-close]_svg]:size-4 [&_[data-map-popup-close]]:text-muted-foreground [&_[data-map-popup-close]]:leading-none [&_[data-map-popup-close]]:outline-none [&_[data-map-popup-close]]:transition-[color,background-color,box-shadow] [&_[data-map-popup-close]]:hover:bg-accent [&_[data-map-popup-close]]:hover:text-foreground [&_[data-map-popup-close]]:focus-visible:ring-[3px] [&_[data-map-popup-close]]:focus-visible:ring-ring/50',
         className,
       )}
       {...props}

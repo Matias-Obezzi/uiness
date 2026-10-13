@@ -86,6 +86,8 @@ export interface PopupProps extends HTMLAttributes<HTMLDivElement> {
   onClose?: () => void
   /** Accessible name of the close button. Default `'Close'`. */
   closeLabel?: string
+  /** Content of the close button. Default `'×'`. */
+  closeIcon?: ReactNode
 }
 
 /**
@@ -97,6 +99,7 @@ export function Popup({
   offset = 44,
   onClose,
   closeLabel = 'Close',
+  closeIcon = '×',
   className,
   style,
   children,
@@ -148,7 +151,9 @@ export function Popup({
                 }
           }
         >
-          ×
+          <span aria-hidden="true" style={{ display: 'contents' }}>
+            {closeIcon}
+          </span>
         </button>
       )}
       {children}

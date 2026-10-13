@@ -57,7 +57,7 @@ Coordinates are `[lng, lat]`, the GeoJSON order. The map fills its box and has n
 
 Every other prop goes to the `<section>` that holds the map. Its accessible name is `"Map"` unless you pass `aria-label`.
 
-`<Marker lngLat>` takes any children as the pin, its bottom center on the coordinate. With `onClick` it is a button, so give it a `label`. `<Popup lngLat>` is rendered while it should be open; `onClose` adds a close button and closes on Escape. `<Popup>` and `<ZoomControl>` drop their default look when you pass a `className`.
+`<Marker lngLat>` takes any children as the pin, its bottom center on the coordinate. With `onClick` it is a button, so give it a `label`. `<Popup lngLat>` is rendered while it should be open; `onClose` adds a close button and closes on Escape; `closeIcon` replaces its default `×`. `<Popup>` and `<ZoomControl>` drop their default look when you pass a `className`.
 
 ### Tile providers
 
