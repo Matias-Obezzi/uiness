@@ -182,6 +182,7 @@ export const mapbox =
 | `wheelZoom` | `'modifier'` | When the wheel zooms: `'modifier'` (Ctrl, ⌘ or a trackpad pinch), `'always'` or `'never'`. Tiles only. |
 | `provider` | `providers.osm` | `providers.osm`, `cartoLight`, `cartoDark`, `openTopoMap`, or your own. |
 | `engine` | | Another platform: `googleMaps()`, `appleMaps()` or your own. |
+| `themed` | `true` | Tints the tiles toward the theme: muted in light mode, inverted in dark mode. Markers and controls keep their colors. `false` shows the original tiles, which you want with a provider that has its own look, like `cartoDark`. Tiles only. |
 
 Every other prop goes to the `<section>` that holds the map. It takes focus and is named "Map" for screen readers.
 
@@ -199,5 +200,5 @@ Every other prop goes to the `<section>` that holds the map. It takes focus and 
 | Prop | Default | Description |
 | --- | --- | --- |
 | `lngLat` | | Where it points. |
-| `offset` | `44` | Pixels between the coordinate and the popup, room for the pin. |
+| `offset` | `52` | Pixels between the coordinate and the popup, room for the pin and the tail. |
 | `onClose` | | Adds a close button and closes on Escape. |

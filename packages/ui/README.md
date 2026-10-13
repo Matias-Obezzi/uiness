@@ -100,7 +100,7 @@ Agents can use the registry through the MCP server at `https://uiness.vercel.app
 | `fx` | `<Fx />` canvas effects with theme defaults, re-exports every `@uiness/fx` effect. |
 | `toast` | `<Toaster />` wired to the theme tokens, re-exports `toast()` from `@uiness/toast`. |
 | `choreo` | `<Choreo />` that animates a whole site from its DOM, skipping the registry components that animate themselves. Re-exports `@uiness/choreo`. |
-| `map` | `<Map />`, `<MapMarker />`, `<MapPopup />` and `<MapZoomControl />` on the theme tokens, re-exports the `@uiness/map` providers, engines and `useMap`. |
+| `map` | `<Map />`, `<MapMarker />`, `<MapPopup />` and `<MapZoomControl />` on the theme tokens, tiles tinted to the theme in light and dark mode (`themed={false}` for the original tiles), re-exports the `@uiness/map` providers, engines and `useMap`. |
 | `uiness-skill` | An agent skill, installed to `.claude/skills/uiness/SKILL.md`: how to install items, where to look up their APIs, and the conventions to keep. |
 
 ### Blocks

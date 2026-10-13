@@ -13,7 +13,9 @@ beforeAll(() => {
 describe('Map', () => {
   it('draws OpenStreetMap tiles with their attribution', () => {
     const { container } = render(<Map defaultCenter={[0, 0]} defaultZoom={1} />)
-    const srcs = [...container.querySelectorAll('img')].map((img) => img.getAttribute('src'))
+    const srcs = [...container.querySelectorAll('img[data-map-tile]')].map((img) =>
+      img.getAttribute('src'),
+    )
     expect(srcs).toContain('https://tile.openstreetmap.org/1/0/0.png')
     expect(screen.getByText('OpenStreetMap')).toBeTruthy()
   })

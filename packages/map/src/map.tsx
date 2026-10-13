@@ -314,6 +314,7 @@ export function Map({
             key={t.key}
             src={tileUrl(provider, t.z, t.x, t.y)}
             alt=""
+            data-map-tile=""
             draggable={false}
             style={{
               position: 'absolute',
