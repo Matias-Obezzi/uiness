@@ -16,6 +16,7 @@ export default defineConfig({
       '@uiness/toast': `${root}../toast/src/index.ts`,
       '@uiness/scroll': `${root}../scroll/src/index.ts`,
       '@uiness/choreo': `${root}../choreo/src/index.ts`,
+      '@uiness/map': `${root}../map/src/index.ts`,
     },
   },
   test: {

@@ -371,6 +371,12 @@ export const fr = {
     end: 'Fin',
     plus: 'Plus',
   },
+  map: {
+    map: 'Carte',
+    zoomIn: 'Zoom avant',
+    zoomOut: 'Zoom arrière',
+    close: 'Fermer',
+  },
   'mention-input': {
     empty: 'Aucune correspondance',
     suggestions: 'Suggestions',

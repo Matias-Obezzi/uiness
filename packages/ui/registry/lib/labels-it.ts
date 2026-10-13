@@ -367,6 +367,12 @@ export const it = {
     end: 'Fine',
     plus: 'Più',
   },
+  map: {
+    map: 'Mappa',
+    zoomIn: 'Ingrandisci',
+    zoomOut: 'Riduci',
+    close: 'Chiudi',
+  },
   'mention-input': {
     empty: 'Nessuna corrispondenza',
     suggestions: 'Suggerimenti',

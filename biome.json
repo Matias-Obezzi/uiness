@@ -30,5 +30,21 @@
     "parser": {
       "tailwindDirectives": true
     }
-  }
+  },
+  "overrides": [
+    {
+      "includes": [
+        "packages/map/src/**",
+        "packages/ui/registry/ui/map.tsx",
+        "apps/docs/src/demos/map-*.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "suspicious": {
+            "noShadowRestrictedNames": "off"
+          }
+        }
+      }
+    }
+  ]
 }

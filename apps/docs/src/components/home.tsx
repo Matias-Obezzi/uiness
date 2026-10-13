@@ -62,6 +62,13 @@ const features = [
       'Animates a whole site from what is already on the page. It reads the DOM and gives every element an entrance.',
   },
   {
+    title: 'Map',
+    pkg: 'map',
+    href: '/docs/map',
+    description:
+      'OpenStreetMap or any tile service with markers and popups, no dependencies. The same components on Google Maps or Apple Maps.',
+  },
+  {
     title: 'Motion',
     href: '/docs/motion/spotlight',
     description:

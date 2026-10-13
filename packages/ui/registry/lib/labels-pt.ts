@@ -367,6 +367,12 @@ export const pt = {
     end: 'End',
     plus: 'Mais',
   },
+  map: {
+    map: 'Mapa',
+    zoomIn: 'Aproximar',
+    zoomOut: 'Afastar',
+    close: 'Fechar',
+  },
   'mention-input': {
     empty: 'Nenhuma correspondência',
     suggestions: 'Sugestões',

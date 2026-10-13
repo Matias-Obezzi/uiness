@@ -6,7 +6,7 @@ import { track } from '~/lib/metrics'
 import { site } from '~/lib/site'
 
 /** The packages, by the registry item that installs each one. */
-const ITEMS = ['island', 'image', 'fx', 'toast', 'sortable', 'choreo', 'three-viewer']
+const ITEMS = ['island', 'image', 'fx', 'toast', 'sortable', 'choreo', 'three-viewer', 'map']
 const STEP = 2200
 
 /**

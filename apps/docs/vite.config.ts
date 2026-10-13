@@ -92,6 +92,7 @@ export default defineConfig({
       '@uiness/scroll': `${root}../../packages/scroll/src/index.ts`,
       '@uiness/dnd': `${root}../../packages/dnd/src/index.ts`,
       '@uiness/choreo': `${root}../../packages/choreo/src/index.ts`,
+      '@uiness/map': `${root}../../packages/map/src/index.ts`,
       '@uiness/three/core': `${root}../../packages/three/src/core.ts`,
       '@uiness/three': `${root}../../packages/three/src/index.ts`,
       '@/components/ui': `${root}../../packages/ui/registry/ui`,

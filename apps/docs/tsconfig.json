@@ -16,7 +16,8 @@
       "@uiness/toast": ["../../packages/toast/src/index.ts"],
       "@uiness/scroll": ["../../packages/scroll/src/index.ts"],
       "@uiness/dnd": ["../../packages/dnd/src/index.ts"],
-      "@uiness/choreo": ["../../packages/choreo/src/index.ts"]
+      "@uiness/choreo": ["../../packages/choreo/src/index.ts"],
+      "@uiness/map": ["../../packages/map/src/index.ts"]
     }
   },
   "include": ["src", "api", "test", "scripts/**/*.ts", "vite.config.ts", "vitest.config.ts"]
