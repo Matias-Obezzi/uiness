@@ -360,6 +360,12 @@ export const zh = {
     end: 'End',
     plus: '加',
   },
+  map: {
+    map: '地图',
+    zoomIn: '放大',
+    zoomOut: '缩小',
+    close: '关闭',
+  },
   'mention-input': {
     empty: '无匹配项',
     suggestions: '建议',

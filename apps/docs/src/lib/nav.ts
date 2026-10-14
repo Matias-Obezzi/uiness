@@ -100,6 +100,11 @@ const sections: NavSection[] = [
         'Animates a whole site from what is already on the page, no markup changes.',
       ),
       page(
+        'map',
+        'Map',
+        'OpenStreetMap or any tiles with markers and popups, and the same API on Google or Apple Maps.',
+      ),
+      page(
         'three',
         'Three',
         '3D model viewer and stage with lazy loading, render on demand and orbit controls.',
@@ -678,6 +683,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-13': ['map'],
   '2026-10-09': [
     'components/video-player',
     'motion/animated-beam',

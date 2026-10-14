@@ -1,0 +1,205 @@
+Maps with no dependencies. OpenStreetMap by default, any tile service by passing an object, markers and popups that are plain React elements, and the same components on Google Maps or Apple Maps. Drag, pinch, or use the keyboard: arrows pan, `+` and `-` zoom. The wheel scrolls the page past the map and zooms it with Ctrl or ⌘ held, which is also what a trackpad pinch sends.
+
+<ComponentPreview name="map-demo" />
+
+## Installation
+
+<Install name="map" extra="Installs @uiness/map and Map, MapMarker, MapPopup and MapZoomControl on your theme tokens." />
+
+Or the package on its own:
+
+<InstallPackage name="@uiness/map" />
+
+## Usage
+
+```tsx
+import { useState } from 'react'
+import { Map, MapMarker, MapPopup, MapZoomControl } from '@/components/ui/map'
+
+export function Office() {
+  const [open, setOpen] = useState(false)
+  return (
+    <Map defaultCenter={[-58.3816, -34.6037]} defaultZoom={13}>
+      <MapMarker lngLat={[-58.3816, -34.6037]} label="Office" onClick={() => setOpen(!open)} />
+      {open && (
+        <MapPopup lngLat={[-58.3816, -34.6037]} onClose={() => setOpen(false)}>
+          We are here
+        </MapPopup>
+      )}
+      <MapZoomControl />
+    </Map>
+  )
+}
+```
+
+Coordinates are `[lng, lat]`, the GeoJSON order. The map fills its box: the wrapper makes it 20rem tall, change that with `className`.
+
+Set `wheelZoom` to `'always'` for a map that owns the wheel, such as a full screen one, or `'never'` to zoom only with the buttons and the keyboard. Touch pinch always zooms.
+
+A marker with `onClick` is a button, so give it a `label`. Without one it lets the map be dragged through it. Pass any children to draw your own pin; its bottom center sits on the coordinate. A popup shows while you render it, and `onClose` adds a close button and closes it on Escape.
+
+## Tile providers
+
+<ComponentPreview name="map-providers" align="start" />
+
+A provider is a plain object, so any XYZ tile service works:
+
+```tsx
+import { Map, providers } from '@/components/ui/map'
+
+<Map provider={providers.cartoDark} />
+
+<Map
+  provider={{
+    url: 'https://tiles.example.com/{z}/{x}/{y}.png',
+    attribution: '© Example',
+    maxZoom: 18,
+    subdomains: ['a', 'b'], // fills {s} in the url
+  }}
+/>
+```
+
+CARTO asks for a key now (free tiers available); without it the tiles carry a watermark. Add it to the url:
+
+```tsx
+<Map provider={{ ...providers.cartoDark, url: `${providers.cartoDark.url}?key=${CARTO_KEY}` }} />
+```
+
+The provider's attribution is always in the corner, as OpenStreetMap and most services require. The public OpenStreetMap servers are for light use: read their [tile usage policy](https://operations.osmfoundation.org/policies/tiles/), and point `provider` at a paid or self hosted service for real traffic.
+
+## Controlled view
+
+```tsx
+const [view, setView] = useState<MapView>({ center: [2.35, 48.85], zoom: 12 })
+
+<Map center={view.center} zoom={view.zoom} onViewChange={setView} />
+```
+
+`onViewChange` fires on every move. Leave `center` and `zoom` out, and use `defaultCenter` and `defaultZoom`, to let the map keep its own view.
+
+## Your own overlays
+
+`useMap()` gives the view and the projection to anything inside the map:
+
+```tsx
+import { type LngLat, useMap } from '@/components/ui/map'
+
+function Label({ lngLat, children }: { lngLat: LngLat; children: React.ReactNode }) {
+  const map = useMap()
+  const [x, y] = map.project(lngLat)
+  return (
+    <span className="absolute rounded bg-background px-1 text-xs" style={{ left: x, top: y }}>
+      {children}
+    </span>
+  )
+}
+```
+
+It returns `center`, `zoom`, `size`, `project`, `unproject` and `setView({ center?, zoom? })`. The Web Mercator helpers behind it (`project`, `unproject`, `pan`, `zoomAround`, `visibleTiles`) are pure functions exported from `@uiness/map`.
+
+## Google Maps and Apple Maps
+
+`engine` swaps the tiles for another platform, and the same `Map`, `MapMarker`, `MapPopup` and `MapZoomControl` work on top of it. The engine loads the platform's official script the first time a map mounts, with your key or token, and removes its map on unmount. Both need a key, so these are code only.
+
+```tsx
+import { googleMaps, Map, MapMarker } from '@/components/ui/map'
+
+// Once, outside the component: a new engine mounts a new map.
+const google = googleMaps({
+  apiKey: import.meta.env.VITE_GOOGLE_MAPS_KEY,
+  options: { disableDefaultUI: true },
+})
+
+export function Store() {
+  return (
+    <Map engine={google} defaultCenter={[-73.9857, 40.7484]} defaultZoom={15}>
+      <MapMarker lngLat={[-73.9857, 40.7484]} />
+    </Map>
+  )
+}
+```
+
+```tsx
+import { appleMaps, Map, MapMarker } from '@/components/ui/map'
+
+const apple = appleMaps({ token: import.meta.env.VITE_MAPKIT_TOKEN })
+
+export function Store() {
+  return (
+    <Map engine={apple} defaultCenter={[-122.009, 37.3349]} defaultZoom={15}>
+      <MapMarker lngLat={[-122.009, 37.3349]} />
+    </Map>
+  )
+}
+```
+
+`googleMaps()` sets `gestureHandling: 'cooperative'`, the same Ctrl or ⌘ rule as `wheelZoom`; pass `options: { gestureHandling: 'greedy' }` to always zoom. MapKit JS has no equivalent, and `wheelZoom` is not read when an `engine` is set. The platform pans and zooms with its own gestures; the keyboard and `MapZoomControl` still go through the map. Restrict your Google key to your domains, and scope your MapKit JS token to your origin.
+
+## Writing an engine
+
+An engine is a function that draws into an element and returns four methods. That is all the map needs, so Mapbox, MapLibre or anything with a projection fits in a few lines:
+
+```ts
+import type { MapEngine } from '@uiness/map'
+
+export const mapbox =
+  (accessToken: string): MapEngine =>
+  async (container, view, onMove) => {
+    const mapboxgl = await loadMapbox(accessToken) // your loader
+    // Mapbox counts zoom levels from 512 pixel tiles, one less than here.
+    const map = new mapboxgl.Map({ container, center: view.center, zoom: view.zoom - 1 })
+    const current = () => ({ center: map.getCenter().toArray(), zoom: map.getZoom() + 1 })
+    map.on('move', () => onMove(current()))
+    return {
+      setView: ({ center, zoom }) => map.jumpTo({ center, zoom: zoom - 1 }),
+      project: (lngLat) => map.project(lngLat).toArray(),
+      unproject: (point) => map.unproject(point).toArray(),
+      destroy: () => map.remove(),
+    }
+  }
+```
+
+| Part | What it does |
+| --- | --- |
+| `(container, view, onMove)` | Draws into `container` at `view`, and calls `onMove(view)` on every move while it happens, so markers follow. May return a promise. |
+| `setView(view)` | Moves to a view the map asks for: from props, the keyboard or the zoom buttons. |
+| `project(lngLat)` | A coordinate to `[x, y]` from the container's top left corner. |
+| `unproject(point)` | The other way. |
+| `destroy()` | Removes the platform's map. |
+
+`loadScript(src, callbackName, attributes?)` loads an SDK once, for engines that come from a script tag.
+
+## API
+
+### `<Map />`
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `center`, `zoom` | | Controlled view. Fractional zoom levels are fine. |
+| `defaultCenter`, `defaultZoom` | `[0, 20]`, `2` | Starting view when uncontrolled. |
+| `onViewChange` | | `({ center, zoom }) => void` on every move. |
+| `minZoom`, `maxZoom` | `0`, the provider's | Zoom range. |
+| `wheelZoom` | `'modifier'` | When the wheel zooms: `'modifier'` (Ctrl, ⌘ or a trackpad pinch), `'always'` or `'never'`. Tiles only. |
+| `provider` | `providers.osm` | `providers.osm`, `cartoLight`, `cartoDark`, `openTopoMap`, or your own. |
+| `engine` | | Another platform: `googleMaps()`, `appleMaps()` or your own. |
+| `themed` | `true` | Tints the tiles toward the theme: muted in light mode, inverted in dark mode. Markers and controls keep their colors. `false` shows the original tiles, which you want with a provider that has its own look, like `cartoDark`. Tiles only. |
+
+Every other prop goes to the `<section>` that holds the map. It takes focus and is named "Map" for screen readers.
+
+### `<MapMarker />`
+
+| Prop | Description |
+| --- | --- |
+| `lngLat` | Where it goes. |
+| `onClick` | Makes it a button. |
+| `label` | Accessible name of the button. |
+| `children` | Your own pin. Default a drop in the primary color. |
+
+### `<MapPopup />`
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `lngLat` | | Where it points. |
+| `offset` | `52` | Pixels between the coordinate and the popup, room for the pin and the tail. |
+| `onClose` | | Adds a close button and closes on Escape. |
+| `closeIcon` | `'×'` | Content of the close button. The registry item passes a lucide `XIcon`. |

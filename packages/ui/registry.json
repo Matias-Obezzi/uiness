@@ -951,6 +951,20 @@
       ]
     },
     {
+      "name": "map",
+      "type": "registry:ui",
+      "title": "Map",
+      "description": "OpenStreetMap or any tile service with markers, popups and zoom buttons on the theme tokens, and the same API on Google Maps or Apple Maps. Installs @uiness/map.",
+      "dependencies": ["@uiness/map", "lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/button"],
+      "files": [
+        {
+          "path": "registry/ui/map.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "choreo",
       "type": "registry:ui",
       "title": "Choreo",

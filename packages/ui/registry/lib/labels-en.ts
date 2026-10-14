@@ -360,6 +360,12 @@ export const en = {
     end: 'End',
     plus: 'Plus',
   },
+  map: {
+    map: 'Map',
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+    close: 'Close',
+  },
   'mention-input': {
     empty: 'No matches',
     suggestions: 'Suggestions',

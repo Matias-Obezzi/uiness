@@ -16,7 +16,7 @@ import { createCatalog, ITEM_TYPES } from './catalog.js'
 export const SERVER_NAME = 'uiness'
 export const SERVER_VERSION = '1.0.0'
 
-export const INSTRUCTIONS = `uiness is a shadcn-compatible React registry: Radix and Tailwind CSS v4 components, page blocks, drag and drop and motion pieces, installed as source with the shadcn CLI, plus small npm packages (@uiness/image, island, fx, toast, scroll, dnd, choreo).
+export const INSTRUCTIONS = `uiness is a shadcn-compatible React registry: Radix and Tailwind CSS v4 components, page blocks, drag and drop and motion pieces, installed as source with the shadcn CLI, plus small npm packages (@uiness/image, island, fx, toast, scroll, dnd, choreo, map).
 
 How to use these tools:
 - search_items finds items and docs pages by what they do ("date range", "pricing table", "drag to reorder"). Each result has its install command and docs link.

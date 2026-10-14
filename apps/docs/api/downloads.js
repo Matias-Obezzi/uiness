@@ -2,7 +2,17 @@
 // for hours (npm only updates the counts daily), so a visitor never waits on npm and npm sees a
 // handful of requests a day. Scoped packages cannot be asked for in bulk: one request each.
 
-export const PACKAGES = ['image', 'island', 'fx', 'toast', 'scroll', 'dnd', 'choreo', 'three']
+export const PACKAGES = [
+  'image',
+  'island',
+  'fx',
+  'toast',
+  'scroll',
+  'dnd',
+  'choreo',
+  'three',
+  'map',
+]
 
 async function weekly(/** @type {string} */ name) {
   try {

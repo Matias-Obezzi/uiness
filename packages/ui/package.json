@@ -16,6 +16,7 @@
     "@uiness/fx": "workspace:*",
     "@uiness/image": "workspace:*",
     "@uiness/island": "workspace:*",
+    "@uiness/map": "workspace:*",
     "@uiness/scroll": "workspace:*",
     "@uiness/three": "workspace:*",
     "@uiness/toast": "workspace:*",
