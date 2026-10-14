@@ -1,6 +1,6 @@
 {
   "name": "@uiness/map",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "React maps with zero dependencies: OpenStreetMap or any XYZ tiles, markers and popups, and the same API on Google Maps or Apple Maps.",
   "keywords": [
     "react",
