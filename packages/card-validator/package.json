@@ -1,6 +1,6 @@
 {
   "name": "@uiness/card-validator",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Payment card checks for the server, and the bank behind a card from its first digits: brand, debit or credit, issuer and country, through a cached endpoint of your own.",
   "keywords": [
     "credit-card",
