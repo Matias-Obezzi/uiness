@@ -212,6 +212,24 @@ export const zh = {
     copied: '已复制',
     failed: '复制失败',
   },
+  'credit-card': {
+    summary: (brand: string, last4: string) =>
+      last4 ? `尾号 ${last4} 的 ${brand} 卡` : `${brand} 卡`,
+    holder: '持卡人',
+    expires: '有效期',
+    namePlaceholder: '姓名',
+    number: '卡号',
+    name: '持卡人姓名',
+    expiry: '有效期',
+    cvc: '安全码',
+    cvcHint: (digits: number, onFront: boolean) =>
+      onFront ? `卡片正面卡号上方的 ${digits} 位数字` : `卡片背面的 ${digits} 位数字`,
+    invalidNumber: '请检查卡号',
+    missingName: '请输入卡上的姓名',
+    invalidExpiry: '请按卡上的 MM/YY 填写',
+    expired: '此卡已过期',
+    invalidCvc: (digits: number) => `请输入 ${digits} 位安全码`,
+  },
   'data-table': {
     search: '搜索…',
     reset: '重置',

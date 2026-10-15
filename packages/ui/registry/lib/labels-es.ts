@@ -215,6 +215,24 @@ export const es = {
     copied: 'Copiado',
     failed: 'No se pudo copiar',
   },
+  'credit-card': {
+    summary: (brand: string, last4: string) =>
+      last4 ? `Tarjeta ${brand} terminada en ${last4}` : `Tarjeta ${brand}`,
+    holder: 'Titular',
+    expires: 'Vence',
+    namePlaceholder: 'Nombre completo',
+    number: 'Número de tarjeta',
+    name: 'Nombre en la tarjeta',
+    expiry: 'Vencimiento',
+    cvc: 'Código de seguridad',
+    cvcHint: (digits: number, onFront: boolean) =>
+      onFront ? `${digits} dígitos al frente, sobre el número` : `${digits} dígitos al dorso`,
+    invalidNumber: 'Revisá el número de la tarjeta',
+    missingName: 'Escribí el nombre que figura en la tarjeta',
+    invalidExpiry: 'Usá el MM/AA de la tarjeta',
+    expired: 'Esta tarjeta está vencida',
+    invalidCvc: (digits: number) => `Ingresá el código de ${digits} dígitos`,
+  },
   'data-table': {
     search: 'Buscar…',
     reset: 'Restablecer',

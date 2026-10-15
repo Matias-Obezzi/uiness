@@ -17,7 +17,9 @@
       "@uiness/scroll": ["../../packages/scroll/src/index.ts"],
       "@uiness/dnd": ["../../packages/dnd/src/index.ts"],
       "@uiness/choreo": ["../../packages/choreo/src/index.ts"],
-      "@uiness/map": ["../../packages/map/src/index.ts"]
+      "@uiness/map": ["../../packages/map/src/index.ts"],
+      "@uiness/card-validator": ["../../packages/card-validator/src/index.ts"],
+      "@uiness/card-validator/react": ["../../packages/card-validator/src/react.ts"]
     }
   },
   "include": ["src", "api", "test", "scripts/**/*.ts", "vite.config.ts", "vitest.config.ts"]

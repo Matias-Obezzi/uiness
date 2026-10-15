@@ -23,6 +23,7 @@ UI primitives for React, published under the `@uiness` scope.
 | [`@uiness/choreo`](packages/choreo) | Animates a whole site from what is already on the page: inspects the DOM, gives every element an entrance, cascades, counters and hover touches. |
 | [`@uiness/three`](packages/three) | 3D model viewer and stage: lazy loading, orbit controls, demand rendering, shadows and lighting. Core controller without React. |
 | [`@uiness/map`](packages/map) | Maps with zero dependencies: OpenStreetMap or any XYZ tiles, markers, popups, pan and zoom by pointer, touch or keyboard, and the same API on Google Maps or Apple Maps. |
+| [`@uiness/card-validator`](packages/card-validator) | Card checks for the server (brand, Luhn, expiry, security code), and the bank behind a card from its first digits through a cached endpoint of your own. |
 | [`@uiness/ui`](packages/ui) | Radix + Tailwind components distributed through a shadcn registry, includes island, image, fx and toast items, plus motion pieces: spotlights, marquees, typewriters, tilting cards. |
 
 ## AI and MCP

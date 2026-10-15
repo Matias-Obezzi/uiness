@@ -3423,6 +3423,20 @@
       ]
     },
     {
+      "name": "credit-card",
+      "type": "registry:ui",
+      "title": "Credit Card",
+      "description": "A payment card drawn from what is typed, that turns over for a security code on the back, and the form that fills it: brand detection, spacing, Luhn, expiry and code checks.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/input", "@uiness/label"],
+      "files": [
+        {
+          "path": "registry/ui/credit-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "hero-01",
       "type": "registry:block",
       "title": "Hero 01",

@@ -216,6 +216,24 @@ export const pt = {
     copied: 'Copiado',
     failed: 'Não foi possível copiar',
   },
+  'credit-card': {
+    summary: (brand: string, last4: string) =>
+      last4 ? `Cartão ${brand} final ${last4}` : `Cartão ${brand}`,
+    holder: 'Titular',
+    expires: 'Validade',
+    namePlaceholder: 'Nome completo',
+    number: 'Número do cartão',
+    name: 'Nome no cartão',
+    expiry: 'Validade',
+    cvc: 'Código de segurança',
+    cvcHint: (digits: number, onFront: boolean) =>
+      onFront ? `${digits} dígitos na frente, acima do número` : `${digits} dígitos no verso`,
+    invalidNumber: 'Confira o número do cartão',
+    missingName: 'Digite o nome impresso no cartão',
+    invalidExpiry: 'Use o MM/AA do cartão',
+    expired: 'Este cartão está vencido',
+    invalidCvc: (digits: number) => `Digite o código de ${digits} dígitos`,
+  },
   'data-table': {
     search: 'Pesquisar…',
     reset: 'Redefinir',

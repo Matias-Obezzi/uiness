@@ -1,0 +1,154 @@
+An optional companion to the [Credit Card](/docs/components/credit-card) component. The card works on its own from what is typed; this package tells it more: the bank or fintech that issued the card, whether it is debit or credit, prepaid, and its country, from the first 6 digits. For banks on the community list, the card also takes their colors and mark. It also repeats the form's checks where they can be trusted, on your server.
+
+<ComponentPreview name="card-validator-demo" />
+
+## Installation
+
+<InstallPackage name="@uiness/card-validator" />
+
+No dependencies. React is only needed for the `useCardInfo` hook, from `@uiness/card-validator/react`.
+
+## What it uses
+
+The first 6 to 8 digits of a card number, its BIN (or IIN), are assigned to the issuer. The network follows public rules (the component already finds it from the first digits), but which bank or fintech issued a BIN does not, so it takes a lookup.
+
+By default that is [binlist.net](https://binlist.net): free, no key. Two things to know:
+
+- **It refuses browsers.** Any request carrying an `Origin` header gets a 403, so it has to be called from a server, and the package gives you that server endpoint.
+- **It allows a few lookups an hour per address**, so answers are cached: in memory, and by your CDN for a week. A BIN is shared by thousands of cards, so most lookups never leave the cache.
+
+Its data is community kept and can be out of date, newer fintechs most of all. Treat the issuer as a nicety on the card, not a fact to decide on. For an answer you can rely on, ask your payment provider (Mercado Pago's `getIssuers`, for one) through the `lookup` option.
+
+Only the BIN ever leaves the browser. PCI DSS lets the first 6 and last 4 digits be shown and stored; the endpoint refuses anything but 6 to 8 digits, so a full number cannot reach it.
+
+## How to implement it
+
+**1. An endpoint on your server**, at `/api/card` by default. `createCardHandler` takes a web `Request` and returns a `Response`:
+
+```ts
+// app/api/card/route.ts (Next.js), or api/card.ts on Vercel
+import { createCardHandler } from '@uiness/card-validator'
+
+export const GET = createCardHandler()
+```
+
+```ts
+// Hono, Bun, Deno, Remix: anything with web requests
+const card = createCardHandler()
+app.get('/api/card', (c) => card(c.req.raw))
+```
+
+It answers `GET /api/card?bin=424242` with the details, `404` for a BIN no one knows, `400` for anything but 6 to 8 digits, and `502` when the lookup failed (not cached, so the next request retries).
+
+**2. The hook beside the form.** It asks once the number has 6 digits, once per BIN for the whole page:
+
+```tsx
+import { useCardInfo } from '@uiness/card-validator/react'
+import { CreditCardForm } from '@/components/ui/credit-card'
+
+export function Checkout() {
+  const [number, setNumber] = useState('')
+  const info = useCardInfo(number)
+  return (
+    <CreditCardForm issuer={info?.issuer ?? info?.bank} onChange={(card) => setNumber(card.number)} />
+  )
+}
+```
+
+`info` is `null` until there is an answer, and when there is none: the card is drawn without the issuer and nothing else changes. `info.issuer` is there when the bank is on the issuer list, and the card takes its colors and mark; otherwise `info.bank` prints the name over the network's colors. Pass `{ endpoint }` for another path.
+
+**3. Check again on the server**, if your server receives the card. The form's checks run in the browser, where anyone can skip them. (Receiving card numbers puts your server in PCI DSS scope; with your payment provider's hosted fields, the provider checks them and this step is theirs.)
+
+```ts
+import { validateCard } from '@uiness/card-validator'
+
+const { valid, brand, errors } = validateCard({ number, expiry, cvc })
+// errors: { number?: 'invalid', expiry?: 'invalid' | 'expired', cvc?: 'invalid' }
+```
+
+The same rules as the form: the brand's lengths and Luhn digit, a real month not yet passed, a code as long as the brand's. Local networks without a rule here (Cabal, Naranja, Elo) pass on their Luhn digit and any card length.
+
+## The issuer list
+
+A lookup gives a bank's name, never its colors or mark. Those come from a list its users keep in the package, one file per country in [`src/issuers`](https://github.com/Matias-Obezzi/uiness/tree/main/packages/card-validator/src/issuers). The handler matches every answer against it and sends the brand as `issuer`:
+
+```json
+{
+  "bin": "531234",
+  "bank": "MERCADOLIBRE S.R.L.",
+  "issuer": {
+    "id": "mercado-pago",
+    "name": "Mercado Pago",
+    "background": "#00b1ea",
+    "foreground": "#ffffff",
+    "website": "https://www.mercadopago.com.ar"
+  }
+}
+```
+
+An entry is matched by a BIN prefix it lists first, then by its `match` pattern against the bank name, in the `countries` it names. A listed BIN is answered even when the lookup does not know it. The list is exported too, to use without the endpoint:
+
+```ts
+import { findIssuer } from '@uiness/card-validator'
+
+findIssuer({ bin: '450799', bank: 'BANCO DE GALICIA Y BUENOS AIRES', countryCode: 'AR' })
+```
+
+Your own entries go first, to add banks or change one: `createCardHandler({ issuers: [...mine, ...issuers] })`, or `[]` for none.
+
+### Add your bank
+
+Open a pull request that adds an entry to your country's file (or creates the file and adds it to `src/issuers/index.ts`):
+
+```ts
+{
+  id: 'mercado-pago', // kebab-case, unique
+  name: 'Mercado Pago', // as people know it
+  match: /mercado ?(pago|libre)/i, // against the name binlist gives: look up one of its cards
+  countries: ['AR', 'BR', 'MX'], // where that name means this bank; leave out if the same everywhere
+  bins: ['531234'], // optional, prefixes you know are theirs
+  background: '#00b1ea', // #rrggbb, or a linear-gradient of them
+  foreground: '#ffffff', // text that reads on it
+  icon: 'M12 2…', // optional, SVG path data on a 24×24 grid, one color
+  website: 'https://www.mercadopago.com.ar',
+}
+```
+
+- **Colors** from the bank's own brand guidelines or press kit.
+- **The icon** as path data only, never markup, so nothing in the list can run a script. A mark from [Simple Icons](https://simpleicons.org) (CC0) fits as it is; otherwise trace it from the bank's press kit.
+- **Tests** check every entry when the pull request runs: the id, the colors, the path data, the country codes, and that `match` does not take every card.
+
+Names, colors and marks belong to their banks and are listed only so a card can be recognized. A bank that asks to be removed is removed.
+
+## Another source
+
+`lookup` takes any `(bin) => Promise<CardInfo | null>`: your payment provider, a paid BIN database, or a table of your own.
+
+```ts
+import { type BinLookup, createCardHandler } from '@uiness/card-validator'
+
+const lookup: BinLookup = async (bin) => {
+  const res = await fetch(`https://bins.example.com/${bin}`, { headers: { Authorization: KEY } })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`bins answered ${res.status}`)
+  const data = await res.json()
+  return { bin, bank: data.issuer, type: data.funding, countryCode: data.country }
+}
+
+export const GET = createCardHandler({ lookup, maxAge: 86400 })
+```
+
+Return `null` for a BIN that is not known, and throw when the lookup failed so it is retried instead of cached.
+
+## API
+
+| Export | Description |
+| --- | --- |
+| `createCardHandler({ lookup?, maxAge?, issuers? })` | The `GET ?bin=` endpoint. `maxAge` is how long a CDN keeps an answer, a week by default; `issuers` is the list matched against each answer. |
+| `lookupBin(bin)` | binlist.net, server side. |
+| `useCardInfo(number, { endpoint? })` | From `/react`: the `CardInfo` of the card being typed, or `null`. |
+| `issuers`, `findIssuer(card, list?)` | The community list, and the entry for a card's BIN and bank, or `null`. |
+| `validateCard({ number, expiry?, cvc? }, now?)` | `{ brand, valid, errors }`, for the fields given. |
+| `cardBrand`, `luhn`, `expiryState`, `binOf` | The checks one by one. `binOf` gives the first 6 digits, or `null`. |
+
+`CardInfo` is `{ bin, scheme?, type?, prepaid?, product?, bank?, country?, countryCode?, issuer? }`, with whatever the lookup knows. `issuer` is `{ id, name, background, foreground, icon?, website? }`, which `CreditCard` takes as it is.

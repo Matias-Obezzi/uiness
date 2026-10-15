@@ -12,6 +12,7 @@ export const PACKAGES = [
   'choreo',
   'three',
   'map',
+  'card-validator',
 ]
 
 async function weekly(/** @type {string} */ name) {

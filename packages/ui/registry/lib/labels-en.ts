@@ -213,6 +213,24 @@ export const en = {
     copied: 'Copied',
     failed: 'Copy failed',
   },
+  'credit-card': {
+    summary: (brand: string, last4: string) =>
+      last4 ? `${brand} card ending in ${last4}` : `${brand} card`,
+    holder: 'Card holder',
+    expires: 'Expires',
+    namePlaceholder: 'Full name',
+    number: 'Card number',
+    name: 'Name on card',
+    expiry: 'Expiry date',
+    cvc: 'Security code',
+    cvcHint: (digits: number, onFront: boolean) =>
+      onFront ? `${digits} digits on the front, above the number` : `${digits} digits on the back`,
+    invalidNumber: 'Check the card number',
+    missingName: 'Enter the name on the card',
+    invalidExpiry: 'Use the MM/YY on the card',
+    expired: 'This card has expired',
+    invalidCvc: (digits: number) => `Enter the ${digits}-digit code`,
+  },
   'data-table': {
     search: 'Search…',
     reset: 'Reset',
