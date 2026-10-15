@@ -100,6 +100,11 @@ const sections: NavSection[] = [
         'Animates a whole site from what is already on the page, no markup changes.',
       ),
       page(
+        'card-validator',
+        'Card Validator',
+        'Card checks for your server, and the bank behind a card from its first digits.',
+      ),
+      page(
         'map',
         'Map',
         'OpenStreetMap or any tiles with markers and popups, and the same API on Google or Apple Maps.',
@@ -688,7 +693,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
-  '2026-10-15': ['components/credit-card'],
+  '2026-10-15': ['components/credit-card', 'card-validator'],
   '2026-10-13': ['map'],
   '2026-10-09': [
     'components/video-player',

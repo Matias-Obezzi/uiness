@@ -22,6 +22,7 @@
     "@uiness/fx": "workspace:*",
     "@uiness/image": "workspace:*",
     "@uiness/island": "workspace:*",
+    "@uiness/card-validator": "workspace:*",
     "@uiness/map": "workspace:*",
     "@uiness/scroll": "workspace:*",
     "@uiness/three": "workspace:*",

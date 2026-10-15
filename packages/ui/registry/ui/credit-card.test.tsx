@@ -51,6 +51,12 @@ describe('CreditCard', () => {
     const card = screen.getByRole('img', { name: 'Visa card ending in 4242' })
     expect(card.textContent).toContain('•••• •••• •••• 4242')
   })
+
+  it('prints the issuer when it is known', () => {
+    render(<CreditCard number="4242424242424242" issuer="Test Bank" masked />)
+    const card = screen.getByRole('img', { name: 'Test Bank, Visa card ending in 4242' })
+    expect(card.textContent).toContain('Test Bank')
+  })
 })
 
 describe('CreditCardForm', () => {

@@ -221,6 +221,8 @@ export interface CreditCardProps extends React.ComponentProps<'div'> {
   masked?: boolean
   /** Show the back, whatever is focused. */
   flipped?: boolean
+  /** The bank or fintech that issued it, printed at the top, such as from `@uiness/card-validator`. */
+  issuer?: string | null
   labels?: Partial<CreditCardLabels>
 }
 
@@ -238,6 +240,7 @@ function CreditCard({
   focused = null,
   masked = false,
   flipped,
+  issuer,
   labels: labelsProp,
   className,
   ...props
@@ -259,7 +262,7 @@ function CreditCard({
       data-slot="credit-card"
       data-brand={brand}
       role="img"
-      aria-label={labels.summary(info.name, digits.slice(-4))}
+      aria-label={[issuer, labels.summary(info.name, digits.slice(-4))].filter(Boolean).join(', ')}
       className={cn(
         '@container aspect-[1.586] w-full max-w-sm select-none [perspective:1200px]',
         className,
@@ -283,8 +286,8 @@ function CreditCard({
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgb(255_255_255/0.25),transparent_55%)]"
           />
-          <div className="relative flex items-start justify-between">
-            <div className="flex items-center gap-2">
+          <div className="relative flex items-start justify-between gap-3">
+            <div className="flex min-w-0 items-center gap-2">
               {/* The chip, gold as chips are. */}
               <span className="grid h-8 w-11 grid-cols-3 gap-px overflow-hidden rounded-md bg-amber-200/90 p-1 shadow-inner">
                 {Array.from({ length: 6 }, (_, i) => (
@@ -292,9 +295,14 @@ function CreditCard({
                   <span key={i} className="rounded-[2px] bg-amber-400/70" />
                 ))}
               </span>
-              <NfcIcon aria-hidden="true" className="size-6 opacity-80" />
+              <NfcIcon aria-hidden="true" className="size-6 shrink-0 opacity-80" />
+              {issuer && (
+                <span className="truncate font-semibold text-xs uppercase tracking-wider">
+                  {issuer}
+                </span>
+              )}
             </div>
-            <BrandMark brand={brand} />
+            <BrandMark brand={brand} className="shrink-0" />
           </div>
 
           {info.cvcOnFront && !masked && (
@@ -403,6 +411,8 @@ export interface CreditCardFormProps
   onChange?: (value: CardValue, details: CardDetails) => void
   /** Field names, for a plain form submission. Default `number`, `name`, `expiry` and `cvc`. */
   names?: Partial<Record<CardField, string>>
+  /** The bank or fintech that issued it, printed on the card. */
+  issuer?: string | null
   labels?: Partial<CreditCardLabels>
 }
 
@@ -417,6 +427,7 @@ function CreditCardForm({
   defaultValue,
   onChange,
   names,
+  issuer,
   labels: labelsProp,
   className,
   ...props
@@ -515,6 +526,7 @@ function CreditCardForm({
         expiry={value.expiry}
         cvc={value.cvc}
         focused={focused}
+        issuer={issuer}
         labels={labelsProp}
       />
       <div className="grid gap-4">
