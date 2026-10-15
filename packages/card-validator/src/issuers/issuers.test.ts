@@ -69,8 +69,9 @@ describe('createCardHandler with the list', () => {
     expect(body.issuer).toEqual({
       id: 'mercado-pago',
       name: 'Mercado Pago',
-      background: '#009ee3',
+      background: '#00b1ea',
       foreground: '#ffffff',
+      icon: expect.stringMatching(/^M/),
       website: 'https://www.mercadopago.com.ar',
     })
   })
