@@ -306,9 +306,11 @@
       "description": "World map rendered in SVG with all dots combined into a single path.",
       "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/world-map"],
       "css": {
-        "@keyframes dotted-map-arc": {
-          "to": {
-            "stroke-dashoffset": "-24"
+        "@layer base": {
+          "@keyframes dotted-map-arc": {
+            "to": {
+              "stroke-dashoffset": "-24"
+            }
           }
         }
       },
@@ -644,14 +646,16 @@
         "@uiness/labels"
       ],
       "css": {
-        "@keyframes chat-typing": {
-          "0%, 60%, 100%": {
-            "opacity": "0.35",
-            "transform": "none"
-          },
-          "30%": {
-            "opacity": "1",
-            "transform": "translateY(-3px)"
+        "@layer base": {
+          "@keyframes chat-typing": {
+            "0%, 60%, 100%": {
+              "opacity": "0.35",
+              "transform": "none"
+            },
+            "30%": {
+              "opacity": "1",
+              "transform": "translateY(-3px)"
+            }
           }
         }
       },
@@ -1208,15 +1212,17 @@
       "description": "Slow drifting blurred blobs of color for a background.",
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes aurora": {
-          "0%, 100%": {
-            "transform": "translate(0, 0) scale(1)"
-          },
-          "33%": {
-            "transform": "translate(12%, -8%) scale(1.15)"
-          },
-          "66%": {
-            "transform": "translate(-10%, 6%) scale(0.9)"
+        "@layer base": {
+          "@keyframes aurora": {
+            "0%, 100%": {
+              "transform": "translate(0, 0) scale(1)"
+            },
+            "33%": {
+              "transform": "translate(12%, -8%) scale(1.15)"
+            },
+            "66%": {
+              "transform": "translate(-10%, 6%) scale(0.9)"
+            }
           }
         }
       },
@@ -1234,17 +1240,19 @@
       "description": "Streaks falling across a background.",
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes meteor": {
-          "0%": {
-            "transform": "translateX(0)",
-            "opacity": "1"
-          },
-          "70%": {
-            "opacity": "1"
-          },
-          "100%": {
-            "transform": "translateX(-600px)",
-            "opacity": "0"
+        "@layer base": {
+          "@keyframes meteor": {
+            "0%": {
+              "transform": "translateX(0)",
+              "opacity": "1"
+            },
+            "70%": {
+              "opacity": "1"
+            },
+            "100%": {
+              "transform": "translateX(-600px)",
+              "opacity": "0"
+            }
           }
         }
       },
@@ -1292,16 +1300,18 @@
       "description": "Text that appears one word at a time from a blur.",
       "registryDependencies": ["@uiness/utils", "@uiness/use-in-view", "@uiness/use-motion-ready"],
       "css": {
-        "@keyframes blur-in": {
-          "from": {
-            "opacity": "0",
-            "filter": "blur(8px)",
-            "transform": "translateY(4px)"
-          },
-          "to": {
-            "opacity": "1",
-            "filter": "blur(0)",
-            "transform": "none"
+        "@layer base": {
+          "@keyframes blur-in": {
+            "from": {
+              "opacity": "0",
+              "filter": "blur(8px)",
+              "transform": "translateY(4px)"
+            },
+            "to": {
+              "opacity": "1",
+              "filter": "blur(0)",
+              "transform": "none"
+            }
           }
         }
       },
@@ -1319,9 +1329,11 @@
       "description": "Types words one character at a time, deletes and moves on.",
       "registryDependencies": ["@uiness/utils", "@uiness/use-motion-ready"],
       "css": {
-        "@keyframes blink": {
-          "50%": {
-            "opacity": "0"
+        "@layer base": {
+          "@keyframes blink": {
+            "50%": {
+              "opacity": "0"
+            }
           }
         }
       },
@@ -1339,23 +1351,25 @@
       "description": "One word from a list at a time, each swap blurred in.",
       "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
       "css": {
-        "@keyframes flip-in": {
-          "from": {
-            "opacity": "0",
-            "filter": "blur(6px)",
-            "transform": "translateY(0.5em)"
+        "@layer base": {
+          "@keyframes flip-in": {
+            "from": {
+              "opacity": "0",
+              "filter": "blur(6px)",
+              "transform": "translateY(0.5em)"
+            },
+            "to": {
+              "opacity": "1",
+              "filter": "blur(0)",
+              "transform": "none"
+            }
           },
-          "to": {
-            "opacity": "1",
-            "filter": "blur(0)",
-            "transform": "none"
-          }
-        },
-        "@keyframes flip-out": {
-          "to": {
-            "opacity": "0",
-            "filter": "blur(8px)",
-            "transform": "translateY(-0.6em) scale(1.3)"
+          "@keyframes flip-out": {
+            "to": {
+              "opacity": "0",
+              "filter": "blur(8px)",
+              "transform": "translateY(-0.6em) scale(1.3)"
+            }
           }
         }
       },
@@ -1374,12 +1388,14 @@
       "dependencies": ["radix-ui"],
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes shimmer": {
-          "from": {
-            "background-position": "200% center"
-          },
-          "to": {
-            "background-position": "-200% center"
+        "@layer base": {
+          "@keyframes shimmer": {
+            "from": {
+              "background-position": "200% center"
+            },
+            "to": {
+              "background-position": "-200% center"
+            }
           }
         }
       },
@@ -1441,20 +1457,22 @@
       "description": "Content that scrolls forever, sideways or up, pausing on hover.",
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes marquee": {
-          "from": {
-            "transform": "translateX(0)"
+        "@layer base": {
+          "@keyframes marquee": {
+            "from": {
+              "transform": "translateX(0)"
+            },
+            "to": {
+              "transform": "translateX(calc(-100% - var(--gap)))"
+            }
           },
-          "to": {
-            "transform": "translateX(calc(-100% - var(--gap)))"
-          }
-        },
-        "@keyframes marquee-vertical": {
-          "from": {
-            "transform": "translateY(0)"
-          },
-          "to": {
-            "transform": "translateY(calc(-100% - var(--gap)))"
+          "@keyframes marquee-vertical": {
+            "from": {
+              "transform": "translateY(0)"
+            },
+            "to": {
+              "transform": "translateY(calc(-100% - var(--gap)))"
+            }
           }
         }
       },
@@ -1473,9 +1491,11 @@
       "dependencies": ["radix-ui"],
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes moving-border": {
-          "to": {
-            "transform": "rotate(360deg)"
+        "@layer base": {
+          "@keyframes moving-border": {
+            "to": {
+              "transform": "rotate(360deg)"
+            }
           }
         }
       },
@@ -1573,22 +1593,24 @@
       "description": "Entries down a line that lights up as you scroll.",
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes timeline-progress": {
-          "from": {
-            "height": "0%"
+        "@layer base": {
+          "@keyframes timeline-progress": {
+            "from": {
+              "height": "0%"
+            },
+            "to": {
+              "height": "100%"
+            }
           },
-          "to": {
-            "height": "100%"
-          }
-        },
-        "@keyframes timeline-dot": {
-          "from": {
-            "border-color": "var(--border)",
-            "background-color": "var(--background)"
-          },
-          "to": {
-            "border-color": "var(--timeline-color)",
-            "background-color": "var(--timeline-color)"
+          "@keyframes timeline-dot": {
+            "from": {
+              "border-color": "var(--border)",
+              "background-color": "var(--background)"
+            },
+            "to": {
+              "border-color": "var(--timeline-color)",
+              "background-color": "var(--timeline-color)"
+            }
           }
         }
       },
@@ -1770,9 +1792,11 @@
       "dependencies": ["lucide-react"],
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes blink": {
-          "50%": {
-            "opacity": "0"
+        "@layer base": {
+          "@keyframes blink": {
+            "50%": {
+              "opacity": "0"
+            }
           }
         }
       },
@@ -2115,12 +2139,14 @@
       "dependencies": ["radix-ui"],
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes gradient-text": {
-          "from": {
-            "background-position": "0% 50%"
-          },
-          "to": {
-            "background-position": "200% 50%"
+        "@layer base": {
+          "@keyframes gradient-text": {
+            "from": {
+              "background-position": "0% 50%"
+            },
+            "to": {
+              "background-position": "200% 50%"
+            }
           }
         }
       },
@@ -2164,12 +2190,14 @@
       "description": "A paragraph whose words light up as it scrolls by.",
       "registryDependencies": ["@uiness/utils", "@uiness/use-scroll-driver"],
       "css": {
-        "@keyframes text-reveal-word": {
-          "from": {
-            "opacity": "var(--text-reveal-from)"
-          },
-          "to": {
-            "opacity": "1"
+        "@layer base": {
+          "@keyframes text-reveal-word": {
+            "from": {
+              "opacity": "var(--text-reveal-from)"
+            },
+            "to": {
+              "opacity": "1"
+            }
           }
         }
       },
@@ -2201,12 +2229,14 @@
       "description": "Items circling a center, spread evenly and kept upright.",
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes orbit": {
-          "from": {
-            "transform": "rotate(var(--orbit-angle)) translateX(var(--orbit-radius)) rotate(calc(var(--orbit-angle) * -1))"
-          },
-          "to": {
-            "transform": "rotate(calc(var(--orbit-angle) + 360deg)) translateX(var(--orbit-radius)) rotate(calc((var(--orbit-angle) + 360deg) * -1))"
+        "@layer base": {
+          "@keyframes orbit": {
+            "from": {
+              "transform": "rotate(var(--orbit-angle)) translateX(var(--orbit-radius)) rotate(calc(var(--orbit-angle) * -1))"
+            },
+            "to": {
+              "transform": "rotate(calc(var(--orbit-angle) + 360deg)) translateX(var(--orbit-radius)) rotate(calc((var(--orbit-angle) + 360deg) * -1))"
+            }
           }
         }
       },
@@ -2224,14 +2254,16 @@
       "description": "Rings pulsing out from an avatar, a status dot or a point.",
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes sonar": {
-          "from": {
-            "transform": "scale(1)",
-            "opacity": "0.7"
-          },
-          "to": {
-            "transform": "scale(var(--sonar-scale))",
-            "opacity": "0"
+        "@layer base": {
+          "@keyframes sonar": {
+            "from": {
+              "transform": "scale(1)",
+              "opacity": "0.7"
+            },
+            "to": {
+              "transform": "scale(var(--sonar-scale))",
+              "opacity": "0"
+            }
           }
         }
       },
@@ -2270,20 +2302,22 @@
         "@uiness/use-reduced-motion"
       ],
       "css": {
-        "@keyframes animated-list-in": {
-          "from": {
-            "opacity": "0",
-            "transform": "translateY(-8px) scale(0.85)"
+        "@layer base": {
+          "@keyframes animated-list-in": {
+            "from": {
+              "opacity": "0",
+              "transform": "translateY(-8px) scale(0.85)"
+            },
+            "to": {
+              "opacity": "1",
+              "transform": "none"
+            }
           },
-          "to": {
-            "opacity": "1",
-            "transform": "none"
-          }
-        },
-        "@keyframes animated-list-out": {
-          "to": {
-            "opacity": "0",
-            "transform": "translateY(8px) scale(0.95)"
+          "@keyframes animated-list-out": {
+            "to": {
+              "opacity": "0",
+              "transform": "translateY(8px) scale(0.95)"
+            }
           }
         }
       },
@@ -2324,14 +2358,16 @@
         "@uiness/use-scroll-driver"
       ],
       "css": {
-        "@keyframes velocity-marquee": {
-          "to": {
-            "transform": "translateX(-100%)"
-          }
-        },
-        "@keyframes velocity-marquee-scroll": {
-          "to": {
-            "transform": "translateX(calc(-100% / var(--velocity-marquee-copies)))"
+        "@layer base": {
+          "@keyframes velocity-marquee": {
+            "to": {
+              "transform": "translateX(-100%)"
+            }
+          },
+          "@keyframes velocity-marquee-scroll": {
+            "to": {
+              "transform": "translateX(calc(-100% / var(--velocity-marquee-copies)))"
+            }
           }
         }
       },
@@ -2355,19 +2391,21 @@
         "@uiness/labels"
       ],
       "css": {
-        "@keyframes blink": {
-          "50%": {
-            "opacity": "0"
-          }
-        },
-        "@keyframes terminal-line-in": {
-          "from": {
-            "opacity": "0",
-            "transform": "translateY(4px)"
+        "@layer base": {
+          "@keyframes blink": {
+            "50%": {
+              "opacity": "0"
+            }
           },
-          "to": {
-            "opacity": "1",
-            "transform": "none"
+          "@keyframes terminal-line-in": {
+            "from": {
+              "opacity": "0",
+              "transform": "translateY(4px)"
+            },
+            "to": {
+              "opacity": "1",
+              "transform": "none"
+            }
           }
         }
       },
@@ -2400,12 +2438,14 @@
       "dependencies": ["radix-ui"],
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes ripple-grow": {
-          "from": {
-            "transform": "scale(0)"
-          },
-          "to": {
-            "transform": "scale(1)"
+        "@layer base": {
+          "@keyframes ripple-grow": {
+            "from": {
+              "transform": "scale(0)"
+            },
+            "to": {
+              "transform": "scale(1)"
+            }
           }
         }
       },
@@ -3002,36 +3042,38 @@
       "description": "Decorative procedural film grain overlay powered by SVG turbulence.",
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes noise-grain": {
-          "0%, 100%": {
-            "transform": "translate(0, 0)"
-          },
-          "10%": {
-            "transform": "translate(-5%, -10%)"
-          },
-          "20%": {
-            "transform": "translate(-15%, 5%)"
-          },
-          "30%": {
-            "transform": "translate(7%, -25%)"
-          },
-          "40%": {
-            "transform": "translate(-5%, 25%)"
-          },
-          "50%": {
-            "transform": "translate(-15%, 10%)"
-          },
-          "60%": {
-            "transform": "translate(15%, 0%)"
-          },
-          "70%": {
-            "transform": "translate(0%, 15%)"
-          },
-          "80%": {
-            "transform": "translate(3%, 35%)"
-          },
-          "90%": {
-            "transform": "translate(-10%, 10%)"
+        "@layer base": {
+          "@keyframes noise-grain": {
+            "0%, 100%": {
+              "transform": "translate(0, 0)"
+            },
+            "10%": {
+              "transform": "translate(-5%, -10%)"
+            },
+            "20%": {
+              "transform": "translate(-15%, 5%)"
+            },
+            "30%": {
+              "transform": "translate(7%, -25%)"
+            },
+            "40%": {
+              "transform": "translate(-5%, 25%)"
+            },
+            "50%": {
+              "transform": "translate(-15%, 10%)"
+            },
+            "60%": {
+              "transform": "translate(15%, 0%)"
+            },
+            "70%": {
+              "transform": "translate(0%, 15%)"
+            },
+            "80%": {
+              "transform": "translate(3%, 35%)"
+            },
+            "90%": {
+              "transform": "translate(-10%, 10%)"
+            }
           }
         }
       },
@@ -3072,12 +3114,14 @@
         "@uiness/use-reduced-motion"
       ],
       "css": {
-        "@keyframes scroll-progress": {
-          "from": {
-            "transform": "scaleX(0)"
-          },
-          "to": {
-            "transform": "scaleX(1)"
+        "@layer base": {
+          "@keyframes scroll-progress": {
+            "from": {
+              "transform": "scaleX(0)"
+            },
+            "to": {
+              "transform": "scaleX(1)"
+            }
           }
         }
       },
@@ -3095,12 +3139,14 @@
       "description": "Text with an animated diagonal-striped shadow.",
       "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
       "css": {
-        "@keyframes line-shadow": {
-          "0%": {
-            "background-position": "0 0"
-          },
-          "100%": {
-            "background-position": "100% -100%"
+        "@layer base": {
+          "@keyframes line-shadow": {
+            "0%": {
+              "background-position": "0 0"
+            },
+            "100%": {
+              "background-position": "100% -100%"
+            }
           }
         }
       },
@@ -3153,12 +3199,14 @@
       "description": "Characters revolving around a circle.",
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes spin": {
-          "from": {
-            "transform": "rotate(0deg)"
-          },
-          "to": {
-            "transform": "rotate(360deg)"
+        "@layer base": {
+          "@keyframes spin": {
+            "from": {
+              "transform": "rotate(0deg)"
+            },
+            "to": {
+              "transform": "rotate(360deg)"
+            }
           }
         }
       },
@@ -3296,12 +3344,14 @@
       "description": "A line between two elements with a pulse of light running along it.",
       "registryDependencies": ["@uiness/utils"],
       "css": {
-        "@keyframes animated-beam": {
-          "from": {
-            "stroke-dashoffset": "var(--beam-from)"
-          },
-          "to": {
-            "stroke-dashoffset": "var(--beam-to)"
+        "@layer base": {
+          "@keyframes animated-beam": {
+            "from": {
+              "stroke-dashoffset": "var(--beam-from)"
+            },
+            "to": {
+              "stroke-dashoffset": "var(--beam-to)"
+            }
           }
         }
       },
@@ -3319,20 +3369,22 @@
       "description": "A split-flap display whose characters fall over to show the new value.",
       "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
       "css": {
-        "@keyframes flip-clock-top": {
-          "from": {
-            "transform": "rotateX(0deg)"
+        "@layer base": {
+          "@keyframes flip-clock-top": {
+            "from": {
+              "transform": "rotateX(0deg)"
+            },
+            "to": {
+              "transform": "rotateX(-90deg)"
+            }
           },
-          "to": {
-            "transform": "rotateX(-90deg)"
-          }
-        },
-        "@keyframes flip-clock-bottom": {
-          "from": {
-            "transform": "rotateX(90deg)"
-          },
-          "to": {
-            "transform": "rotateX(0deg)"
+          "@keyframes flip-clock-bottom": {
+            "from": {
+              "transform": "rotateX(90deg)"
+            },
+            "to": {
+              "transform": "rotateX(0deg)"
+            }
           }
         }
       },
