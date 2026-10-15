@@ -44,13 +44,13 @@ Brands: Visa, Mastercard, American Express, Discover, Diners Club, JCB and Union
 
 ## The bank behind it
 
-The brand follows public rules, but the bank or fintech that issued a card takes a lookup of its first digits. [Card Validator](/docs/card-validator) is an optional package that does it from your server, and the card prints it through `issuer`:
+The brand follows public rules, but the bank or fintech that issued a card takes a lookup of its first digits. [Card Validator](/docs/card-validator) is an optional package that does it from your server. Through `issuer` the card prints the name, or, for a bank on its community list, takes the bank's colors and mark:
 
 ```tsx
 import { useCardInfo } from '@uiness/card-validator/react'
 
 const info = useCardInfo(number)
-<CreditCardForm issuer={info?.bank} onChange={(card) => setNumber(card.number)} />
+<CreditCardForm issuer={info?.issuer ?? info?.bank} onChange={(card) => setNumber(card.number)} />
 ```
 
 ## Before you take payments
@@ -66,7 +66,7 @@ This draws and checks what is typed; it does not move money. Sending card number
 | `defaultValue` | | `{ number, name, expiry, cvc }` to start from. |
 | `onChange` | | `(value, { brand, valid, errors }) => void` on every change. |
 | `names` | `number`, `name`, `expiry`, `cvc` | Field names, for a plain form submission. |
-| `issuer` | | The bank or fintech that issued it, printed on the card. |
+| `issuer` | | The bank or fintech that issued it: a name, or `{ name, background?, foreground?, icon? }` for its colors and mark. |
 | `labels` | | Every word, in every language pack. |
 
 `CreditCard`:
@@ -77,4 +77,4 @@ This draws and checks what is typed; it does not move money. Sending card number
 | `focused` | | `number`, `name`, `expiry` or `cvc`: outlined on the card; the code turns it over where it is on the back. |
 | `flipped` | | Show the back whatever is focused. |
 | `masked` | `false` | Only the last four digits. |
-| `issuer` | | The bank or fintech that issued it, printed at the top. |
+| `issuer` | | A name printed at the top, or `{ name, background?, foreground?, icon? }`: the background and text color replace the network's on both faces, and `icon`, SVG path data on a 24×24 grid, is drawn beside the name. |

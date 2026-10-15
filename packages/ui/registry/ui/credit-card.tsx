@@ -203,8 +203,20 @@ const surfaces: Record<CardBrand, string> = {
 const printed = (on: boolean) =>
   cn(
     'rounded-md px-1.5 py-0.5 outline-2 outline-transparent outline-solid transition-[outline-color,background-color] duration-(--duration-normal,200ms)',
-    on && 'bg-white/10 outline-white/70',
+    // The card's own text color, so an issuer's light background keeps the outline visible.
+    on && 'bg-current/10 outline-current/70',
   )
+
+/** An issuer's brand, such as `@uiness/card-validator` sends: its name and how to draw the card. */
+export interface CardIssuer {
+  name: string
+  /** Any CSS background, in place of the network's. */
+  background?: string
+  /** The text color on it. */
+  foreground?: string
+  /** SVG path data on a 24×24 grid, drawn in the text color. */
+  icon?: string
+}
 
 export interface CreditCardProps extends React.ComponentProps<'div'> {
   number?: string
@@ -221,8 +233,11 @@ export interface CreditCardProps extends React.ComponentProps<'div'> {
   masked?: boolean
   /** Show the back, whatever is focused. */
   flipped?: boolean
-  /** The bank or fintech that issued it, printed at the top, such as from `@uiness/card-validator`. */
-  issuer?: string | null
+  /**
+   * The bank or fintech that issued it, printed at the top: a name, or its brand with the
+   * colors the card takes, such as `@uiness/card-validator` sends.
+   */
+  issuer?: string | CardIssuer | null
   labels?: Partial<CreditCardLabels>
 }
 
@@ -255,6 +270,9 @@ function CreditCard({
     ? digits.slice(0, -4).replace(/\d/g, '•') + digits.slice(-4)
     : digits.padEnd(full, '•')
   const back = flipped ?? (focused === 'cvc' && !info.cvcOnFront)
+  const by = typeof issuer === 'string' ? { name: issuer } : issuer
+  // The issuer's colors over the network's, on both faces.
+  const surface = by?.background ? { background: by.background, color: by.foreground } : undefined
   const code = cvc || '•'.repeat(info.cvc)
 
   return (
@@ -262,7 +280,9 @@ function CreditCard({
       data-slot="credit-card"
       data-brand={brand}
       role="img"
-      aria-label={[issuer, labels.summary(info.name, digits.slice(-4))].filter(Boolean).join(', ')}
+      aria-label={[by?.name, labels.summary(info.name, digits.slice(-4))]
+        .filter(Boolean)
+        .join(', ')}
       className={cn(
         '@container aspect-[1.586] w-full max-w-sm select-none [perspective:1200px]',
         className,
@@ -281,6 +301,7 @@ function CreditCard({
             'absolute inset-0 flex flex-col justify-between overflow-hidden rounded-2xl bg-linear-to-br p-[6%] text-white shadow-xl [backface-visibility:hidden]',
             surfaces[brand],
           )}
+          style={surface}
         >
           <span
             aria-hidden="true"
@@ -296,9 +317,18 @@ function CreditCard({
                 ))}
               </span>
               <NfcIcon aria-hidden="true" className="size-6 shrink-0 opacity-80" />
-              {issuer && (
+              {by?.icon && (
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="size-6 shrink-0 fill-current"
+                >
+                  <path d={by.icon} />
+                </svg>
+              )}
+              {by?.name && (
                 <span className="truncate font-semibold text-xs uppercase tracking-wider">
-                  {issuer}
+                  {by.name}
                 </span>
               )}
             </div>
@@ -351,6 +381,7 @@ function CreditCard({
             'absolute inset-0 flex flex-col overflow-hidden rounded-2xl bg-linear-to-br text-white shadow-xl [backface-visibility:hidden] [transform:rotateY(180deg)]',
             surfaces[brand],
           )}
+          style={surface}
         >
           <span aria-hidden="true" className="mt-[8%] h-[18%] bg-neutral-950/85" />
           <div className="mt-[6%] flex items-center gap-2 px-[6%]">
@@ -411,8 +442,8 @@ export interface CreditCardFormProps
   onChange?: (value: CardValue, details: CardDetails) => void
   /** Field names, for a plain form submission. Default `number`, `name`, `expiry` and `cvc`. */
   names?: Partial<Record<CardField, string>>
-  /** The bank or fintech that issued it, printed on the card. */
-  issuer?: string | null
+  /** The bank or fintech that issued it: a name, or its brand with colors for the card. */
+  issuer?: string | CardIssuer | null
   labels?: Partial<CreditCardLabels>
 }
 

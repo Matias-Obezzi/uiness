@@ -1,3 +1,4 @@
+export { findIssuer, type Issuer, type IssuerBrand, issuers } from './issuers'
 export {
   type BinLookup,
   type CardHandlerOptions,

@@ -57,6 +57,27 @@ describe('CreditCard', () => {
     const card = screen.getByRole('img', { name: 'Test Bank, Visa card ending in 4242' })
     expect(card.textContent).toContain('Test Bank')
   })
+
+  it("takes the issuer's colors and mark over the network's", () => {
+    const { container } = render(
+      <CreditCard
+        number="4242424242424242"
+        issuer={{
+          name: 'Test Bank',
+          background: '#00f068',
+          foreground: '#000000',
+          icon: 'M0 0h24v24H0z',
+        }}
+      />,
+    )
+    const faces = container.querySelectorAll<HTMLElement>('[data-slot=credit-card] > div > div')
+    for (const face of faces) {
+      expect(face.style.background).toBe('rgb(0, 240, 104)')
+      expect(face.style.color).toBe('rgb(0, 0, 0)')
+    }
+    expect(container.querySelector('path[d="M0 0h24v24H0z"]')).toBeTruthy()
+    expect(screen.getByRole('img', { name: 'Test Bank, Visa card ending in 4242' })).toBeTruthy()
+  })
 })
 
 describe('CreditCardForm', () => {

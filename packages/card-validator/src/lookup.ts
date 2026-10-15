@@ -1,3 +1,11 @@
+import {
+  brandOf,
+  issuers as communityIssuers,
+  findIssuer,
+  type Issuer,
+  type IssuerBrand,
+} from './issuers'
+
 /** What a card's first digits say about it. Any field the lookup does not know is left out. */
 export interface CardInfo {
   bin: string
@@ -12,6 +20,8 @@ export interface CardInfo {
   country?: string
   /** ISO 3166 alpha-2, such as `AR`. */
   countryCode?: string
+  /** Its colors, mark and name from the issuer list, when the bank is on it. */
+  issuer?: IssuerBrand
 }
 
 /** Finds a BIN's details: `null` when no one knows it, a throw when the lookup failed. */
@@ -56,6 +66,11 @@ export interface CardHandlerOptions {
   lookup?: BinLookup
   /** Seconds a shared cache (a CDN) keeps an answer. Default a week: BINs rarely move. */
   maxAge?: number
+  /**
+   * Matched against each answer to add the issuer's brand. Default the community list,
+   * `issuers`; `[...mine, ...issuers]` to add your own, `[]` for none.
+   */
+  issuers?: Issuer[]
 }
 
 const json = (body: unknown, status: number, cache: string) =>
@@ -73,6 +88,7 @@ const json = (body: unknown, status: number, cache: string) =>
 export function createCardHandler({
   lookup = lookupBin,
   maxAge = 604800,
+  issuers = communityIssuers,
 }: CardHandlerOptions = {}) {
   const memory = new Map<string, CardInfo | null>()
   const keep = `public, max-age=86400, s-maxage=${maxAge}`
@@ -87,6 +103,9 @@ export function createCardHandler({
       } catch {
         return json({ error: 'The lookup failed, try again later' }, 502, 'no-store')
       }
+      // A BIN the list knows is answered even when the lookup does not know it.
+      const issuer = findIssuer({ bin, ...info }, issuers)
+      if (issuer) info = { ...info, bin, issuer: brandOf(issuer) }
       // shortcut: forgets everything past 5000 BINs; a CDN in front keeps the rest.
       if (memory.size >= 5000) memory.clear()
       memory.set(bin, info)

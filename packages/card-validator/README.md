@@ -46,6 +46,12 @@ import { validateCard } from '@uiness/card-validator'
 const { valid, brand, errors } = validateCard({ number, expiry, cvc })
 ```
 
+For banks on the community list in `src/issuers`, answers carry `issuer`: the bank's name, colors and mark, which `CreditCard` takes as it is (`issuer={info?.issuer ?? info?.bank}`). The list is exported as `issuers`, with `findIssuer` to use it without the endpoint.
+
+### Add your bank
+
+Add an entry to your country's file in [`src/issuers`](src/issuers) and open a pull request: `id`, `name`, a `match` pattern for the name binlist gives, `countries`, `background` and `foreground` from the bank's brand guidelines, and optionally `bins` and an `icon` as SVG path data on a 24×24 grid. Tests check every entry. Names, colors and marks belong to their banks and are listed only so a card can be recognized; a bank that asks to be removed is removed. Full guide: [the docs](https://uiness.vercel.app/docs/card-validator#add-your-bank).
+
 Another source of BIN data: `createCardHandler({ lookup: async (bin) => ({ bin, bank }) })`. Return `null` when the BIN is unknown and throw when the lookup failed.
 
 MIT

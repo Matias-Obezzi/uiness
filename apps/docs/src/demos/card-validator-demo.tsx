@@ -8,7 +8,10 @@ export default function CardValidatorDemo() {
   const facts = info && [info.bank, info.type, info.prepaid && 'prepaid', info.country]
   return (
     <div className="flex w-full flex-col items-center gap-4">
-      <CreditCardForm issuer={info?.bank} onChange={(card) => setNumber(card.number)} />
+      <CreditCardForm
+        issuer={info?.issuer ?? info?.bank}
+        onChange={(card) => setNumber(card.number)}
+      />
       <p className="text-center text-muted-foreground text-sm">
         {facts
           ? facts.filter(Boolean).join(' · ')
