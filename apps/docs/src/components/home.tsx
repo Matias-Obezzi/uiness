@@ -5,6 +5,7 @@ import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Choreo } from '@/components/ui/choreo'
+import { cn } from '@/lib/utils'
 import { findPage, pageHref } from '~/lib/nav'
 import { site } from '~/lib/site'
 import { mostInstalled, useUsage } from '~/lib/usage'
@@ -67,6 +68,20 @@ const features = [
     href: '/docs/map',
     description:
       'OpenStreetMap or any tile service with markers and popups, no dependencies. The same components on Google Maps or Apple Maps.',
+  },
+  {
+    title: 'Three',
+    pkg: 'three',
+    href: '/docs/three',
+    description:
+      'A 3D model viewer and stage that loads lazily, renders only when something moves, and orbits by pointer or keyboard.',
+  },
+  {
+    title: 'Card Validator',
+    pkg: 'card-validator',
+    href: '/docs/card-validator',
+    description:
+      'The bank behind a card from its first digits, with its colors and mark for the credit card, and the card checks again on your server.',
   },
   {
     title: 'Motion',
@@ -153,8 +168,19 @@ export function Home() {
       </section>
 
       <section className="mt-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {features.map((f) => (
-          <Link key={f.title} to={f.href} className="group">
+        {features.map((f, i) => (
+          <Link
+            key={f.title}
+            to={f.href}
+            className={cn(
+              'group',
+              // The last card fills the rest of its row, however many come before it.
+              i === features.length - 1 && [
+                features.length % 2 === 1 && 'sm:col-span-2',
+                ['lg:col-span-1', 'lg:col-span-3', 'lg:col-span-2'][features.length % 3],
+              ],
+            )}
+          >
             <Card className="h-full transition-colors group-hover:bg-accent/40">
               <CardHeader>
                 <CardTitle className="flex items-center justify-between">
