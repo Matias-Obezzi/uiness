@@ -309,19 +309,12 @@ function CreditCard({
           />
           <div className="relative flex items-start justify-between gap-3">
             <div className="flex min-w-0 items-center gap-2">
-              {/* The chip, gold as chips are. */}
-              <span className="grid h-8 w-11 grid-cols-3 gap-px overflow-hidden rounded-md bg-amber-200/90 p-1 shadow-inner">
-                {Array.from({ length: 6 }, (_, i) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: the chip's contacts are positions
-                  <span key={i} className="rounded-[2px] bg-amber-400/70" />
-                ))}
-              </span>
-              <NfcIcon aria-hidden="true" className="size-6 shrink-0 opacity-80" />
+              {/* The issuer's mark leads, where a printed card puts the bank. */}
               {by?.icon && (
                 <svg
                   aria-hidden="true"
                   viewBox="0 0 24 24"
-                  className="size-6 shrink-0 fill-current"
+                  className="size-8 shrink-0 fill-current"
                 >
                   <path d={by.icon} />
                 </svg>
@@ -338,7 +331,7 @@ function CreditCard({
           {info.cvcOnFront && !masked && (
             <span
               className={cn(
-                'relative -mb-3 self-end font-mono text-sm tracking-widest',
+                'relative -mb-1 self-end font-mono text-sm tracking-widest',
                 printed(focused === 'cvc'),
               )}
             >
@@ -346,14 +339,17 @@ function CreditCard({
             </span>
           )}
 
-          <p
-            className={cn(
-              'relative self-start whitespace-pre font-mono text-[clamp(0.95rem,6.4cqi,1.5rem)] tracking-[0.1em] [text-shadow:0_1px_2px_rgb(0_0_0/0.3)]',
-              printed(focused === 'number'),
-            )}
-          >
-            {group(shown, info.gaps)}
-          </p>
+          <div className="relative flex items-center justify-between gap-2">
+            <p
+              className={cn(
+                'min-w-0 whitespace-pre font-mono text-[clamp(0.9rem,6cqi,1.4rem)] tracking-[0.1em] [text-shadow:0_1px_2px_rgb(0_0_0/0.3)]',
+                printed(focused === 'number'),
+              )}
+            >
+              {group(shown, info.gaps)}
+            </p>
+            <NfcIcon aria-hidden="true" className="size-6 shrink-0 opacity-80" />
+          </div>
 
           <div className="relative flex items-end justify-between gap-3 text-xs">
             <div className={cn('min-w-0', printed(focused === 'name'))}>
