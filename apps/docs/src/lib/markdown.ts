@@ -222,7 +222,7 @@ export function llmsTxt(
   const lines = [
     '# uiness',
     '',
-    '> React UI primitives with a bit of magic: a shadcn-compatible registry of Radix and Tailwind CSS v4 components, page blocks, drag and drop and motion pieces, installed as source with the shadcn CLI, plus small zero-dependency npm packages (image, island, fx, toast, scroll, dnd, choreo, map).',
+    '> React UI primitives with a bit of magic: a shadcn-compatible registry of Radix and Tailwind CSS v4 components, page blocks, drag and drop and motion pieces, installed as source with the shadcn CLI, plus small zero-dependency npm packages (image, island, fx, toast, scroll, dnd, choreo, map, three, card-validator).',
     '',
     `Add the registry once to \`components.json\` (\`"registries": { "${ctx.namespace}": "${ctx.siteUrl}/r/{name}.json" }\`), then install any item with \`npx shadcn@latest add ${ctx.namespace}/<name>\`. Every registry item is also served as JSON with its source inline at \`${ctx.siteUrl}/r/<name>.json\`, and the whole index at \`${ctx.siteUrl}/r/registry.json\`.`,
     '',
