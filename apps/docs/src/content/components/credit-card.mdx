@@ -1,0 +1,67 @@
+A payment card drawn from what is typed, and the form that fills it. The brand comes from the first digits, the number is spaced the brand's way, and the card turns over while the security code is typed, for the brands that print it on the back. American Express prints its four digits on the front, so there the code is outlined in place.
+
+<ComponentPreview name="credit-card-demo" />
+
+## Installation
+
+<Install name="credit-card" />
+
+## Usage
+
+```tsx
+import { CreditCardForm } from '@/components/ui/credit-card'
+
+<CreditCardForm
+  onChange={(card, { brand, valid, errors }) => {
+    setReady(valid)
+  }}
+/>
+```
+
+`onChange` gets the value (`number` as digits, `name`, `expiry` as `MM/YY`, `cvc`) and the details: the brand, whether everything is valid, and a message per field that is not.
+
+## What the form does
+
+- **Spacing as you type:** 4-4-4-4 for most brands, 4-6-5 for American Express, 4-6-4 for Diners. The caret stays after the digit it followed, even when editing the middle.
+- **Checks:** the number against the brand's lengths and its Luhn digit; the expiry as a real month that has not passed; the code against the brand's length, 3 or 4 digits. Errors show once a field is left, or as soon as a full number fails.
+- **Moving on:** a complete valid number moves to the name, a valid expiry to the code. Typing `4` in the expiry means April, `04/`.
+- **Autofill:** fields carry `cc-number`, `cc-name`, `cc-exp` and `cc-csc`, so browsers and password managers can fill them, and numeric keyboards on phones.
+- **Screen readers** get labelled fields with their errors and the hint saying where the code is. The card repeats the fields, so it is hidden from them.
+
+## A saved card
+
+`CreditCard` works on its own too, for cards on file. `masked` shows only the last four digits, and screen readers hear "Visa card ending in 4242".
+
+<ComponentPreview name="credit-card-brands" />
+
+```tsx
+import { CreditCard } from '@/components/ui/credit-card'
+
+<CreditCard number={card.number} name={card.name} expiry={card.expiry} masked />
+```
+
+Brands: Visa, Mastercard, American Express, Discover, Diners Club, JCB and UnionPay. Each card takes its colors from the theme's chart colors. Helpers are exported for your own fields: `cardBrand`, `formatCardNumber`, `luhn`, `expiryState` and `cardBrands`.
+
+## Before you take payments
+
+This draws and checks what is typed; it does not move money. Sending card numbers to your own server puts it in PCI DSS scope. Most apps should hand the fields to their payment provider's hosted inputs or tokenize in the browser (Stripe Elements, Mercado Pago's Card Payment Brick, Adyen), and use this card as the picture beside them, driven by the brand and the field the provider reports.
+
+## Props
+
+`CreditCardForm`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `defaultValue` | | `{ number, name, expiry, cvc }` to start from. |
+| `onChange` | | `(value, { brand, valid, errors }) => void` on every change. |
+| `names` | `number`, `name`, `expiry`, `cvc` | Field names, for a plain form submission. |
+| `labels` | | Every word, in every language pack. |
+
+`CreditCard`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `number`, `name`, `expiry`, `cvc` | | What to draw. |
+| `focused` | | `number`, `name`, `expiry` or `cvc`: outlined on the card; the code turns it over where it is on the back. |
+| `flipped` | | Show the back whatever is focused. |
+| `masked` | `false` | Only the last four digits. |
