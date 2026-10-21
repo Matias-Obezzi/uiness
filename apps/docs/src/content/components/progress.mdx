@@ -9,7 +9,7 @@
 ```tsx
 import { Progress } from '@/components/ui/progress'
 
-<Progress value={66} />
+<Progress aria-label="Upload" value={66} />
 ```
 
-`value` goes from 0 to 100. The bar animates between values.
+`value` goes from 0 to 100. The bar animates between values. Name it with `aria-label`, or `aria-labelledby` pointing at a visible label, so screen readers say what is progressing, not only how far.

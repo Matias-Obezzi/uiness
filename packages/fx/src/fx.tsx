@@ -16,7 +16,10 @@ export type FxStatus = 'loading' | 'ready' | 'error'
 export interface FxProps extends Omit<ComponentPropsWithoutRef<'canvas'>, 'width' | 'height'> {
   /** Image URL or an already loaded image, canvas or video element. */
   src: string | Source
-  /** Accessible name. The canvas gets `role="img"`. */
+  /**
+   * Accessible name: the canvas is an image with it. Without it, or with `""`, the canvas is
+   * decorative and hidden from screen readers, as an `<img alt="">` is.
+   */
   alt?: string
   effects: EffectInput
   /** Display size in CSS px. Defaults to the source size scaled to the container width. */
@@ -284,8 +287,9 @@ export const Fx = forwardRef<FxHandle, FxProps>(function Fx(
   return (
     <canvas
       ref={canvasRef}
-      role="img"
-      aria-label={alt}
+      role={alt ? 'img' : undefined}
+      aria-label={alt || undefined}
+      aria-hidden={alt ? undefined : true}
       data-uiness-fx=""
       data-status={failed ? 'error' : status}
       style={canvasStyle}

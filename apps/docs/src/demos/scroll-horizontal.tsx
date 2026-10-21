@@ -13,7 +13,7 @@ import { cn } from '@/lib/utils'
 const cards = ['Plan', 'Write', 'Review', 'Ship', 'Measure', 'Learn', 'Repeat']
 
 export default function ScrollHorizontal() {
-  const row = useRef<HTMLDivElement>(null)
+  const row = useRef<HTMLElement>(null)
   // The card at the left edge of the row, which is where the arrows bring a card. Measuring
   // the middle instead would put the arrows one card off. The row is its own scroller.
   const active = useActiveSection(row, { axis: 'x', anchor: 0.1 })
@@ -32,9 +32,12 @@ export default function ScrollHorizontal() {
 
   return (
     <div className="flex w-full flex-col gap-3">
-      <div
+      <section
         ref={row}
-        className="flex gap-4 overflow-x-auto scroll-px-4 px-4 py-2 [scrollbar-width:none]"
+        aria-label="Cards"
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+        tabIndex={0}
+        className="flex gap-4 overflow-x-auto scroll-px-4 px-4 py-2 outline-none [scrollbar-width:none] focus-visible:ring-[3px] focus-visible:ring-ring/50"
       >
         {cards.map((title, i) => (
           <div
@@ -47,7 +50,7 @@ export default function ScrollHorizontal() {
             {i + 1}. {title}
           </div>
         ))}
-      </div>
+      </section>
       <div className="flex items-center justify-between px-4">
         <div className="flex gap-1.5" aria-hidden="true">
           {cards.map((title, i) => (

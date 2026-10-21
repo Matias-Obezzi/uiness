@@ -24,7 +24,10 @@ async function createCore() {
     import('shiki/engine/javascript'),
   ])
   return createHighlighterCore({
-    themes: [import('shiki/themes/github-light.mjs'), import('shiki/themes/github-dark.mjs')],
+    themes: [
+      import('shiki/themes/github-light-high-contrast.mjs'),
+      import('shiki/themes/github-dark-default.mjs'),
+    ],
     langs: [
       import('shiki/langs/tsx.mjs'),
       import('shiki/langs/typescript.mjs'),
@@ -77,7 +80,7 @@ export function CodeBlock({
       setHtml(
         hl.codeToHtml(trimmed, {
           lang: language,
-          themes: { light: 'github-light', dark: 'github-dark' },
+          themes: { light: 'github-light-high-contrast', dark: 'github-dark-default' },
           defaultColor: false,
         }),
       )

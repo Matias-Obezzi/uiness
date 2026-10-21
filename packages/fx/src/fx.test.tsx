@@ -253,6 +253,14 @@ describe('<Fx>', () => {
     expect(canvas.getAttribute('data-status')).toBe('loading')
   })
 
+  it('is decorative without a name, as an img with an empty alt', () => {
+    const { container } = render(<Fx src="/photo.png" alt="" effects={[grayscale()]} />)
+    const canvas = container.querySelector('canvas')
+    expect(canvas?.getAttribute('role')).toBeNull()
+    expect(canvas?.getAttribute('aria-hidden')).toBe('true')
+    expect(screen.queryByRole('img')).toBeNull()
+  })
+
   describe('the animation loop', () => {
     afterEach(() => vi.unstubAllGlobals())
 

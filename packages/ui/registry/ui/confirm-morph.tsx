@@ -282,7 +282,7 @@ function ConfirmMorph({
           small ? 'h-8' : 'h-9',
           state === 'idle'
             ? variant === 'destructive'
-              ? 'border-transparent bg-destructive text-white shadow-xs hover:bg-destructive/90'
+              ? 'border-transparent bg-destructive text-white shadow-xs hover:bg-destructive/90 dark:bg-destructive/60 dark:hover:bg-destructive/50'
               : 'border-transparent bg-primary text-primary-foreground shadow-xs hover:bg-primary/90'
             : 'bg-background text-foreground shadow-xs',
           disabled && 'opacity-50',

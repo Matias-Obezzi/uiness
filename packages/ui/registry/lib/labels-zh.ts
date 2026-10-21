@@ -138,6 +138,7 @@ export const zh = {
     after: '修改后',
     copy: '复制代码',
     copied: '已复制',
+    diff: '更改',
   },
   'color-picker': {
     area: '饱和度和亮度',

@@ -31,7 +31,7 @@ import { CodeBlock } from '@/components/ui/code-block'
 export async function Snippet({ code }: { code: string }) {
   const html = await codeToHtml(code, {
     lang: 'tsx',
-    themes: { light: 'github-light', dark: 'github-dark' },
+    themes: { light: 'github-light-high-contrast', dark: 'github-dark-default' },
     defaultColor: false,
   })
   return <CodeBlock code={code} html={html} language="tsx" />

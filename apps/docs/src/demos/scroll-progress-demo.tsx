@@ -8,7 +8,13 @@ export default function ScrollProgressDemo() {
     <div className="relative flex w-full max-w-lg flex-col overflow-hidden rounded-2xl border bg-card">
       <ScrollProgress target={containerRef} position="top" thickness={4} color="var(--primary)" />
 
-      <div ref={containerRef} className="h-64 overflow-y-auto p-6 space-y-4">
+      <section
+        ref={containerRef}
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+        tabIndex={0}
+        aria-label="Article"
+        className="h-64 overflow-y-auto outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 p-6 space-y-4"
+      >
         <h4 className="font-semibold text-base">Scroll through this container</h4>
         <p className="text-muted-foreground text-sm leading-relaxed">
           The progress bar at the top measures scroll distance inside this container element.
@@ -25,7 +31,7 @@ export default function ScrollProgressDemo() {
           Try scrolling down to reach the bottom and see the bar fill completely.
         </p>
         <div className="rounded-lg bg-muted p-4 font-mono text-xs">End of content reached.</div>
-      </div>
+      </section>
     </div>
   )
 }

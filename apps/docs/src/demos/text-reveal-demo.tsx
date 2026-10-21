@@ -5,8 +5,11 @@ const manifesto =
 
 export default function TextRevealDemo() {
   return (
-    <div
-      className="h-[360px] w-full overflow-y-auto rounded-lg"
+    <section
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+      tabIndex={0}
+      aria-label="Text"
+      className="h-[360px] w-full overflow-y-auto outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-lg"
       style={{
         maskImage: 'linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent)',
       }}
@@ -25,6 +28,6 @@ export default function TextRevealDemo() {
         />
       </div>
       <div className="h-[300px]" />
-    </div>
+    </section>
   )
 }

@@ -28,16 +28,16 @@ describe('JsonViewer', () => {
     render(<JsonViewer data={data} />)
     expect(screen.getByRole('tree')).toBeTruthy()
     expect(labels()).toEqual([
-      'root, object, 6 keys',
+      'root: 6 keys, object',
       'name: "uiness"',
       'version: 2',
       'private: true',
       'license: null',
       'first release: "2026-09-30"',
-      'team, array, 2 items',
+      'team: 2 items, array',
     ])
-    expect(item('root, object, 6 keys').getAttribute('aria-expanded')).toBe('true')
-    expect(item('team, array, 2 items').getAttribute('aria-expanded')).toBe('false')
+    expect(item('root: 6 keys, object').getAttribute('aria-expanded')).toBe('true')
+    expect(item('team: 2 items, array').getAttribute('aria-expanded')).toBe('false')
     expect(item('version: 2').dataset.type).toBe('number')
   })
 
@@ -47,12 +47,12 @@ describe('JsonViewer', () => {
     expect(root.tabIndex).toBe(0)
     act(() => root.focus())
     fireEvent.keyDown(root, { key: 'End' })
-    const team = item('team, array, 2 items')
+    const team = item('team: 2 items, array')
     expect(document.activeElement).toBe(team)
     fireEvent.keyDown(team, { key: 'ArrowRight' })
     expect(team.getAttribute('aria-expanded')).toBe('true')
     fireEvent.keyDown(team, { key: 'ArrowRight' })
-    expect(document.activeElement?.getAttribute('aria-label')).toBe('0, object, 2 keys')
+    expect(document.activeElement?.getAttribute('aria-label')).toBe('0: 2 keys, object')
     expect(document.activeElement?.getAttribute('aria-level')).toBe('3')
     fireEvent.keyDown(document.activeElement as HTMLElement, { key: 'ArrowLeft' })
     expect(document.activeElement).toBe(team)
@@ -93,7 +93,7 @@ describe('JsonViewer', () => {
     render(<JsonViewer data={data} onCopy={onCopy} />)
     await userEvent.click(screen.getByRole('button', { name: 'Copy path root["first release"]' }))
     expect(writeText).toHaveBeenLastCalledWith('root["first release"]')
-    const team = item('team, array, 2 items')
+    const team = item('team: 2 items, array')
     act(() => team.focus())
     fireEvent.keyDown(team, { key: 'c' })
     await vi.waitFor(() =>

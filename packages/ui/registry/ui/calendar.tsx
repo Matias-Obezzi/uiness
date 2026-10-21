@@ -390,7 +390,7 @@ function Calendar(props: CalendarProps) {
                           // and on a selected day it fought the selected color for the background.
                           "data-[today]:font-semibold data-[today]:after:absolute data-[today]:after:bottom-1 data-[today]:after:left-1/2 data-[today]:after:size-1 data-[today]:after:-translate-x-1/2 data-[today]:after:rounded-full data-[today]:after:content-[''] data-[today]:not-data-[selected]:after:bg-primary data-[today]:data-[selected]:after:bg-primary-foreground",
 
-                          'data-[outside]:text-muted-foreground data-[outside]:opacity-50',
+                          'data-[outside]:text-muted-foreground',
                           'data-[disabled]:pointer-events-none data-[disabled]:opacity-30',
                           'data-[selected]:bg-primary data-[selected]:text-primary-foreground data-[selected]:hover:bg-primary',
                         )}

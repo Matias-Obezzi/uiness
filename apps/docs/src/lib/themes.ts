@@ -1,7 +1,8 @@
 /**
  * Theme presets for the themes page: a gray to build on, a color for primary actions and a
  * radius. Values are Tailwind's palette in oklch, the same scales shadcn/ui themes use, so a
- * copied theme drops into either.
+ * copied theme drops into either. One exception: light muted text sits at 0.52 lightness, a
+ * step darker than the 500 shade, so it reads at 4.5:1 on the soft surface as well.
  */
 
 interface BaseColor {
@@ -28,7 +29,7 @@ export const baseColors = {
       fg: 'oklch(0.145 0 0)',
       primary: 'oklch(0.205 0 0)',
       soft: 'oklch(0.97 0 0)',
-      mutedFg: 'oklch(0.556 0 0)',
+      mutedFg: 'oklch(0.52 0 0)',
       border: 'oklch(0.922 0 0)',
       ring: 'oklch(0.708 0 0)',
       sidebar: 'oklch(0.985 0 0)',
@@ -49,7 +50,7 @@ export const baseColors = {
       fg: 'oklch(0.147 0.004 49.25)',
       primary: 'oklch(0.216 0.006 56.043)',
       soft: 'oklch(0.97 0.001 106.424)',
-      mutedFg: 'oklch(0.553 0.013 58.071)',
+      mutedFg: 'oklch(0.52 0.013 58.071)',
       border: 'oklch(0.923 0.003 48.717)',
       ring: 'oklch(0.709 0.01 56.259)',
       sidebar: 'oklch(0.985 0.001 106.423)',
@@ -70,7 +71,7 @@ export const baseColors = {
       fg: 'oklch(0.141 0.005 285.823)',
       primary: 'oklch(0.21 0.006 285.885)',
       soft: 'oklch(0.967 0.001 286.375)',
-      mutedFg: 'oklch(0.552 0.016 285.938)',
+      mutedFg: 'oklch(0.52 0.016 285.938)',
       border: 'oklch(0.92 0.004 286.32)',
       ring: 'oklch(0.705 0.015 286.067)',
       sidebar: 'oklch(0.985 0 0)',
@@ -91,7 +92,7 @@ export const baseColors = {
       fg: 'oklch(0.129 0.042 264.695)',
       primary: 'oklch(0.208 0.042 265.755)',
       soft: 'oklch(0.968 0.007 247.896)',
-      mutedFg: 'oklch(0.554 0.046 257.417)',
+      mutedFg: 'oklch(0.52 0.046 257.417)',
       border: 'oklch(0.929 0.013 255.508)',
       ring: 'oklch(0.704 0.04 256.788)',
       sidebar: 'oklch(0.984 0.003 247.858)',
@@ -112,7 +113,7 @@ export const baseColors = {
       fg: 'oklch(0.13 0.028 261.692)',
       primary: 'oklch(0.21 0.034 264.665)',
       soft: 'oklch(0.967 0.003 264.542)',
-      mutedFg: 'oklch(0.551 0.027 264.364)',
+      mutedFg: 'oklch(0.52 0.027 264.364)',
       border: 'oklch(0.928 0.006 264.531)',
       ring: 'oklch(0.707 0.022 261.325)',
       sidebar: 'oklch(0.985 0.002 247.839)',
@@ -283,18 +284,19 @@ export const presets: ThemePreset[] = [
       accent: 'none',
       radius: 0.3,
       custom: {
+        // Light colors are deep enough to be text on the background, at 4.5:1 or more.
         light: {
           background: 'oklch(0.985 0.006 285)',
-          primary: 'oklch(0.58 0.14 215)',
+          primary: 'oklch(0.52 0.14 215)',
           'primary-foreground': 'oklch(0.985 0.01 200)',
-          ring: 'oklch(0.58 0.14 215)',
+          ring: 'oklch(0.52 0.14 215)',
           'chart-1': 'oklch(0.55 0.2 255)',
-          'chart-2': 'oklch(0.6 0.18 150)',
-          'chart-3': 'oklch(0.72 0.17 75)',
+          'chart-2': 'oklch(0.52 0.18 150)',
+          'chart-3': 'oklch(0.55 0.17 75)',
           'chart-4': 'oklch(0.55 0.26 320)',
-          'chart-5': 'oklch(0.6 0.23 15)',
-          'sidebar-primary': 'oklch(0.58 0.14 215)',
-          'sidebar-ring': 'oklch(0.58 0.14 215)',
+          'chart-5': 'oklch(0.57 0.23 15)',
+          'sidebar-primary': 'oklch(0.52 0.14 215)',
+          'sidebar-ring': 'oklch(0.52 0.14 215)',
         },
         dark: {
           background: 'oklch(0.14 0.035 285)',
@@ -414,7 +416,7 @@ export function themeVars({ base, accent, radius, custom }: ThemeChoice): {
     'muted-foreground': b.light.mutedFg,
     accent: b.light.soft,
     'accent-foreground': b.light.primary,
-    destructive: 'oklch(0.577 0.245 27.325)',
+    destructive: 'oklch(0.53 0.245 27.325)',
     border: b.light.border,
     input: b.light.border,
     ring: a ? lightPrimary : b.light.ring,

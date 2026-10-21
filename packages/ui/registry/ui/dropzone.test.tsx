@@ -205,12 +205,14 @@ describe('Dropzone', () => {
     expect(click).toHaveBeenCalledTimes(2)
   })
 
-  it('keeps the file input out of sight without taking it out of the page', () => {
+  it('keeps the file input out of sight and out of the accessibility tree, the box being the control', () => {
     render(<Dropzone accept="image/png" multiple />)
     const field = input()
     expect(field.className).toContain('sr-only')
+    // Still rendered, so the box can open it from code.
     expect(field.style.display).not.toBe('none')
-    expect(field.getAttribute('aria-hidden')).toBeNull()
+    expect(field.getAttribute('aria-hidden')).toBe('true')
+    expect(field.tabIndex).toBe(-1)
     expect(field.accept).toBe('image/png')
     expect(field.multiple).toBe(true)
   })

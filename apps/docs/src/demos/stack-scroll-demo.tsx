@@ -9,7 +9,12 @@ const steps = [
 
 export default function StackScrollDemo() {
   return (
-    <div className="h-[28rem] w-full overflow-y-auto rounded-xl border bg-muted/30 px-6">
+    <section
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+      tabIndex={0}
+      aria-label="Cards"
+      className="h-[28rem] w-full overflow-y-auto outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-xl border bg-muted/30 px-6"
+    >
       <p className="py-10 text-center text-muted-foreground text-sm">Scroll inside this box</p>
       <StackScroll top={24} offset={14}>
         {steps.map((step, i) => (
@@ -27,6 +32,6 @@ export default function StackScrollDemo() {
         ))}
       </StackScroll>
       <div className="h-64" />
-    </div>
+    </section>
   )
 }

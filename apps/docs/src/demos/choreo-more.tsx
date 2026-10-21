@@ -40,9 +40,12 @@ export default function ChoreoMore() {
         </div>
       </div>
 
-      <div
+      <section
         ref={ref}
-        className="h-96 space-y-16 overflow-y-auto rounded-xl border bg-background p-6"
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+        tabIndex={0}
+        aria-label="Story"
+        className="h-96 space-y-16 overflow-y-auto outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-xl border bg-background p-6"
       >
         <section className="space-y-3 text-center">
           <h2 className="mx-auto max-w-md text-display">Every word arrives on its own</h2>
@@ -70,7 +73,7 @@ export default function ChoreoMore() {
         </section>
 
         <h2 className="pb-24 text-center text-heading">That is the whole page</h2>
-      </div>
+      </section>
     </div>
   )
 }

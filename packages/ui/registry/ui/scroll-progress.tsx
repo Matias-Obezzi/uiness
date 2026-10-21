@@ -167,10 +167,16 @@ function ScrollProgress({
               className="transition-[stroke-dashoffset] duration-75"
             />
           </svg>
-          <span className="font-semibold text-[10px] tabular-nums leading-none transition-opacity duration-150 group-hover:opacity-0">
-            {percent}%
-          </span>
-          <ArrowUp className="absolute size-4 opacity-0 transition-opacity duration-150 group-hover:opacity-100" />
+          {/* Drawn, not text: the button is named for what it does, and the number is extra. */}
+          <span
+            aria-hidden="true"
+            data-percent={`${percent}%`}
+            className="font-semibold text-[10px] tabular-nums leading-none transition-opacity duration-150 before:content-[attr(data-percent)] group-hover:opacity-0 group-focus-visible:opacity-0"
+          />
+          <ArrowUp
+            aria-hidden="true"
+            className="absolute size-4 opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
+          />
         </button>
       </div>
     )

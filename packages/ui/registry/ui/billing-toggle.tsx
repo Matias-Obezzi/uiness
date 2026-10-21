@@ -147,7 +147,7 @@ function BillingToggle({
             {period === 'yearly' && badge && (
               <span
                 data-slot="billing-toggle-badge"
-                className="rounded-full bg-emerald-500/15 px-1.5 py-0.5 font-medium text-[11px] text-emerald-700 leading-none dark:text-emerald-400"
+                className="rounded-full bg-emerald-500/15 px-1.5 py-0.5 font-medium text-[11px] text-emerald-800 leading-none dark:text-emerald-400"
               >
                 {badge}
               </span>

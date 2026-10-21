@@ -27,13 +27,16 @@ async function highlight(source: string) {
     import('shiki/engine/javascript'),
   ])
   const shiki = await createHighlighterCore({
-    themes: [import('shiki/themes/github-light.mjs'), import('shiki/themes/github-dark.mjs')],
+    themes: [
+      import('shiki/themes/github-light-high-contrast.mjs'),
+      import('shiki/themes/github-dark-default.mjs'),
+    ],
     langs: [import('shiki/langs/tsx.mjs')],
     engine: createJavaScriptRegexEngine(),
   })
   return shiki.codeToHtml(source, {
     lang: 'tsx',
-    themes: { light: 'github-light', dark: 'github-dark' },
+    themes: { light: 'github-light-high-contrast', dark: 'github-dark-default' },
     defaultColor: false,
   })
 }

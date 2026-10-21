@@ -566,10 +566,11 @@ function JsonViewer({
               onFocus={() => setFocusId(row.id)}
               onKeyDown={(e) => onRowKeyDown(e, row, index)}
               aria-expanded={branch && row.size > 0 ? open : undefined}
-              // The row's own name, without the labels of its copy buttons.
+              // The row's own name, without the labels of its copy buttons. It starts with what is
+              // on screen, so someone who speaks to their computer can say what they see.
               aria-label={
                 branch
-                  ? `${name}, ${row.type === 'array' ? labels.array : labels.object}, ${count}`
+                  ? `${name}: ${count}, ${row.type === 'array' ? labels.array : labels.object}`
                   : `${name}: ${primitiveText(row.value, row.type)}`
               }
               data-slot="json-viewer-row"

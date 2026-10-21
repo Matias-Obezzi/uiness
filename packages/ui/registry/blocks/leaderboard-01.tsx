@@ -305,7 +305,9 @@ function Leaderboard01({
                     <td
                       className={cn(
                         'px-3 py-3 font-bold font-mono tabular-nums @xl:px-4',
-                        i < 3 ? 'text-primary' : 'text-muted-foreground',
+                        i < 3
+                          ? 'text-[color-mix(in_oklab,var(--primary)_80%,var(--foreground))] dark:text-primary'
+                          : 'text-muted-foreground',
                       )}
                     >
                       {pad(i + 1)}

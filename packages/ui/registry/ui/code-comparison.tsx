@@ -14,6 +14,8 @@ export interface CodeComparisonLabels {
   copy: string
   /** Feedback message when code is copied. */
   copied: string
+  /** Name of the unified diff, a region that scrolls sideways. */
+  diff: string
 }
 
 export const defaultCodeComparisonLabels: CodeComparisonLabels = {
@@ -21,6 +23,7 @@ export const defaultCodeComparisonLabels: CodeComparisonLabels = {
   after: 'After',
   copy: 'Copy code',
   copied: 'Copied',
+  diff: 'Changes',
 }
 
 export type DiffType = 'unchanged' | 'added' | 'removed'
@@ -169,8 +172,13 @@ function CodeComparison({
           <CopyButton value={after} />
         </div>
 
-        {/* Unified diff list */}
-        <div className="overflow-x-auto p-2">
+        {/* Unified diff list, focusable so a long line can be scrolled to with the keyboard. */}
+        <section
+          aria-label={labels.diff}
+          // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+          tabIndex={0}
+          className="overflow-x-auto p-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-inset"
+        >
           <table className="w-full border-collapse">
             <tbody>
               {diff.map((line, idx) => {
@@ -188,13 +196,13 @@ function CodeComparison({
                       isRemoved && 'bg-red-500/10 text-red-700 dark:text-red-300',
                       isUnchanged &&
                         focus &&
-                        'opacity-40 blur-[0.3px] group-hover/comp:opacity-100 group-hover/comp:filter-none',
+                        'opacity-60 group-focus-within/comp:opacity-100 group-hover/comp:opacity-100',
                     )}
                   >
-                    <td className="w-8 select-none pr-2 text-right text-muted-foreground/50">
+                    <td className="w-8 select-none pr-2 text-right text-muted-foreground">
                       {line.beforeLineNumber ?? ''}
                     </td>
-                    <td className="w-8 select-none pr-3 text-right text-muted-foreground/50">
+                    <td className="w-8 select-none pr-3 text-right text-muted-foreground">
                       {line.afterLineNumber ?? ''}
                     </td>
                     <td className="w-4 select-none text-center font-bold">
@@ -206,7 +214,7 @@ function CodeComparison({
               })}
             </tbody>
           </table>
-        </div>
+        </section>
       </div>
     )
   }
@@ -232,7 +240,13 @@ function CodeComparison({
             <span className="font-semibold text-foreground truncate">{bLabel}</span>
             <CopyButton value={before} />
           </div>
-          <div className="overflow-x-auto p-2 flex-1">
+          {/* Focusable, so a long line can be scrolled to with the keyboard. */}
+          <section
+            aria-label={typeof bLabel === 'string' ? bLabel : undefined}
+            // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+            tabIndex={0}
+            className="flex-1 overflow-x-auto p-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-inset"
+          >
             <table className="w-full border-collapse">
               <tbody>
                 {beforeLines.map((lineText, idx) => {
@@ -251,11 +265,11 @@ function CodeComparison({
                         isRemoved
                           ? 'bg-red-500/10 text-red-700 dark:text-red-300'
                           : focus
-                            ? 'opacity-40 blur-[0.3px] group-hover/comp:opacity-100 group-hover/comp:filter-none'
+                            ? 'opacity-60 group-focus-within/comp:opacity-100 group-hover/comp:opacity-100'
                             : '',
                       )}
                     >
-                      <td className="w-8 select-none pr-3 text-right text-muted-foreground/50">
+                      <td className="w-8 select-none pr-3 text-right text-muted-foreground">
                         {lineNum}
                       </td>
                       <td className="whitespace-pre pl-1 text-foreground">
@@ -275,7 +289,7 @@ function CodeComparison({
                 })}
               </tbody>
             </table>
-          </div>
+          </section>
         </div>
 
         {/* Right pane: After */}
@@ -284,7 +298,13 @@ function CodeComparison({
             <span className="font-semibold text-foreground truncate">{aLabel}</span>
             <CopyButton value={after} />
           </div>
-          <div className="overflow-x-auto p-2 flex-1">
+          {/* Focusable, so a long line can be scrolled to with the keyboard. */}
+          <section
+            aria-label={typeof aLabel === 'string' ? aLabel : undefined}
+            // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+            tabIndex={0}
+            className="flex-1 overflow-x-auto p-2 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-inset"
+          >
             <table className="w-full border-collapse">
               <tbody>
                 {afterLines.map((lineText, idx) => {
@@ -303,11 +323,11 @@ function CodeComparison({
                         isAdded
                           ? 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
                           : focus
-                            ? 'opacity-40 blur-[0.3px] group-hover/comp:opacity-100 group-hover/comp:filter-none'
+                            ? 'opacity-60 group-focus-within/comp:opacity-100 group-hover/comp:opacity-100'
                             : '',
                       )}
                     >
-                      <td className="w-8 select-none pr-3 text-right text-muted-foreground/50">
+                      <td className="w-8 select-none pr-3 text-right text-muted-foreground">
                         {lineNum}
                       </td>
                       <td className="whitespace-pre pl-1 text-foreground">
@@ -327,7 +347,7 @@ function CodeComparison({
                 })}
               </tbody>
             </table>
-          </div>
+          </section>
         </div>
       </div>
     </div>

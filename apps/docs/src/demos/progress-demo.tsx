@@ -7,5 +7,5 @@ export default function ProgressDemo() {
     const timer = setInterval(() => setValue((v) => (v >= 100 ? 13 : v + 9)), 900)
     return () => clearInterval(timer)
   }, [])
-  return <Progress value={value} className="w-full max-w-sm" />
+  return <Progress aria-label="Upload" value={value} className="w-full max-w-sm" />
 }

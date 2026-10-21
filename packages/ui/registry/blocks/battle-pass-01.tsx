@@ -277,7 +277,7 @@ function BattlePass01({
               >
                 <CrownIcon />
                 {labels.unlock}
-                <span className="inline-flex items-center gap-1 font-mono opacity-80">
+                <span className="inline-flex items-center gap-1 font-mono">
                   <GemIcon aria-hidden="true" className="size-3.5" />
                   {price}
                 </span>
@@ -337,7 +337,10 @@ function BattlePass01({
           <ol
             ref={track}
             aria-label={labels.rewards}
-            className="relative flex snap-x gap-2 overflow-x-auto py-2 [scrollbar-width:thin]"
+            // Focusable, so the keyboard can scroll through the tiers.
+            // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+            tabIndex={0}
+            className="relative flex snap-x gap-2 overflow-x-auto py-2 outline-none [scrollbar-width:thin] focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             {tiers.map((t) => {
               const reached = t.level <= tier
