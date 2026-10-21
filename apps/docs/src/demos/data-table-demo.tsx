@@ -56,9 +56,9 @@ const columns: DataTableColumn<Payment>[] = [
     header: 'Customer',
     sortable: true,
     cell: (row) => (
-      <div className="grid">
+      <div className="grid min-w-0">
         <span>{row.customer}</span>
-        <span className="text-muted-foreground text-xs">{row.email}</span>
+        <span className="truncate text-muted-foreground text-xs">{row.email}</span>
       </div>
     ),
   },
@@ -66,6 +66,7 @@ const columns: DataTableColumn<Payment>[] = [
     id: 'status',
     header: 'Status',
     cell: (row) => <Badge variant={tone[row.status]}>{row.status}</Badge>,
+    card: 'badge',
   },
   { id: 'method', header: 'Method' },
   {
@@ -101,7 +102,7 @@ export default function DataTableDemo() {
       pageSize={8}
       containerClassName="max-h-[32rem]"
       toolbar={
-        <Button variant="outline" size="sm" className="h-8">
+        <Button variant="outline" size="sm" className="h-8 pointer-coarse:h-11">
           <DownloadIcon />
           Export
         </Button>

@@ -13,7 +13,7 @@ interface ExpandingContextValue {
 const ExpandingContext = React.createContext<ExpandingContextValue | null>(null)
 
 const expandingButtonVariants = cva(
-  "relative inline-flex shrink-0 items-center justify-center rounded-full font-medium text-muted-foreground text-sm outline-none transition-[color,background-color,box-shadow] duration-(--duration-normal,200ms) focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 data-expanded:bg-accent data-expanded:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex shrink-0 items-center justify-center rounded-full font-medium text-muted-foreground text-sm outline-none transition-[color,background-color,box-shadow] duration-(--duration-normal,200ms) focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 data-expanded:bg-accent data-expanded:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       size: {

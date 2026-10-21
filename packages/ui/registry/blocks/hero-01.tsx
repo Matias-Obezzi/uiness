@@ -56,7 +56,7 @@ function Hero01({
         {announcement && (
           <a
             href={announcement.href}
-            className="group mb-6 inline-flex max-w-full items-center gap-2 rounded-full border bg-background/80 py-1 pr-3 pl-1 text-caption backdrop-blur transition-colors hover:bg-accent"
+            className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] group mb-6 inline-flex max-w-full items-center gap-2 rounded-full border bg-background/80 py-1 pr-3 pl-1 text-caption backdrop-blur transition-colors hover:bg-accent"
           >
             <span className="rounded-full bg-primary px-2 py-0.5 font-medium text-primary-foreground text-xs">
               New

@@ -90,6 +90,12 @@ describe('Dashboard01', () => {
     render(<Dashboard01 />)
     expect(screen.queryByRole('button', { name: 'Export' })).toBeNull()
   })
+
+  it('says so when there are no orders, in place of an empty table', () => {
+    render(<Dashboard01 orders={[]} />)
+    expect(screen.getByText('No orders yet.')).toBeTruthy()
+    expect(screen.queryByRole('table')).toBeNull()
+  })
 })
 
 describe('Settings01', () => {

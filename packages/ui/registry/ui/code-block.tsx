@@ -140,7 +140,7 @@ function CodeBlock({
           aria-label={labels.wrap}
           title={labels.wrap}
           onClick={() => setWrap((w) => !w)}
-          className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-pressed:bg-accent aria-pressed:text-foreground"
+          className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex size-7 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 aria-pressed:bg-accent aria-pressed:text-foreground"
         >
           <WrapTextIcon aria-hidden className="size-4" />
         </button>
@@ -151,7 +151,7 @@ function CodeBlock({
           aria-label={copied ? labels.copied : labels.copy}
           title={labels.copy}
           onClick={copy}
-          className="inline-flex size-7 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex size-7 items-center justify-center rounded-md text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           {copied ? (
             <CheckIcon aria-hidden className="size-4" />
@@ -284,7 +284,7 @@ function CodeBlock({
             aria-expanded={expanded}
             aria-controls={id}
             onClick={() => setExpanded((e) => !e)}
-            className="rounded-full border bg-background px-3 py-1 font-medium text-xs shadow-xs outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-full border bg-background px-3 py-1 font-medium text-xs shadow-xs outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             {expanded ? labels.showLess : labels.showAll(count)}
           </button>

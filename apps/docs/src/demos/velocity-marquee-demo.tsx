@@ -29,7 +29,7 @@ export default function VelocityMarqueeDemo() {
     <VelocityMarquee
       baseVelocity={60}
       gap="2rem"
-      className="-mx-8 w-[calc(100%+4rem)] gap-2 py-4"
+      className="-mx-4 w-[calc(100%+2rem)] gap-2 py-4 sm:-mx-8 sm:w-[calc(100%+4rem)]"
       style={{
         maskImage: 'linear-gradient(to right, transparent, #000 10%, #000 90%, transparent)',
       }}

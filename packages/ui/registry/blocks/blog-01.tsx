@@ -311,7 +311,7 @@ function Blog01({
                 <button
                   type="button"
                   onClick={() => open(featured)}
-                  className="text-left outline-none after:absolute after:inset-0 after:rounded-3xl focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50"
+                  className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:before:inset-y-[min(0px,calc((100%_-_44px)/2))] text-left outline-none after:absolute after:inset-0 after:rounded-3xl focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50"
                 >
                   {featured.title}
                 </button>
@@ -346,7 +346,7 @@ function Blog01({
                     setPage(0)
                   }}
                   className={cn(
-                    'h-8 rounded-full border px-3.5 font-medium text-sm outline-none transition-colors duration-(--duration-fast,150ms) focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                    'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] h-8 rounded-full border px-3.5 font-medium text-sm outline-none transition-colors duration-(--duration-fast,150ms) focus-visible:ring-[3px] focus-visible:ring-ring/50',
                     pressed
                       ? 'border-foreground bg-foreground text-background'
                       : 'bg-background text-muted-foreground hover:bg-accent hover:text-foreground',
@@ -389,7 +389,7 @@ function Blog01({
                         <button
                           type="button"
                           onClick={() => open(post)}
-                          className="text-left outline-none after:absolute after:inset-0 after:rounded-2xl focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50"
+                          className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:before:inset-y-[min(0px,calc((100%_-_44px)/2))] text-left outline-none after:absolute after:inset-0 after:rounded-2xl focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50"
                         >
                           {post.title}
                         </button>

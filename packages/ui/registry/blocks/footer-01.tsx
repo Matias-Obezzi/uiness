@@ -180,7 +180,7 @@ function Footer01({
           <div className="flex flex-col items-start gap-5 @4xl:col-span-4">
             <a
               href={brand.href ?? '/'}
-              className="group flex items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] group flex items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <span
                 aria-hidden
@@ -233,7 +233,7 @@ function Footer01({
                       <li key={link.label}>
                         <a
                           href={link.href}
-                          className="rounded-sm text-muted-foreground text-sm outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                          className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-sm text-muted-foreground text-sm outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                         >
                           {link.label}
                         </a>
@@ -338,7 +338,7 @@ function Footer01({
                   <li key={link.label}>
                     <a
                       href={link.href}
-                      className="rounded-sm text-caption text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-sm text-caption text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                     >
                       {link.label}
                     </a>

@@ -271,7 +271,7 @@ function BarButton({
       type="button"
       aria-label={label}
       className={cn(
-        'flex size-7 shrink-0 items-center justify-center rounded-md opacity-70 outline-none transition-[opacity,background-color] hover:bg-current/10 hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-current/40 [&_svg]:size-4',
+        'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex size-7 shrink-0 items-center justify-center rounded-md opacity-70 outline-none transition-[opacity,background-color] hover:bg-current/10 hover:opacity-100 focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-current/40 [&_svg]:size-4',
         className,
       )}
       {...props}

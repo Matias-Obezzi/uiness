@@ -177,7 +177,7 @@ function Settings01({
       className={cn('@container w-full', className)}
       {...props}
     >
-      <div className="mx-auto grid max-w-5xl gap-8 px-6 py-10 @3xl:grid-cols-[12rem_1fr] @3xl:gap-12">
+      <div className="mx-auto grid max-w-5xl grid-cols-1 gap-8 px-4 py-10 @xl:px-6 @3xl:grid-cols-[12rem_minmax(0,1fr)] @3xl:gap-12">
         <div>
           <h2 id={`${id}-title`} className="text-heading">
             {title}
@@ -188,7 +188,7 @@ function Settings01({
                 <li key={section.id}>
                   <a
                     href={`#${section.id}`}
-                    className="flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-accent hover:text-foreground"
+                    className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex items-center gap-2 whitespace-nowrap rounded-md px-3 py-2 text-muted-foreground text-sm transition-colors hover:bg-accent hover:text-foreground"
                   >
                     <section.icon className="size-4" />
                     {section.label}

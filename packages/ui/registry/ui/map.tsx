@@ -81,7 +81,7 @@ function MapMarker({ children, className, ...props }: MarkerProps) {
   return (
     <Marker
       className={cn(
-        'rounded-full outline-none transition-transform duration-(--duration-fast,150ms) hover:-translate-y-0.5 focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none motion-reduce:hover:translate-y-0',
+        'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-full outline-none transition-transform duration-(--duration-fast,150ms) hover:-translate-y-0.5 focus-visible:ring-[3px] focus-visible:ring-ring/50 motion-reduce:transition-none motion-reduce:hover:translate-y-0',
         className,
       )}
       {...props}

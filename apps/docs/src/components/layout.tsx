@@ -49,7 +49,10 @@ import { PageAside } from './page-aside'
 
 function Wordmark() {
   return (
-    <Link to="/" className="flex items-center gap-2 font-semibold">
+    <Link
+      to="/"
+      className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex items-center gap-2 font-semibold"
+    >
       <Logo className="size-5 shrink-0" />
       {site.name}
     </Link>

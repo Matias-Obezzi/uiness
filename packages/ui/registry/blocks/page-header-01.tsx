@@ -264,7 +264,7 @@ function PageHeader01({
                 <li key={crumb.label} className="flex items-center gap-1">
                   <a
                     href={crumb.href}
-                    className="rounded-sm outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-sm outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                   >
                     {crumb.label}
                   </a>

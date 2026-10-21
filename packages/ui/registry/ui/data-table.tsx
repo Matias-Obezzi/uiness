@@ -7,14 +7,18 @@ import {
   ChevronRightIcon,
   ChevronsUpDownIcon,
   CirclePlusIcon,
+  InboxIcon,
   SearchIcon,
+  SearchXIcon,
   XIcon,
 } from 'lucide-react'
 import * as React from 'react'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   Table,
   TableBody,
@@ -32,6 +36,11 @@ export interface DataTableColumn<T> {
   id: string
   /** Header content. */
   header: React.ReactNode
+  /**
+   * The column's name where the header is not plain text, such as an icon: it labels the
+   * value in the card layout.
+   */
+  label?: string
   /** Key of the value in the row, or a function that reads it. Defaults to `row[id]`. */
   accessor?: keyof T | ((row: T) => unknown)
   /** Renders the cell. Defaults to the value as text. */
@@ -46,6 +55,13 @@ export interface DataTableColumn<T> {
   searchable?: boolean
   /** Classes for the cells of this column, like a width. */
   className?: string
+  /**
+   * Its place on a card, when the table turns into cards in a narrow container: `title`,
+   * bold at the top (default for the first column); `badge`, at the top right, for a status;
+   * `field`, a label over the value (the default); `actions`, the card's footer (default for a
+   * column with the id `actions`); or `hidden`.
+   */
+  card?: 'title' | 'badge' | 'field' | 'actions' | 'hidden'
 }
 
 export interface DataTableFilter {
@@ -138,6 +154,13 @@ export interface DataTableProps<T> extends Omit<React.ComponentProps<'div'>, 'ch
   containerClassName?: string
   /** Shown when nothing matches. Default "No results." */
   empty?: React.ReactNode
+  /** Draw placeholder rows while the data loads. Default false. */
+  loading?: boolean
+  /**
+   * `responsive` turns the rows into cards when the table's container is narrower than 576px,
+   * so nothing scrolls sideways; `table` and `cards` keep one layout. Default `responsive`.
+   */
+  layout?: 'responsive' | 'table' | 'cards'
   /** Extra controls at the end of the toolbar, like an export button. */
   toolbar?: React.ReactNode
   /** Names the table for screen readers, and shows under it. */
@@ -171,6 +194,54 @@ const asKeys = (v: unknown) => (Array.isArray(v) ? v.map(String) : isMissing(v) 
 
 const alignClass = { left: 'text-left', center: 'text-center', right: 'text-right' }
 
+type CardPlace = NonNullable<DataTableColumn<unknown>['card']>
+
+// The card layout, by the width of the table's container (`@container/dt` on the root). Each
+// class is written out in full, as Tailwind finds classes in the source.
+const responsive = {
+  container: '@max-xl/dt:rounded-none @max-xl/dt:border-0',
+  table: '@max-xl/dt:flex @max-xl/dt:flex-col @max-xl/dt:gap-3',
+  caption: '@max-xl/dt:order-last @max-xl/dt:border-0 @max-xl/dt:py-0',
+  header:
+    '@max-xl/dt:block @max-xl/dt:[&_th]:static @max-xl/dt:[&_th]:bg-transparent @max-xl/dt:[&_th]:shadow-none',
+  headerRow:
+    '@max-xl/dt:-m-1 @max-xl/dt:flex @max-xl/dt:items-center @max-xl/dt:gap-2 @max-xl/dt:overflow-x-auto @max-xl/dt:border-0 @max-xl/dt:p-1 @max-xl/dt:[scrollbar-width:none]',
+  // Sortable headers stay, as one row of sort buttons over the cards that scrolls sideways on
+  // its own; the rest are read, not seen.
+  sortHead: '@max-xl/dt:block @max-xl/dt:h-auto @max-xl/dt:shrink-0 @max-xl/dt:p-0',
+  plainHead: '@max-xl/dt:sr-only',
+  sortButton:
+    '@max-xl/dt:mx-0 @max-xl/dt:min-h-9 @max-xl/dt:flex-row @max-xl/dt:rounded-full @max-xl/dt:border @max-xl/dt:px-3 @max-xl/dt:font-normal',
+  selectHead:
+    '@max-xl/dt:me-auto @max-xl/dt:block @max-xl/dt:h-auto @max-xl/dt:w-auto @max-xl/dt:shrink-0 @max-xl/dt:p-0',
+  selectText: 'hidden @max-xl/dt:inline',
+  body: '@max-xl/dt:grid @max-xl/dt:gap-3 @max-xl/dt:[&_tr:last-child]:border',
+  row: '@max-xl/dt:relative @max-xl/dt:grid @max-xl/dt:grid-cols-2 @max-xl/dt:gap-x-4 @max-xl/dt:gap-y-3 @max-xl/dt:rounded-lg @max-xl/dt:border @max-xl/dt:p-4',
+  cell: '@max-xl/dt:block @max-xl/dt:min-w-0 @max-xl/dt:whitespace-normal @max-xl/dt:break-words @max-xl/dt:p-0 @max-xl/dt:text-left',
+  selectCell:
+    '@max-xl/dt:absolute @max-xl/dt:top-5 @max-xl/dt:left-4 @max-xl/dt:w-auto @max-xl/dt:p-0',
+  fullWidth: '@max-xl/dt:col-span-2',
+  place: {
+    title:
+      '@max-xl/dt:col-start-1 @max-xl/dt:row-start-1 @max-xl/dt:self-center @max-xl/dt:font-semibold @max-xl/dt:text-base',
+    badge:
+      '@max-xl/dt:col-start-2 @max-xl/dt:row-start-1 @max-xl/dt:self-start @max-xl/dt:justify-self-end',
+    field:
+      '@max-xl/dt:before:mb-0.5 @max-xl/dt:before:block @max-xl/dt:before:text-muted-foreground @max-xl/dt:before:text-xs @max-xl/dt:before:content-[attr(data-label)]',
+    actions:
+      '@max-xl/dt:col-span-2 @max-xl/dt:-mx-4 @max-xl/dt:-mb-4 @max-xl/dt:flex @max-xl/dt:flex-wrap @max-xl/dt:justify-end @max-xl/dt:gap-2 @max-xl/dt:border-t @max-xl/dt:px-4 @max-xl/dt:py-2',
+    hidden: '@max-xl/dt:hidden',
+  } satisfies Record<CardPlace, string>,
+}
+
+/** The column's place on a card. */
+const placeOf = <T,>(column: DataTableColumn<T>, index: number): CardPlace =>
+  column.card ?? (index === 0 ? 'title' : column.id === 'actions' ? 'actions' : 'field')
+
+/** The text that labels a column's values on a card. */
+const labelOf = <T,>(column: DataTableColumn<T>) =>
+  column.label ?? (typeof column.header === 'string' ? column.header : column.id)
+
 /**
  * A ready-made table on `table`: typed columns, sorting by one column or several with shift,
  * a toolbar with search and faceted filters, row selection, pages and an empty state. Holds its
@@ -191,6 +262,8 @@ function DataTable<T>({
   stickyHeader = true,
   containerClassName,
   empty,
+  loading = false,
+  layout = 'responsive',
   toolbar,
   caption,
   labels: labelsProp,
@@ -330,9 +403,31 @@ function DataTable<T>({
 
   const colSpan = columns.length + (selectable ? 1 : 0)
   const showToolbar = searchable || filters.length > 0 || toolbar
+  // The card classes: by the container's width, always (the same classes with no
+  // condition), or never.
+  const card = (classes: string) =>
+    layout === 'responsive'
+      ? classes
+      : layout === 'cards'
+        ? classes.replaceAll('@max-xl/dt:', '')
+        : undefined
+  const hasBadge = columns.some((c, i) => placeOf(c, i) === 'badge')
+  const cellCard = (place: CardPlace) =>
+    card(
+      cn(
+        responsive.cell,
+        responsive.place[place],
+        place === 'title' && !hasBadge && responsive.fullWidth,
+        place === 'title' && selectable && '@max-xl/dt:ps-7',
+      ),
+    )
 
   return (
-    <div data-slot="data-table" className={cn('grid w-full min-w-0 gap-3', className)} {...props}>
+    <div
+      data-slot="data-table"
+      className={cn('grid w-full min-w-0 gap-3 @container/dt', className)}
+      {...props}
+    >
       {showToolbar && (
         <div data-slot="data-table-toolbar" className="flex flex-wrap items-center gap-2">
           {searchable && (
@@ -350,7 +445,7 @@ function DataTable<T>({
                 }}
                 placeholder={searchPlaceholder}
                 aria-label={searchPlaceholder.replace(/…$/, '')}
-                className="h-8 pl-8"
+                className="h-8 pl-8 pointer-coarse:h-11"
               />
             </div>
           )}
@@ -367,27 +462,42 @@ function DataTable<T>({
             />
           ))}
           {filtering && (
-            <Button type="button" variant="ghost" size="sm" onClick={reset}>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={reset}
+              className="pointer-coarse:h-11"
+            >
               {labels.reset}
               <XIcon aria-hidden />
             </Button>
           )}
-          {toolbar && <div className="ml-auto flex items-center gap-2">{toolbar}</div>}
+          {toolbar && <div className="ml-auto flex flex-wrap items-center gap-2">{toolbar}</div>}
         </div>
       )}
 
-      <Table containerClassName={containerClassName}>
-        {caption && <TableCaption>{caption}</TableCaption>}
-        <TableHeader sticky={stickyHeader}>
-          <TableRow className="hover:bg-transparent">
+      <Table
+        aria-busy={loading || undefined}
+        containerClassName={cn(card(responsive.container), containerClassName)}
+        className={card(responsive.table)}
+      >
+        {caption && <TableCaption className={card(responsive.caption)}>{caption}</TableCaption>}
+        <TableHeader sticky={stickyHeader} className={card(responsive.header)}>
+          <TableRow className={cn('hover:bg-transparent', card(responsive.headerRow))}>
             {selectable && (
-              <TableHead className="w-10 pl-3">
-                <SelectBox
-                  checked={allState}
-                  onCheckedChange={toggleAll}
-                  aria-label={labels.selectAll}
-                  disabled={filteredIds.length === 0}
-                />
+              <TableHead className={cn('w-10 pl-3', card(responsive.selectHead))}>
+                <SelectLabel
+                  text={layout === 'table' ? undefined : labels.selectAll}
+                  textClassName={card(responsive.selectText)}
+                >
+                  <SelectBox
+                    checked={allState}
+                    onCheckedChange={toggleAll}
+                    aria-label={labels.selectAll}
+                    disabled={filteredIds.length === 0}
+                  />
+                </SelectLabel>
               </TableHead>
             )}
             {columns.map((col) => {
@@ -406,7 +516,11 @@ function DataTable<T>({
                         : 'none'
                       : undefined
                   }
-                  className={cn(alignClass[align], col.className)}
+                  className={cn(
+                    alignClass[align],
+                    col.className,
+                    card(col.sortable ? responsive.sortHead : responsive.plainHead),
+                  )}
                 >
                   {col.sortable ? (
                     <button
@@ -414,8 +528,9 @@ function DataTable<T>({
                       onClick={(e) => onSort(col.id, e.shiftKey)}
                       title={labels.sortHint}
                       className={cn(
-                        '-mx-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-1 outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                        '-mx-1.5 inline-flex items-center gap-1 rounded-md px-1.5 py-1 outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 pointer-coarse:min-h-11',
                         align === 'right' && 'flex-row-reverse',
+                        card(responsive.sortButton),
                       )}
                     >
                       {col.header}
@@ -442,18 +557,55 @@ function DataTable<T>({
             })}
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {visible.length === 0 ? (
-            <TableRow className="hover:bg-transparent">
-              <TableCell colSpan={colSpan} className="h-32 text-center text-muted-foreground">
-                <div className="grid justify-items-center gap-2">
-                  {empty ?? labels.empty}
-                  {filtering && (
-                    <Button type="button" variant="outline" size="sm" onClick={reset}>
-                      {labels.resetFilters}
-                    </Button>
-                  )}
-                </div>
+        <TableBody className={card(responsive.body)}>
+          {loading ? (
+            Array.from({ length: Math.min(size, 5) }, (_, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: placeholders have nothing else to key on
+              <TableRow key={i} className={cn('hover:bg-transparent', card(responsive.row))}>
+                {selectable && (
+                  <TableCell className={cn('w-10 pl-3', card(responsive.selectCell))} />
+                )}
+                {columns.map((col, c) => (
+                  <TableCell
+                    key={col.id}
+                    data-label={labelOf(col)}
+                    className={cn(col.className, cellCard(placeOf(col, c)))}
+                  >
+                    <Skeleton
+                      className={cn(
+                        'h-4 w-full max-w-32',
+                        col.align === 'right' && 'ms-auto',
+                        col.align === 'center' && 'mx-auto',
+                      )}
+                    />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : visible.length === 0 ? (
+            <TableRow className={cn('hover:bg-transparent', card(responsive.row))}>
+              <TableCell
+                colSpan={colSpan}
+                className={cn('p-0 whitespace-normal', card(responsive.fullWidth))}
+              >
+                <EmptyState
+                  size="sm"
+                  icon={filtering ? <SearchXIcon /> : <InboxIcon />}
+                  description={empty ?? labels.empty}
+                  actions={
+                    filtering && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        onClick={reset}
+                        className="pointer-coarse:h-11"
+                      >
+                        {labels.resetFilters}
+                      </Button>
+                    )
+                  }
+                />
               </TableCell>
             </TableRow>
           ) : (
@@ -461,27 +613,35 @@ function DataTable<T>({
               const on = selection.has(id)
               const first = columns[0]
               return (
-                <TableRow key={id} data-state={on ? 'selected' : undefined}>
+                <TableRow
+                  key={id}
+                  data-state={on ? 'selected' : undefined}
+                  className={card(responsive.row)}
+                >
                   {selectable && (
-                    <TableCell className="w-10 pl-3">
-                      <SelectBox
-                        checked={on}
-                        onCheckedChange={() => toggleRow(id)}
-                        aria-label={labels.selectRow(
-                          first ? asText(readValue(row, first)) || undefined : undefined,
-                        )}
-                      />
+                    <TableCell className={cn('w-10 pl-3', card(responsive.selectCell))}>
+                      <SelectLabel>
+                        <SelectBox
+                          checked={on}
+                          onCheckedChange={() => toggleRow(id)}
+                          aria-label={labels.selectRow(
+                            first ? asText(readValue(row, first)) || undefined : undefined,
+                          )}
+                        />
+                      </SelectLabel>
                     </TableCell>
                   )}
-                  {columns.map((col) => {
+                  {columns.map((col, c) => {
                     const value = readValue(row, col)
                     return (
                       <TableCell
                         key={col.id}
+                        data-label={labelOf(col)}
                         className={cn(
                           alignClass[col.align ?? 'left'],
                           col.align === 'right' && 'tabular-nums',
                           col.className,
+                          cellCard(placeOf(col, c)),
                         )}
                       >
                         {col.cell ? col.cell(row, value) : asText(value)}
@@ -500,9 +660,11 @@ function DataTable<T>({
         className="flex flex-wrap items-center justify-between gap-2 text-muted-foreground text-sm"
       >
         <div aria-live="polite">
-          {selectable && selection.size > 0
-            ? labels.selected(selection.size, data.length)
-            : labels.results(filtered.length, filtering ? data.length : undefined)}
+          {loading
+            ? null
+            : selectable && selection.size > 0
+              ? labels.selected(selection.size, data.length)
+              : labels.results(filtered.length, filtering ? data.length : undefined)}
         </div>
         {pageSize !== false && pageCount > 1 && (
           <nav aria-label={labels.pages} className="flex items-center gap-2">
@@ -511,7 +673,7 @@ function DataTable<T>({
               type="button"
               variant="outline"
               size="icon"
-              className="size-8"
+              className="size-8 pointer-coarse:size-11"
               aria-label={labels.previousPage}
               disabled={current === 0}
               onClick={() => setPage(current - 1)}
@@ -522,7 +684,7 @@ function DataTable<T>({
               type="button"
               variant="outline"
               size="icon"
-              className="size-8"
+              className="size-8 pointer-coarse:size-11"
               aria-label={labels.nextPage}
               disabled={current >= pageCount - 1}
               onClick={() => setPage(current + 1)}
@@ -536,12 +698,41 @@ function DataTable<T>({
   )
 }
 
+/**
+ * Holds a selection checkbox. On touch screens it reaches 44px around the box without moving
+ * it; on cards it can show the select-all text beside it.
+ */
+function SelectLabel({
+  text,
+  textClassName,
+  children,
+}: {
+  text?: string
+  textClassName?: string
+  children: React.ReactNode
+}) {
+  return (
+    // biome-ignore lint/a11y/noLabelWithoutControl: the checkbox passed in is the control
+    <label className="inline-flex cursor-pointer items-center gap-2 align-middle pointer-coarse:-m-3.5 pointer-coarse:p-3.5">
+      {children}
+      {text && (
+        <span
+          aria-hidden="true"
+          className={cn('font-normal text-muted-foreground text-sm', textClassName)}
+        >
+          {text}
+        </span>
+      )}
+    </label>
+  )
+}
+
 /** The checkbox with a dash for "some selected", which the plain one draws as a check. */
 function SelectBox(props: React.ComponentProps<typeof Checkbox>) {
   return (
     <Checkbox
       {...props}
-      className="relative data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary data-[state=indeterminate]:after:absolute data-[state=indeterminate]:after:inset-x-[3px] data-[state=indeterminate]:after:top-1/2 data-[state=indeterminate]:after:h-0.5 data-[state=indeterminate]:after:-translate-y-1/2 data-[state=indeterminate]:after:rounded-full data-[state=indeterminate]:after:bg-primary-foreground data-[state=indeterminate]:[&_svg]:hidden"
+      className="relative data-[state=indeterminate]:border-primary data-[state=indeterminate]:bg-primary dark:data-[state=indeterminate]:bg-primary data-[state=indeterminate]:after:absolute data-[state=indeterminate]:after:inset-x-[3px] data-[state=indeterminate]:after:top-1/2 data-[state=indeterminate]:after:h-0.5 data-[state=indeterminate]:after:-translate-y-1/2 data-[state=indeterminate]:after:rounded-full data-[state=indeterminate]:after:bg-primary-foreground data-[state=indeterminate]:[&_svg]:hidden"
     />
   )
 }
@@ -587,7 +778,12 @@ function FacetFilter<T>({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button type="button" variant="outline" size="sm" className="h-8 border-dashed">
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="h-8 border-dashed pointer-coarse:h-11"
+        >
           <CirclePlusIcon aria-hidden />
           {filter.title}
           {selected.size > 0 && (
@@ -619,7 +815,7 @@ function FacetFilter<T>({
             // biome-ignore lint/a11y/noLabelWithoutControl: the checkbox inside is the control
             <label
               key={option.value}
-              className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent"
+              className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-accent pointer-coarse:min-h-11"
             >
               <Checkbox
                 checked={selected.has(option.value)}
@@ -638,7 +834,7 @@ function FacetFilter<T>({
             <button
               type="button"
               onClick={() => onChange(new Set())}
-              className="w-full rounded-md px-2 py-1.5 text-center text-sm hover:bg-accent"
+              className="w-full rounded-md px-2 py-1.5 text-center text-sm hover:bg-accent pointer-coarse:min-h-11"
             >
               {labels.clearFilter}
             </button>

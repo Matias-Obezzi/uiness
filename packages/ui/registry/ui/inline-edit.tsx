@@ -202,7 +202,7 @@ function InlineEdit({
 
   // The text and the field share every metric, so swapping one for the other moves nothing.
   const shared = cn(
-    'col-start-1 row-start-1 m-0 min-w-[1ch] rounded-md border border-transparent bg-transparent px-1 py-0.5 text-left text-inherit [font:inherit] [letter-spacing:inherit]',
+    'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] col-start-1 row-start-1 m-0 min-w-[1ch] rounded-md border border-transparent bg-transparent px-1 py-0.5 text-left text-inherit [font:inherit] [letter-spacing:inherit]',
     textClassName,
   )
 

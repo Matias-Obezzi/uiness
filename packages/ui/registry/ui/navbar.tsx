@@ -199,7 +199,7 @@ function Navbar({
                 aria-expanded={menuOpen}
                 onClick={() => setMenuOpen(true)}
                 className={cn(
-                  'inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-foreground outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-5',
+                  'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-foreground outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-5',
                   belowBreakpoint[breakpoint],
                   !hasActions && 'ml-auto',
                 )}
@@ -243,7 +243,7 @@ function NavbarBrand({ asChild, className, ...props }: NavbarBrandProps) {
     <Comp
       data-slot="navbar-brand"
       className={cn(
-        'flex shrink-0 items-center gap-2 font-semibold text-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-5',
+        'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex shrink-0 items-center gap-2 font-semibold text-foreground outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-5',
         className,
       )}
       {...props}

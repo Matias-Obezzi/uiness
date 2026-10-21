@@ -25,7 +25,7 @@ export default function ScrambleTextDemo() {
             key={link}
             href={`#${link.toLowerCase()}`}
             onClick={(e) => e.preventDefault()}
-            className="rounded-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-sm text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             <ScrambleText text={link} trigger="hover" duration={500} speed={30} />
           </a>

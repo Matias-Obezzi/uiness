@@ -236,7 +236,7 @@ function StepperItem({
   )
 
   const headClass = cn(
-    'flex min-w-0 items-center gap-3 rounded-lg text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+    'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex min-w-0 items-center gap-3 rounded-lg text-left outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
     !horizontal && 'items-start',
     interactive && 'cursor-pointer [&:hover_[data-slot=stepper-title]]:underline',
   )

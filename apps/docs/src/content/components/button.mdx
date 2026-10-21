@@ -48,6 +48,12 @@ Icons inside a button are sized and spaced automatically.
 
 With `asChild`, `loading` puts the spinner inside the child. A link has no disabled state, so it gets `aria-disabled` and `aria-busy` instead, stops taking pointer events, and has its clicks cancelled.
 
+## Touch screens
+
+On a touch screen every button reaches 44 by 44 pixels, the size a fingertip needs, even when it is drawn smaller, like `size="sm"` or an icon button. An invisible `::after` grows around it; nothing moves and nothing looks different, and with a mouse it is not there at all. The same goes for toggles, tabs, checkboxes, switches, radios, sliders, selects and the other controls, and for every component built on them.
+
+A button that draws its own `::after` gives it up on touch screens: draw yours with `::before`.
+
 ## Props
 
 | Prop | Type | Default |

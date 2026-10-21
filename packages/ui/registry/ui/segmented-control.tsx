@@ -136,7 +136,7 @@ function SegmentedControlItem({
     <RadioGroupPrimitive.Item
       data-slot="segmented-control-item"
       className={cn(
-        "relative inline-flex h-full min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md font-medium outline-none transition-[color,box-shadow] duration-(--duration-fast,150ms) hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 data-[state=checked]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex h-full min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-md font-medium outline-none transition-[color,box-shadow] duration-(--duration-fast,150ms) hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 data-[state=checked]:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         // Until the thumb has measured its place, the selected segment paints its own background.
         'group-data-[ready=false]/segmented-control:data-[state=checked]:bg-background group-data-[ready=false]/segmented-control:data-[state=checked]:shadow-sm',
         itemSize[size],

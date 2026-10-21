@@ -579,7 +579,7 @@ const buttonLook: Record<CarouselControls, string> = {
 }
 
 const arrowBase =
-  'inline-flex size-9 items-center justify-center rounded-full transition-[opacity,background-color] disabled:pointer-events-none disabled:opacity-40'
+  'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex size-9 items-center justify-center rounded-full transition-[opacity,background-color] disabled:pointer-events-none disabled:opacity-40'
 
 export interface CarouselArrowProps extends React.ComponentProps<'button'> {
   /** Look of this control. Defaults to the carousel's `controls`. */
@@ -654,7 +654,7 @@ function CarouselDots({ variant, className, ...props }: CarouselDotsProps) {
       data-slot="carousel-dots"
       data-variant={look}
       className={cn(
-        'flex items-center justify-center gap-2',
+        'flex items-center justify-center gap-2 pointer-coarse:gap-4',
         overlay &&
           'absolute bottom-3 left-1/2 z-(--z-raised,10) -translate-x-1/2 rounded-full bg-black/50 px-2.5 py-2 backdrop-blur-sm',
         className,
@@ -670,7 +670,7 @@ function CarouselDots({ variant, className, ...props }: CarouselDotsProps) {
           aria-current={i === index || undefined}
           onClick={() => goTo(i)}
           className={cn(
-            'size-2 rounded-full transition-[background-color,width]',
+            'relative size-2 rounded-full transition-[background-color,width] pointer-coarse:after:absolute pointer-coarse:after:-inset-x-2 pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))]',
             overlay
               ? cn(
                   'bg-white/50 hover:bg-white/80',

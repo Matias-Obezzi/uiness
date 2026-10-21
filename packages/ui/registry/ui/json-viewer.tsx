@@ -631,7 +631,7 @@ function JsonViewer({
                         }
                         title={kind === 'value' ? labels.copyValueHint : labels.copyPathHint}
                         onClick={() => copy(row, kind)}
-                        className="inline-flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground"
+                        className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex size-6 items-center justify-center rounded-md text-muted-foreground hover:bg-background hover:text-foreground"
                       >
                         <Icon aria-hidden className="size-3.5" />
                       </button>

@@ -132,7 +132,7 @@ function Mark({ brand }: { brand: AuthBrand }) {
   return (
     <a
       href={brand.href ?? '/'}
-      className="group flex w-fit items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+      className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] group flex w-fit items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
     >
       <span
         aria-hidden
@@ -237,7 +237,7 @@ function Auth01({
                   {forgotPasswordHref && (
                     <a
                       href={forgotPasswordHref}
-                      className="rounded-sm text-muted-foreground text-sm underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                      className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-sm text-muted-foreground text-sm underline-offset-4 outline-none hover:text-foreground hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                     >
                       {labels.forgotPassword}
                     </a>
@@ -259,7 +259,7 @@ function Auth01({
                     aria-controls={passwordId}
                     aria-pressed={reveal}
                     onClick={() => setReveal((r) => !r)}
-                    className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-lg text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                    className="pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-lg text-muted-foreground outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                   >
                     {reveal ? (
                       <EyeOffIcon aria-hidden className="size-4" />

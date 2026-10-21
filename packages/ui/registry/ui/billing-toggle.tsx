@@ -135,7 +135,7 @@ function BillingToggle({
               }
             }}
             className={cn(
-              'relative z-[1] inline-flex h-8 items-center gap-2 rounded-full px-4 font-medium text-sm outline-none transition-colors duration-(--duration-fast,150ms) focus-visible:ring-[3px] focus-visible:ring-ring/50',
+              'pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] relative z-[1] inline-flex h-8 items-center gap-2 rounded-full px-4 font-medium text-sm outline-none transition-colors duration-(--duration-fast,150ms) focus-visible:ring-[3px] focus-visible:ring-ring/50',
               checked ? 'text-foreground' : 'text-muted-foreground hover:text-foreground',
               checked && !thumb && 'bg-background shadow-sm',
             )}

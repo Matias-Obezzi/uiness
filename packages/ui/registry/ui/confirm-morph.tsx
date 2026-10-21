@@ -193,7 +193,7 @@ function ConfirmMorph({
         data-autofocus
         disabled={disabled}
         className={cn(
-          'inline-flex h-full items-center gap-2 whitespace-nowrap font-medium outline-none disabled:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+          'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex h-full items-center gap-2 whitespace-nowrap font-medium outline-none disabled:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
           small ? 'px-3 text-xs' : 'px-4 text-sm',
         )}
         onClick={() => move('confirming')}

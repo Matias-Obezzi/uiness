@@ -361,7 +361,7 @@ function Contact01({
                       <p className="text-muted-foreground text-sm">{channel.description}</p>
                       <a
                         href={channel.href}
-                        className="mt-1 inline-flex items-center gap-1 rounded-sm font-medium text-sm underline-offset-4 outline-none after:absolute after:inset-0 after:rounded-2xl hover:underline focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50"
+                        className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:before:inset-y-[min(0px,calc((100%_-_44px)/2))] mt-1 inline-flex items-center gap-1 rounded-sm font-medium text-sm underline-offset-4 outline-none after:absolute after:inset-0 after:rounded-2xl hover:underline focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50"
                       >
                         <span className="truncate">{channel.label}</span>
                         <ArrowRightIcon

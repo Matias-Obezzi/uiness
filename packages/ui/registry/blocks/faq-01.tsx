@@ -114,7 +114,7 @@ function Faq01({
                 {contact.text && <p className="text-muted-foreground">{contact.text}</p>}
                 <a
                   href={contact.href}
-                  className="group/link inline-flex items-center gap-1 rounded-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] group/link inline-flex items-center gap-1 rounded-sm font-medium underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
                   {contact.label}
                   <ArrowRightIcon className="size-3.5 transition-transform duration-(--duration-fast,150ms) group-hover/link:translate-x-0.5" />

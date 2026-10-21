@@ -305,7 +305,7 @@ function Notifications01({
                   aria-pressed={pressed}
                   onClick={() => setFilter(f.id)}
                   className={cn(
-                    'inline-flex h-8 items-center gap-1.5 rounded-md px-3 font-medium text-sm outline-none transition-[color,background-color,box-shadow] duration-(--duration-fast,150ms) focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                    'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex h-8 items-center gap-1.5 rounded-md px-3 font-medium text-sm outline-none transition-[color,background-color,box-shadow] duration-(--duration-fast,150ms) focus-visible:ring-[3px] focus-visible:ring-ring/50',
                     pressed
                       ? 'bg-background text-foreground shadow-sm'
                       : 'text-muted-foreground hover:text-foreground',
@@ -416,7 +416,7 @@ function Row({
         <div className="min-w-0 flex-1">
           <CollapsibleTrigger
             disabled={!expandable}
-            className="w-full rounded-sm text-left text-sm outline-none after:absolute after:inset-0 focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50 focus-visible:after:ring-inset enabled:cursor-pointer"
+            className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:before:inset-y-[min(0px,calc((100%_-_44px)/2))] w-full rounded-sm text-left text-sm outline-none after:absolute after:inset-0 focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50 focus-visible:after:ring-inset enabled:cursor-pointer"
           >
             {item.actor && (
               <>
@@ -459,7 +459,7 @@ function Row({
             onClick={onToggleRead}
             aria-label={read ? labels.markUnread : labels.markRead}
             title={read ? labels.markUnread : labels.markRead}
-            className="flex size-7 items-center justify-center rounded-full outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex size-7 items-center justify-center rounded-full outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             <span
               aria-hidden

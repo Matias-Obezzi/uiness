@@ -120,7 +120,7 @@ function ChipGroupItem({ className, icon, children, ...props }: ChipGroupItemPro
       data-slot="chip-group-item"
       data-size={size}
       className={cn(
-        'group/chip relative isolate inline-flex shrink-0 items-center whitespace-nowrap rounded-full border border-input bg-transparent font-medium text-foreground shadow-xs outline-none',
+        'group/chip relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] isolate inline-flex shrink-0 items-center whitespace-nowrap rounded-full border border-input bg-transparent font-medium text-foreground shadow-xs outline-none',
         'transition-[color,border-color,box-shadow] duration-(--duration-normal,200ms) motion-reduce:transition-none',
         'hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50',
         'data-[state=on]:border-primary data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-transparent',

@@ -79,7 +79,7 @@ export function BlockPreview({ name, theme }: BlockPreviewProps) {
               type="button"
               onClick={() => setTab(t)}
               className={cn(
-                '-mb-px border-b-2 px-3 py-2 font-medium text-sm capitalize transition-colors',
+                'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] -mb-px border-b-2 px-3 py-2 font-medium text-sm capitalize transition-colors',
                 tab === t
                   ? 'border-foreground text-foreground'
                   : 'border-transparent text-muted-foreground hover:text-foreground',

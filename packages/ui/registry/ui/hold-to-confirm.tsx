@@ -8,7 +8,7 @@ import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 const holdVariants = cva(
-  'relative isolate inline-flex shrink-0 touch-manipulation select-none items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-lg border font-medium text-sm outline-none transition-[scale,box-shadow] duration-(--duration-fast,150ms) [-webkit-touch-callout:none] focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 data-[state=holding]:scale-[0.98] motion-reduce:data-[state=holding]:scale-100 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=size-])]:size-4',
+  'pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] relative isolate inline-flex shrink-0 touch-manipulation select-none items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-lg border font-medium text-sm outline-none transition-[scale,box-shadow] duration-(--duration-fast,150ms) [-webkit-touch-callout:none] focus-visible:ring-[3px] disabled:pointer-events-none disabled:opacity-50 data-[state=holding]:scale-[0.98] motion-reduce:data-[state=holding]:scale-100 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*=size-])]:size-4',
   {
     variants: {
       variant: {
