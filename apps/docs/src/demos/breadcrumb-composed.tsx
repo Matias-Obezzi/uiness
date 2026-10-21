@@ -27,7 +27,10 @@ export default function BreadcrumbComposed() {
         </BreadcrumbSeparator>
         <BreadcrumbItem>
           <DropdownMenu>
-            <DropdownMenuTrigger className="rounded-md" aria-label="Show more">
+            <DropdownMenuTrigger
+              className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-md"
+              aria-label="Show more"
+            >
               <BreadcrumbEllipsis className="size-6" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
