@@ -152,7 +152,8 @@ describe('Phase 4 component rendering and accessibility', () => {
       />,
     )
 
-    const link = screen.getByRole('link', { name: 'Preview of Hello World Blog Post' })
+    const link = screen.getByRole('link', { name: /Hello World Blog Post/ })
+    expect(link.getAttribute('aria-description')).toBe('Preview of Hello World Blog Post')
     expect(link).toBeTruthy()
     expect(screen.getByText('Hello World Blog Post')).toBeTruthy()
     expect(screen.getByText('example.com')).toBeTruthy()

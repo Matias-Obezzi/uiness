@@ -6,7 +6,7 @@ import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
 export interface OgPreviewLabels {
-  /** Accessible title prefix describing the link preview. */
+  /** Read after the link's text, saying it is a preview of the page. */
   preview: (title: string) => string
 }
 
@@ -67,9 +67,10 @@ function OgPreview({
     if (!image) return null
     return (
       <div className={cn('relative w-full overflow-hidden bg-muted/40', aspectClass)}>
+        {/* Decorative: the title is already the link's text, so it is not read twice. */}
         <img
           src={image}
-          alt={title}
+          alt=""
           loading="lazy"
           onLoad={() => setImageLoaded(true)}
           className={cn(
@@ -91,7 +92,7 @@ function OgPreview({
         rel="noopener noreferrer"
         data-slot="og-preview"
         data-variant="slack"
-        aria-label={labels.preview(title)}
+        aria-description={labels.preview(title)}
         className={cn(
           'group/slack relative block max-w-xl rounded-sm border-l-4 bg-muted/20 p-3 pl-3.5 transition-colors hover:bg-muted/30',
           className,
@@ -130,7 +131,7 @@ function OgPreview({
         rel="noopener noreferrer"
         data-slot="og-preview"
         data-variant="discord"
-        aria-label={labels.preview(title)}
+        aria-description={labels.preview(title)}
         className={cn(
           'group/discord relative block max-w-md rounded-md border-l-4 border-border/80 bg-card p-3 shadow-xs transition-opacity hover:opacity-95',
           className,
@@ -167,7 +168,7 @@ function OgPreview({
         rel="noopener noreferrer"
         data-slot="og-preview"
         data-variant="imessage"
-        aria-label={labels.preview(title)}
+        aria-description={labels.preview(title)}
         className={cn(
           'group/imessage relative block max-w-sm overflow-hidden rounded-3xl border border-border/70 bg-muted/40 shadow-sm transition-transform duration-150 active:scale-[0.98]',
           className,
@@ -196,7 +197,7 @@ function OgPreview({
         rel="noopener noreferrer"
         data-slot="og-preview"
         data-variant="linkedin"
-        aria-label={labels.preview(title)}
+        aria-description={labels.preview(title)}
         className={cn(
           'group/linkedin relative block max-w-xl overflow-hidden rounded-xl border border-border bg-card shadow-xs transition-shadow hover:shadow-md',
           className,
@@ -225,7 +226,7 @@ function OgPreview({
       rel="noopener noreferrer"
       data-slot="og-preview"
       data-variant="x"
-      aria-label={labels.preview(title)}
+      aria-description={labels.preview(title)}
       className={cn(
         'group/x relative block max-w-xl overflow-hidden rounded-2xl border border-border bg-card shadow-xs transition-all hover:border-border/80 hover:shadow-md',
         className,

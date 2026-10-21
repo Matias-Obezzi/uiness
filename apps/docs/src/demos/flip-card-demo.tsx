@@ -10,7 +10,7 @@ export default function FlipCardDemo() {
 
   return (
     <div className="flex flex-wrap items-start justify-center gap-6">
-      <FlipCard aria-label="Hedy Lamarr, profile" className="h-72 w-52">
+      <FlipCard className="h-72 w-52">
         <FlipCardFront className="flex flex-col items-center justify-center gap-3 p-6 text-center">
           <img
             src="/img/gallery-1.png"
@@ -43,7 +43,7 @@ export default function FlipCardDemo() {
         </FlipCardBack>
       </FlipCard>
 
-      <FlipCard trigger="click" aria-label="Pro plan" className="h-72 w-52">
+      <FlipCard trigger="click" className="h-72 w-52">
         <FlipCardFront className="flex flex-col p-6">
           <span className="text-eyebrow text-muted-foreground uppercase">Pro</span>
           <p className="mt-3 font-bold text-4xl tracking-tight">
