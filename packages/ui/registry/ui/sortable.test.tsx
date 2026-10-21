@@ -5,6 +5,10 @@ import { useState } from 'react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Sortable, type SortableChange, SortableHandle, SortableItem } from './sortable'
 
+/** A row by its text, as screen readers reach it: a list item, never the copy under the pointer. */
+const rowOf = (name: string) =>
+  screen.getAllByRole('listitem').find((li) => li.textContent?.includes(name)) as HTMLElement
+
 const ITEMS = ['write', 'review', 'ship']
 
 afterEach(() => {
@@ -104,10 +108,13 @@ describe('Sortable', () => {
 
   it('describes every row as a sortable item a screen reader can pick up', () => {
     render(<List />)
-    const row = screen.getByRole('button', { name: 'write' })
-    expect(row.getAttribute('aria-roledescription')).toBe('sortable item')
-    expect(row.getAttribute('tabindex')).toBe('0')
-    expect(row.getAttribute('aria-pressed')).toBe('false')
+    const item = rowOf('write')
+    // A list item, so the list is still counted ("2 of 5"); a list item cannot be pressed.
+    expect(item.tagName).toBe('LI')
+    expect(item.getAttribute('role')).toBeNull()
+    expect(item.getAttribute('aria-roledescription')).toBe('sortable item')
+    expect(item.getAttribute('tabindex')).toBe('0')
+    expect(item.getAttribute('aria-pressed')).toBeNull()
   })
 
   it('moves a row down the list with the keyboard and reports the new order', async () => {
@@ -115,10 +122,10 @@ describe('Sortable', () => {
     const onReorder = vi.fn()
     render(<List onReorder={onReorder} />)
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     row.focus()
     await user.keyboard(' ')
-    expect(row.getAttribute('aria-pressed')).toBe('true')
+    expect(row.hasAttribute('data-dragging')).toBe(true)
     await user.keyboard('{ArrowDown}')
     await user.keyboard(' ')
 
@@ -136,7 +143,7 @@ describe('Sortable', () => {
     const onReorder = vi.fn()
     render(<List onReorder={onReorder} />)
 
-    const row = screen.getByRole('button', { name: 'ship' })
+    const row = rowOf('ship')
     row.focus()
     await user.keyboard(' ')
     await user.keyboard('{ArrowUp}{ArrowUp}')
@@ -154,7 +161,7 @@ describe('Sortable', () => {
     const onReorder = vi.fn()
     render(<List axis="x" onReorder={onReorder} />)
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     row.focus()
     await user.keyboard(' ')
     await user.keyboard('{ArrowRight}')
@@ -168,7 +175,7 @@ describe('Sortable', () => {
     const onReorder = vi.fn()
     render(<List onReorder={onReorder} />)
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     row.focus()
     await user.keyboard(' ')
     await user.keyboard('{ArrowDown}')
@@ -178,7 +185,7 @@ describe('Sortable', () => {
 
     expect(onReorder).not.toHaveBeenCalled()
     expect(order()).toEqual(ITEMS)
-    expect(row.getAttribute('aria-pressed')).toBe('false')
+    expect(row.hasAttribute('data-dragging')).toBe(false)
   })
 
   it('never fires the callback when the row lands where it started', async () => {
@@ -186,7 +193,7 @@ describe('Sortable', () => {
     const onReorder = vi.fn()
     render(<List onReorder={onReorder} />)
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     row.focus()
     await user.keyboard(' ')
     await user.keyboard('{ArrowDown}{ArrowUp}')
@@ -203,7 +210,7 @@ describe('Sortable', () => {
     const status = screen.getByRole('status')
     expect(status.getAttribute('aria-live')).toBe('assertive')
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     row.focus()
     await user.keyboard(' ')
     expect(status.textContent).toContain('Picked up write')
@@ -219,7 +226,7 @@ describe('Sortable', () => {
     const user = userEvent.setup()
     render(<List />)
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     row.focus()
     await user.keyboard(' ')
     await user.keyboard('{Escape}')
@@ -235,9 +242,9 @@ describe('Sortable', () => {
     // One focus stop per row, not two: the grip is decoration for the pointer.
     const grip = document.querySelector('[data-slot=sortable-handle]')
     expect(grip?.getAttribute('aria-hidden')).toBe('true')
-    expect(screen.getAllByRole('button')).toHaveLength(ITEMS.length)
+    expect(screen.getAllByRole('listitem')).toHaveLength(ITEMS.length)
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     row.focus()
     await user.keyboard(' ')
     await user.keyboard('{ArrowDown}')
@@ -248,7 +255,7 @@ describe('Sortable', () => {
 
   it('starts a pointer drag from the grip and not from the rest of the row', () => {
     render(<List withHandle />)
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     const grip = document.querySelector('[data-slot=sortable-handle]') as HTMLElement
 
     // Pressing the row body does nothing: that press belongs to the page, not to the drag.
@@ -269,7 +276,7 @@ describe('Sortable', () => {
     const onReorder = vi.fn()
     render(<List disabled onReorder={onReorder} />)
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     expect(row.getAttribute('aria-disabled')).toBe('true')
     expect(row.getAttribute('tabindex')).toBe('-1')
 
@@ -294,7 +301,7 @@ describe('Sortable', () => {
     const onReorder = vi.fn()
     render(<List onReorder={onReorder} />)
 
-    dragTo(screen.getByRole('button', { name: 'write' }), 50, 160)
+    dragTo(rowOf('write'), 50, 160)
     expect(order()).toEqual(['review', 'write', 'ship'])
 
     fireEvent.pointerUp(window, { pointerId: 1, clientX: 50, clientY: 160 })
@@ -310,7 +317,7 @@ describe('Sortable', () => {
     render(<List />)
 
     expect(overlayNode().textContent).toBe('')
-    dragTo(screen.getByRole('button', { name: 'write' }), 50, 60)
+    dragTo(rowOf('write'), 50, 60)
 
     // The whole point of the drag: something the size of the row follows the pointer.
     const overlay = overlayNode()
@@ -327,7 +334,7 @@ describe('Sortable', () => {
     layout()
     render(<List />)
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     dragTo(row, 50, 60)
 
     const copy = overlayNode().querySelector('[data-slot=sortable-item]') as HTMLElement
@@ -349,7 +356,7 @@ describe('Sortable', () => {
     layout()
     render(<List overlay={(id) => <span>carrying {id}</span>} />)
 
-    dragTo(screen.getByRole('button', { name: 'write' }), 50, 60)
+    dragTo(rowOf('write'), 50, 60)
 
     const overlay = overlayNode()
     expect(overlay.textContent).toBe('carrying write')
@@ -361,10 +368,10 @@ describe('Sortable', () => {
     layout()
     render(<List />)
 
-    const row = screen.getByRole('button', { name: 'write' })
+    const row = rowOf('write')
     row.focus()
     await user.keyboard(' ')
-    expect(row.getAttribute('aria-pressed')).toBe('true')
+    expect(row.hasAttribute('data-dragging')).toBe(true)
 
     expect(overlayNode().textContent).toBe('')
     expect(overlayNode().style.display).toBe('none')

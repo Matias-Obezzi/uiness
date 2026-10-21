@@ -44,7 +44,7 @@ function TaskList() {
     <>
       <ul {...sortable.getListProps()}>
         {sortable.items.map((id) => (
-          <li key={id} {...sortable.getItemProps(id)} {...sortable.getHandleProps(id)}>
+          <li key={id} {...sortable.getItemProps(id)} {...sortable.getHandleProps(id, { listItem: true })}>
             {id}
           </li>
         ))}
@@ -55,7 +55,7 @@ function TaskList() {
 }
 ```
 
-Spreading `getItemProps` and `getHandleProps` on the same element makes the whole row draggable. Put `getHandleProps` on a child instead and only that child starts a drag — which is what you want on touch, because the handle is the part that stops the browser scrolling the page.
+Spreading `getItemProps` and `getHandleProps` on the same element makes the whole row draggable. On an `<li>`, pass `{ listItem: true }`: the row keeps its list item role, so screen readers still count the list and say where the row is, instead of hearing a button. Put `getHandleProps` on a child instead and only that child starts a drag — which is what you want on touch, because the handle is the part that stops the browser scrolling the page.
 
 For a horizontal list pass `axis: 'x'`. The arrow keys follow: on `y` it is up and down, on `x` it is left and right.
 
@@ -140,7 +140,7 @@ function Board() {
         {COLUMNS.map((column) => (
           <ul key={column} {...board.getGroupProps(column)}>
             {board.groups[column]?.map((id) => (
-              <li key={id} {...board.getItemProps(id)} {...board.getHandleProps(id)}>
+              <li key={id} {...board.getItemProps(id)} {...board.getHandleProps(id, { listItem: true })}>
                 {id}
               </li>
             ))}

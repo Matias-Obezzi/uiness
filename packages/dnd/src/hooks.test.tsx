@@ -46,10 +46,12 @@ function List({
   onReorder,
   axis = 'y' as const,
   columns,
+  listItem,
 }: {
   onReorder: (items: string[]) => void
   axis?: 'x' | 'y' | 'both'
   columns?: number
+  listItem?: boolean
 }) {
   const [items, setItems] = useState(['a', 'b', 'c'])
   const sortable = useSortable({
@@ -65,7 +67,11 @@ function List({
     <div>
       <ul {...sortable.getListProps()} data-testid="list">
         {sortable.items.map((id) => (
-          <li key={id} {...sortable.getItemProps(id)} {...sortable.getHandleProps(id)}>
+          <li
+            key={id}
+            {...sortable.getItemProps(id)}
+            {...sortable.getHandleProps(id, { listItem })}
+          >
             {id}
           </li>
         ))}
@@ -146,6 +152,25 @@ describe('useSortable with a pointer', () => {
 })
 
 describe('useSortable with the keyboard', () => {
+  it('keeps a whole row a list item with listItem, and still moves it', () => {
+    layout(column)
+    const onReorder = vi.fn()
+    render(<List onReorder={onReorder} listItem />)
+    // Still a list of three to screen readers, each row focusable and described as sortable.
+    expect(screen.getAllByRole('listitem')).toHaveLength(3)
+    expect(screen.queryByRole('button')).toBeNull()
+    const a = screen.getByText('a')
+    expect(a.getAttribute('aria-pressed')).toBeNull()
+    expect(a.tabIndex).toBe(0)
+    a.focus()
+    fireEvent.keyDown(a, { key: ' ' })
+    expect(status()).toContain('Picked up a, position 1 of 3')
+    expect(a.getAttribute('aria-pressed')).toBeNull()
+    fireEvent.keyDown(a, { key: 'ArrowDown' })
+    fireEvent.keyDown(a, { key: 'Enter' })
+    expect(onReorder).toHaveBeenCalledWith(['b', 'a', 'c'])
+  })
+
   it('picks up with space, moves with the arrows and drops with enter', () => {
     layout(column)
     const onReorder = vi.fn()
