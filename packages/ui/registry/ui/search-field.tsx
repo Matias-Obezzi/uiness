@@ -154,7 +154,7 @@ function SearchField({
       data-disabled={disabled ? '' : undefined}
       style={expanding ? { width: expanded ? expandedWidth : '2.25rem', ...style } : style}
       className={cn(
-        'relative flex h-9 min-w-0 items-center rounded-lg border border-input bg-transparent shadow-xs dark:bg-input/30',
+        'relative flex h-9 pointer-coarse:h-11 min-w-0 items-center rounded-lg border border-input bg-transparent shadow-xs dark:bg-input/30',
         'transition-[width,color,box-shadow] duration-(--duration-normal,200ms) ease-(--easing-emphasized,cubic-bezier(0.16,1,0.3,1)) motion-reduce:transition-none',
         'has-[input:focus-visible]:border-ring has-[input:focus-visible]:ring-[3px] has-[input:focus-visible]:ring-ring/50',
         'has-[input[aria-invalid=true]]:border-destructive has-[input[aria-invalid=true]]:ring-destructive/20',

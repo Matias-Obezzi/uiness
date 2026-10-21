@@ -293,7 +293,7 @@ function NumberField({
       data-slot="number-field"
       data-disabled={disabled ? '' : undefined}
       className={cn(
-        'flex h-9 w-40 min-w-0 items-stretch overflow-hidden rounded-lg border border-input bg-transparent shadow-xs transition-[color,box-shadow] dark:bg-input/30',
+        'flex h-9 pointer-coarse:h-11 w-40 min-w-0 items-stretch overflow-hidden rounded-lg border border-input bg-transparent shadow-xs transition-[color,box-shadow] dark:bg-input/30',
         'has-[input:focus-visible]:border-ring has-[input:focus-visible]:ring-[3px] has-[input:focus-visible]:ring-ring/50',
         'has-[input[aria-invalid=true]]:border-destructive has-[input[aria-invalid=true]]:ring-destructive/20 dark:has-[input[aria-invalid=true]]:ring-destructive/40',
         'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
