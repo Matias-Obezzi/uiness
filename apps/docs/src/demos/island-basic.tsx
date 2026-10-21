@@ -3,7 +3,7 @@ import { island, Spinner } from '@/components/ui/island'
 
 export default function IslandBasic() {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap justify-center gap-2">
       <Button
         variant="outline"
         onClick={() => island.show({ leading: <Spinner />, trailing: 'Syncing', duration: 2500 })}

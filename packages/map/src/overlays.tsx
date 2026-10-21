@@ -1,4 +1,12 @@
-import type { CSSProperties, HTMLAttributes, MouseEventHandler, ReactNode } from 'react'
+import {
+  type CSSProperties,
+  type HTMLAttributes,
+  type MouseEventHandler,
+  type ReactNode,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useMap } from './map'
 import type { LngLat } from './projection'
 
@@ -90,9 +98,26 @@ export interface PopupProps extends HTMLAttributes<HTMLDivElement> {
   closeIcon?: ReactNode
 }
 
+/** Space kept between a popup and the sides of the map. */
+const EDGE = 8
+
+/**
+ * How far to slide a popup of `width`, centered on `x`, so it stays inside a map `mapWidth`
+ * wide: none when it fits, else just enough to clear the nearer side.
+ */
+export function popupShift(x: number, width: number, mapWidth: number) {
+  if (!width || !mapWidth) return 0
+  const left = x - width / 2
+  const right = x + width / 2
+  if (left < EDGE) return EDGE - left
+  if (right > mapWidth - EDGE) return mapWidth - EDGE - right
+  return 0
+}
+
 /**
  * A box above a coordinate. Render it while it should be open. A `className` replaces its
- * default white card, so the look can come from your styles.
+ * default white card, so the look can come from your styles. Near a side of the map it slides
+ * inward to stay whole, and it is never wider than the map.
  */
 export function Popup({
   lngLat,
@@ -106,9 +131,23 @@ export function Popup({
   onKeyDown,
   ...props
 }: PopupProps) {
-  const anchor = useAnchor(lngLat, `translate(-50%, calc(-100% - ${offset}px))`)
+  const { project, size } = useMap()
+  const ref = useRef<HTMLDivElement>(null)
+  const [width, setWidth] = useState(0)
+  useLayoutEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const measure = () => setWidth(el.offsetWidth)
+    measure()
+    const observer = new ResizeObserver(measure)
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+  const shift = popupShift(project(lngLat)[0], width, size[0])
+  const anchor = useAnchor(lngLat, `translate(calc(-50% + ${shift}px), calc(-100% - ${offset}px))`)
   return (
     <div
+      ref={ref}
       role="dialog"
       data-map-overlay=""
       className={className}
@@ -123,6 +162,7 @@ export function Popup({
       style={{
         ...(className ? null : card),
         ...anchor,
+        maxWidth: size[0] ? size[0] - EDGE * 2 : undefined,
         pointerEvents: 'auto',
         userSelect: 'text',
         ...style,
