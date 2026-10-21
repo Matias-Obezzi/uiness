@@ -1,5 +1,11 @@
 # @uiness/three
 
+## 0.3.1
+
+### Patch Changes
+
+- 48a245c: Shadows use `PCFShadowMap`. Recent three.js removed `PCFSoftShadowMap` and fell back to it with a console warning on every viewer.
+
 ## 0.3.0
 
 ### Minor Changes
