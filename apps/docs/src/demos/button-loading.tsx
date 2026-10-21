@@ -9,7 +9,7 @@ export default function ButtonLoading() {
     setTimeout(() => setSaving(false), 1500)
   }
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-wrap items-center justify-center gap-2">
       <Button loading={saving} onClick={save}>
         Save changes
       </Button>

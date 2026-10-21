@@ -207,10 +207,10 @@ export function ViewerToolbar({
   }
 
   const positionClasses = {
-    bottom: 'bottom-4 left-1/2 -translate-x-1/2 flex-row',
-    top: 'top-4 left-1/2 -translate-x-1/2 flex-row',
-    left: 'left-4 top-1/2 -translate-y-1/2 flex-col',
-    right: 'right-4 top-1/2 -translate-y-1/2 flex-col',
+    bottom: 'bottom-4 left-1/2 max-w-[calc(100%-2rem)] -translate-x-1/2 flex-row',
+    top: 'top-4 left-1/2 max-w-[calc(100%-2rem)] -translate-x-1/2 flex-row',
+    left: 'left-4 top-1/2 max-h-[calc(100%-2rem)] -translate-y-1/2 flex-col',
+    right: 'right-4 top-1/2 max-h-[calc(100%-2rem)] -translate-y-1/2 flex-col',
   }
 
   const renderTooltipButton = (
@@ -265,7 +265,8 @@ export function ViewerToolbar({
       <ToolbarPrimitive.Root
         aria-label="3D Viewer Controls"
         className={cn(
-          'flex items-center gap-1 rounded-full border border-border/80 bg-background/85 p-1 text-foreground shadow-lg backdrop-blur-md',
+          // A bar wider than a small viewer scrolls inside it instead of being cut at both ends.
+          'flex max-h-full max-w-full items-center gap-1 overflow-auto rounded-full border border-border/80 bg-background/85 p-1 text-foreground shadow-lg backdrop-blur-md [scrollbar-width:none]',
           (position === 'left' || position === 'right') && 'flex-col',
         )}
       >

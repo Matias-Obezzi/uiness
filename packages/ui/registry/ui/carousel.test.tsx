@@ -192,6 +192,36 @@ describe('Carousel', () => {
   })
 })
 
+describe('Carousel drag', () => {
+  it('keeps images and links from starting their own drag, which would end the carousel drag', () => {
+    render(
+      <Carousel label="Photos">
+        <CarouselContent>
+          <CarouselItem>
+            <img src="/a.png" alt="A" />
+          </CarouselItem>
+        </CarouselContent>
+      </Carousel>,
+    )
+    const image = screen.getByRole('img', { name: 'A' })
+    // fireEvent returns false when the default was prevented.
+    expect(fireEvent.dragStart(image)).toBe(false)
+  })
+
+  it('leaves them alone when dragging is off', () => {
+    render(
+      <Carousel label="Photos">
+        <CarouselContent draggable={false}>
+          <CarouselItem>
+            <img src="/a.png" alt="A" />
+          </CarouselItem>
+        </CarouselContent>
+      </Carousel>,
+    )
+    expect(fireEvent.dragStart(screen.getByRole('img', { name: 'A' }))).toBe(true)
+  })
+})
+
 describe('Carousel loop', () => {
   it('keeps the arrows live at both ends', () => {
     const { scroller } = setup(4, { loop: true })

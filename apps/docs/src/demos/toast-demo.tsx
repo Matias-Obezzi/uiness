@@ -3,7 +3,7 @@ import { toast } from '@/components/ui/toast'
 
 export default function ToastDemo() {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap justify-center gap-2">
       <Button variant="outline" onClick={() => toast('Event has been created')}>
         Default
       </Button>

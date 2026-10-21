@@ -61,7 +61,9 @@ export default function ChoreoDemo() {
             ['4.8', 'rating'],
           ].map(([value, label]) => (
             <div key={label} className="px-4 py-6">
-              <div className="font-bold text-3xl tabular-nums tracking-tight">{value}</div>
+              <div className="font-bold text-2xl tabular-nums tracking-tight sm:text-3xl">
+                {value}
+              </div>
               <div className="text-caption text-muted-foreground">{label}</div>
             </div>
           ))}

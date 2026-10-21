@@ -14,7 +14,7 @@ const sides: DrawerSide[] = ['bottom', 'top', 'left', 'right']
 
 export default function DrawerSides() {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap justify-center gap-2">
       {sides.map((side) => (
         <Drawer key={side}>
           <DrawerTrigger asChild>

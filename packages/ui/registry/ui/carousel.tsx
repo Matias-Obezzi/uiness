@@ -415,6 +415,7 @@ export interface CarouselContentProps extends React.ComponentProps<'ul'> {
 function CarouselContent({
   gap = '1rem',
   draggable = true,
+  onDragStart,
   className,
   style,
   children,
@@ -439,7 +440,12 @@ function CarouselContent({
     const el = scrollerRef.current
     if (!el) return
     const dx = event.clientX - origin.current.x
-    if (Math.abs(dx) > 3) origin.current.moved = true
+    if (!origin.current.moved && Math.abs(dx) > 3) {
+      origin.current.moved = true
+      // Only once it is a drag: captured from the press, a plain click on a link inside would
+      // land on the list instead. From here the drag goes on past the list's edges.
+      el.setPointerCapture?.(event.pointerId)
+    }
     el.scrollLeft = origin.current.scroll - dx
   }
 
@@ -462,11 +468,18 @@ function CarouselContent({
       onPointerMove={onPointerMove}
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
+      // Images and links drag themselves by default, which cancels the pointer and so the run's
+      // own drag. The run is what moves.
+      onDragStart={(event) => {
+        onDragStart?.(event)
+        if (draggable) event.preventDefault()
+      }}
       className={cn(
         'flex list-none snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth p-0',
         'outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
         // Snapping while the pointer drags fights the drag; it is put back on release.
-        'data-[dragging]:cursor-grabbing data-[dragging]:snap-none data-[dragging]:select-none',
+        // Smooth scrolling would ease every step behind the pointer.
+        'data-[dragging]:cursor-grabbing data-[dragging]:snap-none data-[dragging]:select-none data-[dragging]:scroll-auto',
         'motion-reduce:scroll-auto',
         '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
         className,

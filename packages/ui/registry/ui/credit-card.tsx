@@ -581,8 +581,9 @@ function CreditCardForm({
           />
           {error('name')}
         </div>
+        {/* Rows start at the top: the code's hint below it must not push the expiry's label down. */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="grid gap-1.5">
+          <div className="grid content-start gap-1.5">
             <Label htmlFor={`${id}-expiry`}>{labels.expiry}</Label>
             <Input
               {...fieldProps('expiry')}
@@ -595,7 +596,7 @@ function CreditCardForm({
             />
             {error('expiry')}
           </div>
-          <div className="grid gap-1.5">
+          <div className="grid content-start gap-1.5">
             <Label htmlFor={`${id}-cvc`}>{labels.cvc}</Label>
             <Input
               {...fieldProps('cvc')}
