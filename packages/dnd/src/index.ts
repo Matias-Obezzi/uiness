@@ -59,6 +59,7 @@ export {
   type DragItemProps,
   type DragOverlayProps,
   type GroupsChange,
+  type HandleOptions,
   type LiveRegionProps,
   type SortableChange,
   type SortableGroupsOptions,

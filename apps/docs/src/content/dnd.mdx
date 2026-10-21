@@ -31,7 +31,7 @@ const sortable = useSortable({ items: ids, onReorder: setIds })
 
 <ul {...sortable.getListProps()}>
   {sortable.items.map((id) => (
-    <li key={id} {...sortable.getItemProps(id)} {...sortable.getHandleProps(id)}>
+    <li key={id} {...sortable.getItemProps(id)} {...sortable.getHandleProps(id, { listItem: true })}>
       {id}
     </li>
   ))}
@@ -39,7 +39,7 @@ const sortable = useSortable({ items: ids, onReorder: setIds })
 <div {...sortable.getLiveRegionProps()}>{sortable.announcement}</div>
 ```
 
-Spreading `getItemProps` and `getHandleProps` on the same element makes the whole row draggable. Put `getHandleProps` on a child instead and only that child starts a drag, which is what you want on touch: the handle is the part that stops the browser scrolling the page.
+Spreading `getItemProps` and `getHandleProps` on the same element makes the whole row draggable. On an `<li>`, pass `{ listItem: true }`: the row keeps its list item role, so screen readers still count the list and say where the row is ("2 of 5"), instead of hearing a button. Put `getHandleProps` on a child instead and only that child starts a drag, which is what you want on touch: the handle is the part that stops the browser scrolling the page.
 
 Pass `axis: 'x'` for a horizontal list, or `axis: 'both'` with `columns` for a grid. The arrow keys follow the axis.
 

@@ -185,7 +185,14 @@ export interface SortableItemProps extends React.ComponentProps<'li'> {
 function SortableItem({ id, className, style, children, ...props }: SortableItemProps) {
   const { sortable, withHandle } = useSortableRoot()
   const inOverlay = React.useContext(SortableOverlayContext)
-  const { onPointerDown, style: handleStyle, ...handle } = sortable.getHandleProps(id)
+  // The row stays a list item, so screen readers count the list and say where it sits.
+  const {
+    onPointerDown,
+    style: handleStyle,
+    ...handle
+  } = sortable.getHandleProps(id, {
+    listItem: true,
+  })
 
   return (
     <SortableItemContext.Provider value={id}>

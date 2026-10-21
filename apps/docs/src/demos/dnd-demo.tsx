@@ -22,7 +22,7 @@ export default function DndDemo() {
           <li
             key={id}
             {...sortable.getItemProps(id)}
-            {...sortable.getHandleProps(id)}
+            {...sortable.getHandleProps(id, { listItem: true })}
             className={`${ROW} cursor-grab data-[dragging]:border-ring data-[dragging]:bg-accent`}
           >
             {TRACKS[id]}

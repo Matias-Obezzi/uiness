@@ -41,16 +41,27 @@ import { type Target, targetAt } from './targets'
  * into another container mid drag.
  */
 export interface DragHandleProps {
-  role: 'button'
+  /** Left out with `{ listItem: true }`, where the element keeps its list item role. */
+  role?: 'button'
   tabIndex: number
   'aria-roledescription': string
-  'aria-pressed': boolean
+  /** Left out with `{ listItem: true }`: a list item cannot be pressed. */
+  'aria-pressed'?: boolean
   'aria-disabled'?: true
   'data-dragging'?: ''
   style: React.CSSProperties
   onPointerDown: React.PointerEventHandler<HTMLElement>
   onKeyDown: React.KeyboardEventHandler<HTMLElement>
   onBlur: React.FocusEventHandler<HTMLElement>
+}
+
+export interface HandleOptions {
+  /**
+   * The handle is a whole `<li>`: it keeps its list item role, so screen readers still count
+   * the list and say where the row is ("2 of 5"), with no `role="button"` or `aria-pressed`.
+   * The keyboard, the pointer and the announcements work the same.
+   */
+  listItem?: boolean
 }
 
 /** Registers an item so its box can be measured. Put it on the element that moves. */
@@ -768,7 +779,7 @@ interface Collection {
   cancel: () => void
   getContainerProps: (containerId: string) => DragContainerProps
   getItemProps: (id: string) => DragItemProps
-  getHandleProps: (id: string) => DragHandleProps
+  getHandleProps: (id: string, options?: HandleOptions) => DragHandleProps
   getOverlayProps: () => DragOverlayProps
 }
 
@@ -1221,14 +1232,16 @@ function useDragCollection(options: CollectionOptions): Collection {
   const activeRect = state.activeId ? (snapshot.current?.rects.get(state.activeId) ?? null) : null
   const touchAction = touchActionFor(options.axis, options.activationDelay)
 
-  const getHandleProps = (id: string): DragHandleProps => {
+  const getHandleProps = (
+    id: string,
+    { listItem = false }: HandleOptions = {},
+  ): DragHandleProps => {
     const bound = boundFor(id)
     const active = dragging && state.activeId === id
     return {
-      role: 'button',
+      ...(listItem ? null : { role: 'button' as const, 'aria-pressed': active }),
       tabIndex: options.disabled ? -1 : 0,
       'aria-roledescription': options.roleDescription,
-      'aria-pressed': active,
       ...(options.disabled ? { 'aria-disabled': true as const } : null),
       ...(active ? { 'data-dragging': '' as const } : null),
       style: { touchAction, userSelect: 'none', WebkitUserSelect: 'none' },
@@ -1351,7 +1364,7 @@ export interface SortableResult {
   cancel: () => void
   getListProps: () => DragContainerProps
   getItemProps: (id: string) => DragItemProps
-  getHandleProps: (id: string) => DragHandleProps
+  getHandleProps: (id: string, options?: HandleOptions) => DragHandleProps
   getOverlayProps: () => DragOverlayProps
   getLiveRegionProps: () => LiveRegionProps
 }
@@ -1486,7 +1499,7 @@ export interface SortableGroupsResult {
   cancel: () => void
   getGroupProps: (groupId: string) => DragContainerProps
   getItemProps: (id: string) => DragItemProps
-  getHandleProps: (id: string) => DragHandleProps
+  getHandleProps: (id: string, options?: HandleOptions) => DragHandleProps
   getOverlayProps: () => DragOverlayProps
   getLiveRegionProps: () => LiveRegionProps
 }
