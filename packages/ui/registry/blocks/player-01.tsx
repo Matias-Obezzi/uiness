@@ -287,7 +287,7 @@ function Player01({
               <div className="min-w-0 flex-1 pb-1">
                 <h2
                   id={`${id}-name`}
-                  className="truncate font-black text-3xl uppercase italic tracking-tight"
+                  className="truncate font-black text-2xl uppercase italic tracking-tight @md:text-3xl"
                 >
                   {player.name}
                   {player.tag && (
