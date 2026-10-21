@@ -401,7 +401,7 @@ function TimePicker({
       aria-invalid={ariaInvalid ?? (outOfRange || undefined)}
       onBlur={clampOnBlur}
       className={cn(
-        'inline-flex h-9 w-fit min-w-0 items-center gap-1 rounded-lg border border-input bg-transparent pr-1 pl-2.5 text-base shadow-xs outline-none transition-[color,box-shadow] md:text-sm dark:bg-input/30',
+        'inline-flex h-9 pointer-coarse:h-11 w-fit min-w-0 items-center gap-1 rounded-lg border border-input bg-transparent pr-1 pl-2.5 text-base shadow-xs outline-none transition-[color,box-shadow] md:text-sm dark:bg-input/30',
         'focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50',
         'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
         'data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',

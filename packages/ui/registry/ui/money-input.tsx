@@ -277,7 +277,7 @@ function MoneyInput({
       data-slot="money-input"
       data-disabled={disabled ? '' : undefined}
       className={cn(
-        'flex h-9 w-full min-w-0 items-center gap-1.5 rounded-lg border border-input bg-transparent px-3 text-base shadow-xs transition-[color,box-shadow] md:text-sm dark:bg-input/30',
+        'flex h-9 pointer-coarse:h-11 w-full min-w-0 items-center gap-1.5 rounded-lg border border-input bg-transparent px-3 text-base shadow-xs transition-[color,box-shadow] md:text-sm dark:bg-input/30',
         'focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/50',
         'has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40',
         'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',

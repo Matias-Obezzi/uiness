@@ -18,7 +18,7 @@ const holdVariants = cva(
       },
       size: {
         sm: 'h-8 gap-1.5 px-3 text-xs',
-        default: 'h-9 px-4',
+        default: 'h-9 px-4 pointer-coarse:h-11',
         lg: 'h-10 px-6',
       },
     },

@@ -204,7 +204,7 @@ function MultiSelect({
           data-slot="multi-select"
           data-disabled={disabled ? '' : undefined}
           className={cn(
-            'relative flex min-h-9 w-72 min-w-0 items-center gap-1 rounded-lg border border-input bg-transparent py-1 pr-9 pl-1.5 text-sm shadow-xs transition-[color,box-shadow] dark:bg-input/30',
+            'relative flex min-h-9 pointer-coarse:min-h-11 w-72 min-w-0 items-center gap-1 rounded-lg border border-input bg-transparent py-1 pr-9 pl-1.5 text-sm shadow-xs transition-[color,box-shadow] dark:bg-input/30',
             'hover:bg-accent/50 has-[[data-slot=multi-select-trigger]:focus-visible]:border-ring has-[[data-slot=multi-select-trigger]:focus-visible]:ring-[3px] has-[[data-slot=multi-select-trigger]:focus-visible]:ring-ring/50',
             'has-[[aria-invalid=true]]:border-destructive has-[[aria-invalid=true]]:ring-destructive/20 dark:has-[[aria-invalid=true]]:ring-destructive/40',
             'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',

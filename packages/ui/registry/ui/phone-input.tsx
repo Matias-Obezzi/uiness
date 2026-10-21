@@ -398,7 +398,7 @@ function PhoneInput({
             disabled={disabled}
             aria-label={`${labels.country}: ${names.get(country.code)} +${country.dial}`}
             data-slot="phone-input-country"
-            className="relative h-9 shrink-0 gap-1 rounded-r-none border-r-0 px-2.5 font-normal shadow-xs focus-visible:z-(--z-raised,10) dark:bg-input/30"
+            className="relative h-9 pointer-coarse:h-11 shrink-0 gap-1 rounded-r-none border-r-0 px-2.5 font-normal shadow-xs focus-visible:z-(--z-raised,10) dark:bg-input/30"
           >
             <span aria-hidden className="text-base leading-none">
               {flagEmoji(country.code)}
@@ -451,7 +451,7 @@ function PhoneInput({
         onChange={handleChange}
         onKeyDown={onKeyDown}
         className={cn(
-          'relative flex h-9 w-full min-w-0 rounded-lg rounded-l-none border border-input bg-transparent px-3 py-1 text-base tabular-nums shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground/70 disabled:cursor-not-allowed md:text-sm dark:bg-input/30',
+          'relative flex h-9 pointer-coarse:h-11 w-full min-w-0 rounded-lg rounded-l-none border border-input bg-transparent px-3 py-1 text-base tabular-nums shadow-xs outline-none transition-[color,box-shadow] selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground/70 disabled:cursor-not-allowed md:text-sm dark:bg-input/30',
           'focus-visible:z-(--z-raised,10) focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50',
           'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
           inputClassName,

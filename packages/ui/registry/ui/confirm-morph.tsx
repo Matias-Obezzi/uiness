@@ -279,7 +279,7 @@ function ConfirmMorph({
         data-variant={variant}
         className={cn(
           'relative inline-flex shrink-0 overflow-hidden rounded-lg border text-sm outline-none transition-[width,background-color,border-color,color,box-shadow] duration-(--duration-slow,300ms) ease-(--easing-emphasized,cubic-bezier(0.16,1,0.3,1)) focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=idle]:has-[:focus-visible]:ring-[3px] data-[state=idle]:has-[:focus-visible]:ring-ring/50 motion-reduce:transition-none',
-          small ? 'h-8' : 'h-9',
+          small ? 'h-8' : 'h-9 pointer-coarse:h-11',
           state === 'idle'
             ? variant === 'destructive'
               ? 'border-transparent bg-destructive text-white shadow-xs hover:bg-destructive/90 dark:bg-destructive/60 dark:hover:bg-destructive/50'

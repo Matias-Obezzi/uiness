@@ -271,7 +271,7 @@ function TagInput({
           if (e.target === e.currentTarget) inputRef.current?.focus()
         }}
         className={cn(
-          'flex min-h-9 w-full min-w-0 cursor-text flex-wrap items-center gap-1.5 rounded-lg border border-input bg-transparent px-1.5 py-1 shadow-xs transition-[color,box-shadow] dark:bg-input/30',
+          'flex min-h-9 pointer-coarse:min-h-11 w-full min-w-0 cursor-text flex-wrap items-center gap-1.5 rounded-lg border border-input bg-transparent px-1.5 py-1 shadow-xs transition-[color,box-shadow] dark:bg-input/30',
           'has-[input:focus-visible]:border-ring has-[input:focus-visible]:ring-[3px] has-[input:focus-visible]:ring-ring/50',
           'has-[input[aria-invalid=true]]:border-destructive has-[input[aria-invalid=true]]:ring-destructive/20 dark:has-[input[aria-invalid=true]]:ring-destructive/40',
           'data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50',
