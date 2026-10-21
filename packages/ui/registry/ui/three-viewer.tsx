@@ -469,6 +469,8 @@ export function ThreeViewer({
       data-slot="three-viewer"
       className={cn(
         'group relative overflow-hidden rounded-xl border border-border bg-muted/20',
+        // It takes focus to orbit with the arrow keys: show where the keyboard is.
+        'outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
         className,
       )}
       {...props}

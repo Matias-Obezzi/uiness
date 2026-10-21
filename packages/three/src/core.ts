@@ -7,7 +7,7 @@ import {
   DirectionalLight,
   Mesh,
   type Object3D,
-  PCFSoftShadowMap,
+  PCFShadowMap,
   PerspectiveCamera,
   PlaneGeometry,
   PMREMGenerator,
@@ -199,7 +199,8 @@ function acquireRenderer(): WebGLRenderer {
     renderer.toneMapping = ACESFilmicToneMapping
     renderer.setClearColor(0x000000, 0)
     renderer.shadowMap.enabled = true
-    renderer.shadowMap.type = PCFSoftShadowMap
+    // PCFSoftShadowMap is gone from recent three.js, which falls back to this with a warning.
+    renderer.shadowMap.type = PCFShadowMap
     renderer.shadowMap.autoUpdate = false
     shared = { renderer, users: 0, room: null }
   }

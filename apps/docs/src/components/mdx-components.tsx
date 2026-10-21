@@ -25,8 +25,9 @@ function childrenText(children: ReactNode): string {
 
 const heading =
   (Tag: 'h1' | 'h2' | 'h3' | 'h4') =>
-  ({ children, className, ...props }: ComponentProps<'h2'>) => {
-    const id = slug(children)
+  ({ children, className, id: given, ...props }: ComponentProps<'h2'>) => {
+    // Pages get unique ids at build time (scripts/heading-ids.ts); the slug is for anything else.
+    const id = given ?? slug(children)
     return (
       <Tag id={id} className={cn('group', className)} {...props}>
         <a href={`#${id}`} className="!no-underline !font-inherit text-inherit">
