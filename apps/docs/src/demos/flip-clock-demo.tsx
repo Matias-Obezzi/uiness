@@ -13,7 +13,7 @@ export default function FlipClockDemo() {
   const left = 59 - now.getSeconds()
   return (
     <div className="flex flex-col items-center gap-6">
-      <FlipClock value={time} className="text-5xl" />
+      <FlipClock value={time} className="text-4xl sm:text-5xl" />
       <p className="flex items-center gap-3 text-muted-foreground text-sm">
         Next minute in <FlipClock value={two(left)} className="text-xl" />
       </p>

@@ -609,7 +609,7 @@ function CommentThread({
                       .join(', ')}
                     disabled={!onReact || readOnly}
                     onClick={() => toggle(reaction.emoji)}
-                    className="inline-flex h-6 items-center gap-1 rounded-full border bg-background px-2 text-xs tabular-nums outline-none transition-colors duration-(--duration-fast,150ms) hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-pressed:border-primary/30 aria-pressed:bg-primary/10"
+                    className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex h-6 items-center gap-1 rounded-full border bg-background px-2 text-xs tabular-nums outline-none transition-colors duration-(--duration-fast,150ms) hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-pressed:border-primary/30 aria-pressed:bg-primary/10"
                   >
                     <span aria-hidden>{reaction.emoji}</span>
                     <span aria-hidden className="text-muted-foreground">
@@ -704,7 +704,7 @@ function CommentThread({
                           onClick={() =>
                             setCollapsed((c) => ({ ...c, [comment.id]: !isCollapsed }))
                           }
-                          className="inline-flex w-fit items-center gap-1 rounded-md font-medium text-muted-foreground text-xs outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                          className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex w-fit items-center gap-1 rounded-md font-medium text-muted-foreground text-xs outline-none hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50"
                         >
                           <ChevronDownIcon
                             aria-hidden

@@ -143,4 +143,41 @@ describe('DataTable', () => {
       true,
     )
   })
+
+  it('labels each value for the card layout, and places the columns on the card', () => {
+    render(
+      <DataTable
+        data={rows}
+        columns={[
+          ...columns.slice(0, 2),
+          { id: 'status', header: <span>Status</span>, label: 'State', card: 'badge' },
+        ]}
+        layout="cards"
+      />,
+    )
+    const [title, customer, status] = within(body()).getAllByRole('row')[0]?.children ?? []
+    expect(customer?.getAttribute('data-label')).toBe('Customer')
+    expect(customer?.className).toContain('before:content-[attr(data-label)]')
+    expect(status?.getAttribute('data-label')).toBe('State')
+    expect(status?.className).toContain('justify-self-end')
+    // With a badge beside it, the title keeps to its column.
+    expect(title?.className).toContain('font-semibold')
+    expect(title?.className).not.toContain('col-span-2')
+  })
+
+  it('keeps the table as it is with layout="table"', () => {
+    render(<DataTable data={rows} columns={columns} layout="table" />)
+    const cell = within(body()).getAllByRole('cell')[1]
+    expect(cell?.className).not.toContain('before:')
+    expect(cell?.className).not.toContain('@max-xl')
+  })
+
+  it('draws placeholder rows while loading, without a count', () => {
+    const { container } = render(<DataTable data={[]} columns={columns} loading pageSize={3} />)
+    expect(screen.getByRole('table').getAttribute('aria-busy')).toBe('true')
+    expect(within(body()).getAllByRole('row')).toHaveLength(3)
+    expect(container.querySelectorAll('[data-slot=skeleton]')).toHaveLength(12)
+    expect(screen.queryByText('No results.')).toBeNull()
+    expect(screen.queryByText(/results?$/)).toBeNull()
+  })
 })

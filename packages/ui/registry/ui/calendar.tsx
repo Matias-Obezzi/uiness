@@ -304,7 +304,7 @@ function Calendar(props: CalendarProps) {
               type="button"
               aria-label={labels.previousMonth}
               onClick={() => setMonth(addMonths(month, -1))}
-              className="absolute left-0 inline-flex size-8 items-center justify-center rounded-lg border bg-transparent text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4"
+              className="absolute pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] left-0 inline-flex size-8 items-center justify-center rounded-lg border bg-transparent text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4"
             >
               <ChevronLeftIcon />
             </button>
@@ -317,7 +317,7 @@ function Calendar(props: CalendarProps) {
               type="button"
               aria-label={labels.nextMonth}
               onClick={() => setMonth(addMonths(month, 1))}
-              className="absolute right-0 inline-flex size-8 items-center justify-center rounded-lg border bg-transparent text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4"
+              className="absolute pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] right-0 inline-flex size-8 items-center justify-center rounded-lg border bg-transparent text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg]:size-4"
             >
               <ChevronRightIcon />
             </button>
@@ -332,7 +332,7 @@ function Calendar(props: CalendarProps) {
                   key={w.long}
                   scope="col"
                   abbr={w.long}
-                  className="size-9 font-normal text-[0.8rem] text-muted-foreground"
+                  className="size-9 font-normal text-[0.8rem] text-muted-foreground pointer-coarse:size-10"
                 >
                   {w.short}
                 </th>
@@ -348,7 +348,7 @@ function Calendar(props: CalendarProps) {
                   const outside = !isSameMonth(d, m)
                   if (outside && !showOutsideDays) {
                     // biome-ignore lint/suspicious/noArrayIndexKey: cells are positional
-                    return <td key={c} className="size-9" />
+                    return <td key={c} className="size-9 pointer-coarse:size-10" />
                   }
                   const selectedDay = isSelected(d)
                   const range = rangeState(d)
@@ -385,7 +385,7 @@ function Calendar(props: CalendarProps) {
                         onPointerLeave={() => mode === 'range' && setHovered(null)}
                         onFocus={() => setFocused(d)}
                         className={cn(
-                          'relative inline-flex size-9 items-center justify-center rounded-lg font-normal outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                          'relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:before:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex size-9 items-center justify-center rounded-lg font-normal outline-none pointer-coarse:size-10 transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50',
                           // Today is a dot under the number, not a fill: a fill reads like hover,
                           // and on a selected day it fought the selected color for the background.
                           "data-[today]:font-semibold data-[today]:after:absolute data-[today]:after:bottom-1 data-[today]:after:left-1/2 data-[today]:after:size-1 data-[today]:after:-translate-x-1/2 data-[today]:after:rounded-full data-[today]:after:content-[''] data-[today]:not-data-[selected]:after:bg-primary data-[today]:data-[selected]:after:bg-primary-foreground",

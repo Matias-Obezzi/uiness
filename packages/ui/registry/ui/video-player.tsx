@@ -258,7 +258,7 @@ function Seek({
 }
 
 const control =
-  'inline-flex size-9 shrink-0 items-center justify-center rounded-md outline-none transition-colors hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-white/70 [&_svg]:size-5'
+  'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex size-9 shrink-0 items-center justify-center rounded-md outline-none transition-colors hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-white/70 [&_svg]:size-5'
 
 /**
  * A video with its own controls: play, a seek bar showing what has loaded and the time under
@@ -528,7 +528,7 @@ function VideoPlayer({
               </SliderPrimitive.Track>
               <SliderPrimitive.Thumb
                 aria-label={labels.volume}
-                className="block size-3 rounded-full bg-white outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] block size-3 rounded-full bg-white outline-none focus-visible:ring-2 focus-visible:ring-white/60"
               />
             </SliderPrimitive.Root>
           </div>

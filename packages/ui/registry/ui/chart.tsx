@@ -662,7 +662,7 @@ function ChartSeriesLegend({
             aria-pressed={!off}
             onClick={() => onToggle(s.key)}
             className={cn(
-              'inline-flex items-center gap-1.5 rounded-sm text-muted-foreground text-xs outline-none transition-opacity duration-(--duration-fast,150ms) hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50',
+              'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex items-center gap-1.5 rounded-sm text-muted-foreground text-xs outline-none transition-opacity duration-(--duration-fast,150ms) hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50',
               off && 'opacity-50',
             )}
           >

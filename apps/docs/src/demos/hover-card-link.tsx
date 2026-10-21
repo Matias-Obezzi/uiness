@@ -5,7 +5,7 @@ export default function HoverCardLink() {
     <HoverCard openDelay={300}>
       <HoverCardTrigger
         href="#release"
-        className="font-medium text-sm underline decoration-muted-foreground/50 underline-offset-4 hover:decoration-foreground"
+        className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] font-medium text-sm underline decoration-muted-foreground/50 underline-offset-4 hover:decoration-foreground"
       >
         Release notes 4.2
       </HoverCardTrigger>

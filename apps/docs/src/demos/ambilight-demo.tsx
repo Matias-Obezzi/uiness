@@ -4,7 +4,7 @@ export default function AmbilightDemo() {
   return (
     // Fills the preview frame, padding included, and clips there: the glow reaches the frame's
     // edge instead of spilling over the page.
-    <div className="-m-8 flex flex-1 flex-col items-center justify-center gap-4 self-stretch overflow-hidden rounded-lg p-16">
+    <div className="-m-4 flex flex-1 flex-col items-center justify-center gap-4 self-stretch overflow-hidden rounded-lg p-8 sm:-m-8 sm:p-16">
       <Ambilight blur={50} spread={1.12} intensity={0.8} saturation={1.6}>
         <img
           src="/img/gallery-1.png"

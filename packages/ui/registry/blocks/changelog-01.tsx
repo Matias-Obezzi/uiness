@@ -228,7 +228,7 @@ function Changelog01({
           {subscribe && (
             <a
               href={subscribe.href}
-              className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full border bg-background px-4 py-2 font-medium text-sm shadow-xs outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+              className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex w-fit shrink-0 items-center gap-2 rounded-full border bg-background px-4 py-2 font-medium text-sm shadow-xs outline-none transition-colors hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
             >
               <RssIcon aria-hidden className="size-4 text-orange-500" />
               {subscribe.label}
@@ -248,7 +248,7 @@ function Changelog01({
                   aria-pressed={pressed}
                   onClick={() => setTag(name)}
                   className={cn(
-                    'inline-flex h-8 items-center gap-2 rounded-full border px-3 font-medium text-sm outline-none transition-colors duration-(--duration-fast,150ms) focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                    'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex h-8 items-center gap-2 rounded-full border px-3 font-medium text-sm outline-none transition-colors duration-(--duration-fast,150ms) focus-visible:ring-[3px] focus-visible:ring-ring/50',
                     pressed
                       ? 'border-foreground bg-foreground text-background'
                       : 'bg-background text-muted-foreground hover:bg-accent hover:text-foreground',
@@ -353,7 +353,7 @@ function Entry({
               {entry.href && (
                 <a
                   href={entry.href}
-                  className="mt-4 inline-flex items-center gap-1 rounded-sm font-medium text-foreground underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                  className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] mt-4 inline-flex items-center gap-1 rounded-sm font-medium text-foreground underline-offset-4 outline-none hover:underline focus-visible:ring-[3px] focus-visible:ring-ring/50"
                 >
                   {labels.readMore}
                   <ArrowUpRightIcon aria-hidden className="size-3.5" />
@@ -361,7 +361,7 @@ function Entry({
               )}
             </div>
           </CollapsibleContent>
-          <CollapsibleTrigger className="mt-4 inline-flex items-center gap-1.5 rounded-md font-medium text-sm outline-none transition-colors hover:text-foreground/70 focus-visible:ring-[3px] focus-visible:ring-ring/50">
+          <CollapsibleTrigger className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] mt-4 inline-flex items-center gap-1.5 rounded-md font-medium text-sm outline-none transition-colors hover:text-foreground/70 focus-visible:ring-[3px] focus-visible:ring-ring/50">
             {open ? labels.collapse : labels.expand}
             <ChevronDownIcon
               aria-hidden

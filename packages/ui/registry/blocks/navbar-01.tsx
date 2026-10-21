@@ -81,7 +81,7 @@ function Navbar01({
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-6 px-6">
         <a
           href={brand.href ?? '/'}
-          className="group flex shrink-0 items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] group flex shrink-0 items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <span
             aria-hidden

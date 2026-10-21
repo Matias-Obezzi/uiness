@@ -39,7 +39,7 @@ export default function RichTextEditorDemo() {
               type="button"
               aria-pressed={view === tab}
               onClick={() => setView(tab)}
-              className="rounded-md px-2 py-1 font-medium text-muted-foreground text-xs hover:text-foreground aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-xs"
+              className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-md px-2 py-1 font-medium text-muted-foreground text-xs hover:text-foreground aria-pressed:bg-background aria-pressed:text-foreground aria-pressed:shadow-xs"
             >
               {tab === 'html' ? 'HTML' : 'Markdown'}
             </button>

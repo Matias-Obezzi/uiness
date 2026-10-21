@@ -218,7 +218,7 @@ function Leaderboard01({
       className={cn('@container w-full', className)}
       {...props}
     >
-      <div className="mx-auto max-w-4xl px-6 py-12 @3xl:py-16">
+      <div className="mx-auto max-w-4xl px-4 py-12 @xl:px-6 @3xl:py-16">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2
@@ -254,10 +254,13 @@ function Leaderboard01({
         </div>
 
         <div className="mt-8 overflow-hidden border bg-card">
-          <table className="w-full text-sm">
+          <table className="w-full table-fixed text-sm">
             <thead className="border-b bg-muted/50 font-mono text-[11px] text-muted-foreground uppercase tracking-[0.15em]">
               <tr>
-                <th scope="col" className="w-14 px-4 py-2.5 text-left font-medium">
+                <th
+                  scope="col"
+                  className="w-12 px-3 py-2.5 text-left font-medium @xl:w-14 @xl:px-4"
+                >
                   {labels.rank}
                 </th>
                 <th scope="col" className="px-2 py-2.5 text-left font-medium">
@@ -265,11 +268,11 @@ function Leaderboard01({
                 </th>
                 <th
                   scope="col"
-                  className="hidden px-2 py-2.5 text-right font-medium @lg:table-cell"
+                  className="hidden w-16 px-2 py-2.5 text-right font-medium @lg:table-cell"
                 >
                   {labels.level}
                 </th>
-                <th scope="col" className="px-2 py-2.5 text-right font-medium">
+                <th scope="col" className="w-20 px-2 py-2.5 text-right font-medium @xl:w-24">
                   {labels.score}
                 </th>
                 <th
@@ -278,7 +281,10 @@ function Leaderboard01({
                 >
                   {labels.winRate}
                 </th>
-                <th scope="col" className="w-16 px-4 py-2.5 text-right font-medium">
+                <th
+                  scope="col"
+                  className="w-14 px-3 py-2.5 text-right font-medium @xl:w-16 @xl:px-4"
+                >
                   <span className="sr-only">{labels.change}</span>
                 </th>
               </tr>
@@ -298,22 +304,22 @@ function Leaderboard01({
                   >
                     <td
                       className={cn(
-                        'px-4 py-3 font-bold font-mono tabular-nums',
+                        'px-3 py-3 font-bold font-mono tabular-nums @xl:px-4',
                         i < 3 ? 'text-primary' : 'text-muted-foreground',
                       )}
                     >
                       {pad(i + 1)}
                     </td>
                     <td className="px-2 py-3">
-                      <span className="flex items-center gap-3">
-                        <PlayerAvatar player={player} className="size-8" />
+                      <span className="flex min-w-0 items-center gap-2 @xl:gap-3">
+                        <PlayerAvatar player={player} className="size-8 shrink-0" />
                         <span className="min-w-0">
-                          <span className="flex items-center gap-2 font-semibold">
+                          <span className="flex min-w-0 items-center gap-2 font-semibold">
                             <span className="truncate">{player.name}</span>
                             {mine && (
                               <span
                                 className={cn(
-                                  'bg-primary px-1.5 py-px font-mono text-[10px] text-primary-foreground uppercase',
+                                  'shrink-0 bg-primary px-1.5 py-px font-mono text-[10px] text-primary-foreground uppercase',
                                   cut,
                                 )}
                               >
@@ -322,7 +328,7 @@ function Leaderboard01({
                             )}
                           </span>
                           {player.tag && (
-                            <span className="font-mono text-muted-foreground text-xs">
+                            <span className="block truncate font-mono text-muted-foreground text-xs">
                               #{player.tag}
                             </span>
                           )}
@@ -348,7 +354,7 @@ function Leaderboard01({
                         </span>
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-right">
+                    <td className="px-3 py-3 text-right @xl:px-4">
                       <Change value={player.change} labels={labels} />
                     </td>
                   </tr>

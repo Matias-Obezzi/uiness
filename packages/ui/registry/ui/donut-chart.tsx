@@ -234,7 +234,7 @@ function DonutChart({
                   onFocus={() => !off && setActive(d.key)}
                   onBlur={() => setActive(null)}
                   className={cn(
-                    'flex w-full items-center gap-2 rounded-md px-2 py-1 text-left outline-none transition-[opacity,background-color] duration-(--duration-fast,150ms) hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-default',
+                    'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex w-full items-center gap-2 rounded-md px-2 py-1 text-left outline-none transition-[opacity,background-color] duration-(--duration-fast,150ms) hover:bg-muted focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:cursor-default',
                     off && 'opacity-50',
                   )}
                 >

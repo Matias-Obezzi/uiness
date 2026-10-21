@@ -268,7 +268,7 @@ function NotificationItem({
               onSelect?.(notification)
             }}
             // The whole row presses this button; the actions sit above it.
-            className="text-left text-sm leading-snug outline-none after:absolute after:inset-0 focus-visible:after:rounded-md focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50 focus-visible:after:ring-inset"
+            className="relative pointer-coarse:before:absolute pointer-coarse:before:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:before:inset-y-[min(0px,calc((100%_-_44px)/2))] text-left text-sm leading-snug outline-none after:absolute after:inset-0 focus-visible:after:rounded-md focus-visible:after:ring-[3px] focus-visible:after:ring-ring/50 focus-visible:after:ring-inset"
           >
             {title}
           </button>
@@ -305,7 +305,7 @@ function NotificationItem({
             aria-label={labels.markAsRead}
             title={labels.markAsRead}
             onClick={() => onRead(id)}
-            className="group/dot absolute top-3 right-3 grid size-6 place-items-center rounded-full outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
+            className="pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] group/dot absolute top-3 right-3 grid size-6 place-items-center rounded-full outline-none hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50"
           >
             <span className="size-2 rounded-full bg-primary transition-transform duration-(--duration-fast,150ms) group-hover/dot:scale-75" />
           </button>

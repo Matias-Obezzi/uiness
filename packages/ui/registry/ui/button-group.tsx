@@ -16,7 +16,7 @@ interface ButtonGroupContextValue {
 const ButtonGroupContext = React.createContext<ButtonGroupContextValue | null>(null)
 
 const buttonGroupItemVariants = cva(
-  "relative z-[1] inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-muted-foreground text-sm outline-none transition-[color,box-shadow,scale] hover:text-foreground active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-[current=page]:bg-muted aria-[current=page]:text-foreground aria-pressed:bg-muted aria-pressed:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] z-[1] inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md font-medium text-muted-foreground text-sm outline-none transition-[color,box-shadow,scale] hover:text-foreground active:scale-[0.97] motion-reduce:active:scale-100 focus-visible:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 aria-[current=page]:bg-muted aria-[current=page]:text-foreground aria-pressed:bg-muted aria-pressed:text-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       size: {

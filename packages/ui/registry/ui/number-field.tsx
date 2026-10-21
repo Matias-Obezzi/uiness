@@ -370,7 +370,7 @@ function NumberField({
 }
 
 const stepperClass =
-  'flex w-9 shrink-0 select-none items-center justify-center text-muted-foreground touch-manipulation outline-none transition-colors hover:bg-accent hover:text-accent-foreground active:bg-accent disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:duration-(--duration-instant,100ms) active:[&_svg]:scale-85 motion-reduce:[&_svg]:transition-none'
+  'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex w-9 shrink-0 select-none items-center justify-center text-muted-foreground touch-manipulation outline-none transition-colors hover:bg-accent hover:text-accent-foreground active:bg-accent disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-4 [&_svg]:transition-transform [&_svg]:duration-(--duration-instant,100ms) active:[&_svg]:scale-85 motion-reduce:[&_svg]:transition-none'
 
 interface StepButtonProps extends React.ComponentProps<'button'> {
   delta: number

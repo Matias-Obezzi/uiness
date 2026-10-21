@@ -1,9 +1,10 @@
 'use client'
 
-import { DownloadIcon } from 'lucide-react'
+import { DownloadIcon, InboxIcon } from 'lucide-react'
 import * as React from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
 import { LineChart } from '@/components/ui/line-chart'
 import { MetricCard } from '@/components/ui/metric-card'
 import { SegmentedControl, SegmentedControlItem } from '@/components/ui/segmented-control'
@@ -49,6 +50,8 @@ export interface Dashboard01Labels {
   amount: string
   status: string
   statuses: Record<OrderStatus, string>
+  /** Shown in place of the orders when there are none. */
+  noOrders: string
 }
 
 export interface Dashboard01Props extends Omit<React.ComponentProps<'section'>, 'title'> {
@@ -83,6 +86,7 @@ const defaultLabels: Dashboard01Labels = {
   amount: 'Amount',
   status: 'Status',
   statuses: { paid: 'Paid', pending: 'Pending', refunded: 'Refunded' },
+  noOrders: 'No orders yet.',
 }
 
 const spans: Record<DashboardRange, number> = { '7d': 7, '30d': 30, '90d': 90 }
@@ -209,7 +213,7 @@ function Dashboard01({
       className={cn('@container w-full', className)}
       {...props}
     >
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-4 py-10 @xl:px-6">
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <h2 id={headingId} className="text-heading">
@@ -306,50 +310,60 @@ function Dashboard01({
 
         <div className="rounded-xl border bg-card">
           <h3 className="px-4 pt-4 font-medium @3xl:px-6 @3xl:pt-6">{labels.recentOrders}</h3>
-          <div className="mt-2 overflow-x-auto">
-            <table className="w-full min-w-[32rem] text-sm">
-              <thead className="text-left text-muted-foreground">
-                <tr className="border-b">
-                  <th scope="col" className="px-4 py-3 font-medium @3xl:px-6">
-                    {labels.order}
-                  </th>
-                  <th scope="col" className="px-4 py-3 font-medium">
-                    {labels.customer}
-                  </th>
-                  <th scope="col" className="px-4 py-3 font-medium">
-                    {labels.date}
-                  </th>
-                  <th scope="col" className="px-4 py-3 text-right font-medium">
-                    {labels.amount}
-                  </th>
-                  <th scope="col" className="px-4 py-3 font-medium @3xl:pr-6">
-                    {labels.status}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {orders.map((order) => (
-                  <tr key={order.id} className="border-b last:border-0">
-                    <td className="px-4 py-3 font-mono text-muted-foreground @3xl:px-6">
-                      #{order.id}
-                    </td>
-                    <td className="px-4 py-3 font-medium">{order.customer}</td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {formatDate.format(new Date(order.date))}
-                    </td>
-                    <td className="px-4 py-3 text-right tabular-nums">
-                      {formatMoney.format(order.amount)}
-                    </td>
-                    <td className="px-4 py-3 @3xl:pr-6">
-                      <Badge variant={statusVariant[order.status]}>
-                        {labels.statuses[order.status]}
-                      </Badge>
-                    </td>
+          {orders.length === 0 ? (
+            <EmptyState size="sm" icon={<InboxIcon />} description={labels.noOrders} />
+          ) : (
+            // Under 36rem the same table is drawn as one card per order, with no sideways scroll.
+            <div className="mt-2 overflow-x-auto @max-xl:overflow-visible">
+              <table className="w-full text-sm @max-xl:block @xl:min-w-[32rem]">
+                <thead className="text-left text-muted-foreground @max-xl:sr-only">
+                  <tr className="border-b">
+                    <th scope="col" className="px-4 py-3 font-medium @3xl:px-6">
+                      {labels.order}
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-medium">
+                      {labels.customer}
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-medium">
+                      {labels.date}
+                    </th>
+                    <th scope="col" className="px-4 py-3 text-right font-medium">
+                      {labels.amount}
+                    </th>
+                    <th scope="col" className="px-4 py-3 font-medium @3xl:pr-6">
+                      {labels.status}
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="@max-xl:grid @max-xl:gap-2 @max-xl:p-4 @max-xl:pt-2">
+                  {orders.map((order) => (
+                    <tr
+                      key={order.id}
+                      className="border-b last:border-0 @max-xl:grid @max-xl:grid-cols-[minmax(0,1fr)_auto] @max-xl:gap-x-3 @max-xl:gap-y-1 @max-xl:rounded-lg @max-xl:border @max-xl:p-3 @max-xl:last:border"
+                    >
+                      <td className="px-4 py-3 font-mono text-muted-foreground @max-xl:col-start-1 @max-xl:row-start-2 @max-xl:p-0 @max-xl:text-xs @3xl:px-6">
+                        #{order.id}
+                      </td>
+                      <td className="px-4 py-3 font-medium @max-xl:col-start-1 @max-xl:row-start-1 @max-xl:truncate @max-xl:p-0">
+                        {order.customer}
+                      </td>
+                      <td className="px-4 py-3 text-muted-foreground @max-xl:col-start-1 @max-xl:row-start-3 @max-xl:p-0 @max-xl:text-xs">
+                        {formatDate.format(new Date(order.date))}
+                      </td>
+                      <td className="px-4 py-3 text-right tabular-nums @max-xl:col-start-2 @max-xl:row-span-2 @max-xl:row-start-2 @max-xl:self-end @max-xl:p-0 @max-xl:font-semibold">
+                        {formatMoney.format(order.amount)}
+                      </td>
+                      <td className="px-4 py-3 @max-xl:col-start-2 @max-xl:row-start-1 @max-xl:justify-self-end @max-xl:p-0 @3xl:pr-6">
+                        <Badge variant={statusVariant[order.status]}>
+                          {labels.statuses[order.status]}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </div>
     </section>

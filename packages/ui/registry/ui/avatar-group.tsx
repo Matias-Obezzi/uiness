@@ -168,7 +168,7 @@ function AvatarGroup({
             data-slot="avatar-group-counter"
             aria-label={labels.showMore(hiddenCount)}
             className={cn(
-              'relative inline-flex items-center justify-center rounded-full bg-muted px-1.5 font-medium text-muted-foreground tabular-nums outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=open]:bg-accent data-[state=open]:text-foreground',
+              'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex items-center justify-center rounded-full bg-muted px-1.5 font-medium text-muted-foreground tabular-nums outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=open]:bg-accent data-[state=open]:text-foreground',
               s.counter,
               s.overlap,
               ring,

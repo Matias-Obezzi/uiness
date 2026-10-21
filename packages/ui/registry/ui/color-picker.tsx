@@ -554,7 +554,7 @@ function ColorPicker({
               title={labels.addSwatch}
               disabled={saved.includes(value)}
               onClick={() => setSaved([...saved, value])}
-              className="inline-flex size-6 items-center justify-center rounded-md border border-dashed text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-40 [&_svg]:size-3.5"
+              className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex size-6 items-center justify-center rounded-md border border-dashed text-muted-foreground outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-40 [&_svg]:size-3.5"
             >
               <PlusIcon />
             </button>

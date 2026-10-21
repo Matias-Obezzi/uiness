@@ -66,7 +66,7 @@ function BreadcrumbLink({ asChild, className, ...props }: BreadcrumbLinkProps) {
     <Comp
       data-slot="breadcrumb-link"
       className={cn(
-        'rounded-sm outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50',
+        'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] rounded-sm outline-none transition-colors hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50',
         className,
       )}
       {...props}
@@ -276,7 +276,7 @@ function BreadcrumbTrail({
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     aria-label={(moreLabel ?? labels.showMore)(hidden.length)}
-                    className="flex size-7 items-center justify-center rounded-md outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=open]:bg-accent data-[state=open]:text-foreground"
+                    className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex size-7 items-center justify-center rounded-md outline-none transition-colors hover:bg-accent hover:text-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50 data-[state=open]:bg-accent data-[state=open]:text-foreground"
                   >
                     <MoreHorizontalIcon className="size-4" />
                   </DropdownMenuTrigger>

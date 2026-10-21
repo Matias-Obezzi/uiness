@@ -1,4 +1,4 @@
-A ready-made table for records: typed columns, sorting by one column or several, a toolbar with search and faceted filters, row selection, pages and an empty state. It is built on [Table](/docs/components/table) and holds its own state, with no table library behind it.
+A ready-made table for records: typed columns, sorting by one column or several, a toolbar with search and faceted filters, row selection, pages, loading and empty states, and cards in place of rows on a phone. It is built on [Table](/docs/components/table) and holds its own state, with no table library behind it.
 
 <ComponentPreview name="data-table-demo" align="start" />
 
@@ -60,6 +60,32 @@ Each entry in `filters` adds a button to the toolbar that opens a list of the co
 
 `pageSize` rows show at a time (10 by default) with previous and next buttons; `pageSize={false}` shows them all. Search, filters and sorting go back to the first page. Give `containerClassName` a max height, like `max-h-96`, and the rows scroll under a sticky header.
 
+## On a phone
+
+When the table's container is narrower than 576px, each row becomes a card, so nothing scrolls sideways. It is the same table restyled by a container query: one set of rows, and the same sorting, selection and handlers.
+
+- **Title:** the first column, in bold at the top. Its checkbox goes beside it.
+- **Badge:** a column with `card: 'badge'`, such as a status, at the top right.
+- **Fields:** the other columns, each value under its header in a two column grid. Give a column whose header is not plain text a `label`.
+- **Actions:** a column with the id `actions`, or `card: 'actions'`, in the card's footer.
+- **Hidden:** `card: 'hidden'` leaves a column off the card.
+- **Sorting:** the sortable headers stay over the cards, as one row of buttons that scrolls sideways on its own, next to **Select all rows**.
+
+```tsx
+const columns: DataTableColumn<Payment>[] = [
+  { id: 'id', header: 'Payment' },
+  { id: 'status', header: 'Status', card: 'badge', cell: (row) => <Badge>{row.status}</Badge> },
+  { id: 'amount', header: 'Amount', align: 'right' },
+  { id: 'actions', header: <span className="sr-only">Actions</span>, label: 'Actions', cell: (row) => <RowMenu row={row} /> },
+]
+```
+
+`layout="table"` keeps the table at every width, and `layout="cards"` always shows cards. On touch screens the search, filters, sort buttons, checkboxes and page buttons grow to 44px, the size a finger needs.
+
+## Loading
+
+`loading` draws placeholder rows, or placeholder cards on a phone, in place of the data, and marks the table busy for screen readers. The count under it waits until the rows arrive.
+
 ## Accessibility
 
 Sorted headers carry `aria-sort`, and their buttons are reachable with Tab. The result count under the table is announced as it changes. Checkboxes are named after the first column of their row, like "Select PAY-1040". When nothing matches, the empty state offers to reset the filters.
@@ -69,7 +95,7 @@ Sorted headers carry `aria-sort`, and their buttons are reachable with Tab. The 
 | Prop | Default | Description |
 | --- | --- | --- |
 | `data` | | The rows. |
-| `columns` | | `{ id, header, accessor?, cell?, sortable?, compare?, align?, searchable?, className? }` per column. |
+| `columns` | | `{ id, header, label?, accessor?, cell?, sortable?, compare?, align?, searchable?, className?, card? }` per column. |
 | `getRowId` | `row.id` or index | Stable id of a row. |
 | `filters` | | `{ column, title, options? }` per faceted filter. |
 | `searchable` | `true` | The search field. |
@@ -81,6 +107,8 @@ Sorted headers carry `aria-sort`, and their buttons are reachable with Tab. The 
 | `stickyHeader` | `true` | Keeps the header in view while rows scroll. |
 | `containerClassName` | | Classes for the scrolling box, like a max height. |
 | `empty` | `"No results."` | Shown when nothing matches. |
+| `loading` | `false` | Placeholder rows while the data loads. |
+| `layout` | `"responsive"` | `"responsive"` shows cards in a container under 576px, `"table"` or `"cards"` keep one. |
 | `toolbar` | | Extra controls at the end of the toolbar. |
 | `caption` | | Names the table, and shows under it. |
 

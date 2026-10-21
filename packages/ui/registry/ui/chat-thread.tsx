@@ -568,7 +568,7 @@ function ChatReactions({
             title={reaction.userIds.map(nameOf).join(', ')}
             disabled={!onToggle}
             onClick={() => onToggle?.(reaction.emoji)}
-            className="inline-flex h-6 items-center gap-1 rounded-full border bg-background px-2 text-xs tabular-nums outline-none transition-colors duration-(--duration-fast,150ms) hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-pressed:border-primary/30 aria-pressed:bg-primary/10"
+            className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] inline-flex h-6 items-center gap-1 rounded-full border bg-background px-2 text-xs tabular-nums outline-none transition-colors duration-(--duration-fast,150ms) hover:bg-accent focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none aria-pressed:border-primary/30 aria-pressed:bg-primary/10"
           >
             <span aria-hidden>{reaction.emoji}</span>
             <span aria-hidden className="text-muted-foreground">
@@ -605,7 +605,7 @@ function ChatReactionPicker({
           aria-label={labels.addReaction}
           data-slot="chat-reaction-picker"
           className={cn(
-            'grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground opacity-0 outline-none transition-[opacity,background-color] duration-(--duration-fast,150ms) hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 group-hover/message:opacity-100 data-[state=open]:opacity-100 pointer-coarse:opacity-100',
+            'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] grid size-7 shrink-0 place-items-center rounded-full text-muted-foreground opacity-0 outline-none transition-[opacity,background-color] duration-(--duration-fast,150ms) hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:ring-[3px] focus-visible:ring-ring/50 group-hover/message:opacity-100 data-[state=open]:opacity-100 pointer-coarse:opacity-100',
             className,
           )}
         >

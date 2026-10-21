@@ -157,7 +157,7 @@ function ScratchReveal({
           if (e.detail === 0) reveal()
         }}
         className={cn(
-          'absolute inset-0 rounded-[inherit] outline-none transition-opacity duration-(--duration-slow,300ms) focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-inset',
+          'pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] absolute inset-0 rounded-[inherit] outline-none transition-opacity duration-(--duration-slow,300ms) focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:ring-inset',
           revealed && 'pointer-events-none opacity-0',
         )}
       >

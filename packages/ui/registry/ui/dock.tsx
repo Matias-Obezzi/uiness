@@ -297,7 +297,7 @@ function DockItem({
           aria-label={label}
           data-slot="dock-item-button"
           className={cn(
-            'flex size-(--dock-size) items-center justify-center rounded-[28%] bg-secondary text-secondary-foreground shadow-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg:not([class*=size-])]:size-1/2',
+            'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] flex size-(--dock-size) items-center justify-center rounded-[28%] bg-secondary text-secondary-foreground shadow-sm outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 [&_svg:not([class*=size-])]:size-1/2',
             vertical ? 'origin-left' : 'origin-bottom',
             follow,
             className,

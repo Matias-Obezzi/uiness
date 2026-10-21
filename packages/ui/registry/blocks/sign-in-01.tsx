@@ -290,7 +290,7 @@ function SignIn01({
       <div className="mx-auto flex max-w-md flex-col items-center px-4 py-16 @md:px-6 @3xl:py-24">
         <a
           href={brand.href ?? '/'}
-          className="mb-8 flex items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
+          className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] mb-8 flex items-center gap-2 rounded-md font-semibold text-subheading outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50"
         >
           <span
             aria-hidden

@@ -265,7 +265,7 @@ function MultiSelect({
                         triggerRef.current?.focus()
                       }}
                       onPointerDown={(e) => e.stopPropagation()}
-                      className="pointer-events-auto flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-none transition-colors hover:bg-foreground/10 hover:text-foreground [&_svg]:size-3"
+                      className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] pointer-events-auto flex size-5 shrink-0 items-center justify-center rounded-sm text-muted-foreground outline-none transition-colors hover:bg-foreground/10 hover:text-foreground [&_svg]:size-3"
                     >
                       <XIcon aria-hidden />
                     </button>

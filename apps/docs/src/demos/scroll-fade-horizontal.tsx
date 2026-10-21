@@ -30,7 +30,7 @@ export default function ScrollFadeHorizontal() {
               aria-pressed={topic === t}
               onClick={() => setTopic(t)}
               className={cn(
-                'h-8 shrink-0 rounded-full border px-3 text-sm transition-colors',
+                'relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] h-8 shrink-0 rounded-full border px-3 text-sm transition-colors',
                 topic === t
                   ? 'border-primary bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:text-foreground',
