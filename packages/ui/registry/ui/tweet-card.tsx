@@ -162,7 +162,7 @@ function TweetContent({ text }: { text: string }) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="text-primary hover:underline"
+            className="text-primary underline decoration-primary/40 underline-offset-2 hover:decoration-primary"
           >
             {token.value}
           </a>

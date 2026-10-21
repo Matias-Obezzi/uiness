@@ -40,17 +40,18 @@ export default function FormControls() {
 
       <FormField name="region">
         <FormLabel>Region</FormLabel>
-        <FormControl>
-          <Select>
+        {/* The trigger is the field: Select itself renders nothing for FormControl to label. */}
+        <Select>
+          <FormControl>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Pick a region" />
             </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="sa">South America</SelectItem>
-              <SelectItem value="eu">Europe</SelectItem>
-            </SelectContent>
-          </Select>
-        </FormControl>
+          </FormControl>
+          <SelectContent>
+            <SelectItem value="sa">South America</SelectItem>
+            <SelectItem value="eu">Europe</SelectItem>
+          </SelectContent>
+        </Select>
         <FormDescription>Where your data lives.</FormDescription>
       </FormField>
 

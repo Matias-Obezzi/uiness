@@ -450,7 +450,7 @@ function Contact01({
                           'text-caption tabular-nums',
                           values.message.trim().length >= minMessage
                             ? 'text-muted-foreground'
-                            : 'text-muted-foreground/60',
+                            : 'text-muted-foreground',
                         )}
                       >
                         {values.message.trim().length}/{minMessage}

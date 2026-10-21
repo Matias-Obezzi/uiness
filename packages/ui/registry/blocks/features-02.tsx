@@ -119,7 +119,7 @@ function ChartVisual() {
     >
       <div className="flex items-baseline justify-between gap-2">
         <span className="text-caption text-muted-foreground">Weekly active</span>
-        <span className="font-semibold text-emerald-600 text-lg tabular-nums dark:text-emerald-400">
+        <span className="font-semibold text-emerald-700 text-lg tabular-nums dark:text-emerald-400">
           +<NumberTicker value={38} />%
         </span>
       </div>

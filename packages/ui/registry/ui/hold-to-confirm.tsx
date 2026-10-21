@@ -27,7 +27,7 @@ const holdVariants = cva(
 )
 
 const fillVariants = {
-  destructive: 'bg-destructive text-white',
+  destructive: 'bg-destructive text-white dark:bg-destructive/60',
   default: 'bg-primary text-primary-foreground',
 }
 

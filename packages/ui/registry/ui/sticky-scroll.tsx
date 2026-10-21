@@ -59,7 +59,7 @@ function StickyScroll({
             data-slot="sticky-scroll-section"
             data-state={i === active ? 'active' : 'inactive'}
             className={cn(
-              'flex min-h-[60vh] flex-col justify-center gap-3 transition-opacity duration-500 data-[state=inactive]:opacity-30',
+              'flex min-h-[60vh] flex-col justify-center gap-3 transition-colors duration-500 data-[state=inactive]:text-muted-foreground',
               sectionClassName,
             )}
           >

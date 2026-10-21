@@ -190,7 +190,7 @@ function NotificationBell({
           ref={badgeRef}
           aria-hidden
           data-slot="notification-badge"
-          className="absolute top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 font-semibold text-[0.625rem] text-white tabular-nums leading-none ring-2 ring-background"
+          className="absolute top-0.5 right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 font-semibold text-[0.625rem] text-white dark:bg-destructive/80 tabular-nums leading-none ring-2 ring-background"
         >
           {count > max ? `${max}+` : count}
         </span>

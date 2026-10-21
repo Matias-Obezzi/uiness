@@ -141,6 +141,7 @@ export const it = {
     after: 'Dopo',
     copy: 'Copia codice',
     copied: 'Copiato',
+    diff: 'Modifiche',
   },
   'color-picker': {
     area: 'Saturazione e luminosità',

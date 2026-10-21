@@ -219,62 +219,98 @@ function Dropzone({
   }
 
   return (
-    // biome-ignore lint/a11y/useSemanticElements: a real button may not hold the file input or the previews
-    <div
-      data-slot="dropzone"
-      role="button"
-      tabIndex={disabled ? -1 : 0}
-      aria-disabled={disabled ? true : undefined}
-      aria-describedby={descriptionId}
-      data-over={isOver ? '' : undefined}
-      {...props}
-      onClick={(event) => {
-        props.onClick?.(event)
-        if (event.defaultPrevented) return
-        // `input.click()` below bubbles back up here; without this it would loop.
-        if (event.target === input.current) return
-        open()
-      }}
-      onKeyDown={(event) => {
-        props.onKeyDown?.(event)
-        if (event.defaultPrevented) return
-        if (event.key !== ' ' && event.key !== 'Enter') return
-        // Space would scroll the page and enter would submit a surrounding form.
-        event.preventDefault()
-        open()
-      }}
-      onDragEnter={(event) => {
-        event.preventDefault()
-        if (disabled) return
-        depth.current++
-        setIsOver(true)
-      }}
-      onDragOver={(event) => {
-        // Without this the browser navigates to the file instead of handing it over.
-        event.preventDefault()
-        if (!disabled && event.dataTransfer) event.dataTransfer.dropEffect = 'copy'
-      }}
-      onDragLeave={(event) => {
-        event.preventDefault()
-        if (disabled) return
-        depth.current = Math.max(0, depth.current - 1)
-        if (depth.current === 0) setIsOver(false)
-      }}
-      onDrop={(event) => {
-        event.preventDefault()
-        depth.current = 0
-        setIsOver(false)
-        intake(event.dataTransfer?.files ?? null)
-      }}
-      className={cn(
-        'flex w-full flex-col items-center justify-center gap-3 rounded-lg border border-input border-dashed bg-background p-6 text-center outline-none transition-colors',
-        'hover:border-ring/60 hover:bg-accent/40',
-        'focus-visible:ring-[3px] focus-visible:ring-ring/50',
-        'data-[over]:border-ring data-[over]:bg-accent data-[over]:text-accent-foreground',
-        'aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
-        className,
-      )}
-    >
+    <>
+      {/* biome-ignore lint/a11y/useSemanticElements: a real button may not hold the previews */}
+      <div
+        data-slot="dropzone"
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-disabled={disabled ? true : undefined}
+        aria-describedby={descriptionId}
+        data-over={isOver ? '' : undefined}
+        {...props}
+        onClick={(event) => {
+          props.onClick?.(event)
+          if (event.defaultPrevented) return
+          // `input.click()` below bubbles back up here; without this it would loop.
+          if (event.target === input.current) return
+          open()
+        }}
+        onKeyDown={(event) => {
+          props.onKeyDown?.(event)
+          if (event.defaultPrevented) return
+          if (event.key !== ' ' && event.key !== 'Enter') return
+          // Space would scroll the page and enter would submit a surrounding form.
+          event.preventDefault()
+          open()
+        }}
+        onDragEnter={(event) => {
+          event.preventDefault()
+          if (disabled) return
+          depth.current++
+          setIsOver(true)
+        }}
+        onDragOver={(event) => {
+          // Without this the browser navigates to the file instead of handing it over.
+          event.preventDefault()
+          if (!disabled && event.dataTransfer) event.dataTransfer.dropEffect = 'copy'
+        }}
+        onDragLeave={(event) => {
+          event.preventDefault()
+          if (disabled) return
+          depth.current = Math.max(0, depth.current - 1)
+          if (depth.current === 0) setIsOver(false)
+        }}
+        onDrop={(event) => {
+          event.preventDefault()
+          depth.current = 0
+          setIsOver(false)
+          intake(event.dataTransfer?.files ?? null)
+        }}
+        className={cn(
+          'flex w-full flex-col items-center justify-center gap-3 rounded-lg border border-input border-dashed bg-background p-6 text-center outline-none transition-colors',
+          'hover:border-ring/60 hover:bg-accent/40',
+          'focus-visible:ring-[3px] focus-visible:ring-ring/50',
+          'data-[over]:border-ring data-[over]:bg-accent data-[over]:text-accent-foreground',
+          'aria-disabled:pointer-events-none aria-disabled:cursor-not-allowed aria-disabled:opacity-50',
+          className,
+        )}
+      >
+        {children ?? (
+          <>
+            <UploadCloudIcon className="size-6 text-muted-foreground" aria-hidden="true" />
+            <span className="font-medium text-sm">{labels.prompt(multiple)}</span>
+          </>
+        )}
+        <span
+          id={descriptionId}
+          data-slot="dropzone-hint"
+          className="text-muted-foreground text-xs"
+        >
+          {[
+            accept
+              ? accept
+                  .split(',')
+                  .map((entry) => entry.trim())
+                  .join(', ')
+              : null,
+            maxSize !== undefined ? labels.maxSize(formatBytes(maxSize)) : null,
+            multiple && maxFiles !== undefined ? labels.maxFiles(maxFiles) : null,
+          ]
+            .filter(Boolean)
+            .join(' · ') || labels.anyFile}
+        </span>
+        {preview && accepted.length > 0 ? <DropzonePreview files={accepted} urls={urls} /> : null}
+        <div
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-slot="dropzone-status"
+          className="sr-only"
+        >
+          {announcement}
+        </div>
+      </div>
       <input
         ref={input}
         type="file"
@@ -282,9 +318,11 @@ function Dropzone({
         accept={accept}
         multiple={multiple}
         disabled={disabled}
-        // Off the screen rather than display:none, which would take it out of the
-        // accessibility tree along with it. The box above is what gets the focus.
+        // The box is the control: it takes the focus, is named and opens this input from code.
+        // The input sits beside it, not inside, and out of the accessibility tree, so screen
+        // readers find one control, not an unnamed file field nested in a button.
         tabIndex={-1}
+        aria-hidden="true"
         className="sr-only"
         onChange={(event) => {
           intake(event.target.files)
@@ -292,37 +330,7 @@ function Dropzone({
           event.target.value = ''
         }}
       />
-      {children ?? (
-        <>
-          <UploadCloudIcon className="size-6 text-muted-foreground" aria-hidden="true" />
-          <span className="font-medium text-sm">{labels.prompt(multiple)}</span>
-        </>
-      )}
-      <span id={descriptionId} data-slot="dropzone-hint" className="text-muted-foreground text-xs">
-        {[
-          accept
-            ? accept
-                .split(',')
-                .map((entry) => entry.trim())
-                .join(', ')
-            : null,
-          maxSize !== undefined ? labels.maxSize(formatBytes(maxSize)) : null,
-          multiple && maxFiles !== undefined ? labels.maxFiles(maxFiles) : null,
-        ]
-          .filter(Boolean)
-          .join(' · ') || labels.anyFile}
-      </span>
-      {preview && accepted.length > 0 ? <DropzonePreview files={accepted} urls={urls} /> : null}
-      <div
-        role="status"
-        aria-live="polite"
-        aria-atomic="true"
-        data-slot="dropzone-status"
-        className="sr-only"
-      >
-        {announcement}
-      </div>
-    </div>
+    </>
   )
 }
 

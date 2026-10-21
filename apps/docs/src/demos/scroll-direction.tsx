@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 const sections = Array.from({ length: 8 }, (_, i) => `Section ${i + 1}`)
 
 export default function ScrollDirection() {
-  const [box, setBox] = useState<HTMLDivElement | null>(null)
+  const [box, setBox] = useState<HTMLElement | null>(null)
   const header = useRef<HTMLDivElement>(null)
   const direction = useScrollDirection({ container: box, threshold: 12 })
   const velocity = useScrollVelocity({ container: box })
@@ -14,7 +14,13 @@ export default function ScrollDirection() {
 
   return (
     <div className="flex w-full flex-col gap-3">
-      <div ref={setBox} className="relative h-72 w-full overflow-y-auto rounded-xl border">
+      <section
+        ref={setBox}
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrolling region has to take focus to scroll by keyboard
+        tabIndex={0}
+        aria-label="Scrolling area"
+        className="relative h-72 w-full overflow-y-auto outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 rounded-xl border"
+      >
         <div className="h-16 px-4 pt-4 text-muted-foreground text-sm">
           Scroll down, then back up a little.
         </div>
@@ -33,7 +39,7 @@ export default function ScrollDirection() {
             <h3 className="font-medium">{title}</h3>
           </section>
         ))}
-      </div>
+      </section>
       <Button
         variant="outline"
         className="self-start"

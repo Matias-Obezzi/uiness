@@ -142,6 +142,7 @@ export const pt = {
     after: 'Depois',
     copy: 'Copiar código',
     copied: 'Copiado',
+    diff: 'Alterações',
   },
   'color-picker': {
     area: 'Saturação e brilho',

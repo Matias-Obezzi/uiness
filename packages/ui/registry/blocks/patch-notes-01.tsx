@@ -116,11 +116,22 @@ const defaultSections: PatchSection[] = [
 
 const kinds: PatchKind[] = ['buff', 'nerf', 'fix', 'new']
 
+// On a light tint of its own color a tag's text is mixed toward the foreground, which keeps the
+// hue and reads at 4.5:1; dark themes need no mix.
 const kindStyle: Record<PatchKind, { tag: string; Icon: typeof ArrowUpIcon }> = {
-  buff: { tag: 'bg-chart-2/15 text-chart-2', Icon: ArrowUpIcon },
-  nerf: { tag: 'bg-destructive/15 text-destructive', Icon: ArrowDownIcon },
+  buff: {
+    tag: 'bg-chart-2/15 text-[color-mix(in_oklab,var(--chart-2)_70%,var(--foreground))] dark:text-chart-2',
+    Icon: ArrowUpIcon,
+  },
+  nerf: {
+    tag: 'bg-destructive/15 text-[color-mix(in_oklab,var(--destructive)_70%,var(--foreground))] dark:text-destructive',
+    Icon: ArrowDownIcon,
+  },
   fix: { tag: 'bg-muted text-muted-foreground', Icon: WrenchIcon },
-  new: { tag: 'bg-primary/15 text-primary', Icon: SparklesIcon },
+  new: {
+    tag: 'bg-primary/15 text-[color-mix(in_oklab,var(--primary)_70%,var(--foreground))] dark:text-primary',
+    Icon: SparklesIcon,
+  },
 }
 
 /** Corners cut at 45°: the shape of a game's menu rather than a web app's. */

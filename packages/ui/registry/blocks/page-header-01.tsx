@@ -156,6 +156,7 @@ function PageHeader01({
 }: PageHeader01Props) {
   const labels = { ...defaultLabels, ...labelsProp }
   const headingId = React.useId()
+  const panelId = React.useId()
   const scrollRef = React.useRef<HTMLElement>(null)
   const sentinelRef = React.useRef<HTMLDivElement>(null)
   const barRef = React.useRef<HTMLDivElement>(null)
@@ -371,7 +372,10 @@ function PageHeader01({
                 <TabsTrigger
                   key={id}
                   value={id}
-                  className="relative h-12 flex-none rounded-none border-0 px-3 text-muted-foreground shadow-none after:absolute after:inset-x-2 after:bottom-0 after:h-0.5 after:scale-x-0 after:rounded-full after:bg-foreground after:transition-transform after:duration-(--duration-normal,200ms) hover:text-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:after:scale-x-100 dark:data-[state=active]:border-0 dark:data-[state=active]:bg-transparent"
+                  // Every tab shows its content in the one panel under the bar.
+                  aria-controls={panelId}
+                  // The underline is ::before: the trigger keeps ::after for its touch area.
+                  className="relative h-12 flex-none rounded-none border-0 px-3 text-muted-foreground shadow-none before:absolute before:inset-x-2 before:bottom-0 before:h-0.5 before:scale-x-0 before:rounded-full before:bg-foreground before:transition-transform before:duration-(--duration-normal,200ms) hover:text-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none data-[state=active]:before:scale-x-100 dark:data-[state=active]:border-0 dark:data-[state=active]:bg-transparent"
                 >
                   {Icon && <Icon aria-hidden />}
                   {label}
@@ -404,7 +408,14 @@ function PageHeader01({
 
       {/* In its own scroll box, short content still leaves room to scroll the title away, so
           switching tabs never snaps the header open again. */}
-      <div className={cn('mx-auto max-w-6xl px-6 py-8', height && 'min-h-full')}>{body}</div>
+      <div
+        id={panelId}
+        role="tabpanel"
+        aria-label={tabs.find((t) => t.id === tab)?.label}
+        className={cn('mx-auto max-w-6xl px-6 py-8', height && 'min-h-full')}
+      >
+        {body}
+      </div>
     </section>
   )
 }

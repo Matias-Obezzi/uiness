@@ -14,6 +14,8 @@ function Slider({
   value,
   min = 0,
   max = 100,
+  'aria-label': label,
+  'aria-labelledby': labelledBy,
   ...props
 }: React.ComponentProps<typeof SliderPrimitive.Root>) {
   // One thumb per value, falling back to a single one at the minimum.
@@ -48,6 +50,9 @@ function Slider({
         <SliderPrimitive.Thumb
           // biome-ignore lint/suspicious/noArrayIndexKey: thumbs are positional
           key={i}
+          // The thumb is what has role="slider", so it carries the name given to the slider.
+          aria-label={label}
+          aria-labelledby={labelledBy}
           data-slot="slider-thumb"
           className="relative pointer-coarse:after:absolute pointer-coarse:after:inset-x-[min(0px,calc((100%_-_44px)/2))] pointer-coarse:after:inset-y-[min(0px,calc((100%_-_44px)/2))] block size-4 shrink-0 rounded-full border border-primary bg-background shadow-sm outline-none ring-ring/50 transition-[color,box-shadow] hover:ring-4 focus-visible:ring-4 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50"
         />

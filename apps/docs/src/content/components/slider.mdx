@@ -9,10 +9,12 @@
 ```tsx
 import { Slider } from '@/components/ui/slider'
 
-<Slider defaultValue={[60]} max={100} step={1} />
-<Slider defaultValue={[20, 80]} max={100} step={5} />
+<Slider aria-label="Volume" defaultValue={[60]} max={100} step={1} />
+<Slider aria-labelledby="price-label" defaultValue={[20, 80]} max={100} step={5} />
 ```
 
 The value is always an array. Give it two entries and it grows a second thumb, which makes it a range. Add `orientation="vertical"` inside a container with a height for a vertical one.
 
 Arrow keys move by one step, Page Up and Down by ten, Home and End go to the ends.
+
+Name it with `aria-label`, or `aria-labelledby` pointing at a visible label: both go to every thumb, which is the part screen readers announce as the slider. A `<Label htmlFor>` cannot name it, since the slider is not a form field.

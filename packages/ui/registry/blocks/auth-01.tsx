@@ -310,12 +310,12 @@ function Auth01({
                       {Icon ? (
                         <Icon aria-hidden />
                       ) : (
+                        // The initial is drawn, not text, so the button's text is the provider's name.
                         <span
                           aria-hidden
-                          className="flex size-4 items-center justify-center font-bold text-[0.8rem] leading-none"
-                        >
-                          {label.charAt(0)}
-                        </span>
+                          data-initial={label.charAt(0)}
+                          className="flex size-4 items-center justify-center font-bold text-[0.8rem] leading-none before:content-[attr(data-initial)]"
+                        />
                       )}
                       {label}
                     </Button>

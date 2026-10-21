@@ -139,6 +139,7 @@ export const en = {
     after: 'After',
     copy: 'Copy code',
     copied: 'Copied',
+    diff: 'Changes',
   },
   'color-picker': {
     area: 'Saturation and brightness',

@@ -430,7 +430,10 @@ function CommandSeparator({ className, ...props }: React.ComponentProps<'hr'>) {
   const { search } = useCommand()
   if (search) return null
   return (
+    // Only a line: groups already part the list for screen readers, and a listbox may hold
+    // nothing but options and groups.
     <hr
+      role="none"
       data-slot="command-separator"
       className={cn('-mx-1 my-1 border-border border-t', className)}
       {...props}

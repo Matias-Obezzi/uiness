@@ -49,7 +49,7 @@ const VELOCITY_WINDOW = 100
 const tones: Record<NonNullable<SwipeAction['tone']>, string> = {
   neutral: 'bg-muted-foreground text-background',
   primary: 'bg-primary text-primary-foreground',
-  destructive: 'bg-destructive text-white',
+  destructive: 'bg-destructive text-white dark:bg-destructive/60',
 }
 
 const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms))

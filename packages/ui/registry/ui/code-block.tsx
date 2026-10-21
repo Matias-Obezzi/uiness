@@ -237,7 +237,7 @@ function CodeBlock({
                       aria-hidden
                       className={cn(
                         'mr-4 shrink-0 select-none text-right tabular-nums',
-                        on ? 'text-foreground' : 'text-muted-foreground/60',
+                        on ? 'text-foreground' : 'text-muted-foreground',
                       )}
                       style={{ width: gutter }}
                     >

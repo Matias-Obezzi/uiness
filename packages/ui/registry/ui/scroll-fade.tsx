@@ -215,8 +215,11 @@ function ScrollFade({
       // would be spread over it.
       {...(asChild ? {} : { 'data-slot': 'scroll-fade' })}
       data-orientation={orientation}
+      // Focusable, so the keyboard can scroll it when nothing inside takes focus.
+      tabIndex={0}
       className={cn(
         overflow[orientation],
+        'outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
         hideScrollbar && '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
         className,
       )}
