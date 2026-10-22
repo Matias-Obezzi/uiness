@@ -189,4 +189,104 @@ function VerticalFeedAction({
   )
 }
 
-export { VerticalFeed, VerticalFeedAction, VerticalFeedActions }
+/** How close, in pixels, dragged captions can come to the item's edges. */
+const CAPTIONS_EDGE = 8
+
+export interface VerticalFeedCaptionsProps extends React.ComponentProps<'div'> {
+  /** Show the captions. Off, the track is turned off too. Default true. */
+  show?: boolean
+}
+
+/**
+ * The captions of the item's video, drawn here instead of by the browser. Put it in the
+ * overlay just before the title: it sits right above it, so they never overlap, and it can be
+ * dragged anywhere on the item. It reads the first captions or subtitles `<track>`.
+ */
+function VerticalFeedCaptions({ show = true, className, ...props }: VerticalFeedCaptionsProps) {
+  const ref = React.useRef<HTMLDivElement>(null)
+  const [text, setText] = React.useState('')
+  const [offset, setOffset] = React.useState({ x: 0, y: 0 })
+  const drag = React.useRef<{
+    pointer: number
+    x: number
+    y: number
+    origin: { x: number; y: number }
+    min: { x: number; y: number }
+    max: { x: number; y: number }
+  } | null>(null)
+
+  React.useEffect(() => {
+    const video = ref.current?.closest('article')?.querySelector('video')
+    const track = Array.from(video?.textTracks ?? []).find(
+      (t) => t.kind === 'captions' || t.kind === 'subtitles',
+    )
+    if (!track) return
+    // Hidden: the cues still load and change, and the browser draws nothing.
+    track.mode = show ? 'hidden' : 'disabled'
+    if (!show) return
+    const update = () =>
+      setText(
+        Array.from(track.activeCues ?? [])
+          .map((cue) => (cue as VTTCue).text)
+          .join('\n'),
+      )
+    update()
+    track.addEventListener('cuechange', update)
+    return () => track.removeEventListener('cuechange', update)
+  }, [show])
+
+  return (
+    <div
+      ref={ref}
+      aria-hidden="true"
+      data-slot="vertical-feed-captions"
+      hidden={!show || !text}
+      onPointerDown={(event) => {
+        const box = ref.current?.getBoundingClientRect()
+        const area = ref.current?.closest('article')?.getBoundingClientRect()
+        if (!box || !area || (event.pointerType === 'mouse' && event.button !== 0)) return
+        event.currentTarget.setPointerCapture?.(event.pointerId)
+        // Within the item, clear of its rounded corners: as far as each edge from where it is.
+        drag.current = {
+          pointer: event.pointerId,
+          x: event.clientX,
+          y: event.clientY,
+          origin: offset,
+          min: {
+            x: offset.x + area.left - box.left + CAPTIONS_EDGE,
+            y: offset.y + area.top - box.top + CAPTIONS_EDGE,
+          },
+          max: {
+            x: offset.x + area.right - box.right - CAPTIONS_EDGE,
+            y: offset.y + area.bottom - box.bottom - CAPTIONS_EDGE,
+          },
+        }
+      }}
+      onPointerMove={(event) => {
+        const d = drag.current
+        if (!d || d.pointer !== event.pointerId) return
+        const clamp = (n: number, min: number, max: number) => Math.min(max, Math.max(min, n))
+        setOffset({
+          x: clamp(d.origin.x + event.clientX - d.x, d.min.x, d.max.x),
+          y: clamp(d.origin.y + event.clientY - d.y, d.min.y, d.max.y),
+        })
+      }}
+      onPointerUp={() => {
+        drag.current = null
+      }}
+      onPointerCancel={() => {
+        drag.current = null
+      }}
+      className={cn(
+        'mx-auto mb-2 w-fit max-w-full cursor-grab touch-none whitespace-pre-line rounded-md bg-black/75 px-2 py-1 text-center text-sm text-white select-none active:cursor-grabbing',
+        className,
+      )}
+      style={{ translate: offset.x || offset.y ? `${offset.x}px ${offset.y}px` : undefined }}
+      {...props}
+    >
+      {show && text}
+    </div>
+  )
+}
+
+export { VerticalFeed, VerticalFeedAction, VerticalFeedActions, VerticalFeedCaptions }

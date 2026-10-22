@@ -1,9 +1,17 @@
-import { BookmarkIcon, HeartIcon, MessageCircleIcon, Share2Icon } from 'lucide-react'
+import {
+  BookmarkIcon,
+  CaptionsIcon,
+  CaptionsOffIcon,
+  HeartIcon,
+  MessageCircleIcon,
+  Share2Icon,
+} from 'lucide-react'
 import { useState } from 'react'
 import {
   VerticalFeed,
   VerticalFeedAction,
   VerticalFeedActions,
+  VerticalFeedCaptions,
 } from '@/components/ui/vertical-feed'
 
 const posts = [
@@ -31,10 +39,14 @@ const posts = [
   { id: 4, user: 'leo', caption: 'Night walk', likes: 15600, media: '/img/gallery-4.png' },
 ]
 
+const isVideo = (post: (typeof posts)[number]) => post.media.endsWith('.webm')
+
 const compact = new Intl.NumberFormat('en', { notation: 'compact' })
 
 export default function VerticalFeedDemo() {
   const [liked, setLiked] = useState<number[]>([])
+  // One switch for the whole feed, as apps do.
+  const [captions, setCaptions] = useState(true)
   return (
     // A phone sized frame here; on a page of its own the feed fills the screen.
     <VerticalFeed className="h-[min(640px,80dvh)] w-full max-w-90 rounded-2xl bg-black text-white">
@@ -42,7 +54,7 @@ export default function VerticalFeedDemo() {
         const isLiked = liked.includes(post.id)
         return (
           <div key={post.id} className="size-full">
-            {post.media.endsWith('.webm') ? (
+            {isVideo(post) ? (
               <video src={post.media} muted loop playsInline className="size-full object-cover">
                 <track
                   kind="captions"
@@ -76,8 +88,18 @@ export default function VerticalFeedDemo() {
               <VerticalFeedAction label="Share">
                 <Share2Icon />
               </VerticalFeedAction>
+              {isVideo(post) && (
+                <VerticalFeedAction
+                  label="Captions"
+                  pressed={captions}
+                  onClick={() => setCaptions(!captions)}
+                >
+                  {captions ? <CaptionsIcon /> : <CaptionsOffIcon />}
+                </VerticalFeedAction>
+              )}
             </VerticalFeedActions>
             <div className="absolute inset-x-0 bottom-0 bg-linear-to-t from-black/70 to-transparent p-4 pt-12 pr-20">
+              {isVideo(post) && <VerticalFeedCaptions show={captions} />}
               <p className="font-semibold">@{post.user}</p>
               <p className="text-sm text-white/85">{post.caption}</p>
             </div>

@@ -32,6 +32,20 @@ Each child becomes one item, as tall as the feed. The feed fills the screen by d
 
 An item counts as on screen once 60% of it shows. `onActiveChange` gets its index: load more items as it nears the end. With `autoPlay`, the default, its videos play and every other video in the feed pauses. The item carries `data-active` for your own styles.
 
+## Captions
+
+Captions drawn by the browser sit at the bottom of the video, right under a caption overlay. `VerticalFeedCaptions` draws them itself: put it in the overlay just before the title and they sit right above it, so the two never overlap. Drag them anywhere on the item; they stop short of its edges. It reads the first `captions` or `subtitles` track of the item's video, and `show={false}` turns the track off, for a CC button like the one in the demo.
+
+```tsx
+<video src={post.src} muted loop playsInline>
+  <track kind="captions" src={post.captions} srcLang="en" label="English" />
+</video>
+<div className="absolute inset-x-0 bottom-0 p-4">
+  <VerticalFeedCaptions show={captions} />
+  <p className="font-semibold">@{post.user}</p>
+</div>
+```
+
 ## Props
 
 `VerticalFeed`:
@@ -48,6 +62,12 @@ An item counts as on screen once 60% of it shows. `onActiveChange` gets its inde
 | `label` | | What it does, read out with its count. |
 | `count` | | Shown under the icon. |
 | `pressed` | | For toggles: on or off. |
+
+`VerticalFeedCaptions`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `show` | `true` | Show the captions; off, the track is turned off too. |
 
 ## Accessibility
 

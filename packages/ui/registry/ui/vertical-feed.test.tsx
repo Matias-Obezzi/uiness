@@ -1,7 +1,12 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { HeartIcon } from 'lucide-react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { VerticalFeed, VerticalFeedAction, VerticalFeedActions } from './vertical-feed'
+import {
+  VerticalFeed,
+  VerticalFeedAction,
+  VerticalFeedActions,
+  VerticalFeedCaptions,
+} from './vertical-feed'
 
 let report: IntersectionObserverCallback = () => {}
 
@@ -81,6 +86,49 @@ describe('VerticalFeed', () => {
 
     fireEvent.keyDown(screen.getByRole('textbox', { name: 'Comment' }), { key: 'ArrowDown' })
     expect(scrollTo).toHaveBeenCalledTimes(1)
+  })
+
+  it('draws the captions itself, turns them off, and drags them within the item', () => {
+    // jsdom has no text tracks: one that holds a cue.
+    const track = Object.assign(new EventTarget(), {
+      kind: 'captions',
+      mode: 'disabled',
+      activeCues: [{ text: 'A wall of fire.' }],
+    })
+    vi.spyOn(HTMLMediaElement.prototype, 'textTracks', 'get').mockReturnValue([
+      track,
+    ] as unknown as TextTrackList)
+    const Item = ({ show }: { show: boolean }) => (
+      <VerticalFeed>
+        <div>
+          {/* biome-ignore lint/a11y/useMediaCaption: the track is faked above */}
+          <video />
+          <VerticalFeedCaptions show={show} />
+        </div>
+      </VerticalFeed>
+    )
+    const { container, rerender } = render(<Item show />)
+    const captions = container.querySelector('[data-slot=vertical-feed-captions]') as HTMLElement
+    // The browser draws nothing; the cue is shown here.
+    expect(track.mode).toBe('hidden')
+    expect(captions.textContent).toBe('A wall of fire.')
+
+    // A 360 by 640 item with the captions near its bottom.
+    const rect = (left: number, top: number, right: number, bottom: number) =>
+      ({ left, top, right, bottom }) as DOMRect
+    vi.spyOn(screen.getByRole('article'), 'getBoundingClientRect').mockReturnValue(
+      rect(0, 0, 360, 640),
+    )
+    vi.spyOn(captions, 'getBoundingClientRect').mockReturnValue(rect(100, 560, 260, 590))
+    fireEvent.pointerDown(captions, { pointerId: 1, clientX: 150, clientY: 570 })
+    fireEvent.pointerMove(captions, { pointerId: 1, clientX: -500, clientY: -500 })
+    fireEvent.pointerUp(captions, { pointerId: 1 })
+    // It stops 8px from the top left corner.
+    expect(captions.style.translate).toBe('-92px -552px')
+
+    rerender(<Item show={false} />)
+    expect(track.mode).toBe('disabled')
+    expect(captions.hidden).toBe(true)
   })
 
   it('names its actions with their counts', () => {
