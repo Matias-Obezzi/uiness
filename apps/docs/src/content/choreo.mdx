@@ -151,4 +151,6 @@ async function go(to: string) {
 
 ## Notes
 
-It runs before the first paint, so content is never seen in place and then snapped away to be hidden. Hover touches go through a small stylesheet on `translate` and `scale`, which compose with any `transform` the element has, and are only added to elements that have no transitions of their own. The number counter writes to the existing text node and gives up the moment anything else writes to it, so a re-render always wins.
+It runs before the first paint, so content is never seen in place and then snapped away to be hidden. Hover touches are animations added on top of `translate` and `scale`, on pointers that can hover. They compose with any `transform` the element has, and are only added to elements that have no transitions of their own. The number counter writes to the existing text node and gives up the moment anything else writes to it, so a re-render always wins.
+
+It writes nothing on the elements it animates: entrances and hover touches are Web Animations, and the role is kept in memory (`debug` alone writes `data-choreo-role`, for its outlines). That matters with server rendering and streaming, as in a Next.js App Router page with `<Suspense>`: HTML that arrives before React hydrates it stays exactly as the server wrote it, so React finds no mismatch. Until React has hydrated an element, its words are not split and its numbers do not count: it fades in whole.

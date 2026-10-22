@@ -28,7 +28,7 @@ export type Effect =
   | 'words'
   | 'none'
 
-/** A touch added on hover or press, through a stylesheet rather than script. */
+/** A touch added on hover or press: animations added on top, with no attribute to style. */
 export type Hover = 'lift' | 'press'
 
 export interface PlanItem {
