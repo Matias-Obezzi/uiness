@@ -1,4 +1,6 @@
-import { render } from '@testing-library/react'
+import { act, render } from '@testing-library/react'
+import { createRoot, hydrateRoot } from 'react-dom/client'
+import { renderToString } from 'react-dom/server'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { choreograph } from './choreograph'
 import { formatCount, parseCount } from './counter'
@@ -226,6 +228,9 @@ describe('choreograph', () => {
         cancel() {
           animation.playState = 'idle'
         },
+        reverse() {
+          animation.playState = 'running'
+        },
         finish() {
           resolve()
         },
@@ -286,25 +291,109 @@ describe('choreograph', () => {
     expect(animations.every((a) => a.playState === 'idle')).toBe(true)
   })
 
-  it('marks roles and hover touches, and removes every trace on stop', () => {
+  it('marks roles for the debug outlines, and removes every trace on stop', () => {
     const root = page(
       '<button>Buy</button><div style="border: 1px solid red"><p>x</p><p>y</p></div>',
     )
     const choreo = start({ root, observe: false, debug: true })
     const button = root.querySelector('button')
     expect(button?.getAttribute('data-choreo-role')).toBe('button')
-    expect(button?.getAttribute('data-choreo-hover')).toBe('press')
     expect(root.hasAttribute('data-choreo-debug')).toBe(true)
     expect(document.querySelector('[data-choreo-legend]')?.textContent).toContain('button 1')
     expect(document.querySelector('style[data-choreo-style]')).not.toBeNull()
 
     choreo.stop()
     expect(button?.hasAttribute('data-choreo-role')).toBe(false)
-    expect(button?.hasAttribute('data-choreo-hover')).toBe(false)
     expect(root.hasAttribute('data-choreo-debug')).toBe(false)
     expect(document.querySelector('[data-choreo-legend]')).toBeNull()
     expect(document.querySelector('style[data-choreo-style]')).toBeNull()
     expect(animations.every((a) => a.playState === 'idle')).toBe(true)
+  })
+
+  it('writes no attribute on the elements outside debug', () => {
+    const root = page('<button>Buy</button><h2>Title</h2>')
+    start({ root, observe: false })
+    for (const el of root.querySelectorAll('*')) {
+      expect(
+        [...el.attributes].map((a) => a.name).filter((n) => n.startsWith('data-choreo')),
+      ).toEqual([])
+    }
+  })
+
+  it('lifts on hover and sinks on press with animations, not attributes', () => {
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query.includes('hover: hover'),
+      addEventListener() {},
+      removeEventListener() {},
+    }))
+    const root = page('<button>Buy</button>')
+    const choreo = start({ root, observe: false })
+    const button = root.querySelector('button') as HTMLButtonElement
+    const pointer = (type: string, init: Record<string, unknown> = {}) =>
+      button.dispatchEvent(
+        Object.assign(new Event(type), { pointerType: 'mouse', button: 0, ...init }),
+      )
+    const touches = () =>
+      animations.filter((a) => a.options.composite === 'add' && a.options.fill === 'forwards')
+
+    pointer('pointerenter')
+    expect(touches().at(-1)?.keyframes.at(-1)).toEqual({ translate: '0 -1px' })
+    pointer('pointerdown')
+    expect(touches().at(-1)?.keyframes.at(-1)).toEqual({ translate: '0 1px', scale: '0.97' })
+    // A touch screen has no hover: nothing for it.
+    const before = touches().length
+    pointer('pointerenter', { pointerType: 'touch' })
+    expect(touches()).toHaveLength(before)
+    expect(button.hasAttribute('data-choreo-hover')).toBe(false)
+
+    choreo.stop()
+    expect(touches().every((a) => a.playState === 'idle')).toBe(true)
+  })
+
+  it('does not change server HTML React has yet to hydrate, streamed in after it starts', async () => {
+    // A segment that streams in late: a heading word by word, a card with a big number and a
+    // button with a hover touch.
+    const Segment = () => (
+      <section>
+        <h2>Launch week is here</h2>
+        <div style={{ border: '1px solid red' }}>
+          <div style={{ fontSize: '48px' }}>12,500+</div>
+          <p>Teams</p>
+        </div>
+        <button type="button">Get started</button>
+      </section>
+    )
+    vi.stubGlobal('matchMedia', (query: string) => ({
+      matches: query.includes('hover: hover'),
+      addEventListener() {},
+      removeEventListener() {},
+    }))
+    // The app shell is React's, as in a Next.js layout; Choreo starts on it.
+    const host = document.createElement('div')
+    document.body.appendChild(host)
+    const shell = createRoot(host)
+    await act(async () => shell.render(<main />))
+    const root = host.querySelector('main') as HTMLElement
+    start({ root, effects: { heading: 'words' } })
+
+    // The streamed HTML lands, and is on screen before React gets to it.
+    const slot = document.createElement('div')
+    slot.innerHTML = renderToString(<Segment />)
+    root.appendChild(slot)
+    await vi.waitFor(() => expect(observed.length).toBeGreaterThan(0))
+    enter(...observed)
+    // Its entrance plays all the same, from animations only.
+    expect(animations.some((a) => a.playState === 'running')).toBe(true)
+    expect(slot.innerHTML).toBe(renderToString(<Segment />))
+
+    const errors = vi.spyOn(console, 'error').mockImplementation(() => {})
+    const recoverable = vi.fn()
+    await act(async () => {
+      hydrateRoot(slot, <Segment />, { onRecoverableError: recoverable })
+    })
+    expect(recoverable).not.toHaveBeenCalled()
+    expect(errors.mock.calls.flat().join(' ')).not.toMatch(/hydrat|did(n't| not) match/i)
+    await act(async () => shell.unmount())
   })
 
   it('picks up elements added later', async () => {

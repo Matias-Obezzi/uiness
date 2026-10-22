@@ -12,6 +12,8 @@ interface Entry {
   stopCounts: (() => void)[]
   /** Puts the text back after a word by word entrance. */
   unsplit?: () => void
+  /** Takes the hover and press listeners off. */
+  unhover?: () => void
 }
 
 type ViewTimelineClass = new (options: { subject: Element }) => AnimationTimeline
@@ -30,17 +32,9 @@ export const roleColors: Record<Role, string> = {
   custom: '#6366f1',
 }
 
+// Only the debug outlines. Roles and hover touches leave no attributes on the elements, so
+// nothing is written into server rendered HTML React has yet to hydrate.
 const STYLE = `
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  [data-choreo-hover] {
-    transition:
-      translate var(--duration-slow, 300ms) var(--easing-emphasized, ${FALLBACK_EASING}),
-      scale var(--duration-fast, 150ms) var(--easing-standard, ease-out);
-  }
-  [data-choreo-hover='lift']:hover { translate: 0 -4px; }
-  [data-choreo-hover='press']:hover { translate: 0 -1px; }
-  [data-choreo-hover='press']:active { translate: 0 0; scale: 0.97; }
-}
 ${Object.entries(roleColors)
   .map(
     ([role, color]) =>
@@ -126,6 +120,19 @@ function splitWords(el: HTMLElement) {
   return { words, restore }
 }
 
+/** A CSS time token, such as `--duration-slow: 300ms`, in milliseconds. */
+function ms(value: string, fallback: number) {
+  const n = Number.parseFloat(value)
+  if (Number.isNaN(n)) return fallback
+  return value.trim().endsWith('ms') ? n : value.trim().endsWith('s') ? n * 1000 : n
+}
+
+/**
+ * Whether React has hydrated this element: it keeps its fiber on a `__reactFiber$…` key.
+ * shortcut: a React internal, stable since React 17; outside React it is never asked.
+ */
+const hasFiber = (el: Element) => Object.keys(el).some((key) => key.startsWith('__reactFiber$'))
+
 function documentOrder(a: PlanItem, b: PlanItem) {
   const position = a.element.compareDocumentPosition(b.element)
   return position & 4 ? -1 : position & 2 ? 1 : 0
@@ -167,6 +174,18 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
   const ViewTimeline = (globalThis as { ViewTimeline?: ViewTimelineClass }).ViewTimeline
   const scrubbing = !!options.scrub && canAnimate && typeof ViewTimeline === 'function'
   let easing = options.easing || token('--easing-emphasized') || FALLBACK_EASING
+  // Hover and press only where a pointer can hover, and not for reduced motion.
+  const hovers =
+    canAnimate &&
+    !reduced &&
+    typeof matchMedia === 'function' &&
+    matchMedia('(hover: hover)').matches
+  const lift = ms(token('--duration-slow'), 300)
+  const press = ms(token('--duration-fast'), 150)
+  // Inside a React tree, an element without a fiber came in with streamed HTML and React has
+  // not hydrated it yet. Its text must stay as the server wrote it until then.
+  const inReact = hasFiber(root)
+  const hydrated = (el: Element) => !inReact || hasFiber(el)
 
   const scanner = createScanner(options)
   const entries = new Map<Element, Entry>()
@@ -247,6 +266,8 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
   const splitIntoWords = (entry: Entry) => {
     const el = entry.item.element
     if (entry.item.effect !== 'words' || fadeOnly || !(el instanceof HTMLElement)) return
+    // Not yet hydrated: it fades in whole, as it waited, instead of splitting its text.
+    if (!hydrated(el)) return
     const { words, restore } = splitWords(el)
     if (words.length === 0) return
     for (const animation of entry.animations) animation.cancel()
@@ -307,7 +328,8 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
       animation.effect?.updateTiming({ delay: total + (lag.get(animation) ?? 0) })
       animation.play()
     }
-    if (counters && !reduced) for (const el of entry.item.numbers) count(entry, el, total)
+    if (counters && !reduced)
+      for (const el of entry.item.numbers) if (hydrated(el)) count(entry, el, total)
     if (animations.length === 0) {
       entry.state = 'done'
     } else {
@@ -354,14 +376,85 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
       )
     : null
 
+  /**
+   * Lifts the element on hover and, for `press`, sinks it while pressed: animations added on
+   * top of whatever it already shows, its entrance included. Listeners and animations leave
+   * its attributes alone, so it works on HTML React has not hydrated yet.
+   */
+  const addHover = (entry: Entry) => {
+    const { element: el, hover } = entry.item
+    if (!hover || !hovers) return
+    let raised: Animation | null = null
+    let pressed: Animation | null = null
+    const to = (frames: Keyframe[], duration: number) =>
+      animateSafely(el, frames, { duration, fill: 'forwards', composite: 'add' })
+    const back = (animation: Animation | null, done: () => void) => {
+      if (!animation) return
+      animation.reverse()
+      animation.finished.then(done).catch(() => {})
+    }
+    const onEnter = (event: Event) => {
+      if ((event as PointerEvent).pointerType !== 'mouse') return
+      raised?.cancel()
+      const y = hover === 'lift' ? '-4px' : '-1px'
+      raised = to([{ translate: '0 0' }, { translate: `0 ${y}` }], lift)
+    }
+    const onLeave = () => {
+      const animation = raised
+      back(animation, () => {
+        if (raised === animation) {
+          animation?.cancel()
+          raised = null
+        }
+      })
+      onUp()
+    }
+    const onDown = (event: Event) => {
+      const pointer = event as PointerEvent
+      if (hover !== 'press' || pointer.pointerType !== 'mouse' || pointer.button !== 0) return
+      pressed?.cancel()
+      // Back down by the hover's 1px, and a little smaller.
+      pressed = to(
+        [
+          { translate: '0 0', scale: '1' },
+          { translate: '0 1px', scale: '0.97' },
+        ],
+        press,
+      )
+    }
+    const onUp = () => {
+      const animation = pressed
+      back(animation, () => {
+        if (pressed === animation) {
+          animation?.cancel()
+          pressed = null
+        }
+      })
+    }
+    el.addEventListener('pointerenter', onEnter)
+    el.addEventListener('pointerleave', onLeave)
+    el.addEventListener('pointerdown', onDown)
+    el.addEventListener('pointerup', onUp)
+    el.addEventListener('pointercancel', onUp)
+    entry.unhover = () => {
+      el.removeEventListener('pointerenter', onEnter)
+      el.removeEventListener('pointerleave', onLeave)
+      el.removeEventListener('pointerdown', onDown)
+      el.removeEventListener('pointerup', onUp)
+      el.removeEventListener('pointercancel', onUp)
+      raised?.cancel()
+      pressed?.cancel()
+    }
+  }
+
+  // The role is kept here, in the entry; it is written on the element only for the debug
+  // outlines, which are for a developer looking, not for production pages.
   const mark = (item: PlanItem) => {
-    item.element.setAttribute('data-choreo-role', item.role)
-    if (item.hover && enabled) item.element.setAttribute('data-choreo-hover', item.hover)
+    if (debug) item.element.setAttribute('data-choreo-role', item.role)
   }
 
   const unmark = (el: Element) => {
-    el.removeAttribute('data-choreo-role')
-    el.removeAttribute('data-choreo-hover')
+    if (debug) el.removeAttribute('data-choreo-role')
   }
 
   const register = (items: PlanItem[]) => {
@@ -370,6 +463,7 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
       const entry: Entry = { item, animations: [], state: 'hidden', seen: false, stopCounts: [] }
       entries.set(item.element, entry)
       mark(item)
+      addHover(entry)
       if (scrubbing) {
         // The scroll plays it; there is nothing to wait for.
         hide(entry)
@@ -386,6 +480,7 @@ export function choreograph(options: ChoreoOptions = {}): Choreography {
     const entry = entries.get(el)
     if (!entry) return
     clear(entry)
+    entry.unhover?.()
     io?.unobserve(el)
     unmark(el)
     entries.delete(el)
