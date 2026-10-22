@@ -44,7 +44,12 @@ export default function VerticalFeedDemo() {
           <div key={post.id} className="size-full">
             {post.media.endsWith('.webm') ? (
               <video src={post.media} muted loop playsInline className="size-full object-cover">
-                <track kind="captions" src="/video/text-video-background.vtt" default />
+                <track
+                  kind="captions"
+                  src="/video/text-video-background.vtt"
+                  srcLang="en"
+                  label="English"
+                />
               </video>
             ) : (
               <img src={post.media} alt="" className="size-full object-cover" />
