@@ -1,5 +1,11 @@
 # @uiness/map
 
+## 0.1.1
+
+### Patch Changes
+
+- 93ad042: A popup near a side of the map slides inward to stay whole, 8px from the edge, and is never wider than the map. Before, a popup over a marker near the edge was cut off.
+
 ## 0.1.0
 
 ### Minor Changes
