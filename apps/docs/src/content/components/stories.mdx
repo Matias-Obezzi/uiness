@@ -1,0 +1,80 @@
+A row of avatars that open full screen stories, the way Instagram and WhatsApp show them. A ring marks the people with stories not seen yet. In the viewer, bars fill as each story plays and it moves on by itself, to the next person at the end. Tap the right of the screen to skip, the left to go back, and hold to pause.
+
+<ComponentPreview name="stories-demo" />
+
+## Installation
+
+<Install name="stories" extra="Installs the Dialog, which holds the viewer." />
+
+## Usage
+
+```tsx
+import { Stories, type StoryGroup } from '@/components/ui/stories'
+
+const groups: StoryGroup[] = [
+  {
+    id: 'ines',
+    name: 'Ines Duarte',
+    avatar: '/ines.jpg',
+    stories: [
+      { id: 's1', src: '/hills.jpg', alt: 'Hills at dusk', time: '2h' },
+      { id: 's2', src: '/clip.mp4', type: 'video' },
+      { id: 's3', content: <Announcement />, duration: 8000 },
+    ],
+  },
+]
+
+<Stories groups={groups} defaultSeen={seenIds} onSeen={(story) => markSeen(story.id)} />
+```
+
+A story is an image, a video (`type: 'video'`) or your own `content`, drawn over the media or in its place. Images stay up for 5 seconds unless you set `duration`; videos last as long as the clip.
+
+## Seen stories
+
+`defaultSeen` takes the ids already seen, to start from. The viewer opens each person at their first story not seen yet, and `onSeen` is called once per story the first time it shows: save it there. A person with nothing new keeps a plain gray ring.
+
+## Controls
+
+| Input | Does |
+| --- | --- |
+| Tap the right two thirds | Next story, or the next person after the last one |
+| Tap the left third | Previous story |
+| Press and hold | Pauses while held |
+| Pause button, Space | Pauses until pressed again |
+| Right and left arrows | Next and previous |
+| Escape, close button | Closes |
+
+Videos start muted, so they can play on their own; the speaker button turns the sound on.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `groups` | | People and their stories, `{ id, name, avatar?, stories }`. |
+| `defaultSeen` | `[]` | Ids of stories already seen. |
+| `onSeen` | | Called with a story and its person the first time it shows. |
+
+Each story is `{ id, src?, type?, alt?, content?, duration?, time? }`.
+
+## Accessibility
+
+Each avatar is a button that says whether there is something new, "Ines Duarte, new stories". The viewer is a dialog named after the story on screen, "Ines Duarte, story 2 of 3", and focus stays in it until it closes. Every gesture has a button or a key, and the pause button stops stories that would otherwise move on before someone has read them.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Stories` takes them as `labels`. To set them for the whole app, put them under `'stories'` in a [`LabelsProvider`](/docs/localization). Functions get the numbers and names that go in the sentence.
+
+```ts
+const defaultStoriesLabels: StoriesLabels = {
+  tray: 'Stories',
+  group: (name, unseen) => (unseen ? `${name}, new stories` : name),
+  story: (name, index, total) => `${name}, story ${index} of ${total}`,
+  previous: 'Previous story',
+  next: 'Next story',
+  pause: 'Pause',
+  play: 'Play',
+  mute: 'Mute',
+  unmute: 'Unmute',
+  close: 'Close stories',
+}
+```

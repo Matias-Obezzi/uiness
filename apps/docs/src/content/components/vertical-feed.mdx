@@ -1,0 +1,64 @@
+A full height feed that moves one item at a time, swiped up and down the way TikTok, Reels and Shorts are. It is native scrolling with scroll snap, so it feels like the platform on every device. The item on screen plays its videos and the others pause, and a column of round buttons sits down its right side.
+
+<ComponentPreview name="vertical-feed-demo" />
+
+## Installation
+
+<Install name="vertical-feed" />
+
+## Usage
+
+```tsx
+import { VerticalFeed, VerticalFeedAction, VerticalFeedActions } from '@/components/ui/vertical-feed'
+
+<VerticalFeed onActiveChange={(i) => i >= posts.length - 2 && loadMore()}>
+  {posts.map((post) => (
+    <div key={post.id} className="size-full">
+      <video src={post.src} muted loop playsInline className="size-full object-cover" />
+      <VerticalFeedActions>
+        <VerticalFeedAction label="Like" count="12K" pressed={post.liked} onClick={() => like(post)}>
+          <HeartIcon />
+        </VerticalFeedAction>
+      </VerticalFeedActions>
+      <Caption post={post} />
+    </div>
+  ))}
+</VerticalFeed>
+```
+
+Each child becomes one item, as tall as the feed. The feed fills the screen by default; give it another height with `className`. Videos need `muted` to start on their own, and `loop` to keep going.
+
+## The item on screen
+
+An item counts as on screen once 60% of it shows. `onActiveChange` gets its index: load more items as it nears the end. With `autoPlay`, the default, its videos play and every other video in the feed pauses. The item carries `data-active` for your own styles.
+
+## Props
+
+`VerticalFeed`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `onActiveChange` | | Called with the index of the item on screen. |
+| `autoPlay` | `true` | Play the videos of the item on screen and pause the rest. |
+
+`VerticalFeedAction`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` | | What it does, read out with its count. |
+| `count` | | Shown under the icon. |
+| `pressed` | | For toggles: on or off. |
+
+## Accessibility
+
+It follows the ARIA feed pattern: the feed is named, each item is an article with its position in the set, and Page Down and Page Up move one item, as do the arrow keys and J and K. Keys typed in a field inside an item are left alone. Each action is a button named with its count, "Like 12K", and toggles say whether they are on. With reduced motion the keys jump instead of scrolling.
+
+## Labels
+
+Every word it reads out to screen readers, in English by default. `VerticalFeed` takes them as `labels`. To set them for the whole app, put them under `'vertical-feed'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+const defaultVerticalFeedLabels: VerticalFeedLabels = {
+  feed: 'Feed',
+}
+```

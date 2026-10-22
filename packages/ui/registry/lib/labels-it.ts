@@ -574,6 +574,30 @@ export const it = {
   'swipe-actions': {
     moreActions: (label: string) => `Altre azioni per ${label}`,
   },
+  stories: {
+    tray: 'Storie',
+    group: (name: string, unseen: boolean) => (unseen ? `${name}, nuove storie` : name),
+    story: (name: string, index: number, total: number) => `${name}, storia ${index} di ${total}`,
+    previous: 'Storia precedente',
+    next: 'Storia successiva',
+    pause: 'Pausa',
+    play: 'Riproduci',
+    mute: 'Disattiva audio',
+    unmute: 'Attiva audio',
+    close: 'Chiudi storie',
+  },
+  'swipe-deck': {
+    deck: 'Schede',
+    like: 'Mi piace',
+    nope: 'No',
+    superLike: 'Super like',
+    undo: 'Annulla',
+    result: (direction: 'left' | 'right' | 'up') =>
+      direction === 'right' ? 'Piaciuta' : direction === 'left' ? 'Scartata' : 'Super like',
+  },
+  'vertical-feed': {
+    feed: 'Feed',
+  },
   'tag-input': {
     remove: (tag: string) => `Rimuovi ${tag}`,
     max: (max: number) => `Fino a ${plural(max, 'etichetta', 'etichette')}.`,

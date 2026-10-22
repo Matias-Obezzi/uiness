@@ -565,6 +565,30 @@ export const en = {
   'swipe-actions': {
     moreActions: (label: string) => `More actions for ${label}`,
   },
+  stories: {
+    tray: 'Stories',
+    group: (name: string, unseen: boolean) => (unseen ? `${name}, new stories` : name),
+    story: (name: string, index: number, total: number) => `${name}, story ${index} of ${total}`,
+    previous: 'Previous story',
+    next: 'Next story',
+    pause: 'Pause',
+    play: 'Play',
+    mute: 'Mute',
+    unmute: 'Unmute',
+    close: 'Close stories',
+  },
+  'swipe-deck': {
+    deck: 'Cards',
+    like: 'Like',
+    nope: 'Nope',
+    superLike: 'Super like',
+    undo: 'Undo',
+    result: (direction: 'left' | 'right' | 'up') =>
+      direction === 'right' ? 'Liked' : direction === 'left' ? 'Passed' : 'Super liked',
+  },
+  'vertical-feed': {
+    feed: 'Feed',
+  },
   'tag-input': {
     remove: (tag: string) => `Remove ${tag}`,
     max: (max: number) => `Up to ${plural(max, 'tag', 'tags')}.`,

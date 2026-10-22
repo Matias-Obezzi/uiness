@@ -448,14 +448,29 @@ const sections: NavSection[] = [
         'The steps of a flow, with lines that fill as you advance.',
       ),
       page(
+        'components/stories',
+        'Stories',
+        'Ringed avatars that open full screen stories: tap to skip, hold to pause.',
+      ),
+      page(
         'components/swipe-actions',
         'Swipe Actions',
         'List rows that reveal actions when swiped, with the same actions in a menu.',
       ),
       page(
+        'components/swipe-deck',
+        'Swipe Deck',
+        'Cards to sort by swiping right, left or up, with buttons and undo.',
+      ),
+      page(
         'components/tree-view',
         'Tree View',
         'Nested folders with the tree keyboard, checkboxes and lazy loading.',
+      ),
+      page(
+        'components/vertical-feed',
+        'Vertical Feed',
+        'A full height feed that snaps one item at a time, like short videos.',
       ),
     ],
   },
@@ -693,6 +708,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-22': ['components/stories', 'components/swipe-deck', 'components/vertical-feed'],
   '2026-10-15': ['components/credit-card', 'card-validator'],
   '2026-10-13': ['map'],
   '2026-10-09': [
@@ -960,6 +976,7 @@ const groups: Record<string, Record<string, string[]>> = {
       'spinner',
     ],
     Conversations: ['chat-thread', 'comment-thread'],
+    Social: ['stories', 'swipe-deck', 'vertical-feed'],
   },
   Blocks: {
     Marketing: [
