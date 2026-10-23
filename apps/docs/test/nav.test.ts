@@ -17,7 +17,8 @@ describe('isNew', () => {
     const previous = added.at(-2) as string
     const now = Date.parse(latest) + day
     expect(isNew(page(latest), now)).toBe(true)
-    expect(isNew(page(previous), Math.max(now, Date.parse(previous) + day))).toBe(true)
+    // Each a day after its own date: releases can be more than a week apart.
+    expect(isNew(page(previous), Date.parse(previous) + day)).toBe(true)
   })
 
   it('stops after seven days', () => {
