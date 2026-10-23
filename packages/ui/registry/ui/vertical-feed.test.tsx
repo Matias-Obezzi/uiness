@@ -88,47 +88,143 @@ describe('VerticalFeed', () => {
     expect(scrollTo).toHaveBeenCalledTimes(1)
   })
 
-  it('draws the captions itself, turns them off, and drags them within the item', () => {
-    // jsdom has no text tracks: one that holds a cue.
-    const track = Object.assign(new EventTarget(), {
-      kind: 'captions',
-      mode: 'disabled',
-      activeCues: [{ text: 'A wall of fire.' }],
+  describe('captions', () => {
+    // jsdom has no text tracks or layout: a track per video holding a cue, a 360 by 640 item,
+    // and captions 160 by 30 near its bottom, moved by their translate.
+    let box = { left: 100, top: 560, right: 260, bottom: 590 }
+    const tracks: (EventTarget & { kind: string; mode: string; activeCues: { text: string }[] })[] =
+      []
+    const rect = ({ left, top, right, bottom }: typeof box) =>
+      ({ left, top, right, bottom, width: right - left, height: bottom - top }) as DOMRect
+    const shift = (el: HTMLElement) =>
+      el.style.translate.split(' ').map((n) => Number.parseFloat(n))
+
+    beforeEach(() => {
+      localStorage.clear()
+      box = { left: 100, top: 560, right: 260, bottom: 590 }
+      tracks.length = 0
+      vi.spyOn(HTMLMediaElement.prototype, 'textTracks', 'get').mockImplementation(function (
+        this: HTMLMediaElement,
+      ) {
+        const own = this as HTMLMediaElement & { fake?: (typeof tracks)[number] }
+        if (!own.fake) {
+          own.fake = Object.assign(new EventTarget(), {
+            kind: 'captions',
+            mode: 'disabled',
+            activeCues: [{ text: 'A wall of fire.' }],
+          })
+          tracks.push(own.fake)
+        }
+        return [own.fake] as unknown as TextTrackList
+      })
+      vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (
+        this: Element,
+      ) {
+        if (this.tagName === 'ARTICLE') return rect({ left: 0, top: 0, right: 360, bottom: 640 })
+        if (this.matches('[data-slot=vertical-feed-captions]')) {
+          // Moved by its translate, as a browser measures it.
+          const [x = 0, y = 0] = (this as HTMLElement).style.translate
+            ? shift(this as HTMLElement)
+            : []
+          return rect({
+            left: box.left + x,
+            top: box.top + y,
+            right: box.right + x,
+            bottom: box.bottom + y,
+          })
+        }
+        return rect({ left: 0, top: 0, right: 0, bottom: 0 })
+      })
     })
-    vi.spyOn(HTMLMediaElement.prototype, 'textTracks', 'get').mockReturnValue([
-      track,
-    ] as unknown as TextTrackList)
-    const Item = ({ show }: { show: boolean }) => (
+
+    const Feed = ({ show = true }: { show?: boolean }) => (
       <VerticalFeed>
-        <div>
-          {/* biome-ignore lint/a11y/useMediaCaption: the track is faked above */}
-          <video />
-          <VerticalFeedCaptions show={show} />
-        </div>
+        {['one', 'two'].map((name) => (
+          <div key={name}>
+            {/* biome-ignore lint/a11y/useMediaCaption: the track is faked above */}
+            <video />
+            <VerticalFeedCaptions show={show} />
+          </div>
+        ))}
       </VerticalFeed>
     )
-    const { container, rerender } = render(<Item show />)
-    const captions = container.querySelector('[data-slot=vertical-feed-captions]') as HTMLElement
-    // The browser draws nothing; the cue is shown here.
-    expect(track.mode).toBe('hidden')
-    expect(captions.textContent).toBe('A wall of fire.')
+    const captions = () => screen.getAllByRole('group', { name: /^Captions/ })
 
-    // A 360 by 640 item with the captions near its bottom.
-    const rect = (left: number, top: number, right: number, bottom: number) =>
-      ({ left, top, right, bottom }) as DOMRect
-    vi.spyOn(screen.getByRole('article'), 'getBoundingClientRect').mockReturnValue(
-      rect(0, 0, 360, 640),
-    )
-    vi.spyOn(captions, 'getBoundingClientRect').mockReturnValue(rect(100, 560, 260, 590))
-    fireEvent.pointerDown(captions, { pointerId: 1, clientX: 150, clientY: 570 })
-    fireEvent.pointerMove(captions, { pointerId: 1, clientX: -500, clientY: -500 })
-    fireEvent.pointerUp(captions, { pointerId: 1 })
-    // It stops 8px from the top left corner.
-    expect(captions.style.translate).toBe('-92px -552px')
+    it('draws them itself, reads them out while playing, and turns them off', () => {
+      const { rerender } = render(<Feed />)
+      const [first] = captions() as HTMLElement[]
+      // The browser draws nothing; the cue is shown here, and not read out while paused.
+      expect(tracks.map((t) => t.mode)).toEqual(['hidden', 'hidden'])
+      expect(first?.textContent).toBe('A wall of fire.')
+      expect(first?.querySelector('[aria-live]')?.textContent).toBe('')
 
-    rerender(<Item show={false} />)
-    expect(track.mode).toBe('disabled')
-    expect(captions.hidden).toBe(true)
+      vi.spyOn(HTMLMediaElement.prototype, 'paused', 'get').mockReturnValue(false)
+      const [track] = tracks
+      act(() => {
+        if (track) track.activeCues = [{ text: 'The flames rise.' }]
+        track?.dispatchEvent(new Event('cuechange'))
+      })
+      expect(first?.querySelector('[aria-live]')?.textContent).toBe('The flames rise.')
+
+      rerender(<Feed show={false} />)
+      expect(tracks.map((t) => t.mode)).toEqual(['disabled', 'disabled'])
+      expect(first?.hidden).toBe(true)
+    })
+
+    it('moves for every item, stays inside, and is remembered', () => {
+      const { unmount } = render(<Feed />)
+      const [first, second] = captions() as HTMLElement[]
+      if (!first || !second) throw new Error('two captions')
+      fireEvent.pointerDown(first, { pointerId: 1, clientX: 150, clientY: 570 })
+      fireEvent.pointerMove(first, { pointerId: 1, clientX: -500, clientY: -500 })
+      fireEvent.pointerUp(first, { pointerId: 1 })
+      // 8px from the top left corner, here and on the other item.
+      for (const el of [first, second]) {
+        const [x, y] = shift(el)
+        expect(x).toBeCloseTo(-92)
+        expect(y).toBeCloseTo(-552)
+      }
+
+      unmount()
+      render(<Feed />)
+      expect(shift(captions()[0] as HTMLElement)[0]).toBeCloseTo(-92)
+    })
+
+    it('keeps inside when a longer caption widens it', () => {
+      render(<Feed />)
+      const [first] = captions() as HTMLElement[]
+      if (!first) throw new Error('captions')
+      for (let i = 0; i < 5; i++) fireEvent.keyDown(first, { key: 'ArrowRight', shiftKey: true })
+      // As far right as a 160px box goes: its left edge at 192.
+      expect(shift(first)[0]).toBeCloseTo(92)
+
+      box = { left: 60, top: 560, right: 300, bottom: 590 }
+      const [track] = tracks
+      act(() => {
+        if (track) track.activeCues = [{ text: 'Then it all begins again, and again.' }]
+        track?.dispatchEvent(new Event('cuechange'))
+      })
+      // 240px wide now: its left edge at 112, still 8px from the right.
+      expect(shift(first)[0]).toBeCloseTo(52)
+    })
+
+    it('moves with the arrow keys without moving the feed, and Home puts it back', () => {
+      const scrollTo = vi.fn()
+      Element.prototype.scrollTo = scrollTo
+      render(<Feed />)
+      const [first] = captions() as HTMLElement[]
+      if (!first) throw new Error('captions')
+      fireEvent.keyDown(first, { key: 'ArrowRight' })
+      // 2% of 360px.
+      expect(shift(first)[0]).toBeCloseTo(7.2)
+      fireEvent.keyDown(first, { key: 'ArrowDown' })
+      expect(scrollTo).not.toHaveBeenCalled()
+      expect(localStorage.getItem('uiness:vertical-feed-captions')).not.toBeNull()
+
+      fireEvent.keyDown(first, { key: 'Home' })
+      expect(first.style.translate).toBe('')
+      expect(localStorage.getItem('uiness:vertical-feed-captions')).toBeNull()
+    })
   })
 
   it('names its actions with their counts', () => {

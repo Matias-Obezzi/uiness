@@ -589,6 +589,7 @@ export const zh = {
   },
   'vertical-feed': {
     feed: '动态',
+    captions: '字幕。用方向键移动，按 Home 键复位。',
   },
   'tag-input': {
     remove: (tag: string) => `移除 ${tag}`,

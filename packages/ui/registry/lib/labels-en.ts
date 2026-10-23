@@ -588,6 +588,7 @@ export const en = {
   },
   'vertical-feed': {
     feed: 'Feed',
+    captions: 'Captions. Move them with the arrow keys; Home puts them back.',
   },
   'tag-input': {
     remove: (tag: string) => `Remove ${tag}`,

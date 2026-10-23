@@ -36,7 +36,13 @@ const posts = [
     likes: 342,
     media: '/img/gallery-2.png',
   },
-  { id: 4, user: 'leo', caption: 'Night walk', likes: 15600, media: '/img/gallery-4.png' },
+  {
+    id: 4,
+    user: 'leo',
+    caption: 'Night walk',
+    likes: 15600,
+    media: '/video/text-video-background.webm',
+  },
 ]
 
 const isVideo = (post: (typeof posts)[number]) => post.media.endsWith('.webm')

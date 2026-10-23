@@ -597,6 +597,7 @@ export const it = {
   },
   'vertical-feed': {
     feed: 'Feed',
+    captions: 'Sottotitoli. Spostali con le frecce; Inizio li rimette a posto.',
   },
   'tag-input': {
     remove: (tag: string) => `Rimuovi ${tag}`,

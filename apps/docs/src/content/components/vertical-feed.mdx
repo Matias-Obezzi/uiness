@@ -34,7 +34,7 @@ An item counts as on screen once 60% of it shows. `onActiveChange` gets its inde
 
 ## Captions
 
-Captions drawn by the browser sit at the bottom of the video, right under a caption overlay. `VerticalFeedCaptions` draws them itself: put it in the overlay just before the title and they sit right above it, so the two never overlap. Drag them anywhere on the item; they stop short of its edges. It reads the first `captions` or `subtitles` track of the item's video, and `show={false}` turns the track off, for a CC button like the one in the demo.
+Captions drawn by the browser sit at the bottom of the video, right under a caption overlay. `VerticalFeedCaptions` draws them itself: put it in the overlay just before the title and they sit right above it, so the two never overlap. Drag them anywhere on the item, or focus them and use the arrow keys, Shift for bigger steps. They stop short of the item's edges, again when a longer caption widens them. The place is shared by every item in the feed and remembered for the next visit; Home, Escape or a double click puts them back above the title. While a video plays each caption is also read out to screen readers, so a muted feed can be followed without looking. It reads the first `captions` or `subtitles` track of the item's video, and `show={false}` turns the track off, for a CC button like the one in the demo.
 
 ```tsx
 <video src={post.src} muted loop playsInline>
@@ -68,10 +68,11 @@ Captions drawn by the browser sit at the bottom of the video, right under a capt
 | Prop | Default | Description |
 | --- | --- | --- |
 | `show` | `true` | Show the captions; off, the track is turned off too. |
+| `labels` | | Words for the box's name, under `'vertical-feed'`. |
 
 ## Accessibility
 
-It follows the ARIA feed pattern: the feed is named, each item is an article with its position in the set, and Page Down and Page Up move one item, as do the arrow keys and J and K. Keys typed in a field inside an item are left alone. Each action is a button named with its count, "Like 12K", and toggles say whether they are on. With reduced motion the keys jump instead of scrolling.
+It follows the ARIA feed pattern: the feed is named, each item is an article with its position in the set, and Page Down and Page Up move one item, as do the arrow keys and J and K. Keys typed in a field inside an item are left alone. Each action is a button named with its count, "Like 12K", and toggles say whether they are on. With reduced motion the keys jump instead of scrolling. The captions box is focusable and named with how to move it; while focused, the arrows move it instead of the feed.
 
 ## Labels
 
@@ -80,5 +81,6 @@ Every word it reads out to screen readers, in English by default. `VerticalFeed`
 ```ts
 const defaultVerticalFeedLabels: VerticalFeedLabels = {
   feed: 'Feed',
+  captions: 'Captions. Move them with the arrow keys; Home puts them back.',
 }
 ```

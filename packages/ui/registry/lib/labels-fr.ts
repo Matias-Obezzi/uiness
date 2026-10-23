@@ -602,6 +602,7 @@ export const fr = {
   },
   'vertical-feed': {
     feed: 'Fil',
+    captions: 'Sous-titres. Déplacez-les avec les flèches ; Début les remet en place.',
   },
   'tag-input': {
     remove: (tag: string) => `Retirer ${tag}`,

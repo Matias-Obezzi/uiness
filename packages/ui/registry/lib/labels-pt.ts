@@ -597,6 +597,7 @@ export const pt = {
   },
   'vertical-feed': {
     feed: 'Feed',
+    captions: 'Legendas. Mova-as com as setas; Home as devolve ao lugar.',
   },
   'tag-input': {
     remove: (tag: string) => `Remover ${tag}`,
