@@ -2788,6 +2788,47 @@
       ]
     },
     {
+      "name": "stories",
+      "type": "registry:ui",
+      "title": "Stories",
+      "description": "A row of ringed avatars that open full screen stories: bars that fill as each one plays, tap to skip, hold to pause, and keyboard controls.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/dialog", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/stories.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "swipe-deck",
+      "type": "registry:ui",
+      "title": "Swipe Deck",
+      "description": "A stack of cards to sort by dragging the top one right, left or up, with tilt, stamps, flicks, undo and buttons that do the same.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/swipe-deck.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "vertical-feed",
+      "type": "registry:ui",
+      "title": "Vertical Feed",
+      "description": "A full height feed that snaps one item at a time like short videos, plays the item on screen and pauses the rest, with an action rail.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/vertical-feed.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "metric-card",
       "type": "registry:ui",
       "title": "Metric Card",

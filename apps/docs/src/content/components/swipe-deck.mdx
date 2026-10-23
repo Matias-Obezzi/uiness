@@ -1,0 +1,61 @@
+A stack of cards to sort one at a time, the way Tinder does it. Drag the top card right to like it, left to pass, or up for a super like. It tilts as it follows the finger, a stamp says what letting go will do, and it flies off past the threshold or on a quick flick, or springs back. Try it with a finger, the mouse, the buttons or the arrow keys.
+
+<ComponentPreview name="swipe-deck-demo" />
+
+## Installation
+
+<Install name="swipe-deck" />
+
+## Usage
+
+```tsx
+import { SwipeDeck } from '@/components/ui/swipe-deck'
+
+<SwipeDeck
+  items={people}
+  onSwipe={(person, direction) => save(person.id, direction)}
+  empty={<p>That is everyone for now.</p>}
+>
+  {(person) => <ProfileCard person={person} />}
+</SwipeDeck>
+```
+
+`items` need an `id`. `children` draws a card's face; it fills the card, 3 by 4 by default, and an image in it should have `draggable={false}`. `onSwipe` gets the item and `'left'`, `'right'` or `'up'`.
+
+Keep the items in the list after a swipe: the deck keeps track of the ones gone, which lets undo bring them back. To deal a fresh deck, give it a new `key`.
+
+## The gesture
+
+A press becomes a drag once it moves 8 pixels. Without `superLike`, a press that starts mostly downward is left to the page, so it still scrolls on a phone. Let go past 30% of the card's width, or flick it there, and it goes; the speed at release carries it a little further. The cards behind rise as the top one is pulled away. Elements marked `data-swipe-ignore` never start a drag, for a button on the card. With reduced motion cards go and come back without flying.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `items` | | The cards, top first, each with an `id`. |
+| `children` | | `(item) => ReactNode`, a card's face. |
+| `onSwipe` | | Called with the item and the direction as a card goes. |
+| `onUndo` | | Called with the item and the direction it went when undo brings it back. |
+| `superLike` | `false` | Allow swiping up, with its own button and the up arrow. |
+| `undo` | `true` | Show the undo button. |
+| `empty` | | Shown once every card is gone. |
+
+## Accessibility
+
+Dragging is a shortcut, never the only way: the like, nope, super like and undo buttons do the same, and the arrow keys work from any of them. The cards behind the top one are inert. After each card a polite announcement says what happened, "Liked" or "Passed".
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `SwipeDeck` takes them as `labels`. To set them for the whole app, put them under `'swipe-deck'` in a [`LabelsProvider`](/docs/localization). The stamps use the same words as the buttons.
+
+```ts
+const defaultSwipeDeckLabels: SwipeDeckLabels = {
+  deck: 'Cards',
+  like: 'Like',
+  nope: 'Nope',
+  superLike: 'Super like',
+  undo: 'Undo',
+  result: (direction) =>
+    direction === 'right' ? 'Liked' : direction === 'left' ? 'Passed' : 'Super liked',
+}
+```

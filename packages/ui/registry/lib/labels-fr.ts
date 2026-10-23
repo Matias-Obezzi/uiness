@@ -579,6 +579,31 @@ export const fr = {
   'swipe-actions': {
     moreActions: (label: string) => `Plus d’actions pour ${label}`,
   },
+  stories: {
+    tray: 'Stories',
+    group: (name: string, unseen: boolean) => (unseen ? `${name}, nouvelles stories` : name),
+    story: (name: string, index: number, total: number) => `${name}, story ${index} sur ${total}`,
+    previous: 'Story précédente',
+    next: 'Story suivante',
+    pause: 'Pause',
+    play: 'Lecture',
+    mute: 'Couper le son',
+    unmute: 'Activer le son',
+    close: 'Fermer les stories',
+  },
+  'swipe-deck': {
+    deck: 'Cartes',
+    like: 'J’aime',
+    nope: 'Non',
+    superLike: 'Super like',
+    undo: 'Annuler',
+    result: (direction: 'left' | 'right' | 'up') =>
+      direction === 'right' ? 'Aimée' : direction === 'left' ? 'Passée' : 'Super like',
+  },
+  'vertical-feed': {
+    feed: 'Fil',
+    captions: 'Sous-titres. Déplacez-les avec les flèches ; Début les remet en place.',
+  },
   'tag-input': {
     remove: (tag: string) => `Retirer ${tag}`,
     max: (max: number) => `Jusqu’à ${plural(max, 'étiquette', 'étiquettes')}.`,

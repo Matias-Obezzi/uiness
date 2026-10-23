@@ -565,6 +565,32 @@ export const zh = {
   'swipe-actions': {
     moreActions: (label: string) => `${label} 的更多操作`,
   },
+  stories: {
+    tray: '快拍',
+    group: (name: string, unseen: boolean) => (unseen ? `${name}，有新快拍` : name),
+    story: (name: string, index: number, total: number) =>
+      `${name}，第 ${index} 个快拍，共 ${total} 个`,
+    previous: '上一个快拍',
+    next: '下一个快拍',
+    pause: '暂停',
+    play: '播放',
+    mute: '静音',
+    unmute: '取消静音',
+    close: '关闭快拍',
+  },
+  'swipe-deck': {
+    deck: '卡片',
+    like: '喜欢',
+    nope: '不要',
+    superLike: '超级喜欢',
+    undo: '撤销',
+    result: (direction: 'left' | 'right' | 'up') =>
+      direction === 'right' ? '已喜欢' : direction === 'left' ? '已跳过' : '已超级喜欢',
+  },
+  'vertical-feed': {
+    feed: '动态',
+    captions: '字幕。用方向键移动，按 Home 键复位。',
+  },
   'tag-input': {
     remove: (tag: string) => `移除 ${tag}`,
     max: (max: number) => `最多 ${max} 个标签。`,

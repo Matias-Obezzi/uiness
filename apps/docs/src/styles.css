@@ -18,10 +18,13 @@ html {
   --scrollbar-thumb-hover: color-mix(in oklab, var(--muted-foreground) 75%, transparent);
 }
 
-@supports (scrollbar-color: auto) {
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--scrollbar-thumb) transparent;
+/* In the base layer, so a component's `[scrollbar-width:none]` still hides its own. */
+@layer base {
+  @supports (scrollbar-color: auto) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) transparent;
+    }
   }
 }
 
