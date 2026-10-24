@@ -666,7 +666,7 @@ export function Layout() {
           <ScrollFade asChild size={48}>
             <aside
               data-sidebar-scroll
-              className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto overscroll-contain md:block"
+              className="sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-56 shrink-0 overflow-y-auto md:block"
             >
               <SidebarNav className="py-8" />
             </aside>
