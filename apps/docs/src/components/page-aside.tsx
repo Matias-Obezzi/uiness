@@ -82,7 +82,7 @@ export function PageAside({
   return (
     <aside
       className={cn(
-        'sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-52 shrink-0 flex-col gap-6 overflow-y-auto overscroll-contain py-8 text-sm lg:py-10',
+        'sticky top-14 hidden h-[calc(100dvh-3.5rem)] w-52 shrink-0 flex-col gap-6 overflow-y-auto py-8 text-sm lg:py-10',
         wide ? '2xl:flex' : 'xl:flex',
       )}
     >
