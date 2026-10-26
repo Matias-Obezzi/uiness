@@ -10,6 +10,7 @@ export const PACKAGES = [
   'scroll',
   'dnd',
   'choreo',
+  'transitions',
   'three',
   'map',
   'card-validator',

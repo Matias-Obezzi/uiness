@@ -63,6 +63,13 @@ const features = [
       'Animates a whole site from what is already on the page. It reads the DOM and gives every element an entrance.',
   },
   {
+    title: 'Transitions',
+    pkg: 'transitions',
+    href: '/docs/transitions',
+    description:
+      'View transitions declared per element: covers that grow into pages, headers that stay, lists that cascade in, and pages that slide back the way they came.',
+  },
+  {
     title: 'Map',
     pkg: 'map',
     href: '/docs/map',
