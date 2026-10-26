@@ -100,6 +100,11 @@ const sections: NavSection[] = [
         'Animates a whole site from what is already on the page, no markup changes.',
       ),
       page(
+        'transitions',
+        'Transitions',
+        'View transitions declared per element, for routers, separate pages and any state.',
+      ),
+      page(
         'card-validator',
         'Card Validator',
         'Card checks for your server, and the bank behind a card from its first digits.',
@@ -708,6 +713,7 @@ const sections: NavSection[] = [
 
 /** Pages that shipped on the same day. Add a batch here when new pages land. */
 const releases: Record<string, string[]> = {
+  '2026-10-26': ['transitions'],
   '2026-10-22': ['components/stories', 'components/swipe-deck', 'components/vertical-feed'],
   '2026-10-15': ['components/credit-card', 'card-validator'],
   '2026-10-13': ['map'],

@@ -21,6 +21,7 @@ UI primitives for React, published under the `@uiness` scope.
 | [`@uiness/scroll`](packages/scroll) | Scroll-linked motion: progress through the viewport, parallax, active section. Zero dependencies. |
 | [`@uiness/dnd`](packages/dnd) | Drag and drop primitives: sortable lists, cards across columns, grids in two directions, free dragging. Pointer or keyboard, zero dependencies. |
 | [`@uiness/choreo`](packages/choreo) | Animates a whole site from what is already on the page: inspects the DOM, gives every element an entrance, cascades, counters and hover touches. |
+| [`@uiness/transitions`](packages/transitions) | View transitions between pages and states, declared per element: shared elements that morph, parts that stay put, entrances, exits and staggered lists, and a page effect that reverses going back. React Router, Next.js, sites of separate pages or any state change. |
 | [`@uiness/three`](packages/three) | 3D model viewer and stage: lazy loading, orbit controls, demand rendering, shadows and lighting. Core controller without React. |
 | [`@uiness/map`](packages/map) | Maps with zero dependencies: OpenStreetMap or any XYZ tiles, markers, popups, pan and zoom by pointer, touch or keyboard, and the same API on Google Maps or Apple Maps. |
 | [`@uiness/card-validator`](packages/card-validator) | Card checks for the server (brand, Luhn, expiry, security code), and the bank behind a card from its first digits through a cached endpoint of your own. |

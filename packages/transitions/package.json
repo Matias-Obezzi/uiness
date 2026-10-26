@@ -1,0 +1,94 @@
+{
+  "name": "@uiness/transitions",
+  "version": "0.0.0",
+  "description": "View transitions between pages and states, declared per element: shared elements that morph, parts that stay put, entrances and exits, staggered lists and a page effect that reverses going back. React Router, Next.js, sites of separate pages or any state change. Zero dependencies.",
+  "keywords": [
+    "view-transitions",
+    "page-transitions",
+    "shared-element",
+    "navigation",
+    "animation",
+    "react",
+    "nextjs",
+    "react-router",
+    "uiness"
+  ],
+  "author": "Matías Obezzi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Matias-Obezzi/uiness.git",
+    "directory": "packages/transitions"
+  },
+  "homepage": "https://uiness.vercel.app/docs/transitions",
+  "bugs": "https://github.com/Matias-Obezzi/uiness/issues",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "./dist/auto.iife.js"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.mts",
+  "unpkg": "./dist/auto.iife.js",
+  "jsdelivr": "./dist/auto.iife.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./core": {
+      "import": {
+        "types": "./dist/core.d.mts",
+        "default": "./dist/core.mjs"
+      },
+      "require": {
+        "types": "./dist/core.d.cts",
+        "default": "./dist/core.cjs"
+      }
+    },
+    "./auto": "./dist/auto.iife.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "jsdom": "^30.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tsdown": "^0.23.0",
+    "vitest": "^5.0.0"
+  }
+}

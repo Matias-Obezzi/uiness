@@ -93,6 +93,7 @@ export default defineConfig({
       '@uiness/scroll': `${root}../../packages/scroll/src/index.ts`,
       '@uiness/dnd': `${root}../../packages/dnd/src/index.ts`,
       '@uiness/choreo': `${root}../../packages/choreo/src/index.ts`,
+      '@uiness/transitions': `${root}../../packages/transitions/src/index.ts`,
       '@uiness/map': `${root}../../packages/map/src/index.ts`,
       '@uiness/card-validator/react': `${root}../../packages/card-validator/src/react.ts`,
       '@uiness/card-validator': `${root}../../packages/card-validator/src/index.ts`,

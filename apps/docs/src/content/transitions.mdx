@@ -1,0 +1,162 @@
+View transitions between pages and between states, declared per element. Say what each thing does when the page changes: a cover grows into the page it opens, the header stays put, a list cascades in, and the page slides back the way it came. It works with React Router, the Next.js App Router, sites of separate pages and any state change, on the browser's own View Transitions API. Zero dependencies.
+
+<ComponentPreview name="transitions-demo" />
+
+Open an album and go back. Turn on **Slow motion** to follow each part.
+
+## Installation
+
+<InstallPackage name="@uiness/transitions" />
+
+## Saying what each element does
+
+Wrap an element in `Transition`. It renders nothing of its own: the behavior goes on its child.
+
+```tsx
+import { Transition } from '@uiness/transitions'
+
+// The same name on both sides: it morphs from one place and size to the other.
+<Transition name={`cover-${album.id}`}>
+  <img src={album.cover} alt="" />
+</Transition>
+
+// Stays where it is while the rest of the page changes.
+<Transition persist>
+  <header>…</header>
+</Transition>
+
+// Comes in and goes out on its own when the other side has nothing like it.
+<Transition enter="fade-up" exit="fade">
+  <p>{album.artist}</p>
+</Transition>
+
+// Each child in turn, 40ms apart, or the milliseconds you give.
+<Transition stagger enter="fade-up">
+  <ol>{tracks.map((t) => <li key={t.id}>{t.title}</li>)}</ol>
+</Transition>
+```
+
+The effects are `fade`, `fade-up`, `fade-down`, `slide`, `slide-up`, `scale`, `blur` and `none`. `duration`, `easing` and `delay` set the timing of one element. Names must be unique on a page and valid CSS names; leave `name` out and the element gets one of its own.
+
+## The page
+
+`Transitions` sets how the page as a whole changes, for everything inside it. Put it once around the app.
+
+```tsx
+import { Transitions } from '@uiness/transitions'
+
+<Transitions page="slide" back="reverse" duration={350}>
+  <App />
+</Transitions>
+```
+
+`page` is one of the effects above, `fade` by default. Going back, `back="reverse"`, the default, plays slides the other way; give it an effect to play that instead. Back is worked out from the Navigation API, or React Router's history index, and set on `<html data-transition-direction="back">` for your own CSS.
+
+## Any state change
+
+`useViewTransition` returns a function that runs a state change inside a view transition, for tabs, filters, a list that sorts or a card that opens. The update is flushed at once, so the new picture has it.
+
+```tsx
+const start = useViewTransition()
+
+<button onClick={() => start(() => setOpen(album.id))}>Open</button>
+<button onClick={() => start(() => setOpen(null), { direction: 'back' })}>Back</button>
+```
+
+Outside React, `transition(update)` from `@uiness/transitions/core` does the same for any DOM change.
+
+## React Router
+
+React Router's own `viewTransition` on `Link`, `NavLink` and `navigate` already starts the view transition, in its data and framework modes. Mount `Transitions` inside the router and those links pick up the page effect, the elements and the direction.
+
+```tsx
+<Transitions page="slide">
+  <Outlet />
+</Transitions>
+
+<Link to={`/albums/${album.id}`} viewTransition>…</Link>
+```
+
+In declarative mode, or for full control, use `useNavigationTransition` as below with `routeKey={location.key}`.
+
+## Next.js
+
+The App Router has no hook before a navigation, so links go through `useLinkTransition`, which pushes inside a view transition and waits for the new route. Give `Transitions` the pathname as `routeKey` so it knows when the new page is in. Both live in a client component.
+
+```tsx
+'use client'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
+import { Transitions, useLinkTransition } from '@uiness/transitions'
+
+export function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <Transitions page="slide" routeKey={usePathname()}>
+      {children}
+    </Transitions>
+  )
+}
+
+export function TransitionLink(props: React.ComponentProps<typeof Link>) {
+  const router = useRouter()
+  const onClick = useLinkTransition((href) => router.push(href))
+  return <Link {...props} onClick={onClick} />
+}
+```
+
+Clicks that open a new tab, downloads and links to other sites are left to the browser. To navigate from code, `useNavigationTransition()` returns `navigate(() => router.push('/about'))`. If the new page takes more than 3 seconds, it shows without waiting.
+
+## Sites of separate pages
+
+For Astro, plain HTML or any server that sends whole pages, add the script to the `<head>` of every page. Transitions between pages of the same site turn on, and elements take their behavior from attributes.
+
+```html
+<script src="https://unpkg.com/@uiness/transitions/dist/auto.iife.js" data-page="slide"></script>
+
+<header data-transition-persist>…</header>
+<img data-transition-name="cover-12" src="cover.jpg" alt="" />
+<ol data-transition-stagger data-transition-enter="fade-up">…</ol>
+```
+
+The attributes are `data-transition-name`, `-persist`, `-enter`, `-exit`, `-stagger`, `-duration`, `-easing` and `-delay`. With a bundler, `crossDocument({ page: 'slide' })` from `@uiness/transitions/core` does the same.
+
+## Without React
+
+```ts
+import { mark, transition } from '@uiness/transitions/core'
+
+mark(document.querySelector('header'), { persist: true })
+mark(list, { stagger: true, enter: 'fade-up' })
+await transition(() => renderPage(next))
+```
+
+`define(name, behavior)` and `definePage(options)` add the rules for a name, or the page, without touching an element, and `scan(root)` marks every element with `data-transition-*` attributes.
+
+## Support and motion
+
+View transitions run in Chrome, Edge and Safari 18 and later, and Firefox 144 and later; between separate pages, in Chrome, Edge and Safari 18.2 and later. Elsewhere, and with `prefers-reduced-motion`, updates just happen with no animation. The rules go in one `<style data-uiness-transitions>` tag, and a gone element's rules stay a moment so its exit can play.
+
+While they move, named elements are drawn above the rest of the page, a sticky header included. Give the header `persist` and it stays on top of them, as it does on the page.
+
+## API
+
+`Transition`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `name` | its own | Morphs into the element with the same name on the other side. |
+| `persist` | `false` | Stays still, out of the page's animation. |
+| `enter` | | Effect when it comes in alone. |
+| `exit` | | Effect when it goes out alone. |
+| `stagger` | | `true` or milliseconds: each child in turn. |
+| `duration`, `easing`, `delay` | | Timing of this element. |
+
+`Transitions`:
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `page` | `fade` | How one page replaces the other. |
+| `back` | `reverse` | Going back: slides the other way, or another effect. |
+| `duration` | `300` | Milliseconds, for everything without its own. |
+| `easing` | | For everything without its own. |
+| `routeKey` | | Changes with each page, for `useNavigationTransition` and `useLinkTransition`. |
