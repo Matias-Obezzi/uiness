@@ -1180,6 +1180,54 @@
       ]
     },
     {
+      "name": "use-auto-resize-textarea",
+      "type": "registry:hook",
+      "title": "useAutoResizeTextarea",
+      "description": "Grows a textarea with its text between a minimum and a maximum height, and drops back after clearing.",
+      "files": [
+        {
+          "path": "registry/hooks/use-auto-resize-textarea.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "use-click-outside",
+      "type": "registry:hook",
+      "title": "useClickOutside",
+      "description": "Calls a handler when a press lands outside an element, by mouse, pen or touch.",
+      "files": [
+        {
+          "path": "registry/hooks/use-click-outside.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "use-copy-to-clipboard",
+      "type": "registry:hook",
+      "title": "useCopyToClipboard",
+      "description": "Copies text, with a fallback where the Clipboard API is missing or refuses, and a copied flag that clears itself.",
+      "files": [
+        {
+          "path": "registry/hooks/use-copy-to-clipboard.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "use-mobile",
+      "type": "registry:hook",
+      "title": "useIsMobile",
+      "description": "Whether the viewport is narrower than a breakpoint, kept in step as it resizes.",
+      "files": [
+        {
+          "path": "registry/hooks/use-mobile.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "use-motion-ready",
       "type": "registry:hook",
       "title": "useMotionReady",
@@ -1683,7 +1731,8 @@
         "@uiness/utils",
         "@uiness/drawer",
         "@uiness/tooltip",
-        "@uiness/labels"
+        "@uiness/labels",
+        "@uiness/use-mobile"
       ],
       "files": [
         {
@@ -2552,7 +2601,8 @@
         "@uiness/utils",
         "@uiness/button",
         "@uiness/tooltip",
-        "@uiness/labels"
+        "@uiness/labels",
+        "@uiness/use-copy-to-clipboard"
       ],
       "files": [
         {
