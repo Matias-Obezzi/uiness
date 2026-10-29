@@ -1,0 +1,55 @@
+Find a meeting time across time zones. Each ring of the 24-hour dial is someone’s day, with their working hours in green and their night in grey; turn the meeting round the dial and the list says what time it is for each of them.
+
+<ComponentPreview name="timezone-planner-demo" />
+
+## Installation
+
+<Install name="timezone-planner" />
+
+## Usage
+
+```tsx
+import { TimezonePlanner } from '@/components/ui/timezone-planner'
+
+<TimezonePlanner
+  value={minutes}
+  onValueChange={setMinutes}
+  people={[
+    { name: 'You', timeZone: 'Europe/Lisbon' },
+    { name: 'Kenji', timeZone: 'Asia/Tokyo', workStart: 10, workEnd: 19 },
+  ]}
+/>
+```
+
+The dial is in the first person's time. Offsets come from the browser's time zone data for `date`, so daylight saving is right on that day. `offsetOf` and `dayPart` are exported.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `people` |  | Each `{ name, timeZone, workStart?, workEnd? }`. |
+| `value` |  | Minutes from midnight in the first person’s time. |
+| `defaultValue` | `600` | The meeting at first. |
+| `onValueChange` |  | Called with the minutes. |
+| `date` | today | The day planned. |
+
+## Accessibility
+
+The time under the dial is a slider: the arrows move it by 15 minutes, Page Up and Page Down by an hour. The list gives each person’s time in words, and a status says how many are outside working hours. The dial itself is for the pointer.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `TimezonePlanner` takes them as `labels`. To set them for the whole app, put them under `'timezone-planner'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultTimezonePlannerLabels: TimezonePlannerLabels = {
+  dial: 'Meeting time',
+  meeting: (time) => `Meeting at ${time}`,
+  parts: { work: 'Working', awake: 'Off work', asleep: 'Asleep' },
+  allWorking: 'Everyone is in working hours.',
+  outside: (count) =>
+    count === 1
+      ? '1 person is outside working hours.'
+      : `${count} people are outside working hours.`,
+}
+```

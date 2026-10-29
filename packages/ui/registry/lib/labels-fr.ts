@@ -748,6 +748,107 @@ export const fr = {
     forget: 'Oublier',
     updated: 'Mis à jour',
   },
+  'amount-pad': {
+    amount: 'Montant',
+    keypad: 'Pavé numérique',
+    delete: 'Effacer',
+    decimal: 'Virgule',
+  },
+  'slide-to-confirm': {
+    hint: 'Faites glisser jusqu’au bout, ou utilisez la flèche droite jusqu’au bout, pour confirmer.',
+    confirmed: 'Confirmé',
+  },
+  'save-button': {
+    save: 'Enregistrer',
+    saved: (collection: string) => `Enregistré dans ${collection}`,
+    choose: 'Choisir une collection',
+    savedTo: 'Enregistré dans',
+    newCollection: 'Nouvelle collection',
+    create: 'Créer',
+    remove: 'Retirer des enregistrements',
+  },
+  'cart-button': {
+    add: 'Ajouter',
+    quantity: (item: string) => `Quantité de ${item}`,
+    increase: 'En ajouter un',
+    decrease: 'En retirer un',
+    remove: 'Retirer du panier',
+    inCart: (count: number) => `${count} dans le panier`,
+  },
+  'undo-button': {
+    undo: (seconds: number) => `Annuler, encore ${seconds} s`,
+    done: 'Terminé',
+  },
+  'tip-selector': {
+    tip: 'Pourboire',
+    percent: (percent: number) => `${percent} %`,
+    tipAmount: 'Pourboire',
+    total: 'Total',
+    roundUp: 'Arrondir le total',
+  },
+  'seat-map': {
+    map: 'Places',
+    screen: 'Écran',
+    seat: (row: string, number: number, state: 'available' | 'taken' | 'selected') =>
+      `Rang ${row}, place ${number}, ${state === 'available' ? 'libre' : state === 'taken' ? 'occupée' : 'choisie'}`,
+    stranded: (seats: string[]) =>
+      seats.length === 1
+        ? `La place ${seats[0]} resterait isolée.`
+        : `Les places ${seats.join(', ')} resteraient isolées.`,
+    legend: { available: 'Libre', selected: 'Les vôtres', taken: 'Occupée' },
+  },
+  'slot-picker': {
+    day: 'Jour',
+    meeting: (from: string, to: string) => `Réunion de ${from} à ${to}`,
+    resize: 'Durée de la réunion',
+    hostTime: (from: string, to: string, zone: string) => `${from} – ${to} pour l’hôte (${zone})`,
+    busy: 'Occupé',
+  },
+  'timezone-planner': {
+    dial: 'Heure de la réunion',
+    meeting: (time: string) => `Réunion à ${time}`,
+    parts: { work: 'Au travail', awake: 'Hors travail', asleep: 'Endormi' },
+    allWorking: 'Tout le monde est en heures de travail.',
+    outside: (count: number) =>
+      count === 1
+        ? '1 personne est hors des heures de travail.'
+        : `${count} personnes sont hors des heures de travail.`,
+  },
+  'boarding-pass': {
+    passenger: 'Passager',
+    flight: 'Vol',
+    gate: 'Porte',
+    boards: 'Embarquement',
+    departs: 'Départ',
+    seat: 'Siège',
+    changed: (field: string, from: string, to: string) => `${field} : ${from} devient ${to}`,
+  },
+  'currency-transfer': {
+    rate: (from: string, rate: string, to: string) => `1 ${from} = ${rate} ${to}`,
+    reference: 'Référence',
+    stepState: (state: 'done' | 'current' | 'next') =>
+      state === 'done' ? 'fait' : state === 'current' ? 'en cours' : 'à venir',
+  },
+  'team-selector': {
+    seats: 'Sièges',
+    more: 'Ajouter un siège',
+    fewer: 'Retirer un siège',
+    per: 'par mois',
+    hint: 'Faites glisser sur le côté ou utilisez les flèches pour le changer.',
+  },
+  'location-picker': {
+    map: 'Point de prise en charge',
+    finding: 'Recherche de l’adresse…',
+    pickup: (address: string) => `Prise en charge au ${address}`,
+    hint: 'Déplacez la carte pour placer le repère. Les flèches la déplacent aussi.',
+  },
+  'receipt-printer': {
+    receipt: 'Reçu',
+    total: 'Total',
+    tear: 'Détacher',
+    printing: 'Impression…',
+    hint: 'Tirez le reçu vers le bas pour le détacher, ou utilisez le bouton Détacher.',
+  },
   'tag-input': {
     remove: (tag: string) => `Retirer ${tag}`,
     max: (max: number) => `Jusqu’à ${plural(max, 'étiquette', 'étiquettes')}.`,

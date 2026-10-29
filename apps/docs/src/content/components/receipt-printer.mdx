@@ -1,0 +1,48 @@
+A receipt that prints line by line out of a slot, then tears off and falls when pulled down, or with its button. With reduced motion it prints at once.
+
+<ComponentPreview name="receipt-printer-demo" />
+
+## Installation
+
+<Install name="receipt-printer" />
+
+## Usage
+
+```tsx
+import { ReceiptPrinter } from '@/components/ui/receipt-printer'
+
+<ReceiptPrinter
+  title="Café Lumen"
+  lines={[{ label: 'Oat latte', amount: 4.5 }]}
+  onTear={() => done()}
+/>
+```
+
+Pull it down 80 pixels and let go to tear it off; less and it swings back. `onTear` runs once it has fallen.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `lines` |  | Each `{ label, amount }`. |
+| `title` | "Receipt" | The line at the top. |
+| `currency` | `USD` | For the amounts. |
+| `onTear` |  | Runs once it is torn off. |
+
+## Accessibility
+
+The receipt is a named region, busy while it prints. Tear off is a button, and a hint explains pulling it.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ReceiptPrinter` takes them as `labels`. To set them for the whole app, put them under `'receipt-printer'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultReceiptPrinterLabels: ReceiptPrinterLabels = {
+  receipt: 'Receipt',
+  total: 'Total',
+  tear: 'Tear off',
+  printing: 'Printing…',
+  hint: 'Pull the receipt down to tear it off, or use the Tear off button.',
+}
+```

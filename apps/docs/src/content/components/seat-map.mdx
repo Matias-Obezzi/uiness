@@ -1,0 +1,54 @@
+Pick seats for a show. Tap a seat, or drag along a row to take several; drag from a chosen seat to let them go. It points out any single seat the choice would leave stranded.
+
+<ComponentPreview name="seat-map-demo" />
+
+## Installation
+
+<Install name="seat-map" />
+
+## Usage
+
+```tsx
+import { SeatMap } from '@/components/ui/seat-map'
+
+<SeatMap
+  rows={[{ id: 'A', seats: [false, true, false, null, false] }]}
+  value={seats}
+  onValueChange={setSeats}
+  max={6}
+/>
+```
+
+In a row, `true` is a seat taken, `false` a free one and `null` an aisle; seats are numbered from 1, aisles skipped. A seat is stranded when the choice leaves it with no free neighbour, an aisle or the end of the row counting as a wall. `strandedSeats(rows, selected)` is exported to check a choice before booking.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `rows` |  | Each `{ id, seats }`. |
+| `value` |  | The seats chosen, such as `["C4", "C5"]`. |
+| `defaultValue` | `[]` | The seats chosen at first. |
+| `onValueChange` |  | Called with the seats chosen. |
+| `max` | no limit | How many can be chosen. |
+
+## Accessibility
+
+Each seat is a toggle button, "Row C, seat 4, free". Tab reaches the map once and the arrows move between seats, skipping aisles; Space or Enter takes one. Taken seats are disabled, and the warning is a status.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `SeatMap` takes them as `labels`. To set them for the whole app, put them under `'seat-map'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultSeatMapLabels: SeatMapLabels = {
+  map: 'Seats',
+  screen: 'Screen',
+  seat: (row, number, state) =>
+    `Row ${row}, seat ${number}, ${state === 'available' ? 'free' : state}`,
+  stranded: (seats) =>
+    seats.length === 1
+      ? `Seat ${seats[0]} would be left on its own.`
+      : `Seats ${seats.join(', ')} would be left on their own.`,
+  legend: { available: 'Free', selected: 'Yours', taken: 'Taken' },
+}
+```

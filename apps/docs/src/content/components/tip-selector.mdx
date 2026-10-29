@@ -1,0 +1,47 @@
+A tip picker for checkout, set on a tape you drag and flick. The ticks passed fill in, the tip and total roll to their new amounts, and Round up makes the total a whole amount.
+
+<ComponentPreview name="tip-selector-demo" />
+
+## Installation
+
+<Install name="tip-selector" />
+
+## Usage
+
+```tsx
+import { TipSelector } from '@/components/ui/tip-selector'
+
+<TipSelector subtotal={42.3} defaultValue={18} onTipChange={(tip, total) => setTip(tip)} />
+```
+
+The tape is native scrolling with snap points, so it flicks and settles like the platform does. With Round up, the tip is whatever makes the total whole, from the chosen percent upwards. `tipFor(subtotal, percent, roundUp)` is exported.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `subtotal` |  | What the tip is a share of. |
+| `value` |  | The percent, when you keep it. |
+| `defaultValue` | `18` | The percent at first. |
+| `onValueChange` |  | Called with the percent. |
+| `onTipChange` |  | Called with the tip and the total. |
+| `max` | `30` | The highest percent. |
+| `currency` | `USD` | For the amounts. |
+
+## Accessibility
+
+The tape is a slider: the arrows step a percent, Page Up and Page Down five, Home and End to either end. Round up is a labelled switch.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `TipSelector` takes them as `labels`. To set them for the whole app, put them under `'tip-selector'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultTipSelectorLabels: TipSelectorLabels = {
+  tip: 'Tip',
+  percent: (percent) => `${percent}%`,
+  tipAmount: 'Tip',
+  total: 'Total',
+  roundUp: 'Round up the total',
+}
+```

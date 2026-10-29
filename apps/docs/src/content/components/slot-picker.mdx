@@ -1,0 +1,53 @@
+Book a meeting on a day rail. Drag the meeting into a free gap: it hops over the bookings in its way. Drag its end to make it longer or shorter, and see it in the host’s time.
+
+<ComponentPreview name="slot-picker-demo" />
+
+## Installation
+
+<Install name="slot-picker" />
+
+## Usage
+
+```tsx
+import { SlotPicker } from '@/components/ui/slot-picker'
+
+<SlotPicker
+  bookings={[{ start: 600, end: 660, title: 'Standup' }]}
+  value={slot}
+  onValueChange={setSlot}
+  hostTimeZone="America/New_York"
+/>
+```
+
+Times are minutes from midnight on the rail's day. A move lands on the free start nearest to where it was dropped, and a resize stops at the next booking. `nearestFree` is exported.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `bookings` |  | Each `{ start, end, title? }`. |
+| `value` |  | The meeting, `{ start, end }`. |
+| `onValueChange` |  | Called with the new slot. |
+| `startHour` | `8` | First hour on the rail. |
+| `endHour` | `20` | Last hour on the rail. |
+| `step` | `15` | Minutes a move snaps to. |
+| `hostTimeZone` |  | Shows the meeting in the host’s time. |
+| `date` | today | The day, for the host’s time. |
+
+## Accessibility
+
+The meeting is a slider that reads out its times: the arrows move it, hopping over bookings, and Shift with the arrows makes it longer or shorter. Each booking reads out when it is busy.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `SlotPicker` takes them as `labels`. To set them for the whole app, put them under `'slot-picker'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultSlotPickerLabels: SlotPickerLabels = {
+  day: 'Day',
+  meeting: (from, to) => `Meeting from ${from} to ${to}`,
+  resize: 'Meeting length',
+  hostTime: (from, to, zone) => `${from} – ${to} for the host (${zone})`,
+  busy: 'Busy',
+}
+```
