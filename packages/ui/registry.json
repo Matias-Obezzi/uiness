@@ -2788,6 +2788,214 @@
       ]
     },
     {
+      "name": "receipt-printer",
+      "type": "registry:ui",
+      "title": "Receipt Printer",
+      "description": "A receipt that prints line by line out of a slot, then tears off and falls when pulled down or with its button.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/receipt-printer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "location-picker",
+      "type": "registry:ui",
+      "title": "Location Picker",
+      "description": "Set a pickup point the way ride apps do: drag the map under a fixed pin that lifts while it moves, glides onto the snapped point, drops, and rolls the address in.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/map",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/location-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "team-selector",
+      "type": "registry:ui",
+      "title": "Team Selector",
+      "description": "How many seats a plan has: drag the number to scrub it or step it, a row of generated avatars grows with it, and the price rolls to the new total.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/odometer"],
+      "files": [
+        {
+          "path": "registry/ui/team-selector.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "currency-transfer",
+      "type": "registry:ui",
+      "title": "Currency Transfer",
+      "description": "A transfer tracker: the amount converts in place once the money changes currency, the steps fill a rail as they pass, and a copyable reference closes it.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/copy-button",
+        "@uiness/odometer"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/currency-transfer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "boarding-pass",
+      "type": "registry:ui",
+      "title": "Boarding Pass",
+      "description": "A boarding pass that keeps itself current: when the gate or a time changes, only the changed characters roll over, the old value struck through beside it.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/boarding-pass.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "timezone-planner",
+      "type": "registry:ui",
+      "title": "Timezone Planner",
+      "description": "Find a meeting time across time zones: each ring of a 24-hour dial is someone’s day, and turning the meeting round it shows what time it is for each of them.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/timezone-planner.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slot-picker",
+      "type": "registry:ui",
+      "title": "Slot Picker",
+      "description": "Book a meeting on a day rail: drag it into a free gap and it hops over bookings, drag its end to resize, and see it in the host’s time zone.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/slot-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "seat-map",
+      "type": "registry:ui",
+      "title": "Seat Map",
+      "description": "Pick seats for a show: tap one or drag along a row to take several, and it points out any single seat the choice would leave stranded. Arrow keys move between seats.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/seat-map.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tip-selector",
+      "type": "registry:ui",
+      "title": "Tip Selector",
+      "description": "A tip picker for checkout set on a tape you drag and flick: the ticks passed fill in, the tip and total roll to their new amounts, and Round up makes the total whole.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/odometer",
+        "@uiness/switch",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/tip-selector.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "undo-button",
+      "type": "registry:ui",
+      "title": "Undo Button",
+      "description": "An action that gives a few seconds to take it back: it turns into Undo with the time left drawn around its own edge, and goes through when the time runs out.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/undo-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "cart-button",
+      "type": "registry:ui",
+      "title": "Cart Button",
+      "description": "An Add button that opens into a quantity stepper in place, with a bin at one and press and hold to repeat.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/cart-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "save-button",
+      "type": "registry:ui",
+      "title": "Save Button",
+      "description": "A bookmark button that files into collections: a tap saves to the last one used, and a strip opens to move it to another or make a new one.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/popover"],
+      "files": [
+        {
+          "path": "registry/ui/save-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "slide-to-confirm",
+      "type": "registry:ui",
+      "title": "Slide to Confirm",
+      "description": "A confirm control for payments and other actions that can’t be taken back: slide or flick the thumb to the end, or it springs back. A slider on the keyboard.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/slide-to-confirm.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "amount-pad",
+      "type": "registry:ui",
+      "title": "Amount Pad",
+      "description": "A keypad for sending money: the amount is written in the currency’s format as it is typed, each digit springing into place and the figure shrinking to fit as it grows.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/amount-pad.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "memory-list",
       "type": "registry:ui",
       "title": "Memory List",

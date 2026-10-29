@@ -1,0 +1,45 @@
+A keypad for sending money. The amount is written in the currency’s own format as it is typed; each new digit springs into place, and the figure shrinks to fit as it grows. The keys on a keyboard work too while the pad has focus.
+
+<ComponentPreview name="amount-pad-demo" />
+
+## Installation
+
+<Install name="amount-pad" />
+
+## Usage
+
+```tsx
+import { AmountPad } from '@/components/ui/amount-pad'
+
+<AmountPad value={amount} onValueChange={setAmount} currency="EUR" />
+```
+
+The decimal key follows the currency: two places for dollars or euros, none for yen. A point or a comma typed on a keyboard both make the decimal point. `press(typed, key, decimals, maxDigits)` is the rule each key follows, exported for your own pads.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` |  | The amount, when you keep it. |
+| `defaultValue` |  | The amount at first. |
+| `onValueChange` |  | Called with the amount as a number. |
+| `currency` | `USD` | ISO code. |
+| `locale` |  | For the format. |
+| `maxDigits` | `7` | Digits before the decimal point. |
+
+## Accessibility
+
+The pad is a group that takes digits, a point and Backspace from the keyboard while focused. The amount is a polite live region, so each change is read out, and the delete and decimal keys are named.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `AmountPad` takes them as `labels`. To set them for the whole app, put them under `'amount-pad'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultAmountPadLabels: AmountPadLabels = {
+  amount: 'Amount',
+  keypad: 'Keypad',
+  delete: 'Delete',
+  decimal: 'Decimal point',
+}
+```

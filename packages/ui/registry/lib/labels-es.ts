@@ -740,6 +740,108 @@ export const es = {
     forget: 'Olvidar',
     updated: 'Actualizado',
   },
+  'amount-pad': {
+    amount: 'Monto',
+    keypad: 'Teclado',
+    delete: 'Borrar',
+    decimal: 'Coma decimal',
+  },
+  'slide-to-confirm': {
+    hint: 'Desliza hasta el final, o usa la flecha derecha hasta el final, para confirmar.',
+    confirmed: 'Confirmado',
+  },
+  'save-button': {
+    save: 'Guardar',
+    saved: (collection: string) => `Guardado en ${collection}`,
+    choose: 'Elegir una colección',
+    savedTo: 'Guardado en',
+    newCollection: 'Nueva colección',
+    create: 'Crear',
+    remove: 'Quitar de guardados',
+  },
+  'cart-button': {
+    add: 'Agregar',
+    quantity: (item: string) => `Cantidad de ${item}`,
+    increase: 'Agregar uno',
+    decrease: 'Quitar uno',
+    remove: 'Quitar del carrito',
+    inCart: (count: number) => `${count} en el carrito`,
+  },
+  'undo-button': {
+    undo: (seconds: number) => `Deshacer, quedan ${seconds} s`,
+    done: 'Listo',
+  },
+  'tip-selector': {
+    tip: 'Propina',
+    percent: (percent: number) => `${percent}%`,
+    tipAmount: 'Propina',
+    total: 'Total',
+    roundUp: 'Redondear el total',
+  },
+  'seat-map': {
+    map: 'Asientos',
+    screen: 'Pantalla',
+    seat: (row: string, number: number, state: 'available' | 'taken' | 'selected') =>
+      `Fila ${row}, asiento ${number}, ${state === 'available' ? 'libre' : state === 'taken' ? 'ocupado' : 'elegido'}`,
+    stranded: (seats: string[]) =>
+      seats.length === 1
+        ? `El asiento ${seats[0]} quedaría solo.`
+        : `Los asientos ${seats.join(', ')} quedarían solos.`,
+    legend: { available: 'Libre', selected: 'Tuyos', taken: 'Ocupado' },
+  },
+  'slot-picker': {
+    day: 'Día',
+    meeting: (from: string, to: string) => `Reunión de ${from} a ${to}`,
+    resize: 'Duración de la reunión',
+    hostTime: (from: string, to: string, zone: string) =>
+      `${from} – ${to} para quien invita (${zone})`,
+    busy: 'Ocupado',
+  },
+  'timezone-planner': {
+    dial: 'Hora de la reunión',
+    meeting: (time: string) => `Reunión a las ${time}`,
+    parts: { work: 'Trabajando', awake: 'Fuera de horario', asleep: 'Durmiendo' },
+    allWorking: 'Todos están en horario laboral.',
+    outside: (count: number) =>
+      count === 1
+        ? '1 persona está fuera de horario.'
+        : `${count} personas están fuera de horario.`,
+  },
+  'boarding-pass': {
+    passenger: 'Pasajero',
+    flight: 'Vuelo',
+    gate: 'Puerta',
+    boards: 'Embarque',
+    departs: 'Salida',
+    seat: 'Asiento',
+    changed: (field: string, from: string, to: string) => `${field} cambió de ${from} a ${to}`,
+  },
+  'currency-transfer': {
+    rate: (from: string, rate: string, to: string) => `1 ${from} = ${rate} ${to}`,
+    reference: 'Referencia',
+    stepState: (state: 'done' | 'current' | 'next') =>
+      state === 'done' ? 'hecho' : state === 'current' ? 'en curso' : 'pendiente',
+  },
+  'team-selector': {
+    seats: 'Puestos',
+    more: 'Agregar un puesto',
+    fewer: 'Quitar un puesto',
+    per: 'por mes',
+    hint: 'Arrastra de lado o usa las flechas para cambiarlo.',
+  },
+  'location-picker': {
+    map: 'Punto de partida',
+    finding: 'Buscando la dirección…',
+    pickup: (address: string) => `Te buscan en ${address}`,
+    hint: 'Mueve el mapa para ubicar el pin. Las flechas también lo mueven.',
+  },
+  'receipt-printer': {
+    receipt: 'Recibo',
+    total: 'Total',
+    tear: 'Cortar',
+    printing: 'Imprimiendo…',
+    hint: 'Tira del recibo hacia abajo para cortarlo, o usa el botón Cortar.',
+  },
   'tag-input': {
     remove: (tag: string) => `Quitar ${tag}`,
     max: (max: number) => `Hasta ${plural(max, 'etiqueta', 'etiquetas')}.`,

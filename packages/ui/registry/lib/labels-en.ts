@@ -728,6 +728,107 @@ export const en = {
     forget: 'Forget',
     updated: 'Updated',
   },
+  'amount-pad': {
+    amount: 'Amount',
+    keypad: 'Keypad',
+    delete: 'Delete',
+    decimal: 'Decimal point',
+  },
+  'slide-to-confirm': {
+    hint: 'Slide to the end, or press the right arrow key to the end, to confirm.',
+    confirmed: 'Confirmed',
+  },
+  'save-button': {
+    save: 'Save',
+    saved: (collection: string) => `Saved to ${collection}`,
+    choose: 'Choose a collection',
+    savedTo: 'Saved to',
+    newCollection: 'New collection',
+    create: 'Create',
+    remove: 'Remove from saved',
+  },
+  'cart-button': {
+    add: 'Add',
+    quantity: (item: string) => `Quantity of ${item}`,
+    increase: 'Add one',
+    decrease: 'Remove one',
+    remove: 'Remove from cart',
+    inCart: (count: number) => `${count} in cart`,
+  },
+  'undo-button': {
+    undo: (seconds: number) => `Undo, ${seconds}s left`,
+    done: 'Done',
+  },
+  'tip-selector': {
+    tip: 'Tip',
+    percent: (percent: number) => `${percent}%`,
+    tipAmount: 'Tip',
+    total: 'Total',
+    roundUp: 'Round up the total',
+  },
+  'seat-map': {
+    map: 'Seats',
+    screen: 'Screen',
+    seat: (row: string, number: number, state: 'available' | 'taken' | 'selected') =>
+      `Row ${row}, seat ${number}, ${state === 'available' ? 'free' : state}`,
+    stranded: (seats: string[]) =>
+      seats.length === 1
+        ? `Seat ${seats[0]} would be left on its own.`
+        : `Seats ${seats.join(', ')} would be left on their own.`,
+    legend: { available: 'Free', selected: 'Yours', taken: 'Taken' },
+  },
+  'slot-picker': {
+    day: 'Day',
+    meeting: (from: string, to: string) => `Meeting from ${from} to ${to}`,
+    resize: 'Meeting length',
+    hostTime: (from: string, to: string, zone: string) => `${from} – ${to} for the host (${zone})`,
+    busy: 'Busy',
+  },
+  'timezone-planner': {
+    dial: 'Meeting time',
+    meeting: (time: string) => `Meeting at ${time}`,
+    parts: { work: 'Working', awake: 'Off work', asleep: 'Asleep' },
+    allWorking: 'Everyone is in working hours.',
+    outside: (count: number) =>
+      count === 1
+        ? '1 person is outside working hours.'
+        : `${count} people are outside working hours.`,
+  },
+  'boarding-pass': {
+    passenger: 'Passenger',
+    flight: 'Flight',
+    gate: 'Gate',
+    boards: 'Boards',
+    departs: 'Departs',
+    seat: 'Seat',
+    changed: (field: string, from: string, to: string) => `${field} changed from ${from} to ${to}`,
+  },
+  'currency-transfer': {
+    rate: (from: string, rate: string, to: string) => `1 ${from} = ${rate} ${to}`,
+    reference: 'Reference',
+    stepState: (state: 'done' | 'current' | 'next') =>
+      state === 'done' ? 'done' : state === 'current' ? 'in progress' : 'to come',
+  },
+  'team-selector': {
+    seats: 'Seats',
+    more: 'Add a seat',
+    fewer: 'Remove a seat',
+    per: 'per month',
+    hint: 'Drag sideways or use the arrow keys to change it.',
+  },
+  'location-picker': {
+    map: 'Pickup point',
+    finding: 'Finding the address…',
+    pickup: (address: string) => `Pickup at ${address}`,
+    hint: 'Move the map to place the pin. The arrow keys move it too.',
+  },
+  'receipt-printer': {
+    receipt: 'Receipt',
+    total: 'Total',
+    tear: 'Tear off',
+    printing: 'Printing…',
+    hint: 'Pull the receipt down to tear it off, or use the Tear off button.',
+  },
   'tag-input': {
     remove: (tag: string) => `Remove ${tag}`,
     max: (max: number) => `Up to ${plural(max, 'tag', 'tags')}.`,

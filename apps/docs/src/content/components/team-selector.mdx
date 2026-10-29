@@ -1,0 +1,47 @@
+How many seats a plan has. Drag the number sideways to scrub it, or step it with the buttons or the arrow keys; a row of generated avatars grows with it, and the price rolls to the new total.
+
+<ComponentPreview name="team-selector-demo" />
+
+## Installation
+
+<Install name="team-selector" />
+
+## Usage
+
+```tsx
+import { TeamSelector } from '@/components/ui/team-selector'
+
+<TeamSelector value={seats} onValueChange={setSeats} pricePerSeat={12} />
+```
+
+Every 14 pixels of drag is a seat. Avatars are gradients generated from their place, the same every time, and after seven the rest becomes a count.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` |  | The seats, when you keep them. |
+| `defaultValue` | `5` | The seats at first. |
+| `onValueChange` |  | Called with the seats. |
+| `min` | `1` | The fewest. |
+| `max` | `500` | The most. |
+| `pricePerSeat` |  | Shows the price line. |
+| `currency` | `USD` | For the price. |
+
+## Accessibility
+
+The number is a spinbutton: the arrows step one, Page Up and Page Down ten, Home and End to the limits, and a hint explains dragging. The avatars are decoration.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `TeamSelector` takes them as `labels`. To set them for the whole app, put them under `'team-selector'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultTeamSelectorLabels: TeamSelectorLabels = {
+  seats: 'Seats',
+  more: 'Add a seat',
+  fewer: 'Remove a seat',
+  per: 'per month',
+  hint: 'Drag sideways or use the arrow keys to change it.',
+}
+```

@@ -1,0 +1,49 @@
+Set a pickup point the way ride apps do: drag the map under a fixed pin. While it moves the pin lifts off its shadow; when it stops, it glides onto the point `snap` gives, drops, and the address rolls in under it.
+
+<ComponentPreview name="location-picker-demo" />
+
+## Installation
+
+<Install name="location-picker" />
+
+## Usage
+
+```tsx
+import { LocationPicker } from '@/components/ui/location-picker'
+
+<LocationPicker
+  defaultCenter={[-9.137, 38.71]}
+  snap={(point) => routing.nearestCurb(point)}
+  resolve={(point) => geocoder.reverse(point)}
+  onValueChange={({ lngLat, address }) => setPickup(lngLat, address)}
+/>
+```
+
+It is built on the [Map](/docs/map). It has no geocoder of its own: `resolve` turns a point into an address, and `snap`, if given, moves it to where a car can stop. Points are `[lng, lat]`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `defaultCenter` |  | Where it starts, `[lng, lat]`. |
+| `defaultZoom` | `17` | How close it starts. |
+| `resolve` |  | The address of a point. |
+| `snap` |  | Moves a point to where a car can stop. |
+| `onValueChange` |  | Called with `{ lngLat, address }`. |
+
+## Accessibility
+
+The map moves with the arrow keys like any [Map](/docs/map), and a hint says the pin stays in the middle. The address is a polite live region read as "Pickup at …".
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `LocationPicker` takes them as `labels`. To set them for the whole app, put them under `'location-picker'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultLocationPickerLabels: LocationPickerLabels = {
+  map: 'Pickup point',
+  finding: 'Finding the address…',
+  pickup: (address) => `Pickup at ${address}`,
+  hint: 'Move the map to place the pin. The arrow keys move it too.',
+}
+```

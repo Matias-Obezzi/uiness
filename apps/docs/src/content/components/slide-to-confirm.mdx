@@ -1,0 +1,43 @@
+A confirm control for payments and other actions that can’t be taken back: slide the thumb to the end, or flick it there. Let go short of the end and it springs back.
+
+<ComponentPreview name="slide-to-confirm-demo" />
+
+## Installation
+
+<Install name="slide-to-confirm" />
+
+## Usage
+
+```tsx
+import { SlideToConfirm } from '@/components/ui/slide-to-confirm'
+
+<SlideToConfirm onConfirm={() => pay()} confirmedLabel="Paid">
+  Slide to pay $24.00
+</SlideToConfirm>
+```
+
+Return a promise from `onConfirm` and the thumb shows a spinner until it settles; if it rejects, the thumb goes back to the start. The speed at release carries the thumb on a little, so a quick flick from halfway confirms.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `children` |  | What sliding does. |
+| `onConfirm` |  | Runs at the end of the slide. |
+| `confirmedLabel` | "Confirmed" | Shown once confirmed. |
+| `disabled` | `false` | It can’t be slid. |
+
+## Accessibility
+
+The thumb is a slider named by the text: the arrows move it a quarter at a time, Home and End to either side, and reaching the end confirms. A hint says how, and the confirmation is announced.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `SlideToConfirm` takes them as `labels`. To set them for the whole app, put them under `'slide-to-confirm'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultSlideToConfirmLabels: SlideToConfirmLabels = {
+  hint: 'Slide to the end, or press the right arrow key to the end, to confirm.',
+  confirmed: 'Confirmed',
+}
+```

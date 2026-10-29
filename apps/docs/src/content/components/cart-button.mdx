@@ -1,0 +1,45 @@
+An Add button that opens into a quantity stepper in place. At one, minus becomes a bin; holding plus or minus repeats.
+
+<ComponentPreview name="cart-button-demo" />
+
+## Installation
+
+<Install name="cart-button" />
+
+## Usage
+
+```tsx
+import { CartButton } from '@/components/ui/cart-button'
+
+<CartButton item="Oat latte" quantity={qty} onQuantityChange={setQty} />
+```
+
+Opening moves focus to plus, so the keyboard carries on where the click was. A press held for 400ms steps every 90ms until let go or a limit.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `item` |  | What is added, for screen readers. |
+| `quantity` |  | How many are in the cart. |
+| `onQuantityChange` |  | Called with the new quantity. |
+| `max` | `99` | The most there can be. |
+
+## Accessibility
+
+The stepper is a group named with the item. Its buttons say what they do, minus becoming "Remove from cart" at one, and the count is read out as it changes.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `CartButton` takes them as `labels`. To set them for the whole app, put them under `'cart-button'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultCartButtonLabels: CartButtonLabels = {
+  add: 'Add',
+  quantity: (item) => `Quantity of ${item}`,
+  increase: 'Add one',
+  decrease: 'Remove one',
+  remove: 'Remove from cart',
+  inCart: (count) => `${count} in cart`,
+}
+```

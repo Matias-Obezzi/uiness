@@ -1,0 +1,57 @@
+A boarding pass that keeps itself current. When the gate or a time changes, only the characters that changed roll over to the new ones, and the old value stays struck through beside it for a moment.
+
+<ComponentPreview name="boarding-pass-demo" />
+
+## Installation
+
+<Install name="boarding-pass" />
+
+## Usage
+
+```tsx
+import { BoardingPass } from '@/components/ui/boarding-pass'
+
+<BoardingPass
+  from={{ code: 'LIS', city: 'Lisbon' }}
+  to={{ code: 'AMS', city: 'Amsterdam' }}
+  passenger="Ana Silva"
+  flight="TP 662"
+  gate={flight.gate}
+  boards={flight.boards}
+  departs={flight.departs}
+  seat="14C"
+  status="Delayed 25 min"
+  tone="warn"
+/>
+```
+
+Pass the new values as they arrive; the pass works out what changed. `tone` colors the status: `ok`, `warn` or `bad`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `from, to` |  | Each `{ code, city }`. |
+| `passenger, flight, gate, boards, departs, seat` |  | The fields. |
+| `status` |  | A line of status. |
+| `tone` | `ok` | Its color. |
+
+## Accessibility
+
+The fields are a description list, and each change is announced, "Gate changed from B12 to B18".
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `BoardingPass` takes them as `labels`. To set them for the whole app, put them under `'boarding-pass'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultBoardingPassLabels: BoardingPassLabels = {
+  passenger: 'Passenger',
+  flight: 'Flight',
+  gate: 'Gate',
+  boards: 'Boards',
+  departs: 'Departs',
+  seat: 'Seat',
+  changed: (field, from, to) => `${field} changed from ${from} to ${to}`,
+}
+```

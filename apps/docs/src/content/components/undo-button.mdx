@@ -1,0 +1,42 @@
+An action that gives a few seconds to take it back. Press it and it turns into Undo, the time left drawn around its own edge; press again to cancel, or let the time run out and it goes through.
+
+<ComponentPreview name="undo-button-demo" />
+
+## Installation
+
+<Install name="undo-button" />
+
+## Usage
+
+```tsx
+import { UndoButton } from '@/components/ui/undo-button'
+
+<UndoButton onCommit={() => archive(id)} duration={5000}>
+  <ArchiveIcon /> Archive
+</UndoButton>
+```
+
+Nothing happens until the time is up: do the work in `onCommit`. `onUndo` runs if it is taken back.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `onCommit` |  | Runs once the time is over. |
+| `onUndo` |  | Runs if it is taken back. |
+| `duration` | `5000` | Milliseconds to take it back. |
+
+## Accessibility
+
+While it can be taken back, the button reads "Undo, 4s left", counting down, and once it goes through "Done" is announced.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `UndoButton` takes them as `labels`. To set them for the whole app, put them under `'undo-button'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultUndoButtonLabels: UndoButtonLabels = {
+  undo: (seconds) => `Undo, ${seconds}s left`,
+  done: 'Done',
+}
+```
