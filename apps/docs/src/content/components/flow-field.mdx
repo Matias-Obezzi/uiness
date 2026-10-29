@@ -1,0 +1,30 @@
+Streamlines drifting through a slowly changing field that part around the pointer, swirl in its wake and scatter from a press.
+
+<ComponentPreview name="flow-field-demo" />
+
+## Installation
+
+<Install name="flow-field" />
+
+## Usage
+
+```tsx
+import { FlowField } from '@/components/ui/flow-field'
+
+<FlowField className="h-96 rounded-xl border">
+  <h1>Your headline</h1>
+</FlowField>
+```
+
+It draws on a canvas behind its children with the `useCanvas` hook, sized to the box and capped at twice the pixel ratio, and stops drawing while it is off screen. The streamlines take the text colour.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `className` |  | Sets its size and lays out the children, like any div. |
+| `particles` | `700` | Particles drawing the streamlines. |
+
+## Accessibility
+
+The canvas is decoration behind the content: your children stay plain, selectable text. The trails fade quickly, so text over them keeps its contrast. With reduced motion it draws a still frame and only answers the pointer.

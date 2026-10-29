@@ -1,0 +1,29 @@
+A headline that works as a sundial: each letter casts a long soft shadow set by the reader’s clock, and the pointer close by turns into a lamp.
+
+<ComponentPreview name="shadow-text-demo" />
+
+## Installation
+
+<Install name="shadow-text" />
+
+## Usage
+
+```tsx
+import { ShadowText } from '@/components/ui/shadow-text'
+
+<h1>
+  <ShadowText>Sundial</ShadowText>
+</h1>
+```
+
+The shadow is long at dawn and dusk, short at noon, and gone at night. Set `hour` to fix the time instead of following the clock.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `hour` | the reader’s clock | The hour it is set to, from 0 to 24. |
+
+## Accessibility
+
+Plain text with a text shadow, read as it is. The shadow stays soft so it never fights the letters.

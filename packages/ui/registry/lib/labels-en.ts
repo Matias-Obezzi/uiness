@@ -877,6 +877,9 @@ export const en = {
   'scroll-index': {
     index: 'On this page',
   },
+  'spoiler-text': {
+    reveal: 'Spoiler, press to reveal',
+  },
   'tag-input': {
     remove: (tag: string) => `Remove ${tag}`,
     max: (max: number) => `Up to ${plural(max, 'tag', 'tags')}.`,

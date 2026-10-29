@@ -1,0 +1,30 @@
+A hero seen through a rainy, fogged window: drops gather and run down the glass, each a tiny lens on the view, and dragging wipes the fog away.
+
+<ComponentPreview name="rain-glass-background-demo" />
+
+## Installation
+
+<Install name="rain-glass-background" />
+
+## Usage
+
+```tsx
+import { RainGlassBackground } from '@/components/ui/rain-glass-background'
+
+<RainGlassBackground src="/city.jpg" className="h-96 rounded-xl border">
+  <h1>Your headline</h1>
+</RainGlassBackground>
+```
+
+It draws on a canvas behind its children with the `useCanvas` hook, sized to the box and capped at twice the pixel ratio, and stops drawing while it is off screen. The fog creeps back where it was wiped. The image has to come from the same origin or allow it with CORS.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `className` |  | Sets its size and lays out the children, like any div. |
+| `src` |  | The view through the window. |
+
+## Accessibility
+
+The canvas is decoration behind the content: your children stay plain, selectable text. Give text over it a shadow so it stays readable on a light view. With reduced motion it draws a still frame and only answers the pointer.

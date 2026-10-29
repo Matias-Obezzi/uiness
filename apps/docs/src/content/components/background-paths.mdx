@@ -1,0 +1,30 @@
+A ribbon of fine lines in one colour that keeps flowing at any size and parts around the pointer.
+
+<ComponentPreview name="background-paths-demo" />
+
+## Installation
+
+<Install name="background-paths" />
+
+## Usage
+
+```tsx
+import { BackgroundPaths } from '@/components/ui/background-paths'
+
+<BackgroundPaths className="h-96 rounded-xl border">
+  <h1>Your headline</h1>
+</BackgroundPaths>
+```
+
+It draws on a canvas behind its children with the `useCanvas` hook, sized to the box and capped at twice the pixel ratio, and stops drawing while it is off screen. The lines take the text colour, so set one with a `text-` class on it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `className` |  | Sets its size and lays out the children, like any div. |
+| `lines` | `28` | Lines in the ribbon. |
+
+## Accessibility
+
+The canvas is decoration behind the content: your children stay plain, selectable text. The lines stay faint, so text over them keeps its contrast. With reduced motion it draws a still frame and only answers the pointer.

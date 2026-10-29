@@ -1,0 +1,30 @@
+Any image, or a lit sphere, printed as a halftone dot screen, with a loupe under the pointer that looks closer with a finer screen.
+
+<ComponentPreview name="halftone-background-demo" />
+
+## Installation
+
+<Install name="halftone-background" />
+
+## Usage
+
+```tsx
+import { HalftoneBackground } from '@/components/ui/halftone-background'
+
+<HalftoneBackground src="/hero.jpg" className="h-96 rounded-xl border">
+  <h1>Your headline</h1>
+</HalftoneBackground>
+```
+
+It draws on a canvas behind its children with the `useCanvas` hook, sized to the box and capped at twice the pixel ratio, and stops drawing while it is off screen. It reads the image’s pixels, so the image has to come from the same origin or allow it with CORS. The dots take the text colour.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `className` |  | Sets its size and lays out the children, like any div. |
+| `src` | a lit sphere | An image to print. |
+
+## Accessibility
+
+The canvas is decoration behind the content: your children stay plain, selectable text. Describe the image in the content over it if it carries meaning; the canvas has no text of its own. With reduced motion it draws a still frame and only answers the pointer.

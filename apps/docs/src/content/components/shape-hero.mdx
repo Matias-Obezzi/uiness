@@ -1,0 +1,31 @@
+A landing hero where shapes drop in and pile up under the headline, and can be grabbed and thrown.
+
+<ComponentPreview name="shape-hero-demo" />
+
+## Installation
+
+<Install name="shape-hero" />
+
+## Usage
+
+```tsx
+import { ShapeHero } from '@/components/ui/shape-hero'
+
+<ShapeHero className="h-[32rem] rounded-xl border">
+  <h1>Build with blocks</h1>
+  <Button className="relative z-10">Get started</Button>
+</ShapeHero>
+```
+
+The shapes are plain elements in the theme’s colours, behind the content. Give buttons and links `relative z-10` so they stay above a shape thrown over them.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `className` |  | Sets its size and lays out the children, like any section. |
+| `count` | `18` | How many shapes drop in. |
+
+## Accessibility
+
+The shapes are decoration and hidden from screen readers; the content over them is read as it is. With reduced motion the pile is already settled when it shows.

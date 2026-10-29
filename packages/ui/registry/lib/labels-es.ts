@@ -890,6 +890,9 @@ export const es = {
   'scroll-index': {
     index: 'En esta página',
   },
+  'spoiler-text': {
+    reveal: 'Spoiler, presiona para verlo',
+  },
   'tag-input': {
     remove: (tag: string) => `Quitar ${tag}`,
     max: (max: number) => `Hasta ${plural(max, 'etiqueta', 'etiquetas')}.`,

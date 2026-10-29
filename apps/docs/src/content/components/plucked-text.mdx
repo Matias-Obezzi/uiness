@@ -1,0 +1,29 @@
+A headline sitting on a string: sweep across it to strum or press to pluck, and the letters ride the waves as it rings and settles.
+
+<ComponentPreview name="plucked-text-demo" />
+
+## Installation
+
+<Install name="plucked-text" />
+
+## Usage
+
+```tsx
+import { PluckedText } from '@/components/ui/plucked-text'
+
+<h1>
+  <PluckedText text="Resonance" />
+</h1>
+```
+
+The string is a damped wave equation with its ends tied down, so a pluck near one end rings differently from one in the middle. It takes the size and font of the text around it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `text` |  | The words, sitting on the string. |
+
+## Accessibility
+
+Screen readers read the words once, as plain text; the string and the letters on it are hidden from them. With reduced motion the string stays still.

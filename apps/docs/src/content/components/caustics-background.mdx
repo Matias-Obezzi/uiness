@@ -1,0 +1,30 @@
+A hero on the floor of a pool: caustics ripple across it, presses drop rings that bend the light, and the text casts a wobbling shadow on the floor.
+
+<ComponentPreview name="caustics-background-demo" />
+
+## Installation
+
+<Install name="caustics-background" />
+
+## Usage
+
+```tsx
+import { CausticsBackground } from '@/components/ui/caustics-background'
+
+<CausticsBackground className="h-96 rounded-xl border">
+  <h1>Your headline</h1>
+</CausticsBackground>
+```
+
+It draws on a canvas behind its children with the `useCanvas` hook, sized to the box and capped at twice the pixel ratio, and stops drawing while it is off screen. Text over it is white with a shadow that wobbles with the water.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `className` |  | Sets its size and lays out the children, like any div. |
+| `tint` | a pool blue | The water’s colour, as `[r, g, b]`. |
+
+## Accessibility
+
+The canvas is decoration behind the content: your children stay plain, selectable text. The text over it gets a shadow that keeps it readable on the bright caustics. With reduced motion it draws a still frame and only answers the pointer.

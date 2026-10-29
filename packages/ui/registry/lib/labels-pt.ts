@@ -892,6 +892,9 @@ export const pt = {
   'scroll-index': {
     index: 'Nesta página',
   },
+  'spoiler-text': {
+    reveal: 'Spoiler, toque para ver',
+  },
   'tag-input': {
     remove: (tag: string) => `Remover ${tag}`,
     max: (max: number) => `Até ${plural(max, 'tag', 'tags')}.`,

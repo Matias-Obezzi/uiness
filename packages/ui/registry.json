@@ -1168,6 +1168,18 @@
       ]
     },
     {
+      "name": "use-canvas",
+      "type": "registry:hook",
+      "title": "useCanvas",
+      "description": "Draws on a canvas every frame while it is on screen, at the screen's density, with the pointer and presses over its parent, and only on change with reduced motion. Plus value noise.",
+      "files": [
+        {
+          "path": "registry/hooks/use-canvas.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "use-motion-ready",
       "type": "registry:hook",
       "title": "useMotionReady",
@@ -2783,6 +2795,214 @@
       "files": [
         {
           "path": "registry/ui/swipe-actions.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "shape-hero",
+      "type": "registry:ui",
+      "title": "Shape Hero",
+      "description": "A landing hero where shapes drop in and pile up under the headline, and can be grabbed and thrown.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/shape-hero.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "rain-glass-background",
+      "type": "registry:ui",
+      "title": "Rain Glass Background",
+      "description": "A hero seen through a rainy, fogged window: drops gather and run, each a tiny lens on the view, and dragging wipes the fog away.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/rain-glass-background.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "caustics-background",
+      "type": "registry:ui",
+      "title": "Caustics Background",
+      "description": "A hero on the floor of a pool: caustics ripple across it, presses drop rings that bend the light, and text casts a wobbling shadow.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/caustics-background.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "ink-background",
+      "type": "registry:ui",
+      "title": "Ink Background",
+      "description": "A headline in ink on water: stir it and the letters bleed, press to drop ink, and the words gather back once it settles.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/ink-background.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "drape-background",
+      "type": "registry:ui",
+      "title": "Drape Background",
+      "description": "A pleated curtain in a breeze, a small cloth simulation the pointer pushes aside, shaded pleat by pleat.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/drape-background.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "topo-background",
+      "type": "registry:ui",
+      "title": "Topo Background",
+      "description": "A living contour map that drifts, rises in a hill under the pointer and ripples from a press.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/topo-background.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "flow-field",
+      "type": "registry:ui",
+      "title": "Flow Field",
+      "description": "Streamlines drifting through a changing field that part around the pointer, swirl in its wake and scatter from a press.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/flow-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "dot-field",
+      "type": "registry:ui",
+      "title": "Dot Field",
+      "description": "A membrane of halftone dots that ripples behind a swipe and rings out from a press.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/dot-field.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "background-paths",
+      "type": "registry:ui",
+      "title": "Background Paths",
+      "description": "A ribbon of fine lines in one colour that keeps flowing at any size and parts around the pointer.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/background-paths.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "halftone-background",
+      "type": "registry:ui",
+      "title": "Halftone Background",
+      "description": "Any image, or a lit sphere, printed as a halftone dot screen, with a loupe under the pointer that looks closer with a finer screen.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/halftone-background.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "shadow-text",
+      "type": "registry:ui",
+      "title": "Shadow Text",
+      "description": "A headline that works as a sundial: each letter casts a long soft shadow set by the reader’s clock, and the pointer close by turns into a lamp.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/shadow-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "spoiler-text",
+      "type": "registry:ui",
+      "title": "Spoiler Text",
+      "description": "Words hidden under drifting specks, like a chat spoiler, until a press blows them away from where it landed.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/spoiler-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "glitch-text",
+      "type": "registry:ui",
+      "title": "Glitch Text",
+      "description": "Flat text that cuts into hard-shifted bands with a thin red and cyan split for a moment: on its own, on hover, or when the text changes.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/glitch-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "swoosh-text",
+      "type": "registry:ui",
+      "title": "Swoosh Text",
+      "description": "Zinc letters extruded in 3D, their faces lit from where the pointer is, each pressing in like a keycap under it.",
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/swoosh-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "plucked-text",
+      "type": "registry:ui",
+      "title": "Plucked Text",
+      "description": "A headline sitting on a string: sweep across it to strum or press to pluck, and the letters ride its waves as it rings and settles.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/plucked-text.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "cradle-text",
+      "type": "registry:ui",
+      "title": "Cradle Text",
+      "description": "A headline hung like a Newton’s cradle: brush or tap a letter and the knock clacks through the word and out at the far end.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/cradle-text.tsx",
           "type": "registry:ui"
         }
       ]

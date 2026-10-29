@@ -1,0 +1,40 @@
+Words hidden under drifting specks, like a spoiler in a chat, until a press blows the specks away from where it landed.
+
+<ComponentPreview name="spoiler-text-demo" />
+
+## Installation
+
+<Install name="spoiler-text" />
+
+## Usage
+
+```tsx
+import { SpoilerText } from '@/components/ui/spoiler-text'
+
+<p>
+  The twist is that <SpoilerText>the narrator did it</SpoilerText>.
+</p>
+```
+
+It sits inline in a sentence and wraps with it. A keyboard press blows the specks out from the middle.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `children` |  | The words to hide, as a string. |
+| `labels` |  | The words it reads out, below. |
+
+## Accessibility
+
+Until it is revealed, the words are hidden from screen readers and a button stands over them that says it is a spoiler. Pressing it shows the words and removes the button. With reduced motion the specks just disappear.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `SpoilerText` takes them as `labels`. To set them for the whole app, put them under `'spoiler-text'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultSpoilerTextLabels: SpoilerTextLabels = {
+  reveal: 'Spoiler, press to reveal',
+}
+```

@@ -1,0 +1,29 @@
+A membrane of halftone dots that ripples behind a swipe and rings out from a press.
+
+<ComponentPreview name="dot-field-demo" />
+
+## Installation
+
+<Install name="dot-field" />
+
+## Usage
+
+```tsx
+import { DotField } from '@/components/ui/dot-field'
+
+<DotField className="h-96 rounded-xl border">
+  <h1>Your headline</h1>
+</DotField>
+```
+
+It draws on a canvas behind its children with the `useCanvas` hook, sized to the box and capped at twice the pixel ratio, and stops drawing while it is off screen. The dots take the text colour.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `className` |  | Sets its size and lays out the children, like any div. |
+
+## Accessibility
+
+The canvas is decoration behind the content: your children stay plain, selectable text. The dots stay faint at rest, so text over them keeps its contrast. With reduced motion it draws a still frame and only answers the pointer.

@@ -1,0 +1,28 @@
+Flat text that cuts into hard-shifted bands with a thin red and cyan split for a moment: on its own every few seconds, on hover, or when the text changes.
+
+<ComponentPreview name="glitch-text-demo" />
+
+## Installation
+
+<Install name="glitch-text" />
+
+## Usage
+
+```tsx
+import { GlitchText } from '@/components/ui/glitch-text'
+
+<GlitchText text={status} trigger="change" />
+```
+
+Each glitch is a short run of random bands, so no two look alike. `change` suits a status that updates; `idle` suits a title left alone.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `text` |  | The words. |
+| `trigger` | `hover` | `idle` glitches every few seconds, `hover` on hover, `change` when the text changes. |
+
+## Accessibility
+
+Screen readers read the words once; the two coloured copies are hidden from them. With reduced motion it never glitches.
