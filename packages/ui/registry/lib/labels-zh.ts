@@ -872,6 +872,64 @@ export const zh = {
   'spoiler-text': {
     reveal: '剧透，点按即可查看',
   },
+  'liquid-gauge': {
+    valueText: (value: string, max: string) => `${value} / ${max}`,
+  },
+  'uptime-card': {
+    up: '正常',
+    degraded: '性能下降',
+    down: '中断',
+    uptime: (share: string) => `可用率 ${share}`,
+    day: (date: string, status: string, incidents: number) =>
+      `${date}，${status}${incidents ? `，${incidents} 起事件` : ''}`,
+    noIncidents: '当天没有事件。',
+    ago: (days: number) => `${days} 天前`,
+    today: '今天',
+  },
+  'focal-point-picker': {
+    focalPoint: '焦点',
+    position: (x: number, y: number) => `水平 ${x}%，垂直 ${y}%`,
+    crops: '裁剪',
+  },
+  'photo-straighten': {
+    straighten: '拉直',
+    degrees: (angle: string) => `${angle} 度`,
+    reset: '重置',
+  },
+  'clip-trimmer': {
+    start: '裁剪起点',
+    end: '裁剪终点',
+    play: '播放',
+    pause: '暂停',
+    kept: (length: string) => `保留 ${length}`,
+  },
+  'synced-transcript': {
+    transcript: '文字稿',
+    jump: (time: string) => `从 ${time} 播放`,
+    follow: '回到当前单词',
+  },
+  'avatar-picker': {
+    name: '名字',
+    flip: '翻到另一个头像',
+    shuffle: '随机',
+  },
+  'page-flip': {
+    book: '书',
+    previous: '上一页',
+    next: '下一页',
+    pages: (from: number, to: number, total: number) =>
+      from === to ? `第 ${from} 页，共 ${total} 页` : `第 ${from}–${to} 页，共 ${total} 页`,
+  },
+  'contact-sheet': {
+    frame: (n: number, alt: string, mark: 'pick' | 'strike' | null) =>
+      `第 ${n} 张，${alt}${mark === 'pick' ? '，已圈选' : mark === 'strike' ? '，已划掉' : ''}`,
+    picked: (n: number) => `已圈选 ${n} 张`,
+  },
+  'vinyl-card': {
+    play: '播放',
+    pause: '暂停',
+    seek: '进度',
+  },
   'tag-input': {
     remove: (tag: string) => `移除 ${tag}`,
     max: (max: number) => `最多 ${max} 个标签。`,

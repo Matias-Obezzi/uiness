@@ -1,0 +1,48 @@
+A transcript that follows the spoken word: what was said is solid, the word being said is marked, and the view keeps it in sight. Click any word to play from there. Scroll away and it stops following for a few seconds, with a button to come back.
+
+<ComponentPreview name="synced-transcript-demo" />
+
+## Installation
+
+<Install name="synced-transcript" />
+
+## Usage
+
+```tsx
+import { SyncedTranscript } from '@/components/ui/synced-transcript'
+
+<SyncedTranscript
+  segments={segments}
+  time={time}
+  onSeek={(t) => {
+    audio.current.currentTime = t
+  }}
+/>
+```
+
+Feed it the playback time from your audio or video, for example from `timeupdate`. Segments are paragraphs, each with an optional `speaker` and its `words`, each word with the second it starts.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `segments` |  | The paragraphs: `speaker` and `words`, each `{ text, start }`. |
+| `time` |  | The playback time in seconds. |
+| `onSeek` |  | Called with a time to play from. |
+| `labels` |  | The words it shows and reads out, below. |
+
+## Accessibility
+
+The transcript is a labelled region that the keyboard can scroll. The current word carries `aria-current`. Each paragraph’s timestamp is a button that plays from there, so seeking works without a pointer. With reduced motion it jumps to the current word instead of scrolling smoothly.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `SyncedTranscript` takes them as `labels`. To set them for the whole app, put them under `'synced-transcript'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultSyncedTranscriptLabels: SyncedTranscriptLabels = {
+  transcript: 'Transcript',
+  jump: (time) => `Play from ${time}`,
+  follow: 'Back to the current word',
+}
+```

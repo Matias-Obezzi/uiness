@@ -1,0 +1,45 @@
+A book you turn by hand: drag a page over the spine and it follows your finger, shading as it lifts, or tap a side to turn it.
+
+<ComponentPreview name="page-flip-demo" />
+
+## Installation
+
+<Install name="page-flip" />
+
+## Usage
+
+```tsx
+import { PageFlip } from '@/components/ui/page-flip'
+
+<PageFlip pages={[<Cover />, <PageOne />, <PageTwo />, <PageThree />]} />
+```
+
+Each leaf carries two pages, its front on the right and its back on the left, so the first page is alone on the right like a cover. A page is any content; it is clipped to its half of the book.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `pages` |  | The pages in order. |
+| `turned` |  | How many leaves are turned, when you keep it. |
+| `defaultTurned` | `0` | Where it opens. |
+| `onTurnedChange` |  | Called with the new count. |
+| `labels` |  | The words it shows and reads out, below. |
+
+## Accessibility
+
+The buttons under the book turn the pages, and the page count between them is announced as it changes. Pages out of view are hidden from screen readers and the keyboard. With reduced motion pages turn at once.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `PageFlip` takes them as `labels`. To set them for the whole app, put them under `'page-flip'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultPageFlipLabels: PageFlipLabels = {
+  book: 'Book',
+  previous: 'Previous page',
+  next: 'Next page',
+  pages: (from, to, total) =>
+    from === to ? `Page ${from} of ${total}` : `Pages ${from}–${to} of ${total}`,
+}
+```

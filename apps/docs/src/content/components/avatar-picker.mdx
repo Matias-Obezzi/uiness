@@ -1,0 +1,42 @@
+Pick an avatar made from a name: a soft mesh of colour and the initials, which morphs as you type. It sits on a coin you can flick to spin, tap to flip to the other side, or shuffle for a new one.
+
+<ComponentPreview name="avatar-picker-demo" />
+
+## Installation
+
+<Install name="avatar-picker" />
+
+## Usage
+
+```tsx
+import { AvatarPicker } from '@/components/ui/avatar-picker'
+
+<AvatarPicker value={avatar} onValueChange={setAvatar} />
+```
+
+The choice is a `name` and a `seed`, and the same pair always draws the same avatar, so store those two and draw it anywhere with `GeneratedAvatar`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `value` |  | The `name` and `seed`, when you keep them. |
+| `defaultValue` | `{ name: 'Ada Lovelace', seed: 0 }` | Where it starts. |
+| `onValueChange` |  | Called with the new choice. |
+| `labels` |  | The words it shows and reads out, below. |
+
+## Accessibility
+
+The coin is a button that flips to the other avatar, and the shuffle button picks a new one; the name field has a label. `GeneratedAvatar` reads as an image named after the name. With reduced motion the coin turns without spinning.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `AvatarPicker` takes them as `labels`. To set them for the whole app, put them under `'avatar-picker'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultAvatarPickerLabels: AvatarPickerLabels = {
+  name: 'Name',
+  flip: 'Flip to the other avatar',
+  shuffle: 'Shuffle',
+}
+```

@@ -1,0 +1,41 @@
+A usage meter filled with liquid. A change of value pours it in or out and sets the surface sloshing against the walls, moving the pointer across it makes ripples, and bubbles rise through it. The share is written across the middle, inverted where the liquid covers it.
+
+<ComponentPreview name="liquid-gauge-demo" />
+
+## Installation
+
+<Install name="liquid-gauge" />
+
+## Usage
+
+```tsx
+import { LiquidGauge } from '@/components/ui/liquid-gauge'
+
+<LiquidGauge label="Storage" value={32} max={50} format={(n) => `${n} GB`} />
+```
+
+The surface is a small wave simulation on a canvas that stops drawing while it is off screen. The liquid takes the primary colour.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` |  | What is measured, like “Storage”. Names the meter. |
+| `value` |  | The amount used. |
+| `max` | `100` | The allowance. |
+| `format` | the locale’s number format | Formats the value and the maximum. |
+| `labels` |  | The words it reads out, below. |
+
+## Accessibility
+
+A `meter` with its value, maximum and a text value such as “32 GB of 50 GB”, also written under it. The drawing is hidden from screen readers. With reduced motion the level moves straight to the value and the surface stays flat.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `LiquidGauge` takes them as `labels`. To set them for the whole app, put them under `'liquid-gauge'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultLiquidGaugeLabels: LiquidGaugeLabels = {
+  valueText: (value, max) => `${value} of ${max}`,
+}
+```

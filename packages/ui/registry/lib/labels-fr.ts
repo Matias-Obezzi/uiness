@@ -900,6 +900,64 @@ export const fr = {
   'spoiler-text': {
     reveal: 'Spoiler, appuyez pour le voir',
   },
+  'liquid-gauge': {
+    valueText: (value: string, max: string) => `${value} sur ${max}`,
+  },
+  'uptime-card': {
+    up: 'Opérationnel',
+    degraded: 'Dégradé',
+    down: 'Panne',
+    uptime: (share: string) => `${share} de disponibilité`,
+    day: (date: string, status: string, incidents: number) =>
+      `${date}, ${status}${incidents ? `, ${incidents} incident${incidents === 1 ? '' : 's'}` : ''}`,
+    noIncidents: 'Aucun incident ce jour-là.',
+    ago: (days: number) => `Il y a ${days} jours`,
+    today: 'Aujourd’hui',
+  },
+  'focal-point-picker': {
+    focalPoint: 'Point focal',
+    position: (x: number, y: number) => `${x} % en largeur, ${y} % en hauteur`,
+    crops: 'Recadrages',
+  },
+  'photo-straighten': {
+    straighten: 'Redresser',
+    degrees: (angle: string) => `${angle} degrés`,
+    reset: 'Réinitialiser',
+  },
+  'clip-trimmer': {
+    start: 'Début de la coupe',
+    end: 'Fin de la coupe',
+    play: 'Lire',
+    pause: 'Pause',
+    kept: (length: string) => `${length} conservés`,
+  },
+  'synced-transcript': {
+    transcript: 'Transcription',
+    jump: (time: string) => `Lire à partir de ${time}`,
+    follow: 'Revenir au mot en cours',
+  },
+  'avatar-picker': {
+    name: 'Nom',
+    flip: 'Retourner vers l’autre avatar',
+    shuffle: 'Mélanger',
+  },
+  'page-flip': {
+    book: 'Livre',
+    previous: 'Page précédente',
+    next: 'Page suivante',
+    pages: (from: number, to: number, total: number) =>
+      from === to ? `Page ${from} sur ${total}` : `Pages ${from}–${to} sur ${total}`,
+  },
+  'contact-sheet': {
+    frame: (n: number, alt: string, mark: 'pick' | 'strike' | null) =>
+      `Vue ${n}, ${alt}${mark === 'pick' ? ', entourée' : mark === 'strike' ? ', barrée' : ''}`,
+    picked: (n: number) => `${n} ${n === 1 ? 'entourée' : 'entourées'}`,
+  },
+  'vinyl-card': {
+    play: 'Lire',
+    pause: 'Pause',
+    seek: 'Position',
+  },
   'tag-input': {
     remove: (tag: string) => `Retirer ${tag}`,
     max: (max: number) => `Jusqu’à ${plural(max, 'étiquette', 'étiquettes')}.`,

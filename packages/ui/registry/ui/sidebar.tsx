@@ -11,6 +11,7 @@ import {
   DrawerTitle,
 } from '@/components/ui/drawer'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { useLabels } from '@/lib/labels'
 import { cn } from '@/lib/utils'
 
@@ -96,19 +97,6 @@ function useSidebar() {
   return ctx
 }
 
-function useIsMobile(breakpoint: SidebarBreakpoint) {
-  const [mobile, setMobile] = React.useState(false)
-  React.useEffect(() => {
-    if (typeof matchMedia !== 'function') return
-    const mq = matchMedia(mobileQuery(breakpoint))
-    const onChange = () => setMobile(mq.matches)
-    onChange()
-    mq.addEventListener('change', onChange)
-    return () => mq.removeEventListener('change', onChange)
-  }, [breakpoint])
-  return mobile
-}
-
 export interface SidebarProviderProps {
   /** Expanded or collapsed. Controlled. */
   open?: boolean
@@ -167,7 +155,7 @@ function SidebarProvider({
   )
   const toggle = React.useCallback(() => setOpen(!open), [open, setOpen])
   const [mobileOpen, setMobileOpen] = React.useState(false)
-  const isMobile = useIsMobile(breakpoint)
+  const isMobile = useIsMobile(breakpointPx[breakpoint])
   // The mobile sheet closes when the viewport grows past the breakpoint. Adjusted during render
   // so the desktop layout never renders a frame with it open.
   const [wasMobile, setWasMobile] = React.useState(isMobile)
