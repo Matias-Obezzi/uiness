@@ -1,0 +1,44 @@
+A text box that suggests how the sentence ends, in grey after the caret. Tab takes all of it, the right arrow one word, and typing the letters it suggests keeps the rest. Escape drops it.
+
+<ComponentPreview name="autocomplete-input-demo" />
+
+## Installation
+
+<Install name="autocomplete-input" />
+
+## Usage
+
+```tsx
+import { AutocompleteInput } from '@/components/ui/autocomplete-input'
+
+<AutocompleteInput
+  aria-label="Message"
+  getSuggestion={async (text) => (await complete(text)) ?? ''}
+/>
+```
+
+`getSuggestion` is asked once typing pauses for `delay` milliseconds with the caret at the end; return the words that would follow, spaces included, or an empty string. An answer that arrives after more typing is dropped.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `getSuggestion` |  | Returns how the text goes on, or a promise of it. |
+| `delay` | `300` | Milliseconds of quiet before asking. |
+| `value` |  | The text, when you keep it. |
+| `defaultValue` | `''` | The text at first. |
+| `onValueChange` |  | Called with the new text. |
+
+## Accessibility
+
+While there is a suggestion, the box is described by it and by how to take it, so a screen reader hears it without it being typed in. Tab only takes a suggestion when there is one; otherwise it moves focus as usual.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `AutocompleteInput` takes them as `labels`. To set them for the whole app, put them under `'autocomplete-input'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultAutocompleteInputLabels: AutocompleteInputLabels = {
+  hint: (suggestion) => `Suggestion: ${suggestion}. Tab takes it, the right arrow one word.`,
+}
+```

@@ -1,0 +1,47 @@
+Picks a model and how hard it thinks. The trigger shows both; its panel lists the models and, under them, the chosen model’s effort levels as a track of detents. Switching models keeps the effort at the same share of the way along the new model’s scale, so the top of three levels becomes the top of five.
+
+<ComponentPreview name="model-selector-demo" />
+
+## Installation
+
+<Install name="model-selector" />
+
+## Usage
+
+```tsx
+import { ModelSelector, type Model } from '@/components/ui/model-selector'
+
+const models: Model[] = [
+  { id: 'swift', name: 'Swift', description: 'Quick answers', efforts: ['Low', 'High'] },
+  { id: 'sage', name: 'Sage', efforts: ['Low', 'Medium', 'High', 'Max'] },
+]
+
+<ModelSelector models={models} value={choice} onValueChange={setChoice} />
+```
+
+The value is `{ model, effort }`. A model without `efforts` has no effort track. `carryEffort(from, effort, to)` is the rule used when switching, exported for your own pickers.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `models` |  | Each `{ id, name, description?, efforts? }`. |
+| `value` |  | The choice, when you keep it. |
+| `defaultValue` | the first model | The choice at first. |
+| `onValueChange` |  | Called with `{ model, effort }`. |
+
+## Accessibility
+
+The trigger reads out what is picked, "Model: Sage, High effort". The models are a radio group and the efforts a segmented control, so Tab reaches each group and the arrow keys move within it.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ModelSelector` takes them as `labels`. To set them for the whole app, put them under `'model-selector'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultModelSelectorLabels: ModelSelectorLabels = {
+  models: 'Model',
+  effort: 'Effort',
+  trigger: (model, effort) => (effort ? `Model: ${model}, ${effort} effort` : `Model: ${model}`),
+}
+```

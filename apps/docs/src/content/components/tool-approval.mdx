@@ -1,0 +1,54 @@
+The tool calls an agent wants to make, for a person to approve or deny. A call waiting for a decision shows its arguments; a destructive one needs a press and hold to approve. Decided calls fold into a trace, each opening to its arguments and output.
+
+<ComponentPreview name="tool-approval-demo" />
+
+## Installation
+
+<Install name="tool-approval" />
+
+## Usage
+
+```tsx
+import { ToolApproval } from '@/components/ui/tool-approval'
+
+<ToolApproval
+  calls={calls}
+  onApprove={(id) => run(id)}
+  onDeny={(id) => deny(id)}
+/>
+```
+
+A call is `{ id, name, args?, destructive?, status, output? }`, with `status` one of `pending`, `running`, `done`, `denied` or `error`. Approving a destructive call uses [Hold to Confirm](/docs/components/hold-to-confirm), so a stray click can't run it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `calls` |  | The calls, in order. |
+| `onApprove` |  | Called with a call’s id. |
+| `onDeny` |  | Called with a call’s id. |
+
+## Accessibility
+
+Each call waiting for a decision is a group named with its question, "Allow delete_branch?". The hold button explains how to use it to screen readers and works with Space or Enter held down.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ToolApproval` takes them as `labels`. To set them for the whole app, put them under `'tool-approval'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultToolApprovalLabels: ToolApprovalLabels = {
+  calls: 'Tool calls',
+  ask: (name) => `Allow ${name}?`,
+  approve: 'Approve',
+  deny: 'Deny',
+  destructive: 'This can’t be undone. Hold to approve.',
+  status: {
+    pending: 'Waiting',
+    running: 'Running',
+    done: 'Done',
+    denied: 'Denied',
+    error: 'Failed',
+  },
+}
+```

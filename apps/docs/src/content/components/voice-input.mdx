@@ -1,0 +1,44 @@
+Records a voice message. While recording, a waveform scrolls by with the time; once stopped, the take can be played back, discarded or sent. It asks for the microphone on the first press.
+
+<ComponentPreview name="voice-input-demo" />
+
+## Installation
+
+<Install name="voice-input" />
+
+## Usage
+
+```tsx
+import { VoiceInput } from '@/components/ui/voice-input'
+
+<VoiceInput onSend={(audio, duration) => upload(audio)} />
+```
+
+`onSend` gets the recording as a `Blob`, in whatever format the browser records, and its length in milliseconds. If the microphone is refused or missing, it says so in place of the prompt. The microphone is released as soon as recording stops.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `onSend` |  | Called with the take and its length in milliseconds. |
+
+## Accessibility
+
+Every control is a named button. While recording, a timer reads out the time so far, and a refused microphone is announced. The waveform is decoration and hidden from screen readers.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `VoiceInput` takes them as `labels`. To set them for the whole app, put them under `'voice-input'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultVoiceInputLabels: VoiceInputLabels = {
+  record: 'Record a voice message',
+  stop: 'Stop recording',
+  play: 'Play',
+  pause: 'Pause',
+  discard: 'Discard',
+  send: 'Send',
+  recording: (time) => `Recording, ${time}`,
+  denied: 'The microphone is not available.',
+}
+```

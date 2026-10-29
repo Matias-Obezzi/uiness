@@ -1,0 +1,56 @@
+A text to edit where any selection can be rewritten by AI. Select some words, say how, and the rewrite streams in place as a word-level diff, struck out and added, to accept, discard or try again.
+
+<ComponentPreview name="rewrite-selection-demo" />
+
+## Installation
+
+<Install name="rewrite-selection" />
+
+## Usage
+
+```tsx
+import { RewriteSelection } from '@/components/ui/rewrite-selection'
+
+<RewriteSelection
+  value={text}
+  onValueChange={setText}
+  suggestions={['Shorter', 'More formal']}
+  rewrite={(selection, instruction) => model.stream(`${instruction}: ${selection}`)}
+/>
+```
+
+`rewrite` can return the new text, a promise of it, or an async iterable that streams it in pieces. `diffWords` is exported for diffs of your own.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `rewrite` |  | Rewrites the selection as asked. |
+| `suggestions` |  | Instructions offered as chips. |
+| `value` |  | The text, when you keep it. |
+| `defaultValue` | `''` | The text at first. |
+| `onValueChange` |  | Called with the text once a rewrite is accepted, or as it is typed. |
+
+## Accessibility
+
+The selection is made in a plain text box, with the mouse or Shift and the arrows. In the review, removed and added words are `del` and `ins` and say so to screen readers.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `RewriteSelection` takes them as `labels`. To set them for the whole app, put them under `'rewrite-selection'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultRewriteSelectionLabels: RewriteSelectionLabels = {
+  text: 'Text. Select words to rewrite them.',
+  instruction: 'How to rewrite the selection',
+  placeholder: 'Rewrite the selection…',
+  rewrite: 'Rewrite',
+  accept: 'Accept',
+  discard: 'Discard',
+  retry: 'Try again',
+  writing: 'Rewriting…',
+  review: 'Review the rewrite',
+  added: 'added',
+  removed: 'removed',
+}
+```

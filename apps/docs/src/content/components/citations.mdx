@@ -1,0 +1,46 @@
+An answer with numbered source chips after the claims they back. Hover or focus a chip and one preview card glides over to it, while the sentence it backs lights up. `SourceStack` shows the sources an answer is reading, stacking up as each is read.
+
+<ComponentPreview name="citations-demo" />
+
+## Installation
+
+<Install name="citations" />
+
+## Usage
+
+```tsx
+import { Citations, SourceStack } from '@/components/ui/citations'
+
+<SourceStack sources={read} />
+<Citations
+  sources={sources}
+  segments={[
+    { text: 'The sky looks blue because air scatters blue light most.', sources: ['nasa'] },
+    { text: 'At sunset the reds remain.', sources: ['met'] },
+  ]}
+/>
+```
+
+Chips are numbered by the order of `sources`, so the same source has the same number wherever it backs a claim. Each chip is a link to the source.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `segments` |  | The answer in parts, `{ text, sources? }`. |
+| `sources` |  | Each `{ id, title, url, snippet?, favicon? }`. |
+
+## Accessibility
+
+Each chip is a link named with its number and title, "Source 2: Rayleigh scattering explained", and describes itself with the preview while focused. The source stack is a status that says how many sources it is reading.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Citations` takes them as `labels`. To set them for the whole app, put them under `'citations'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultCitationsLabels: CitationsLabels = {
+  chip: (index, title) => `Source ${index}: ${title}`,
+  reading: (count) => `Reading ${count} ${count === 1 ? 'source' : 'sources'}`,
+}
+```

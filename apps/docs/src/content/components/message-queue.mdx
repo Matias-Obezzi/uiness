@@ -1,0 +1,47 @@
+A composer that keeps taking messages while the agent works. Follow-ups stack above it, where they can be reordered, edited, removed or sent at once; when the run ends they go in one by one, each after the reply to the one before.
+
+<ComponentPreview name="message-queue-demo" />
+
+## Installation
+
+<Install name="message-queue" />
+
+## Usage
+
+```tsx
+import { MessageQueue } from '@/components/ui/message-queue'
+
+<MessageQueue busy={agent.running} onSend={(text) => agent.send(text)} />
+```
+
+While `busy`, or while others are still waiting, new messages join the queue. Each time `busy` turns false, the first one is sent; set `busy` again in `onSend` so the next waits for its reply.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `busy` |  | The agent is working. |
+| `onSend` |  | Sends a message to the agent. |
+
+## Accessibility
+
+The queue is a list named with how many are waiting. Every action on a queued message is a named button, so the order can be changed without dragging.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `MessageQueue` takes them as `labels`. To set them for the whole app, put them under `'message-queue'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultMessageQueueLabels: MessageQueueLabels = {
+  queue: (count) => `${count} queued ${count === 1 ? 'message' : 'messages'}`,
+  placeholder: 'Send a message…',
+  send: 'Send',
+  queueIt: 'Queue',
+  sendNow: 'Send now',
+  edit: 'Edit',
+  save: 'Save',
+  remove: 'Remove',
+  moveUp: 'Move up',
+  moveDown: 'Move down',
+}
+```

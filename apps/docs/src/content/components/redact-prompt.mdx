@@ -1,0 +1,48 @@
+A prompt box that masks names, emails, phone and card numbers and API keys before anything is sent. It shows how many values it masked and, on request, the prompt as the model will get it. Send `redact(value).text`, then `restore` the reply.
+
+<ComponentPreview name="redact-prompt-demo" />
+
+## Installation
+
+<Install name="redact-prompt" />
+
+## Usage
+
+```tsx
+import { RedactPrompt, redact, restore } from '@/components/ui/redact-prompt'
+
+<RedactPrompt value={value} onValueChange={setValue} terms={['Marta Gómez']} />
+
+const { text, redactions } = redact(value, ['Marta Gómez'])
+const reply = restore(await model.ask(text), redactions)
+```
+
+Emails, phone numbers of up to 15 digits, card numbers that pass the Luhn check and keys in the shapes OpenAI, GitHub, AWS, Slack and Google use are found by pattern. Names can't be, so pass them as `terms`. The same value always gets the same placeholder.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `terms` |  | Words to mask as well, such as names. |
+| `value` |  | The prompt, when you keep it. |
+| `defaultValue` | `''` | The prompt at first. |
+| `onValueChange` |  | Called with the new prompt. |
+
+## Accessibility
+
+How many values are masked is a status, read out as it changes. The preview is a disclosure, and each placeholder says what kind of value it hides.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `RedactPrompt` takes them as `labels`. To set them for the whole app, put them under `'redact-prompt'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultRedactPromptLabels: RedactPromptLabels = {
+  placeholder: 'Write a prompt…',
+  preview: 'What the model sees',
+  show: 'Show what the model sees',
+  hide: 'Hide what the model sees',
+  masked: (count) => (count === 1 ? '1 value masked' : `${count} values masked`),
+  kinds: { email: 'Email', phone: 'Phone', card: 'Card number', key: 'API key', term: 'Name' },
+}
+```

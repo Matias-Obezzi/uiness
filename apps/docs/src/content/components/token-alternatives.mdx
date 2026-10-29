@@ -1,0 +1,46 @@
+An answer where the words the model was unsure of are underlined. Each opens what else it weighed, with how likely each was; picking one hands it back so the answer can be written again from that word on.
+
+<ComponentPreview name="token-alternatives-demo" />
+
+## Installation
+
+<Install name="token-alternatives" />
+
+## Usage
+
+```tsx
+import { TokenAlternatives } from '@/components/ui/token-alternatives'
+
+<TokenAlternatives
+  tokens={[
+    { text: 'Lisbon', p: 0.97 },
+    { text: ' sunny', p: 0.42, alternatives: [{ text: ' hilly', p: 0.31 }] },
+  ]}
+  onPick={(index, text) => regenerateFrom(index, text)}
+/>
+```
+
+Tokens come from a model's log probabilities. Those below `threshold` with alternatives are underlined, in amber when below half of it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `tokens` |  | Each `{ text, p?, alternatives? }`. |
+| `threshold` | `0.6` | Less likely than this is unsure. |
+| `onPick` |  | Called with the token’s index and the word picked. |
+
+## Accessibility
+
+Each unsure word is a button that says how likely it was, and its list of alternatives marks the current one.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `TokenAlternatives` takes them as `labels`. To set them for the whole app, put them under `'token-alternatives'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultTokenAlternativesLabels: TokenAlternativesLabels = {
+  token: (text, percent) => `${text.trim()}, ${percent}% likely. Show alternatives`,
+  options: 'Other words it weighed',
+}
+```

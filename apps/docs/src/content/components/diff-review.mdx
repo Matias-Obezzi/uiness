@@ -1,0 +1,49 @@
+A coding agent’s edits, file by file. Each file opens to its diff as it streams in, and once written can be accepted or rejected, and undone. Accept all takes every file still undecided.
+
+<ComponentPreview name="diff-review-demo" />
+
+## Installation
+
+<Install name="diff-review" />
+
+## Usage
+
+```tsx
+import { DiffReview } from '@/components/ui/diff-review'
+
+<DiffReview
+  files={[{ path: 'src/total.ts', before, after, streaming: false }]}
+  onDecision={(path, decision) => apply(path, decision)}
+/>
+```
+
+Files fold once decided, and open again from their name. A file still `streaming` can't be decided yet. The diff is by line, with the same `diffLines` as [Code Comparison](/docs/components/code-comparison).
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `files` |  | Each `{ path, before, after, streaming? }`. |
+| `decisions` |  | Each file’s decision, when you keep them. |
+| `onDecision` |  | Called with the path and `accepted`, `rejected` or `undefined` on undo. |
+
+## Accessibility
+
+Each file’s name is a button that opens and closes its diff and reads out how many lines it adds and removes. Added and removed lines carry a + or − for screen readers.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `DiffReview` takes them as `labels`. To set them for the whole app, put them under `'diff-review'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultDiffReviewLabels: DiffReviewLabels = {
+  files: 'Changed files',
+  accept: 'Accept',
+  reject: 'Reject',
+  undo: 'Undo',
+  acceptAll: 'Accept all',
+  changes: (added, removed) => `${added} added, ${removed} removed`,
+  writing: 'Writing…',
+  decision: { accepted: 'Accepted', rejected: 'Rejected' },
+}
+```
