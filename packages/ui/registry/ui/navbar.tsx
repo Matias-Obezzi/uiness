@@ -95,6 +95,37 @@ function useHideOnScroll(enabled: boolean) {
   return hidden
 }
 
+/**
+ * Whether a sticky header has been scrolled past `distance` pixels: how far it has come loose
+ * from the top of its parent. It works for the page and for any box that scrolls, since scroll
+ * events are heard on the way down to whatever scrolled.
+ */
+function useScrolledPast(
+  header: React.RefObject<HTMLElement | null>,
+  enabled: boolean,
+  distance = 48,
+) {
+  return React.useSyncExternalStore(
+    React.useCallback(
+      (notify: () => void) => {
+        if (!enabled) return () => {}
+        window.addEventListener('scroll', notify, { capture: true, passive: true })
+        return () => window.removeEventListener('scroll', notify, { capture: true })
+      },
+      [enabled],
+    ),
+    () => {
+      const el = header.current
+      const parent = el?.parentElement
+      if (!enabled || !el || !parent) return false
+      // The parent's own scroll counts too, for when the parent is the box that scrolls.
+      const loose = el.getBoundingClientRect().top - parent.getBoundingClientRect().top
+      return loose + parent.scrollTop > distance
+    },
+    () => false,
+  )
+}
+
 export interface NavbarProps extends React.ComponentProps<'header'> {
   /**
    * What happens below the breakpoint: `drawer` collapses the links into a menu button,
@@ -107,6 +138,11 @@ export interface NavbarProps extends React.ComponentProps<'header'> {
   sticky?: boolean
   /** Hide the bar while scrolling down, bring it back on the way up. */
   hideOnScroll?: boolean
+  /**
+   * Once scrolled, shrink the bar into a narrower floating pill below the top edge. It starts
+   * clear, with no background or border. Needs `sticky`, and the bar first in its parent.
+   */
+  shrinkOnScroll?: boolean
   /** Bottom bar slots, including the "More" tab when there are more links. Default 5. */
   maxTabs?: number
   /** Edge the mobile menu opens from. Default bottom. */
@@ -127,6 +163,7 @@ function Navbar({
   breakpoint = 'md',
   sticky = true,
   hideOnScroll = false,
+  shrinkOnScroll = false,
   maxTabs = 5,
   menuSide = 'bottom',
   menuTitle: menuTitleProp,
@@ -145,6 +182,9 @@ function Navbar({
   const moreLabel = moreLabelProp ?? labels.more
   const [menuOpen, setMenuOpen] = React.useState(false)
   const hidden = useHideOnScroll(hideOnScroll) && !menuOpen
+  const header = React.useRef<HTMLElement>(null)
+  const shrink = shrinkOnScroll && sticky
+  const shrunk = useScrolledPast(header, shrink)
 
   const items = React.Children.toArray(children)
   const links = items.find(
@@ -174,10 +214,16 @@ function Navbar({
     <LabelsProvider labels={pack}>
       <NavbarContext.Provider value={barValue}>
         <header
+          ref={header}
           data-slot="navbar"
           data-hidden={hidden ? '' : undefined}
+          data-shrunk={shrunk ? '' : undefined}
           className={cn(
-            'z-(--z-sticky,40) w-full border-b bg-background/80 backdrop-blur transition-transform duration-(--duration-slow,300ms) supports-[backdrop-filter]:bg-background/60',
+            'z-(--z-sticky,40) w-full transition-transform duration-(--duration-slow,300ms)',
+            // Shrinking, the inner bar carries the surface so it can narrow and float.
+            shrink
+              ? 'px-3'
+              : 'border-b bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60',
             sticky && 'sticky top-0',
             hidden && '-translate-y-full',
             className,
@@ -187,6 +233,10 @@ function Navbar({
           <div
             className={cn(
               'mx-auto flex h-14 w-full max-w-6xl items-center gap-4 px-4 sm:px-6',
+              shrink &&
+                'rounded-full border border-transparent transition-[max-width,translate,background-color,border-color,box-shadow] duration-(--duration-slow,300ms) ease-(--easing-emphasized,cubic-bezier(0.16,1,0.3,1)) motion-reduce:transition-none',
+              shrunk &&
+                'max-w-2xl translate-y-3 border-border bg-background/80 shadow-lg backdrop-blur supports-[backdrop-filter]:bg-background/60',
               containerClassName,
             )}
           >

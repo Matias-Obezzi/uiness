@@ -325,6 +325,23 @@ function SiteNav(props: React.ComponentProps<typeof Navbar>) {
 }
 
 describe('Navbar', () => {
+  it('shrinks once it has come loose from the top of its parent', () => {
+    const { container } = render(
+      <div>
+        <SiteNav shrinkOnScroll />
+      </div>,
+    )
+    const header = container.querySelector('[data-slot="navbar"]') as HTMLElement
+    expect(header.dataset.shrunk).toBeUndefined()
+    // Stuck at the top while its parent has scrolled 200px up.
+    const parent = header.parentElement as HTMLElement
+    vi.spyOn(parent, 'getBoundingClientRect').mockReturnValue({ top: -200 } as DOMRect)
+    act(() => {
+      window.dispatchEvent(new Event('scroll'))
+    })
+    expect(header.dataset.shrunk).toBe('')
+  })
+
   it('renders the bar links and opens the mobile menu with the same links', async () => {
     const user = userEvent.setup()
     render(<SiteNav />)
