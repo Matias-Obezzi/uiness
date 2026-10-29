@@ -22,7 +22,7 @@ export const defaultMorphicNavbarLabels: MorphicNavbarLabels = {
 }
 
 /** Pixels between the active pill and the bar on each side of it. */
-const GAP = 6
+const GAP = 8
 /** Movement before a press counts as a scrub. */
 const SLOP = 6
 /** How far ahead, in milliseconds, a flick carries the scrub. */
@@ -127,17 +127,17 @@ function MorphicNavbar({
       className={cn('relative inline-flex select-none', className)}
       {...props}
     >
-      {/* The bar, in two halves either side of the pill. */}
+      {/* The bar, parted into two capsules either side of the pill. */}
       {pill && (
         <>
           <span
             aria-hidden="true"
-            className={cn('absolute inset-y-0 left-0 rounded-l-full rounded-r-md bg-muted', ease)}
+            className={cn('absolute inset-y-0 left-0 rounded-full bg-muted', ease)}
             style={{ width: Math.max(0, pill.left - GAP) }}
           />
           <span
             aria-hidden="true"
-            className={cn('absolute inset-y-0 right-0 rounded-r-full rounded-l-md bg-muted', ease)}
+            className={cn('absolute inset-y-0 right-0 rounded-full bg-muted', ease)}
             style={{ width: Math.max(0, width - pill.left - pill.width - GAP) }}
           />
           <span

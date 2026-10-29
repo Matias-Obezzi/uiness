@@ -36,6 +36,16 @@ With `mobile="tabs"` the links leave the top bar on small screens and become a f
 <NavbarSpacer />
 ```
 
+## Shrink on scroll
+
+<ComponentPreview name="navbar-shrink" align="start" />
+
+With `shrinkOnScroll` the bar starts clear and full width. Once the page scrolls, it narrows into a floating pill a little below the top edge, with a surface, a border and a shadow. It needs `sticky`, which is on by default, and the bar has to be the first thing in its parent, because it measures how far it has come loose from there. That makes it work in a box that scrolls too, as in the preview.
+
+```tsx
+<Navbar shrinkOnScroll>...</Navbar>
+```
+
 ## Links
 
 `NavbarLink` renders an `<a>` by default. With `asChild` it takes your router's link instead, which is what you want in a real app:
@@ -56,6 +66,7 @@ With `mobile="tabs"` the links leave the top bar on small screens and become a f
 | `breakpoint` | `'md'` | Where the desktop bar appears. |
 | `sticky` | `true` | Stick to the top of the page. |
 | `hideOnScroll` | `false` | Hide going down, come back going up. |
+| `shrinkOnScroll` | `false` | Once scrolled, shrink into a floating pill. |
 | `maxTabs` | `5` | Slots in the bottom bar, More included. |
 | `menuSide` | `'bottom'` | Edge the menu opens from. |
 | `menu` | | Extra content under the links in the menu. |
