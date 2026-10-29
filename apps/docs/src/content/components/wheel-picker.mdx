@@ -1,0 +1,32 @@
+An iOS-style drum: options sit on a turning cylinder, tilting away above and below the one in the middle. Flick it and it coasts with native momentum, then settles on an option.
+
+<ComponentPreview name="wheel-picker-demo" />
+
+## Installation
+
+<Install name="wheel-picker" />
+
+## Usage
+
+```tsx
+import { WheelPicker } from '@/components/ui/wheel-picker'
+
+<WheelPicker label="Hour" options={hours} value={hour} onValueChange={setHour} loop />
+```
+
+It is native scrolling with snap points, so the momentum is the platform's own. With `loop` it goes round, recentring itself out of sight. Put several side by side for a time or a date.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `options` |  | Each `{ value, label }`. |
+| `label` |  | Names the wheel. |
+| `value` |  | When you keep it. |
+| `defaultValue` | the first | At first. |
+| `onValueChange` |  | Called once it settles. |
+| `loop` | `false` | Goes round. |
+
+## Accessibility
+
+A listbox that follows its option with `aria-activedescendant`: the arrows move one, Page Up and Page Down five, Home and End to the ends. With reduced motion the options do not tilt.

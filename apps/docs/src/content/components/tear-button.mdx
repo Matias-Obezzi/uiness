@@ -1,0 +1,42 @@
+A confirm button you tear off like a ticket stub: drag the stub away and it parts hole by hole down the perforation, then drops. Let go early and it springs back.
+
+<ComponentPreview name="tear-button-demo" />
+
+## Installation
+
+<Install name="tear-button" />
+
+## Usage
+
+```tsx
+import { TearButton } from '@/components/ui/tear-button'
+
+<TearButton onConfirm={() => cancelOrder()} confirmedLabel="Order cancelled">
+  Cancel order
+</TearButton>
+```
+
+90 pixels of drag, right or down, tear all seven holes. It suits actions that should take a moment of intent, without a dialog.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `children` |  | What tearing it does. |
+| `onConfirm` |  | Runs once it is torn off. |
+| `confirmedLabel` | "Confirmed" | Shown once torn. |
+
+## Accessibility
+
+The stub is a button named by the text. Holding Space or Enter tears it a hole at a time, and letting go early mends it. A hint explains both, and the confirmation is announced.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `TearButton` takes them as `labels`. To set them for the whole app, put them under `'tear-button'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultTearButtonLabels: TearButtonLabels = {
+  hint: 'Drag the stub away to tear it off, or hold Space or Enter.',
+  confirmed: 'Confirmed',
+}
+```

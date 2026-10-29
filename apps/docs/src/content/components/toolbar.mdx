@@ -1,0 +1,46 @@
+An editor’s tool dock. A plate slides under the chosen tool, each tool shows its name and shortcut on hover, and tools with variants open a flyout. Grab the grip and throw it at any edge of its parent: it lands on the nearest, upright on the left and right.
+
+<ComponentPreview name="toolbar-demo" />
+
+## Installation
+
+<Install name="toolbar" />
+
+## Usage
+
+```tsx
+import { Toolbar } from '@/components/ui/toolbar'
+
+<div className="relative h-96">
+  <Toolbar tools={tools} value={tool} onValueChange={setTool} />
+</div>
+```
+
+A tool is `{ id, label, icon, shortcut?, variants? }`. Single-key shortcuts work anywhere but in fields. The toolbar is placed absolutely: give its parent a position and a size.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `tools` |  | The tools, in order. |
+| `value` |  | The tool, or variant, chosen. |
+| `onValueChange` |  | Called with a tool’s id. |
+| `edge` |  | The edge it sits on, when you keep it. |
+| `defaultEdge` | `bottom` | The edge at first. |
+| `onEdgeChange` |  | Called with the new edge. |
+
+## Accessibility
+
+A toolbar: Tab reaches the chosen tool and the arrows move along it. Tools are toggle buttons with their shortcuts in `aria-keyshortcuts`. Shift with an arrow on the grip moves it to that edge.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `Toolbar` takes them as `labels`. To set them for the whole app, put them under `'toolbar'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultToolbarLabels: ToolbarLabels = {
+  toolbar: 'Tools',
+  move: 'Move the toolbar: drag it, or press Shift and an arrow key, to another edge.',
+  more: (tool) => `More ${tool} tools`,
+}
+```

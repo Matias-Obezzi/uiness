@@ -1,0 +1,40 @@
+A subscribe button whose bell rings when it is turned on: the bell swings on its hook, the clapper swings the other way, lagging, and strikes the rim on each swing until it settles.
+
+<ComponentPreview name="bell-button-demo" />
+
+## Installation
+
+<Install name="bell-button" />
+
+## Usage
+
+```tsx
+import { BellButton } from '@/components/ui/bell-button'
+
+<BellButton subscribed={subscribed} onSubscribedChange={setSubscribed} />
+```
+
+It rings only when turned on, and not with reduced motion.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `subscribed` |  | Whether it is on, when you keep it. |
+| `defaultSubscribed` | `false` | Whether it starts on. |
+| `onSubscribedChange` |  | Called with the new state. |
+
+## Accessibility
+
+A toggle button: `aria-pressed` says whether it is on, and its text says Subscribe or Subscribed.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `BellButton` takes them as `labels`. To set them for the whole app, put them under `'bell-button'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultBellButtonLabels: BellButtonLabels = {
+  subscribe: 'Subscribe',
+  subscribed: 'Subscribed',
+}
+```

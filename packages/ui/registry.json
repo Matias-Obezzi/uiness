@@ -2788,6 +2788,241 @@
       ]
     },
     {
+      "name": "scroll-index",
+      "type": "registry:ui",
+      "title": "Scroll Index",
+      "description": "A rail of ticks for a long page, one per heading: the one being read is longer, hover shows the heading, click goes there, and dragging along it scrubs the page.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/scroll-index.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "morphic-navbar",
+      "type": "registry:ui",
+      "title": "Morphic Navbar",
+      "description": "A navigation bar that splits around the active link, which sits in a pill of its own; drag along it to scrub the pill from link to link, a flick carrying it further.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/morphic-navbar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "stack-panel",
+      "type": "registry:ui",
+      "title": "Stack Panel",
+      "description": "A panel that drills into pages like settings on a phone: the tapped row’s label flies up into the title, and a swipe right or the back button goes back.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/stack-panel.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "morph-popover",
+      "type": "registry:ui",
+      "title": "Morph Popover",
+      "description": "A button that grows into the form it opens, its label sliding up to become the title, then shrinks into a confirmation before turning back into the button.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/button",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/morph-popover.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "profile-dropdown",
+      "type": "registry:ui",
+      "title": "Profile Dropdown",
+      "description": "An account card that grows into its own menu, with accounts to switch to, a status, the theme and a sign out you hold so it can’t happen by accident.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/avatar",
+        "@uiness/hold-to-confirm",
+        "@uiness/popover",
+        "@uiness/segmented-control",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/profile-dropdown.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "toolbar",
+      "type": "registry:ui",
+      "title": "Toolbar",
+      "description": "An editor tool dock with a plate that slides under the chosen tool, tooltips with shortcuts, flyouts of variants, and a grip to throw it to any edge.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/kbd",
+        "@uiness/popover",
+        "@uiness/tooltip",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/toolbar.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "attract-button",
+      "type": "registry:ui",
+      "title": "Attract Button",
+      "description": "A call to action in a field of iron filings that line up with its magnetic field and lean toward the pointer as it comes near.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/attract-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "marking-menu",
+      "type": "registry:ui",
+      "title": "Marking Menu",
+      "description": "A radial menu: press and hold to open a ring around the press and let go over an item, or flick in a direction to pick without the ring. A tap or Enter opens it to choose at leisure.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/marking-menu.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "liquid-slider",
+      "type": "registry:ui",
+      "title": "Liquid Slider",
+      "description": "A vertical slider you fill like a glass: the level follows the drag, its surface sloshing and settling, with bubbles rising through it.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/liquid-slider.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "wheel-picker",
+      "type": "registry:ui",
+      "title": "Wheel Picker",
+      "description": "An iOS-style drum picker: options on a turning cylinder, flicked with native momentum, settling on one, optionally looping. A listbox on the keyboard.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/wheel-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "detent-dial",
+      "type": "registry:ui",
+      "title": "Detent Dial",
+      "description": "A rotary knob that clicks from notch to notch: turn it round its centre, or flick it and it coasts to a stop on a notch. A slider on the keyboard.",
+      "registryDependencies": ["@uiness/utils", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/detent-dial.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "pull-cord",
+      "type": "registry:ui",
+      "title": "Pull Cord",
+      "description": "A lamp switch on a pull cord: pull the bead down and let go, it clicks past a point, flips the light and swings back up.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/pull-cord.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tear-button",
+      "type": "registry:ui",
+      "title": "Tear Button",
+      "description": "A confirm button you tear off like a ticket stub: drag the stub away and it parts hole by hole, or hold Space or Enter; let go early and it mends.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/tear-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "particle-button",
+      "type": "registry:ui",
+      "title": "Particle Button",
+      "description": "A button for an async action: a spinner while it runs, then a check that draws itself with a burst of particles, or a shake and a cross if it fails.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/particle-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "bell-button",
+      "type": "registry:ui",
+      "title": "Bell Button",
+      "description": "A subscribe button whose bell rings when turned on: the bell swings on its hook and the clapper, lagging, strikes the rim until it settles.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/bell-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "gradient-button",
+      "type": "registry:ui",
+      "title": "Gradient Button",
+      "description": "A layered gradient button in emerald, purple or orange: a gradient border, a fill from light to deep, a soft inner glow, a coloured shadow and a press that sinks it.",
+      "dependencies": ["class-variance-authority"],
+      "registryDependencies": ["@uiness/utils"],
+      "files": [
+        {
+          "path": "registry/ui/gradient-button.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "receipt-printer",
       "type": "registry:ui",
       "title": "Receipt Printer",

@@ -1,0 +1,43 @@
+A panel that drills into pages, like settings on a phone. The tapped row’s label flies up to become the next page’s title, the page slides in from the side, and a swipe to the right, or the back button, goes back.
+
+<ComponentPreview name="stack-panel-demo" />
+
+## Installation
+
+<Install name="stack-panel" />
+
+## Usage
+
+```tsx
+import { StackPanel } from '@/components/ui/stack-panel'
+
+<StackPanel
+  pages={[
+    { id: 'settings', title: 'Settings', rows: [{ id: 'wifi', label: 'Wi-Fi', to: 'wifi' }] },
+    { id: 'wifi', title: 'Wi-Fi', content: <WifiSettings /> },
+  ]}
+/>
+```
+
+A row with `to` opens that page; one with `onSelect` runs it. A swipe goes back past 30% of the width, and only sideways presses count, so the page still scrolls.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `pages` |  | Each `{ id, title, rows?, content? }`. |
+| `root` | the first | The page it starts on. |
+
+## Accessibility
+
+Focus moves to each new page’s title, and back to the row that opened it on return. The back button names where it goes.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `StackPanel` takes them as `labels`. To set them for the whole app, put them under `'stack-panel'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultStackPanelLabels: StackPanelLabels = {
+  back: (to) => `Back to ${to}`,
+}
+```

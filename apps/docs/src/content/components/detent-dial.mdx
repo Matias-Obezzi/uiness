@@ -1,0 +1,33 @@
+A rotary knob that clicks from notch to notch. Turn it by dragging round its centre; flick it and it coasts, slowing until it settles on a notch.
+
+<ComponentPreview name="detent-dial-demo" />
+
+## Installation
+
+<Install name="detent-dial" />
+
+## Usage
+
+```tsx
+import { DetentDial } from '@/components/ui/detent-dial'
+
+<DetentDial label="Temperature" min={16} max={28} step={0.5} value={t} onValueChange={setT} format={(v) => `${v}°C`} />
+```
+
+It sweeps 270°. Each notch passed gives a short vibration where the device has one.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` |  | Names the dial. |
+| `min, max` | `0`, `10` | Its range. |
+| `step` | `1` | Between notches. |
+| `value` |  | When you keep it. |
+| `defaultValue` | `min` | At first. |
+| `onValueChange` |  | Called at each notch. |
+| `format` |  | The value as text. |
+
+## Accessibility
+
+A slider: the arrows step a notch, Page Up and Page Down about a tenth of the range, Home and End to the ends, and `format` gives its spoken value.

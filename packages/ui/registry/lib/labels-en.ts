@@ -829,6 +829,54 @@ export const en = {
     printing: 'Printing…',
     hint: 'Pull the receipt down to tear it off, or use the Tear off button.',
   },
+  'bell-button': {
+    subscribe: 'Subscribe',
+    subscribed: 'Subscribed',
+  },
+  'particle-button': {
+    working: 'Working…',
+    done: 'Done',
+    failed: 'Something went wrong',
+  },
+  'tear-button': {
+    hint: 'Drag the stub away to tear it off, or hold Space or Enter.',
+    confirmed: 'Confirmed',
+  },
+  'pull-cord': {
+    light: 'Light',
+  },
+  'marking-menu': {
+    hint: 'Press and hold, then move toward an item and let go. Or press Enter and use the arrow keys.',
+  },
+  toolbar: {
+    toolbar: 'Tools',
+    move: 'Move the toolbar: drag it, or press Shift and an arrow key, to another edge.',
+    more: (tool: string) => `More ${tool} tools`,
+  },
+  'profile-dropdown': {
+    account: (name: string) => `Account: ${name}`,
+    switchAccount: 'Switch account',
+    status: 'Status',
+    statuses: { online: 'Online', away: 'Away', busy: 'Do not disturb' },
+    theme: 'Theme',
+    themes: { light: 'Light', dark: 'Dark', system: 'System' },
+    signOut: 'Hold to sign out',
+  },
+  'morph-popover': {
+    close: 'Close',
+    submit: 'Send',
+    sending: 'Sending…',
+    done: 'Sent',
+  },
+  'stack-panel': {
+    back: (to: string) => `Back to ${to}`,
+  },
+  'morphic-navbar': {
+    nav: 'Main',
+  },
+  'scroll-index': {
+    index: 'On this page',
+  },
   'tag-input': {
     remove: (tag: string) => `Remove ${tag}`,
     max: (max: number) => `Up to ${plural(max, 'tag', 'tags')}.`,

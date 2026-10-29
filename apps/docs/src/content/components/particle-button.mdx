@@ -1,0 +1,42 @@
+A button for an async action: a spinner while it runs, then a check that draws itself with a burst of particles, or a shake and a cross if it fails, before it is ready again.
+
+<ComponentPreview name="particle-button-demo" />
+
+## Installation
+
+<Install name="particle-button" />
+
+## Usage
+
+```tsx
+import { ParticleButton } from '@/components/ui/particle-button'
+
+<ParticleButton onAction={() => publish()} doneLabel="Published">
+  Publish
+</ParticleButton>
+```
+
+Return a promise from `onAction`: resolved bursts, rejected shakes. Either state stays for 1.8s. The particles are drawn on the page, outside the button, and cleaned up as they fade.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `onAction` |  | The action. |
+| `doneLabel` | "Done" | Shown once it succeeds. |
+
+## Accessibility
+
+While it runs the button is `aria-disabled`, and success or failure is announced. With reduced motion there are no particles and no shake.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ParticleButton` takes them as `labels`. To set them for the whole app, put them under `'particle-button'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultParticleButtonLabels: ParticleButtonLabels = {
+  working: 'Working…',
+  done: 'Done',
+  failed: 'Something went wrong',
+}
+```

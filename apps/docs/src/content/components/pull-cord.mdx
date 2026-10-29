@@ -1,0 +1,39 @@
+A lamp switch on a pull cord. Pull the bead down and let go: past a point it clicks and the light flips, and the cord springs back up and swings.
+
+<ComponentPreview name="pull-cord-demo" />
+
+## Installation
+
+<Install name="pull-cord" />
+
+## Usage
+
+```tsx
+import { PullCord } from '@/components/ui/pull-cord'
+
+<PullCord checked={on} onCheckedChange={setOn} />
+```
+
+40 pixels down flips it; less and the cord just swings. Put it under a shade, as in the demo.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `checked` |  | Whether it is on, when you keep it. |
+| `defaultChecked` | `false` | Whether it starts on. |
+| `onCheckedChange` |  | Called with the new state. |
+
+## Accessibility
+
+The bead is a switch with a 44px target. Space or Enter gives it a pull from the keyboard.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `PullCord` takes them as `labels`. To set them for the whole app, put them under `'pull-cord'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultPullCordLabels: PullCordLabels = {
+  light: 'Light',
+}
+```

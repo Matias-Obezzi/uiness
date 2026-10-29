@@ -1,0 +1,57 @@
+An account card that opens into its own menu: the card grows from where it sits into a panel with the other accounts to switch to, a status, the theme, and a sign out you hold so it can’t happen by accident.
+
+<ComponentPreview name="profile-dropdown-demo" />
+
+## Installation
+
+<Install name="profile-dropdown" />
+
+## Usage
+
+```tsx
+import { ProfileDropdown } from '@/components/ui/profile-dropdown'
+
+<ProfileDropdown
+  accounts={accounts}
+  current={account}
+  onAccountChange={switchTo}
+  status={status}
+  onStatusChange={setStatus}
+  theme={theme}
+  onThemeChange={setTheme}
+  onSignOut={signOut}
+/>
+```
+
+Signing out uses [Hold to Confirm](/docs/components/hold-to-confirm). Avatars fall back to initials.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `accounts` |  | Each `{ id, name, email, avatar? }`. |
+| `current` |  | The account signed in. |
+| `onAccountChange` |  | Called with another account’s id. |
+| `status` | `online` | `online`, `away` or `busy`. |
+| `theme` | `system` | `light`, `dark` or `system`. |
+| `onSignOut` |  | Runs once the hold completes. |
+
+## Accessibility
+
+The card is a button naming who is signed in. The panel is a popover that takes focus and closes with Escape; statuses are radios, and the theme a segmented control.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ProfileDropdown` takes them as `labels`. To set them for the whole app, put them under `'profile-dropdown'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultProfileDropdownLabels: ProfileDropdownLabels = {
+  account: (name) => `Account: ${name}`,
+  switchAccount: 'Switch account',
+  status: 'Status',
+  statuses: { online: 'Online', away: 'Away', busy: 'Do not disturb' },
+  theme: 'Theme',
+  themes: { light: 'Light', dark: 'Dark', system: 'System' },
+  signOut: 'Hold to sign out',
+}
+```

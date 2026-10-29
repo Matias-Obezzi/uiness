@@ -821,6 +821,54 @@ export const zh = {
     printing: '正在打印…',
     hint: '向下拉收据即可撕下，或使用“撕下”按钮。',
   },
+  'bell-button': {
+    subscribe: '订阅',
+    subscribed: '已订阅',
+  },
+  'particle-button': {
+    working: '处理中…',
+    done: '完成',
+    failed: '出错了',
+  },
+  'tear-button': {
+    hint: '拖开票根即可撕下，或按住空格键或回车键。',
+    confirmed: '已确认',
+  },
+  'pull-cord': {
+    light: '灯',
+  },
+  'marking-menu': {
+    hint: '按住后移向某个选项再松开，或按回车键后用方向键选择。',
+  },
+  toolbar: {
+    toolbar: '工具',
+    move: '移动工具栏：拖动它，或按住 Shift 再按方向键，移到另一侧。',
+    more: (tool: string) => `更多${tool}工具`,
+  },
+  'profile-dropdown': {
+    account: (name: string) => `账户：${name}`,
+    switchAccount: '切换账户',
+    status: '状态',
+    statuses: { online: '在线', away: '离开', busy: '勿扰' },
+    theme: '主题',
+    themes: { light: '浅色', dark: '深色', system: '跟随系统' },
+    signOut: '按住以退出登录',
+  },
+  'morph-popover': {
+    close: '关闭',
+    submit: '发送',
+    sending: '发送中…',
+    done: '已发送',
+  },
+  'stack-panel': {
+    back: (to: string) => `返回${to}`,
+  },
+  'morphic-navbar': {
+    nav: '主导航',
+  },
+  'scroll-index': {
+    index: '本页内容',
+  },
   'tag-input': {
     remove: (tag: string) => `移除 ${tag}`,
     max: (max: number) => `最多 ${max} 个标签。`,

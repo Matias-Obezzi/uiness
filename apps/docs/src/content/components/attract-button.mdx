@@ -1,0 +1,27 @@
+A call to action in a field of iron filings: each one lines up with the magnetic field around the button, and they lean toward the pointer as it comes near, settling back when it leaves.
+
+<ComponentPreview name="attract-button-demo" />
+
+## Installation
+
+<Install name="attract-button" />
+
+## Usage
+
+```tsx
+import { AttractButton } from '@/components/ui/attract-button'
+
+<AttractButton>Start building</AttractButton>
+```
+
+The filings are drawn on a canvas that reaches 48px around the button, only while the pointer is near. They take the text colour.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `children` |  | The button’s content. |
+
+## Accessibility
+
+A plain button; the field is decoration. With reduced motion the filings stay lined up with the field.
