@@ -1,0 +1,56 @@
+A status page card: a strip of days per service, coloured by how each went, that swell under the pointer like a magnifier. Pressing a day opens its incident log under the strip.
+
+<ComponentPreview name="uptime-card-demo" />
+
+## Installation
+
+<Install name="uptime-card" />
+
+## Usage
+
+```tsx
+import { UptimeCard } from '@/components/ui/uptime-card'
+
+<UptimeCard
+  services={[
+    {
+      name: 'API',
+      days: [
+        { date: '2026-10-28', status: 'down', incidents: [{ time: '14:02 UTC', title: 'Requests failing' }] },
+        { date: '2026-10-29', status: 'up' },
+      ],
+    },
+  ]}
+/>
+```
+
+Days go oldest first, usually ninety. The uptime beside each name is the share of days without an outage, from `uptimeOf`; a degraded day still counts as up.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `services` |  | Each with a `name` and its `days`: `date`, `status` (`up`, `degraded` or `down`) and optional `incidents`. |
+| `labels` |  | The words it shows and reads out, below. |
+
+## Accessibility
+
+Each day is a button that reads its date, status and incident count, and says whether its log is open. A strip is one stop for the Tab key; the arrows move along its days, Home and End jump to the ends.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `UptimeCard` takes them as `labels`. To set them for the whole app, put them under `'uptime-card'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultUptimeCardLabels: UptimeCardLabels = {
+  up: 'Operational',
+  degraded: 'Degraded',
+  down: 'Outage',
+  uptime: (share) => `${share} uptime`,
+  day: (date, status, incidents) =>
+    `${date}, ${status}${incidents ? `, ${incidents} incident${incidents === 1 ? '' : 's'}` : ''}`,
+  noIncidents: 'No incidents this day.',
+  ago: (days) => `${days} days ago`,
+  today: 'Today',
+}
+```

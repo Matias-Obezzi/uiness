@@ -893,6 +893,64 @@ export const es = {
   'spoiler-text': {
     reveal: 'Spoiler, presiona para verlo',
   },
+  'liquid-gauge': {
+    valueText: (value: string, max: string) => `${value} de ${max}`,
+  },
+  'uptime-card': {
+    up: 'Operativo',
+    degraded: 'Degradado',
+    down: 'Caída',
+    uptime: (share: string) => `${share} de disponibilidad`,
+    day: (date: string, status: string, incidents: number) =>
+      `${date}, ${status}${incidents ? `, ${incidents} incidente${incidents === 1 ? '' : 's'}` : ''}`,
+    noIncidents: 'Sin incidentes este día.',
+    ago: (days: number) => `Hace ${days} días`,
+    today: 'Hoy',
+  },
+  'focal-point-picker': {
+    focalPoint: 'Punto focal',
+    position: (x: number, y: number) => `${x}% en horizontal, ${y}% en vertical`,
+    crops: 'Recortes',
+  },
+  'photo-straighten': {
+    straighten: 'Enderezar',
+    degrees: (angle: string) => `${angle} grados`,
+    reset: 'Restablecer',
+  },
+  'clip-trimmer': {
+    start: 'Inicio del recorte',
+    end: 'Fin del recorte',
+    play: 'Reproducir',
+    pause: 'Pausar',
+    kept: (length: string) => `${length} conservados`,
+  },
+  'synced-transcript': {
+    transcript: 'Transcripción',
+    jump: (time: string) => `Reproducir desde ${time}`,
+    follow: 'Volver a la palabra actual',
+  },
+  'avatar-picker': {
+    name: 'Nombre',
+    flip: 'Dar vuelta al otro avatar',
+    shuffle: 'Mezclar',
+  },
+  'page-flip': {
+    book: 'Libro',
+    previous: 'Página anterior',
+    next: 'Página siguiente',
+    pages: (from: number, to: number, total: number) =>
+      from === to ? `Página ${from} de ${total}` : `Páginas ${from}–${to} de ${total}`,
+  },
+  'contact-sheet': {
+    frame: (n: number, alt: string, mark: 'pick' | 'strike' | null) =>
+      `Fotograma ${n}, ${alt}${mark === 'pick' ? ', marcado' : mark === 'strike' ? ', tachado' : ''}`,
+    picked: (n: number) => `${n} ${n === 1 ? 'marcado' : 'marcados'}`,
+  },
+  'vinyl-card': {
+    play: 'Reproducir',
+    pause: 'Pausar',
+    seek: 'Posición',
+  },
   'tag-input': {
     remove: (tag: string) => `Quitar ${tag}`,
     max: (max: number) => `Hasta ${plural(max, 'etiqueta', 'etiquetas')}.`,

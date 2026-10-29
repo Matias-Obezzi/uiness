@@ -1,0 +1,45 @@
+Set where a photo’s subject is and watch every crop follow it live. Drag the point or click where it goes; hover a crop to see on the photo what it keeps.
+
+<ComponentPreview name="focal-point-picker-demo" />
+
+## Installation
+
+<Install name="focal-point-picker" />
+
+## Usage
+
+```tsx
+import { FocalPointPicker } from '@/components/ui/focal-point-picker'
+
+<FocalPointPicker src="/photo.jpg" alt="A dog on a beach" value={focal} onValueChange={setFocal} />
+```
+
+The point is a pair of shares from 0 to 1, ready for `object-position`. `cropRect` gives the part of the image any ratio keeps around it, the same as `object-fit: cover`.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `src` |  | The photo. |
+| `alt` |  | Its description. |
+| `value` |  | The focal point, `{ x, y }`, when you keep it. |
+| `defaultValue` | `{ x: 0.5, y: 0.5 }` | Where it starts. |
+| `onValueChange` |  | Called with the new point. |
+| `crops` | 16:9, 1:1, 4:5 and 9:16 | The crops to preview, each a `label` and a `ratio`. |
+| `labels` |  | The words it reads out, below. |
+
+## Accessibility
+
+The point is a slider that reads its position, such as “62% across, 42% down”. The arrows move it 2%, with Shift 10%. The crop previews are decorative copies of the photo.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `FocalPointPicker` takes them as `labels`. To set them for the whole app, put them under `'focal-point-picker'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultFocalPointPickerLabels: FocalPointPickerLabels = {
+  focalPoint: 'Focal point',
+  position: (x, y) => `${x}% across, ${y}% down`,
+  crops: 'Crops',
+}
+```

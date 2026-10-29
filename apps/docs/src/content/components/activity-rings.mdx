@@ -1,0 +1,33 @@
+Activity rings that draw with a count-up when they come into view. A ring past its goal laps itself, the end cap casting a shadow on the lap below, and hovering a ring’s row dims the others.
+
+<ComponentPreview name="activity-rings-demo" />
+
+## Installation
+
+<Install name="activity-rings" />
+
+## Usage
+
+```tsx
+import { ActivityRings } from '@/components/ui/activity-rings'
+
+<ActivityRings
+  rings={[
+    { label: 'Move', value: 640, goal: 500, unit: 'kcal' },
+    { label: 'Exercise', value: 24, goal: 30, unit: 'min' },
+    { label: 'Stand', value: 9, goal: 12, unit: 'h' },
+  ]}
+/>
+```
+
+It is always on black, like the watch, so the bright ring colours read. Up to three rings fit, from the outside in; give each a `color` to change it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `rings` |  | One to three rings: `label`, `value`, `goal`, and an optional `unit` and `color`. |
+
+## Accessibility
+
+The rings are a picture of the list next to them, which carries every value and goal as text, so screen readers read the list. With reduced motion the rings and the numbers show their final values at once.

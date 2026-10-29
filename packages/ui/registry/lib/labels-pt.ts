@@ -895,6 +895,64 @@ export const pt = {
   'spoiler-text': {
     reveal: 'Spoiler, toque para ver',
   },
+  'liquid-gauge': {
+    valueText: (value: string, max: string) => `${value} de ${max}`,
+  },
+  'uptime-card': {
+    up: 'Operacional',
+    degraded: 'Degradado',
+    down: 'Interrupção',
+    uptime: (share: string) => `${share} de disponibilidade`,
+    day: (date: string, status: string, incidents: number) =>
+      `${date}, ${status}${incidents ? `, ${incidents} ${incidents === 1 ? 'incidente' : 'incidentes'}` : ''}`,
+    noIncidents: 'Nenhum incidente neste dia.',
+    ago: (days: number) => `Há ${days} dias`,
+    today: 'Hoje',
+  },
+  'focal-point-picker': {
+    focalPoint: 'Ponto focal',
+    position: (x: number, y: number) => `${x}% na horizontal, ${y}% na vertical`,
+    crops: 'Recortes',
+  },
+  'photo-straighten': {
+    straighten: 'Endireitar',
+    degrees: (angle: string) => `${angle} graus`,
+    reset: 'Redefinir',
+  },
+  'clip-trimmer': {
+    start: 'Início do corte',
+    end: 'Fim do corte',
+    play: 'Reproduzir',
+    pause: 'Pausar',
+    kept: (length: string) => `${length} mantidos`,
+  },
+  'synced-transcript': {
+    transcript: 'Transcrição',
+    jump: (time: string) => `Reproduzir a partir de ${time}`,
+    follow: 'Voltar à palavra atual',
+  },
+  'avatar-picker': {
+    name: 'Nome',
+    flip: 'Virar para o outro avatar',
+    shuffle: 'Embaralhar',
+  },
+  'page-flip': {
+    book: 'Livro',
+    previous: 'Página anterior',
+    next: 'Próxima página',
+    pages: (from: number, to: number, total: number) =>
+      from === to ? `Página ${from} de ${total}` : `Páginas ${from}–${to} de ${total}`,
+  },
+  'contact-sheet': {
+    frame: (n: number, alt: string, mark: 'pick' | 'strike' | null) =>
+      `Fotograma ${n}, ${alt}${mark === 'pick' ? ', circulado' : mark === 'strike' ? ', riscado' : ''}`,
+    picked: (n: number) => `${n} ${n === 1 ? 'circulado' : 'circulados'}`,
+  },
+  'vinyl-card': {
+    play: 'Reproduzir',
+    pause: 'Pausar',
+    seek: 'Posição',
+  },
   'tag-input': {
     remove: (tag: string) => `Remover ${tag}`,
     max: (max: number) => `Até ${plural(max, 'tag', 'tags')}.`,

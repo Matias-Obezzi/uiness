@@ -2800,6 +2800,163 @@
       ]
     },
     {
+      "name": "vinyl-card",
+      "type": "registry:ui",
+      "title": "Vinyl Card",
+      "description": "A frosted glass music card over its own cover, with a record that turns while it plays; grab the record and turn it to scrub.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/use-reduced-motion",
+        "@uiness/slider"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/vinyl-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "contact-sheet",
+      "type": "registry:ui",
+      "title": "Contact Sheet",
+      "description": "Pick from a shoot the way photographers do: circle a frame in china marker, press again to strike it, and look through a loupe first.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/contact-sheet.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "page-flip",
+      "type": "registry:ui",
+      "title": "Page Flip",
+      "description": "A book you turn by hand: drag a page over the spine and it follows, curling its shade, or tap a side to turn it.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/page-flip.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "avatar-picker",
+      "type": "registry:ui",
+      "title": "Avatar Picker",
+      "description": "Avatars generated from a name that morph as you type, on a coin you can flick, tap to flip or shuffle.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/avatar-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "synced-transcript",
+      "type": "registry:ui",
+      "title": "Synced Transcript",
+      "description": "A transcript that follows the spoken word, plays from any word you click, and waits when you scroll away.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/synced-transcript.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "clip-trimmer",
+      "type": "registry:ui",
+      "title": "Clip Trimmer",
+      "description": "A video trim timeline: a filmstrip drawn from the clip, handles that snap to whole seconds, and a playhead that loops the kept range.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/clip-trimmer.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "photo-straighten",
+      "type": "registry:ui",
+      "title": "Photo Straighten",
+      "description": "Level a crooked photo on a ruler you drag or flick; the photo grows just enough to hide its corners, and a grid shows while you adjust.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-reduced-motion"],
+      "files": [
+        {
+          "path": "registry/ui/photo-straighten.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "focal-point-picker",
+      "type": "registry:ui",
+      "title": "Focal Point Picker",
+      "description": "Set where a photo’s subject is and watch every crop follow it live; hover a crop to see on the photo what it keeps.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/focal-point-picker.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "uptime-card",
+      "type": "registry:ui",
+      "title": "Uptime Card",
+      "description": "A status page card: ninety days per service that swell under the pointer, and a day you press opens its incident log.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/uptime-card.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "activity-rings",
+      "type": "registry:ui",
+      "title": "Activity Rings",
+      "description": "Activity rings that draw with a count-up as they come into view, lap past their goal with a shadowed end cap, and dim the others while you hover one.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/use-in-view",
+        "@uiness/use-reduced-motion"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/activity-rings.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "liquid-gauge",
+      "type": "registry:ui",
+      "title": "Liquid Gauge",
+      "description": "A usage meter filled with liquid: a change of value pours it and sets the surface sloshing, the pointer ripples it, and bubbles rise through it.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/use-canvas"],
+      "files": [
+        {
+          "path": "registry/ui/liquid-gauge.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "shape-hero",
       "type": "registry:ui",
       "title": "Shape Hero",

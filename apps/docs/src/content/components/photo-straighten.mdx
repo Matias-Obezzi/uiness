@@ -1,0 +1,45 @@
+Level a crooked photo on a ruler. Drag the ruler, or flick it and it coasts; the photo grows just enough to hide its corners, and a grid shows while you adjust.
+
+<ComponentPreview name="photo-straighten-demo" />
+
+## Installation
+
+<Install name="photo-straighten" />
+
+## Usage
+
+```tsx
+import { PhotoStraighten } from '@/components/ui/photo-straighten'
+
+<PhotoStraighten src="/photo.jpg" alt="A pier" value={angle} onValueChange={setAngle} />
+```
+
+The angle is in degrees, clockwise. `coverScale` gives the zoom a turned photo needs to cover its box, to apply the same crop when you export it. A double click on the ruler resets it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `src` |  | The photo. |
+| `alt` |  | Its description. |
+| `value` |  | The angle, when you keep it. |
+| `defaultValue` | `0` | Where it starts. |
+| `onValueChange` |  | Called with the new angle, to a tenth of a degree. |
+| `max` | `45` | The furthest it turns either way. |
+| `labels` |  | The words it shows and reads out, below. |
+
+## Accessibility
+
+The ruler is a slider that reads the angle in degrees. The arrows turn it half a degree, Page Up and Page Down five, Home and End to the limits. With reduced motion a flick stops where you let go.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `PhotoStraighten` takes them as `labels`. To set them for the whole app, put them under `'photo-straighten'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultPhotoStraightenLabels: PhotoStraightenLabels = {
+  straighten: 'Straighten',
+  degrees: (angle) => `${angle} degrees`,
+  reset: 'Reset',
+}
+```

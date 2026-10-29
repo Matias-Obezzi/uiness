@@ -880,6 +880,64 @@ export const en = {
   'spoiler-text': {
     reveal: 'Spoiler, press to reveal',
   },
+  'liquid-gauge': {
+    valueText: (value: string, max: string) => `${value} of ${max}`,
+  },
+  'uptime-card': {
+    up: 'Operational',
+    degraded: 'Degraded',
+    down: 'Outage',
+    uptime: (share: string) => `${share} uptime`,
+    day: (date: string, status: string, incidents: number) =>
+      `${date}, ${status}${incidents ? `, ${incidents} incident${incidents === 1 ? '' : 's'}` : ''}`,
+    noIncidents: 'No incidents this day.',
+    ago: (days: number) => `${days} days ago`,
+    today: 'Today',
+  },
+  'focal-point-picker': {
+    focalPoint: 'Focal point',
+    position: (x: number, y: number) => `${x}% across, ${y}% down`,
+    crops: 'Crops',
+  },
+  'photo-straighten': {
+    straighten: 'Straighten',
+    degrees: (angle: string) => `${angle} degrees`,
+    reset: 'Reset',
+  },
+  'clip-trimmer': {
+    start: 'Trim start',
+    end: 'Trim end',
+    play: 'Play',
+    pause: 'Pause',
+    kept: (length: string) => `${length} kept`,
+  },
+  'synced-transcript': {
+    transcript: 'Transcript',
+    jump: (time: string) => `Play from ${time}`,
+    follow: 'Back to the current word',
+  },
+  'avatar-picker': {
+    name: 'Name',
+    flip: 'Flip to the other avatar',
+    shuffle: 'Shuffle',
+  },
+  'page-flip': {
+    book: 'Book',
+    previous: 'Previous page',
+    next: 'Next page',
+    pages: (from: number, to: number, total: number) =>
+      from === to ? `Page ${from} of ${total}` : `Pages ${from}–${to} of ${total}`,
+  },
+  'contact-sheet': {
+    frame: (n: number, alt: string, mark: 'pick' | 'strike' | null) =>
+      `Frame ${n}, ${alt}${mark === 'pick' ? ', circled' : mark === 'strike' ? ', struck' : ''}`,
+    picked: (n: number) => `${n} circled`,
+  },
+  'vinyl-card': {
+    play: 'Play',
+    pause: 'Pause',
+    seek: 'Seek',
+  },
   'tag-input': {
     remove: (tag: string) => `Remove ${tag}`,
     max: (max: number) => `Up to ${plural(max, 'tag', 'tags')}.`,

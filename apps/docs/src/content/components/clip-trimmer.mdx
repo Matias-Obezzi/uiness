@@ -1,0 +1,45 @@
+A trim timeline for a video: a filmstrip drawn from the clip, two handles that snap to whole seconds, and a playhead that loops the kept range.
+
+<ComponentPreview name="clip-trimmer-demo" />
+
+## Installation
+
+<Install name="clip-trimmer" />
+
+## Usage
+
+```tsx
+import { ClipTrimmer } from '@/components/ui/clip-trimmer'
+
+<ClipTrimmer src="/clip.webm" value={range} onValueChange={setRange} />
+```
+
+The range is `[start, end]` in seconds and keeps a second at least. The filmstrip is drawn from the video, so it has to come from the same origin or allow it with CORS; otherwise the strip stays plain. Pressing the strip moves the playhead within the range.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `src` |  | The video. |
+| `value` |  | The kept range, when you keep it. |
+| `defaultValue` | the whole clip | Where it starts. |
+| `onValueChange` |  | Called with the new range. |
+| `labels` |  | The words it shows and reads out, below. |
+
+## Accessibility
+
+Each handle is a slider that reads its time as minutes and seconds; the arrows move it a second. The play button names what it will do. The video is muted, so add captions to your own player if the clip has speech.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ClipTrimmer` takes them as `labels`. To set them for the whole app, put them under `'clip-trimmer'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultClipTrimmerLabels: ClipTrimmerLabels = {
+  start: 'Trim start',
+  end: 'Trim end',
+  play: 'Play',
+  pause: 'Pause',
+  kept: (length) => `${length} kept`,
+}
+```

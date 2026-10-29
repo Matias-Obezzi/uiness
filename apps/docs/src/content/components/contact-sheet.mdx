@@ -1,0 +1,43 @@
+Pick from a shoot the way photographers do on a contact sheet: press a frame to circle it in red china marker, press again to strike it out, once more to clear it. With a mouse, a loupe follows the pointer to look at the detail first.
+
+<ComponentPreview name="contact-sheet-demo" />
+
+## Installation
+
+<Install name="contact-sheet" />
+
+## Usage
+
+```tsx
+import { ContactSheet } from '@/components/ui/contact-sheet'
+
+<ContactSheet frames={frames} value={marks} onValueChange={setMarks} />
+```
+
+The marks are a record from frame `id` to `pick` or `strike`; cleared frames are left out.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `frames` |  | The photos: `id`, `src` and `alt`. |
+| `value` |  | The marks, when you keep them. |
+| `defaultValue` | `{}` | The marks it starts with. |
+| `onValueChange` |  | Called with the new marks. |
+| `labels` |  | The words it reads out, below. |
+
+## Accessibility
+
+Each frame is a button that reads its number, description and mark. The count of circled frames is announced as it changes. The loupe is for the mouse only and hidden from screen readers. With reduced motion the marks appear without drawing in.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ContactSheet` takes them as `labels`. To set them for the whole app, put them under `'contact-sheet'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultContactSheetLabels: ContactSheetLabels = {
+  frame: (n, alt, mark) =>
+    `Frame ${n}, ${alt}${mark === 'pick' ? ', circled' : mark === 'strike' ? ', struck' : ''}`,
+  picked: (n) => `${n} circled`,
+}
+```

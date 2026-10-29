@@ -893,6 +893,64 @@ export const it = {
   'spoiler-text': {
     reveal: 'Spoiler, premi per vederlo',
   },
+  'liquid-gauge': {
+    valueText: (value: string, max: string) => `${value} su ${max}`,
+  },
+  'uptime-card': {
+    up: 'Operativo',
+    degraded: 'Degradato',
+    down: 'Interruzione',
+    uptime: (share: string) => `${share} di disponibilità`,
+    day: (date: string, status: string, incidents: number) =>
+      `${date}, ${status}${incidents ? `, ${incidents} ${incidents === 1 ? 'incidente' : 'incidenti'}` : ''}`,
+    noIncidents: 'Nessun incidente in questo giorno.',
+    ago: (days: number) => `${days} giorni fa`,
+    today: 'Oggi',
+  },
+  'focal-point-picker': {
+    focalPoint: 'Punto focale',
+    position: (x: number, y: number) => `${x}% in orizzontale, ${y}% in verticale`,
+    crops: 'Ritagli',
+  },
+  'photo-straighten': {
+    straighten: 'Raddrizza',
+    degrees: (angle: string) => `${angle} gradi`,
+    reset: 'Ripristina',
+  },
+  'clip-trimmer': {
+    start: 'Inizio del taglio',
+    end: 'Fine del taglio',
+    play: 'Riproduci',
+    pause: 'Pausa',
+    kept: (length: string) => `${length} mantenuti`,
+  },
+  'synced-transcript': {
+    transcript: 'Trascrizione',
+    jump: (time: string) => `Riproduci da ${time}`,
+    follow: 'Torna alla parola corrente',
+  },
+  'avatar-picker': {
+    name: 'Nome',
+    flip: 'Gira sull’altro avatar',
+    shuffle: 'Mescola',
+  },
+  'page-flip': {
+    book: 'Libro',
+    previous: 'Pagina precedente',
+    next: 'Pagina successiva',
+    pages: (from: number, to: number, total: number) =>
+      from === to ? `Pagina ${from} di ${total}` : `Pagine ${from}–${to} di ${total}`,
+  },
+  'contact-sheet': {
+    frame: (n: number, alt: string, mark: 'pick' | 'strike' | null) =>
+      `Fotogramma ${n}, ${alt}${mark === 'pick' ? ', cerchiato' : mark === 'strike' ? ', barrato' : ''}`,
+    picked: (n: number) => `${n} ${n === 1 ? 'cerchiato' : 'cerchiati'}`,
+  },
+  'vinyl-card': {
+    play: 'Riproduci',
+    pause: 'Pausa',
+    seek: 'Posizione',
+  },
   'tag-input': {
     remove: (tag: string) => `Rimuovi ${tag}`,
     max: (max: number) => `Fino a ${plural(max, 'etichetta', 'etichette')}.`,

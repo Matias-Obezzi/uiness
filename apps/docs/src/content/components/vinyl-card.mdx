@@ -1,0 +1,49 @@
+A music card of frosted glass over its own cover, with a record that turns while it plays. Grab the record and turn it to scrub, a turn for every 1.8 seconds like a real one; let go and it plays on.
+
+<ComponentPreview name="vinyl-card-demo" />
+
+## Installation
+
+<Install name="vinyl-card" />
+
+## Usage
+
+```tsx
+import { VinylCard } from '@/components/ui/vinyl-card'
+
+<VinylCard title="Night Harbour" artist="The Keepers" cover="/cover.jpg" duration={214} />
+```
+
+Wire `time`, `playing` and their callbacks to your audio element, or leave them out and it keeps its own clock, as in the demo.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `title` |  | The track. |
+| `artist` |  | Who made it. |
+| `cover` |  | The cover, on the label and blurred behind the glass. |
+| `duration` |  | Length in seconds. |
+| `time` |  | The position in seconds, when you keep it. |
+| `defaultTime` | `0` | Where it starts. |
+| `onTimeChange` |  | Called as the position changes. |
+| `playing` |  | Whether it plays, when you keep it. |
+| `defaultPlaying` | `false` | Whether it starts playing. |
+| `onPlayingChange` |  | Called when it starts or stops. |
+| `labels` |  | The words it reads out, below. |
+
+## Accessibility
+
+The play button names what it will do, and the position slider seeks from the keyboard. The record is a pointer shortcut for the same thing and is hidden from screen readers. With reduced motion the record stays still unless you turn it.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `VinylCard` takes them as `labels`. To set them for the whole app, put them under `'vinyl-card'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultVinylCardLabels: VinylCardLabels = {
+  play: 'Play',
+  pause: 'Pause',
+  seek: 'Seek',
+}
+```
