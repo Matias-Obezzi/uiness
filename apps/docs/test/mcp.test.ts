@@ -215,7 +215,7 @@ describe('list_items', () => {
 
   it('filters by type', async () => {
     const { text } = await call('list_items', { type: 'hook' })
-    expect(text).toContain('## hook (5)')
+    expect(text).toContain('## hook (6)')
     expect(text).not.toContain('## ui')
     expect((await call('list_items', { type: 'nope' })).isError).toBe(true)
   })

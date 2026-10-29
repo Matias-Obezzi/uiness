@@ -1,0 +1,29 @@
+A headline hung like a Newton’s cradle: every letter hangs from a thread, brush or tap one and the knock clacks through the word and swings out at the far end.
+
+<ComponentPreview name="cradle-text-demo" />
+
+## Installation
+
+<Install name="cradle-text" />
+
+## Usage
+
+```tsx
+import { CradleText } from '@/components/ui/cradle-text'
+
+<h1>
+  <CradleText text="Momentum" />
+</h1>
+```
+
+Letters that touch swap their speeds, so a knock at one end travels through the still middle and out the other side. It takes the size and font of the text around it.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `text` |  | The words, hung letter by letter. |
+
+## Accessibility
+
+Screen readers read the words once, as plain text; the swinging letters are hidden from them. With reduced motion the letters hang still.

@@ -869,6 +869,9 @@ export const zh = {
   'scroll-index': {
     index: '本页内容',
   },
+  'spoiler-text': {
+    reveal: '剧透，点按即可查看',
+  },
   'tag-input': {
     remove: (tag: string) => `移除 ${tag}`,
     max: (max: number) => `最多 ${max} 个标签。`,

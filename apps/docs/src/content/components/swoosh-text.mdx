@@ -1,0 +1,29 @@
+Zinc letters extruded in 3D: their faces are lit from where the pointer is, and the letter under it presses in like a keycap.
+
+<ComponentPreview name="swoosh-text-demo" />
+
+## Installation
+
+<Install name="swoosh-text" />
+
+## Usage
+
+```tsx
+import { SwooshText } from '@/components/ui/swoosh-text'
+
+<h1 className="text-7xl">
+  <SwooshText text="ZINC" />
+</h1>
+```
+
+The depth is a stack of text shadows, so it needs no canvas and scales with the font size. It reads best big, bold and short.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `text` |  | The words, letter by letter. |
+
+## Accessibility
+
+Screen readers read the words once, as plain text; the lit letters are hidden from them. The extrusion behind the faces gives them an edge on a light or a dark page.

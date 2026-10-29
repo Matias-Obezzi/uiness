@@ -1,0 +1,30 @@
+A headline written in ink on water: stir it and the letters bleed, press to drop more ink, and the words gather back once the water settles.
+
+<ComponentPreview name="ink-background-demo" />
+
+## Installation
+
+<Install name="ink-background" />
+
+## Usage
+
+```tsx
+import { InkBackground } from '@/components/ui/ink-background'
+
+<InkBackground text="Write in water" className="h-96 rounded-xl border">
+  <p>Below the ink</p>
+</InkBackground>
+```
+
+It draws on a canvas behind its children with the `useCanvas` hook, sized to the box and capped at twice the pixel ratio, and stops drawing while it is off screen. The ink takes the text colour, in a bold serif.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `className` |  | Sets its size and lays out the children, like any div. |
+| `text` |  | The words written in ink across the middle. |
+
+## Accessibility
+
+The canvas is decoration behind the content: your children stay plain, selectable text. The words in ink are there for screen readers too, as plain text. With reduced motion it draws a still frame and only answers the pointer.

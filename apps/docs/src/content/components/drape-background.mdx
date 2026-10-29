@@ -1,0 +1,30 @@
+A pleated curtain in a breeze: a small cloth simulation the pointer pushes aside, shaded pleat by pleat.
+
+<ComponentPreview name="drape-background-demo" />
+
+## Installation
+
+<Install name="drape-background" />
+
+## Usage
+
+```tsx
+import { DrapeBackground } from '@/components/ui/drape-background'
+
+<DrapeBackground className="h-96 rounded-xl text-primary-foreground">
+  <h1>Your headline</h1>
+</DrapeBackground>
+```
+
+It draws on a canvas behind its children with the `useCanvas` hook, sized to the box and capped at twice the pixel ratio, and stops drawing while it is off screen. The cloth is the primary colour unless you set `color`, so put text over it in the colour that goes on primary.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `className` |  | Sets its size and lays out the children, like any div. |
+| `color` | the primary colour | Any CSS colour for the cloth. |
+
+## Accessibility
+
+The canvas is decoration behind the content: your children stay plain, selectable text. The cloth is a solid colour, so give the text over it the colour that contrasts with it. With reduced motion it draws a still frame and only answers the pointer.

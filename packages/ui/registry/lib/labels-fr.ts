@@ -897,6 +897,9 @@ export const fr = {
   'scroll-index': {
     index: 'Sur cette page',
   },
+  'spoiler-text': {
+    reveal: 'Spoiler, appuyez pour le voir',
+  },
   'tag-input': {
     remove: (tag: string) => `Retirer ${tag}`,
     max: (max: number) => `Jusqu’à ${plural(max, 'étiquette', 'étiquettes')}.`,
