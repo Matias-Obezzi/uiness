@@ -1,0 +1,44 @@
+A navigation bar that splits around the active link: the bar parts, with a gap on each side, and the link sits in a pill of its own. Drag along the bar to scrub the pill from link to link; let go and the link under it opens, a flick carrying it on a little further.
+
+<ComponentPreview name="morphic-navbar-demo" />
+
+## Installation
+
+<Install name="morphic-navbar" />
+
+## Usage
+
+```tsx
+import { MorphicNavbar } from '@/components/ui/morphic-navbar'
+
+<MorphicNavbar
+  value={section}
+  onValueChange={setSection}
+  items={[{ id: 'home', label: 'Home', href: '/' }, { id: 'work', label: 'Work', href: '/work' }]}
+/>
+```
+
+Items with `href` are links: a scrub opens one as if it was clicked, so a router can take it. Without, they are buttons.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `items` |  | Each `{ id, label, href? }`. |
+| `value` |  | The active item, when you keep it. |
+| `defaultValue` | the first | At first. |
+| `onValueChange` |  | Called with the new item. |
+
+## Accessibility
+
+A named navigation of plain links or buttons in tab order; the active one is marked with `aria-current`. Scrubbing is a pointer shortcut only.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `MorphicNavbar` takes them as `labels`. To set them for the whole app, put them under `'morphic-navbar'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultMorphicNavbarLabels: MorphicNavbarLabels = {
+  nav: 'Main',
+}
+```

@@ -1,0 +1,46 @@
+A button that grows into the form it opens: its label slides up to become the form’s title, and once sent the form shrinks into a confirmation before turning back into the button.
+
+<ComponentPreview name="morph-popover-demo" />
+
+## Installation
+
+<Install name="morph-popover" />
+
+## Usage
+
+```tsx
+import { MorphPopover } from '@/components/ui/morph-popover'
+
+<MorphPopover label="Feedback" icon={<MessageSquareIcon />} onSubmit={(data) => send(data)} confirmation="Thanks!">
+  <Textarea name="message" aria-label="Your feedback" required />
+</MorphPopover>
+```
+
+`onSubmit` gets the form's `FormData`; return a promise to show it sending, and throw to keep the form open. The button keeps its room in the layout while the form floats over the page.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` |  | The button’s text and the form’s title. |
+| `icon` |  | Beside the label. |
+| `children` |  | The fields. |
+| `onSubmit` |  | Receives the form’s data. |
+| `confirmation` | "Sent" | Shown once sent. |
+
+## Accessibility
+
+Opening moves focus to the first field; Escape, the close button or a press outside close it and focus returns to the button. The form is named by its title and the confirmation is a status.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `MorphPopover` takes them as `labels`. To set them for the whole app, put them under `'morph-popover'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultMorphPopoverLabels: MorphPopoverLabels = {
+  close: 'Close',
+  submit: 'Send',
+  sending: 'Sending…',
+  done: 'Sent',
+}
+```

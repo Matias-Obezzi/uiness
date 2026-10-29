@@ -1,0 +1,31 @@
+A vertical slider you fill like a glass: drag up or down and the level follows, its surface sloshing as it moves and settling when it stops, with bubbles rising through it.
+
+<ComponentPreview name="liquid-slider-demo" />
+
+## Installation
+
+<Install name="liquid-slider" />
+
+## Usage
+
+```tsx
+import { LiquidSlider } from '@/components/ui/liquid-slider'
+
+<LiquidSlider label="Water today" value={level} onValueChange={setLevel} />
+```
+
+The value runs from 0 to 100; `format` says it your way, such as litres.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `label` |  | Names the slider. |
+| `value` |  | From 0 to 100, when you keep it. |
+| `defaultValue` | `40` | At first. |
+| `onValueChange` |  | Called with the level. |
+| `format` | a percent | The value as text. |
+
+## Accessibility
+
+A vertical slider: the arrows step 5, Page Up and Page Down 20, Home and End to empty and full. With reduced motion the surface is still and there are no bubbles.

@@ -1,0 +1,39 @@
+A rail of ticks for a long page, one per heading. The tick for the section being read is longer; hover or focus one to see its heading, click it to go there, or drag along the rail to scrub through the page.
+
+<ComponentPreview name="scroll-index-demo" />
+
+## Installation
+
+<Install name="scroll-index" />
+
+## Usage
+
+```tsx
+import { ScrollIndex } from '@/components/ui/scroll-index'
+
+// Every h2 with an id on the page, in a fixed rail.
+<ScrollIndex className="fixed top-1/3 right-4" />
+```
+
+Leave `sections` out and it finds every `h2` with an id; pass `selector` for others. A section counts as being read once its heading passes 30% down the screen.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `sections` | found | Each `{ id, label }`. |
+| `selector` | `h2[id]` | What to look for without `sections`. |
+
+## Accessibility
+
+A named navigation of links, one per heading, each with its heading as text; the current one has `aria-current="location"`.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ScrollIndex` takes them as `labels`. To set them for the whole app, put them under `'scroll-index'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultScrollIndexLabels: ScrollIndexLabels = {
+  index: 'On this page',
+}
+```

@@ -1,0 +1,29 @@
+A layered gradient button: a gradient border, a fill that runs from light to deep, a soft glow inside along the top, a coloured shadow under it, and a press that sinks it. Emerald, purple or orange.
+
+<ComponentPreview name="gradient-button-demo" />
+
+## Installation
+
+<Install name="gradient-button" />
+
+## Usage
+
+```tsx
+import { GradientButton } from '@/components/ui/gradient-button'
+
+<GradientButton variant="emerald">
+  <ZapIcon /> Deploy
+</GradientButton>
+```
+
+An icon sits beside the text at 16px. `gradientButtonVariants` is exported to style a link the same way.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `variant` | `purple` | `emerald`, `purple` or `orange`. |
+
+## Accessibility
+
+A plain button. Its text keeps a shadow so it stays readable on the lighter top of the gradient, and the focus ring takes the variant’s colour.

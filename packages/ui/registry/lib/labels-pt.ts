@@ -844,6 +844,54 @@ export const pt = {
     printing: 'Imprimindo…',
     hint: 'Puxe o recibo para baixo para destacá-lo, ou use o botão Destacar.',
   },
+  'bell-button': {
+    subscribe: 'Inscrever-se',
+    subscribed: 'Inscrito',
+  },
+  'particle-button': {
+    working: 'Processando…',
+    done: 'Pronto',
+    failed: 'Algo deu errado',
+  },
+  'tear-button': {
+    hint: 'Arraste o canhoto para destacá-lo, ou segure Espaço ou Enter.',
+    confirmed: 'Confirmado',
+  },
+  'pull-cord': {
+    light: 'Luz',
+  },
+  'marking-menu': {
+    hint: 'Mantenha pressionado, vá até um item e solte. Ou pressione Enter e use as setas.',
+  },
+  toolbar: {
+    toolbar: 'Ferramentas',
+    move: 'Mover a barra: arraste-a, ou pressione Shift e uma seta, para outra borda.',
+    more: (tool: string) => `Mais ferramentas de ${tool}`,
+  },
+  'profile-dropdown': {
+    account: (name: string) => `Conta: ${name}`,
+    switchAccount: 'Trocar de conta',
+    status: 'Status',
+    statuses: { online: 'Online', away: 'Ausente', busy: 'Não perturbe' },
+    theme: 'Tema',
+    themes: { light: 'Claro', dark: 'Escuro', system: 'Sistema' },
+    signOut: 'Segure para sair',
+  },
+  'morph-popover': {
+    close: 'Fechar',
+    submit: 'Enviar',
+    sending: 'Enviando…',
+    done: 'Enviado',
+  },
+  'stack-panel': {
+    back: (to: string) => `Voltar para ${to}`,
+  },
+  'morphic-navbar': {
+    nav: 'Principal',
+  },
+  'scroll-index': {
+    index: 'Nesta página',
+  },
   'tag-input': {
     remove: (tag: string) => `Remover ${tag}`,
     max: (max: number) => `Até ${plural(max, 'tag', 'tags')}.`,

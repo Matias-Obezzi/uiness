@@ -1,0 +1,40 @@
+A radial menu. Press and hold to open a ring of items around the press, move toward one and let go; once you know where things are, flick in a direction and it picks without waiting for the ring. A tap opens it to choose at leisure.
+
+<ComponentPreview name="marking-menu-demo" />
+
+## Installation
+
+<Install name="marking-menu" />
+
+## Usage
+
+```tsx
+import { MarkingMenu } from '@/components/ui/marking-menu'
+
+<MarkingMenu aria-label="Tools" items={items} onSelect={setTool}>
+  <PencilIcon />
+</MarkingMenu>
+```
+
+The first item sits straight up and the rest go clockwise, so each keeps its direction: muscle memory is the point. `itemAt(dx, dy, count)` is the rule, exported.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `items` |  | Each `{ id, label, icon? }`, up to about eight. |
+| `onSelect` |  | Called with the item’s id. |
+
+## Accessibility
+
+The trigger is a button that opens a menu. Enter opens it, the arrows go round the ring, Enter picks and Escape closes, focus returning to the trigger.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `MarkingMenu` takes them as `labels`. To set them for the whole app, put them under `'marking-menu'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultMarkingMenuLabels: MarkingMenuLabels = {
+  hint: 'Press and hold, then move toward an item and let go. Or press Enter and use the arrow keys.',
+}
+```
