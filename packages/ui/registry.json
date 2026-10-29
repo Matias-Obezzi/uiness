@@ -2788,6 +2788,251 @@
       ]
     },
     {
+      "name": "memory-list",
+      "type": "registry:ui",
+      "title": "Memory List",
+      "description": "What an assistant has learned about the person, to edit or forget item by item: new facts come in at the top, and one that contradicts an older fact replaces it in place.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/memory-list.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "redact-prompt",
+      "type": "registry:ui",
+      "title": "Redact Prompt",
+      "description": "A prompt box that masks names, emails, phone and card numbers and API keys as placeholders before sending, shows what the model gets, and puts the real values back into the reply.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/redact-prompt.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "message-queue",
+      "type": "registry:ui",
+      "title": "Message Queue",
+      "description": "A composer that keeps taking messages while the agent works: follow-ups stack above it to reorder, edit, remove or send now, and go in one by one when the run ends.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/message-queue.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "rewrite-selection",
+      "type": "registry:ui",
+      "title": "Rewrite Selection",
+      "description": "A text where any selection can be rewritten by AI: say how, and the rewrite streams in place as a word-level diff to accept, discard or try again.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/button"],
+      "files": [
+        {
+          "path": "registry/ui/rewrite-selection.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "agent-lanes",
+      "type": "registry:ui",
+      "title": "Agent Lanes",
+      "description": "A lead agent and its sub-agents side by side, each a lane of tool calls on one timeline, with a scrubber to see what each was doing at any moment of the run.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/slider"],
+      "files": [
+        {
+          "path": "registry/ui/agent-lanes.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "chat-branches",
+      "type": "registry:ui",
+      "title": "Chat Branches",
+      "description": "A chat where editing a message starts a new branch instead of overwriting it: arrows move between versions, and a small tree shows every branch to jump to.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/button"],
+      "files": [
+        {
+          "path": "registry/ui/chat-branches.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "token-alternatives",
+      "type": "registry:ui",
+      "title": "Token Alternatives",
+      "description": "An answer where the words the model was unsure of are underlined, each opening what else it weighed and how likely, to pick another and write the answer again from there.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels", "@uiness/popover"],
+      "files": [
+        {
+          "path": "registry/ui/token-alternatives.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "autocomplete-input",
+      "type": "registry:ui",
+      "title": "Autocomplete Input",
+      "description": "A text box that suggests how the sentence ends in grey after the caret: Tab takes it all, the right arrow one word, typing its letters keeps the rest.",
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/autocomplete-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "diff-review",
+      "type": "registry:ui",
+      "title": "Diff Review",
+      "description": "A coding agent’s edits file by file, each diff streaming in, then accepted or rejected per file and undone, with Accept all for the rest.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/button",
+        "@uiness/code-comparison"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/diff-review.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "citations",
+      "type": "registry:ui",
+      "title": "Citations",
+      "description": "An answer with numbered source chips after the claims they back: one preview glides between chips and lights up the sentence each backs. Plus a stack of the sources being read.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/citations.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "context-meter",
+      "type": "registry:ui",
+      "title": "Context Meter",
+      "description": "How full a model’s context window is, as a ring for a prompt’s footer that opens a breakdown by source and, once nearly full, offers to compact.",
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/button",
+        "@uiness/popover"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/context-meter.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "tool-approval",
+      "type": "registry:ui",
+      "title": "Tool Approval",
+      "description": "An agent’s tool calls for a person to approve or deny, a press and hold for destructive ones, folding into a trace with their arguments and output once decided.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/button",
+        "@uiness/hold-to-confirm"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/tool-approval.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "agent-steps",
+      "type": "registry:ui",
+      "title": "Agent Steps",
+      "description": "An agent’s progress as a list of steps that wait, run and tick or fail, with the running step’s live log, the time so far and a summary when it is done.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/agent-steps.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "voice-input",
+      "type": "registry:ui",
+      "title": "Voice Input",
+      "description": "Records a voice message with a waveform that scrolls by as you speak, then lets you play the take back, discard it or send it.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": ["@uiness/utils", "@uiness/labels"],
+      "files": [
+        {
+          "path": "registry/ui/voice-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "prompt-input",
+      "type": "registry:ui",
+      "title": "Prompt Input",
+      "description": "The box an AI chat starts from: it grows with the text, takes files by button, drop or paste, offers commands after a slash, turns tools on, picks the model and effort, and turns Send into Stop while replying.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/dropdown-menu",
+        "@uiness/model-selector"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/prompt-input.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "model-selector",
+      "type": "registry:ui",
+      "title": "Model Selector",
+      "description": "Picks a model and how hard it thinks: a list of models and, under them, the chosen model’s effort levels, kept at the same share of the way when switching models.",
+      "dependencies": ["lucide-react"],
+      "registryDependencies": [
+        "@uiness/utils",
+        "@uiness/labels",
+        "@uiness/popover",
+        "@uiness/segmented-control"
+      ],
+      "files": [
+        {
+          "path": "registry/ui/model-selector.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "stories",
       "type": "registry:ui",
       "title": "Stories",

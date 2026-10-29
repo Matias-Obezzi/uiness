@@ -1,0 +1,53 @@
+How full a model’s context window is, as a small ring for a prompt’s footer. It opens a breakdown by source, and past `warnAt` turns to a warning and offers to compact.
+
+<ComponentPreview name="context-meter-demo" />
+
+## Installation
+
+<Install name="context-meter" />
+
+## Usage
+
+```tsx
+import { ContextMeter } from '@/components/ui/context-meter'
+
+<ContextMeter
+  limit={200_000}
+  sources={[
+    { label: 'System prompt', tokens: 4_000 },
+    { label: 'Files', tokens: 58_000 },
+    { label: 'Conversation', tokens: 96_000 },
+  ]}
+  onCompact={compact}
+/>
+```
+
+How full it is comes from the sum of the `sources`. Each gets a chart color unless it has its own `color`. Numbers are shortened for the `locale`, "96K".
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `sources` |  | Each `{ label, tokens, color? }`. |
+| `limit` |  | The context window, in tokens. |
+| `warnAt` | `0.8` | Share from which it warns and offers to compact. |
+| `onCompact` |  | Shows a Compact button once nearly full. |
+| `locale` |  | For the numbers. |
+
+## Accessibility
+
+The ring is a button that reads out how full the window is, "Context window 85% full", and opens the breakdown as a popover.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ContextMeter` takes them as `labels`. To set them for the whole app, put them under `'context-meter'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultContextMeterLabels: ContextMeterLabels = {
+  trigger: (percent) => `Context window ${percent}% full`,
+  title: 'Context window',
+  usage: (used, limit) => `${used} of ${limit} tokens`,
+  compact: 'Compact',
+  nearlyFull: 'Nearly full. Compacting summarizes older turns to make room.',
+}
+```

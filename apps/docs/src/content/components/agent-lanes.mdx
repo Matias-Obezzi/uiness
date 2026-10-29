@@ -1,0 +1,47 @@
+A lead agent and the sub-agents it hands work to, side by side: each gets a lane of its tool calls on one timeline. Scrub back through the run to see what each was doing at any moment; let go at the end and it follows the run live.
+
+<ComponentPreview name="agent-lanes-demo" />
+
+## Installation
+
+<Install name="agent-lanes" />
+
+## Usage
+
+```tsx
+import { AgentLanes } from '@/components/ui/agent-lanes'
+
+<AgentLanes
+  duration={elapsed}
+  lanes={[
+    { id: 'lead', name: 'Lead', lead: true, events: [{ id: '1', label: 'plan()', start: 0, end: 1200 }] },
+    { id: 'r1', name: 'Pricing', events: [{ id: '2', label: 'search("pricing")', start: 1800 }] },
+  ]}
+/>
+```
+
+Times are milliseconds from the start of the run. An event without `end` is still running, and `failed` marks one that failed.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `lanes` |  | Each `{ id, name, lead?, events }`. |
+| `duration` |  | How long the run has gone on. |
+
+## Accessibility
+
+The scrubber is a slider for the keyboard too. Below it, a list says what each agent was running at that moment, read out as you scrub back.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `AgentLanes` takes them as `labels`. To set them for the whole app, put them under `'agent-lanes'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultAgentLanesLabels: AgentLanesLabels = {
+  scrub: 'Run time',
+  runningAt: (time) => `Running at ${time}`,
+  idle: 'Nothing running',
+  live: 'Live',
+}
+```

@@ -1,0 +1,52 @@
+A chat where editing a message starts a new branch instead of overwriting it. Messages with other versions get arrows to move between them, and a small tree beside the chat shows every version; a dot in it jumps to that branch.
+
+<ComponentPreview name="chat-branches-demo" />
+
+## Installation
+
+<Install name="chat-branches" />
+
+## Usage
+
+```tsx
+import { ChatBranches } from '@/components/ui/chat-branches'
+
+<ChatBranches
+  messages={messages}
+  onEdit={(id, text) => {
+    const original = messages.find((m) => m.id === id)
+    addMessage({ parentId: original.parentId, role: 'user', text })
+  }}
+/>
+```
+
+Messages form a tree through `parentId`. The newest branch shows by default; once `onEdit` adds the new message and its reply, they show.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `messages` |  | Each `{ id, parentId, role, text }`. |
+| `onEdit` |  | Called with the edited message’s id and the new text. |
+
+## Accessibility
+
+The arrows and the version count are read out, "Version 2 of 3". Each dot of the tree is a button naming the message and version it shows, and the dots on the shown path are marked current.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `ChatBranches` takes them as `labels`. To set them for the whole app, put them under `'chat-branches'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultChatBranchesLabels: ChatBranchesLabels = {
+  conversation: 'Conversation',
+  tree: 'Versions',
+  node: (depth, version, of) => `Message ${depth}, version ${version} of ${of}`,
+  version: (index, total) => `Version ${index} of ${total}`,
+  previous: 'Previous version',
+  next: 'Next version',
+  edit: 'Edit',
+  save: 'Save and send',
+  cancel: 'Cancel',
+}
+```

@@ -1,0 +1,53 @@
+An agent’s progress as a list of steps: each one waits, runs with a spinner, then ticks or fails. The running step shows its live log, the heading counts the time, and a summary takes over once it is done.
+
+<ComponentPreview name="agent-steps-demo" />
+
+## Installation
+
+<Install name="agent-steps" />
+
+## Usage
+
+```tsx
+import { AgentSteps } from '@/components/ui/agent-steps'
+
+<AgentSteps
+  startedAt={run.startedAt}
+  endedAt={run.endedAt}
+  steps={[
+    { id: 'read', label: 'Read the issue', status: 'done' },
+    { id: 'fix', label: 'Write a fix', status: 'running', log: ['Edit src/pay.ts'] },
+    { id: 'test', label: 'Run the tests', status: 'pending' },
+  ]}
+  summary={<p>Fixed and tested.</p>}
+/>
+```
+
+A step's `status` is `pending`, `running`, `done` or `error`, and `detail` adds a line under it. Its log opens while it runs and folds when it is over, still there to open.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `steps` |  | Each `{ id, label, status, detail?, log? }`. |
+| `startedAt` |  | When the run began, for the time in the heading. |
+| `endedAt` |  | When it ended; the time stops there. |
+| `summary` |  | Shown once every step is over. |
+
+## Accessibility
+
+Each step reads out its status after its label, and a polite live region announces the step that starts and the end of the run.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `AgentSteps` takes them as `labels`. To set them for the whole app, put them under `'agent-steps'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultAgentStepsLabels: AgentStepsLabels = {
+  steps: 'Steps',
+  working: (elapsed) => `Working… ${elapsed}`,
+  finished: (elapsed) => `Done in ${elapsed}`,
+  status: { pending: 'To do', running: 'In progress', done: 'Done', error: 'Failed' },
+  log: 'Log',
+}
+```

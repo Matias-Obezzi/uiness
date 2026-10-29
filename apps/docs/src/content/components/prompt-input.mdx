@@ -1,0 +1,59 @@
+The box a chat with an AI starts from. It grows with the text, takes files from its button, a drop or a paste, offers commands after a slash, turns tools on from a menu, picks the model and its effort, and sends with Enter. While the reply streams in, Send turns into Stop.
+
+<ComponentPreview name="prompt-input-demo" />
+
+## Installation
+
+<Install name="prompt-input" />
+
+## Usage
+
+```tsx
+import { PromptInput } from '@/components/ui/prompt-input'
+
+<PromptInput
+  models={models}
+  accept="image/*,.pdf"
+  tools={[{ id: 'web', label: 'Search the web', icon: <GlobeIcon /> }]}
+  commands={[{ name: 'summarize', description: 'Summarize the conversation' }]}
+  streaming={streaming}
+  onStop={stop}
+  onSubmit={({ text, files, model, tools }) => send(text, files, model, tools)}
+/>
+```
+
+Enter sends and Shift+Enter starts a new line. Files are only taken when `accept` is set. A slash at the start opens the commands that match what follows it; the arrows move, Enter or Tab picks, Escape closes. The model picker is the [Model Selector](/docs/components/model-selector).
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `onSubmit` |  | Called with `{ text, files, model, tools }`, then the box clears. |
+| `streaming` | `false` | Turns Send into Stop. |
+| `onStop` |  | Called by Stop. |
+| `models` |  | Models for the picker; leave out for none. |
+| `defaultModel` | the first model | The model at first. |
+| `tools` |  | Tools to turn on from a menu, `{ id, label, icon? }`. |
+| `commands` |  | Offered after a slash, `{ name, description? }`. |
+| `accept` |  | File types to take; leave out for no files. |
+| `disabled` | `false` | Nothing can be typed or sent. |
+
+## Accessibility
+
+With commands, the text box is a combobox whose list follows the highlighted command with `aria-activedescendant`. Every button is named, attached files and tools say what their remove buttons remove, and the send button says Send or Stop.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `PromptInput` takes them as `labels`. To set them for the whole app, put them under `'prompt-input'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultPromptInputLabels: PromptInputLabels = {
+  placeholder: 'Ask anything…',
+  attach: 'Attach files',
+  remove: (name) => `Remove ${name}`,
+  send: 'Send',
+  stop: 'Stop',
+  tools: 'Tools',
+  commands: 'Commands',
+}
+```

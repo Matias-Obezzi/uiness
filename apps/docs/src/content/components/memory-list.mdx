@@ -1,0 +1,48 @@
+What an assistant has learned about the person, as a list they can edit or forget item by item. Facts arrive with `remember`: a new one comes in at the top, and one that contradicts an older fact replaces it in place, the old wording struck out beside it for a moment.
+
+<ComponentPreview name="memory-list-demo" />
+
+## Installation
+
+<Install name="memory-list" />
+
+## Usage
+
+```tsx
+import { MemoryList, remember } from '@/components/ui/memory-list'
+
+<MemoryList memories={memories} onMemoriesChange={setMemories} />
+
+// When the assistant learns something:
+setMemories((list) => remember(list, { key: 'city', text: 'Moved to Porto' }))
+```
+
+A fact with a `key` replaces the one with the same key; without one it is always new. Edits and forgets come back through `onMemoriesChange`, so they can be saved.
+
+## Props
+
+| Prop | Default | Description |
+| --- | --- | --- |
+| `memories` |  | Each `{ id, key?, text, replaced? }`. |
+| `onMemoriesChange` |  | Called with the list after an edit, a forget or the old wording fading. |
+
+## Accessibility
+
+Each memory has named Edit and Forget buttons. A replaced fact shows its old wording struck out, and both are read in order.
+
+## Labels
+
+Every word it shows or reads out to screen readers, in English by default. `MemoryList` takes them as `labels`. To set them for the whole app, put them under `'memory-list'` in a [`LabelsProvider`](/docs/localization).
+
+```ts
+export const defaultMemoryListLabels: MemoryListLabels = {
+  title: 'Memory',
+  count: (count) => (count === 1 ? '1 thing it remembers' : `${count} things it remembers`),
+  empty: 'Nothing saved yet. What it learns about you shows up here.',
+  edit: 'Edit',
+  save: 'Save',
+  cancel: 'Cancel',
+  forget: 'Forget',
+  updated: 'Updated',
+}
+```
