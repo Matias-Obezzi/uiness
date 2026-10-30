@@ -57,6 +57,8 @@ function WheelPicker({
   const list = Array.from({ length: copies }, () => options).flat()
   const base = loop ? options.length * 2 : 0
   const settling = React.useRef(0)
+  // A mouse cannot drag native scrolling, so it gets a drag of its own.
+  const drag = React.useRef<{ y: number; top: number; samples: [number, number][] } | null>(null)
 
   const choose = (i: number) => {
     const option = options[((i % options.length) + options.length) % options.length]
@@ -100,16 +102,52 @@ function WheelPicker({
         aria-label={label}
         aria-activedescendant={`${id}-${base + index}`}
         onScroll={(event) => {
-          const top = event.currentTarget.scrollTop
+          const el = event.currentTarget
+          const top = el.scrollTop
           setScroll(top)
           window.clearTimeout(settling.current)
           // Once it stops, the option in the middle is the choice; a loop recentres itself.
           settling.current = window.setTimeout(() => {
+            if (drag.current) return
+            el.style.scrollSnapType = ''
             const at = Math.round(top / ROW)
             choose(at)
             if (loop && (at < options.length || at >= options.length * 4))
               scrollTo(base + (((at % options.length) + options.length) % options.length), false)
           }, 120)
+        }}
+        onPointerDown={(event) => {
+          if (event.pointerType !== 'mouse' || event.button !== 0) return
+          const el = event.currentTarget
+          drag.current = {
+            y: event.clientY,
+            top: el.scrollTop,
+            samples: [[event.timeStamp, event.clientY]],
+          }
+        }}
+        onPointerMove={(event) => {
+          const d = drag.current
+          if (!d) return
+          const el = event.currentTarget
+          if (el.style.scrollSnapType !== 'none') {
+            if (Math.abs(event.clientY - d.y) < 4) return
+            // Snapping would pull it back row by row while it follows the pointer.
+            el.style.scrollSnapType = 'none'
+            el.setPointerCapture(event.pointerId)
+          }
+          d.samples = [...d.samples.slice(-4), [event.timeStamp, event.clientY]]
+          el.scrollTop = d.top - (event.clientY - d.y)
+        }}
+        onPointerUp={(event) => {
+          const d = drag.current
+          drag.current = null
+          const el = event.currentTarget
+          if (!d || el.style.scrollSnapType !== 'none') return
+          const first = d.samples[0] as [number, number]
+          const speed = (event.clientY - first[1]) / Math.max(16, event.timeStamp - first[0])
+          // A flick carries on a little, as native momentum would, then lands on a row.
+          const at = Math.round((el.scrollTop - (reduced ? 0 : speed * 240)) / ROW)
+          scrollTo(Math.max(0, Math.min(list.length - 1, at)), true)
         }}
         onKeyDown={(event) => {
           const by: Record<string, number> = { ArrowDown: 1, ArrowUp: -1, PageDown: 5, PageUp: -5 }
@@ -126,7 +164,7 @@ function WheelPicker({
           choose(next)
           scrollTo(base + next, true)
         }}
-        className="relative h-full snap-y snap-mandatory overflow-y-auto overscroll-contain rounded-lg outline-none [mask-image:linear-gradient(transparent,#000_30%,#000_70%,transparent)] [perspective:600px] [scrollbar-width:none] focus-visible:ring-[3px] focus-visible:ring-ring/50 [&::-webkit-scrollbar]:hidden"
+        className="relative h-full cursor-grab snap-y snap-mandatory overflow-y-auto active:cursor-grabbing overscroll-contain rounded-lg outline-none [mask-image:linear-gradient(transparent,#000_30%,#000_70%,transparent)] [perspective:600px] [scrollbar-width:none] focus-visible:ring-[3px] focus-visible:ring-ring/50 [&::-webkit-scrollbar]:hidden"
         style={{ paddingBlock: ROW * AROUND }}
       >
         {list.map((option, i) => {

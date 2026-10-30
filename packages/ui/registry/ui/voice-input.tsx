@@ -73,6 +73,7 @@ function VoiceInput({ onSend, labels: labelsProp, className, ...props }: VoiceIn
   const [progress, setProgress] = React.useState(0)
   const recorder = React.useRef<MediaRecorder | null>(null)
   const stopAll = React.useRef<() => void>(() => {})
+  const asking = React.useRef(false)
   const audio = React.useRef<HTMLAudioElement>(null)
 
   React.useEffect(() => () => stopAll.current(), [])
@@ -81,12 +82,18 @@ function VoiceInput({ onSend, labels: labelsProp, className, ...props }: VoiceIn
   }, [state])
 
   const start = async () => {
+    // A second press while the browser asks for the microphone would start a second take whose
+    // timer nothing stops.
+    if (asking.current) return
+    asking.current = true
     let stream: MediaStream
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: true })
     } catch {
       setDenied(true)
       return
+    } finally {
+      asking.current = false
     }
     setDenied(false)
     const context = new AudioContext()

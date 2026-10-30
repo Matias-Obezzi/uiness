@@ -124,7 +124,7 @@ function MorphPopover({
         ref={shell}
         className={cn(
           'absolute top-0 left-0 z-20 overflow-hidden border bg-popover text-popover-foreground',
-          open ? 'rounded-2xl shadow-xl' : 'rounded-full shadow-xs',
+          open ? 'rounded-2xl shadow-xl' : 'rounded-[20px] shadow-xs',
           !reduced &&
             'transition-[width,height,left,border-radius,box-shadow] duration-(--duration-slow,300ms) ease-(--easing-emphasized,cubic-bezier(0.16,1,0.3,1))',
         )}
