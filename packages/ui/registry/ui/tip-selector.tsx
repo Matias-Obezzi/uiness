@@ -81,6 +81,8 @@ function TipSelector({
   // While the tape scrolls itself to a value, its scrolling is not a choice.
   const moving = React.useRef<number | null>(null)
   const first = React.useRef(true)
+  // A mouse cannot drag native scrolling, so it gets a drag of its own.
+  const drag = React.useRef<{ x: number; left: number; samples: [number, number][] } | null>(null)
 
   const set = (next: number) => {
     const clamped = Math.min(max, Math.max(0, Math.round(next)))
@@ -144,6 +146,44 @@ function TipSelector({
               set(at)
             }
           }}
+          onPointerDown={(event) => {
+            if (event.pointerType !== 'mouse' || event.button !== 0) return
+            drag.current = {
+              x: event.clientX,
+              left: event.currentTarget.scrollLeft,
+              samples: [[event.timeStamp, event.clientX]],
+            }
+          }}
+          onPointerMove={(event) => {
+            const d = drag.current
+            if (!d) return
+            const el = event.currentTarget
+            if (el.style.scrollSnapType !== 'none') {
+              if (Math.abs(event.clientX - d.x) < 4) return
+              // Snapping would pull it back tick by tick while it follows the pointer.
+              el.style.scrollSnapType = 'none'
+              el.setPointerCapture(event.pointerId)
+            }
+            d.samples = [...d.samples.slice(-4), [event.timeStamp, event.clientX]]
+            el.scrollLeft = d.left - (event.clientX - d.x)
+          }}
+          onPointerUp={(event) => {
+            const d = drag.current
+            drag.current = null
+            const el = event.currentTarget
+            if (!d || el.style.scrollSnapType !== 'none') return
+            const first = d.samples[0] as [number, number]
+            const speed = (event.clientX - first[1]) / Math.max(16, event.timeStamp - first[0])
+            // A flick carries on a little, as native momentum would, then lands on a tick.
+            const at = Math.round((el.scrollLeft - (reduced ? 0 : speed * 240)) / TICK)
+            el.scrollTo({
+              left: Math.min(max, Math.max(0, at)) * TICK,
+              behavior: reduced ? 'auto' : 'smooth',
+            })
+            window.setTimeout(() => {
+              el.style.scrollSnapType = ''
+            }, 400)
+          }}
           onKeyDown={(event) => {
             const by =
               event.key === 'ArrowRight' || event.key === 'ArrowUp'
@@ -161,7 +201,7 @@ function TipSelector({
             else return
             event.preventDefault()
           }}
-          className="relative flex h-16 snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-xl border bg-muted/40 outline-none [mask-image:linear-gradient(90deg,transparent,#000_20%,#000_80%,transparent)] [scrollbar-width:none] focus-visible:ring-[3px] focus-visible:ring-ring/50 [&::-webkit-scrollbar]:hidden"
+          className="relative flex h-16 cursor-grab snap-x snap-mandatory overflow-x-auto active:cursor-grabbing overscroll-x-contain rounded-xl border bg-muted/40 outline-none [mask-image:linear-gradient(90deg,transparent,#000_20%,#000_80%,transparent)] [scrollbar-width:none] focus-visible:ring-[3px] focus-visible:ring-ring/50 [&::-webkit-scrollbar]:hidden"
           style={{ paddingInline: `calc(50% - ${TICK / 2}px)` }}
         >
           {Array.from({ length: max + 1 }, (_, i) => (

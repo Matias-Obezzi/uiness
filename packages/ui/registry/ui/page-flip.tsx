@@ -61,6 +61,13 @@ function PageFlip({
   const book = React.useRef<HTMLDivElement>(null)
   const [drag, setDrag] = React.useState<{ leaf: number; angle: number } | null>(null)
   const start = React.useRef<{ x: number; leaf: number; moved: boolean } | null>(null)
+  // The leaf that just turned stays on top until it lands, or the page under it shows through.
+  const [lifted, setLifted] = React.useState<number | null>(null)
+  const [prevTurned, setPrevTurned] = React.useState(turned)
+  if (prevTurned !== turned) {
+    setPrevTurned(turned)
+    if (!reduced) setLifted(Math.min(prevTurned, turned))
+  }
 
   const turnTo = (n: number) => {
     const next = Math.max(0, Math.min(leaves, n))
@@ -133,7 +140,15 @@ function PageFlip({
               )}
               style={{
                 transform: `rotateY(${-angle}deg)`,
-                zIndex: drag?.leaf === leaf ? leaves + 1 : isTurned ? leaf : leaves - leaf,
+                zIndex:
+                  drag?.leaf === leaf || (!drag && lifted === leaf)
+                    ? leaves + 1
+                    : isTurned
+                      ? leaf
+                      : leaves - leaf,
+              }}
+              onTransitionEnd={(e) => {
+                if (e.target === e.currentTarget && lifted === leaf) setLifted(null)
               }}
             >
               {[0, 1].map((side) => {

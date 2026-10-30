@@ -103,7 +103,7 @@ function UndoButton({
       {pending && (
         <svg
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 size-full overflow-visible"
+          className="pointer-events-none absolute inset-0 size-full! overflow-visible"
         >
           <rect
             ref={ring}

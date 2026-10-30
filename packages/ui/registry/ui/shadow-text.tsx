@@ -3,6 +3,9 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 
+/** The text's own colour, faint: a dark shadow on a light page and a pale one on a dark page. */
+const SHADE = 'rgb(from currentColor r g b / ALPHA)'
+
 /** Steps in the long shadow: more is smoother. */
 const STEPS = 14
 
@@ -58,19 +61,15 @@ function ShadowText({ hour, className, children, style, ...props }: ShadowTextPr
   if (lamp) {
     // Away from the lamp, longer the further it is.
     const angle = Math.atan2(-lamp.y, -lamp.x)
-    shadow = longShadow(
-      angle,
-      Math.min(120, 30 + Math.hypot(lamp.x, lamp.y) * 0.35),
-      'rgb(0 0 0 / ALPHA)',
-    )
+    shadow = longShadow(angle, Math.min(120, 30 + Math.hypot(lamp.x, lamp.y) * 0.35), SHADE)
   } else {
     const sun = sunAt(time)
     // The sun in the east casts shadows west, down the page a little; low sun, long shadows.
     const angle = Math.PI - sun.across + Math.PI * 0.08
     shadow =
       sun.up > 0
-        ? longShadow(angle, 20 + (1 - sun.up) * 90, 'rgb(0 0 0 / ALPHA)')
-        : longShadow(Math.PI / 2, 10, 'rgb(0 0 30 / ALPHA)')
+        ? longShadow(angle, 20 + (1 - sun.up) * 90, SHADE)
+        : longShadow(Math.PI / 2, 10, SHADE)
   }
 
   return (

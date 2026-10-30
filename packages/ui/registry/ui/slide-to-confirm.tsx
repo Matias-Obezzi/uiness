@@ -117,7 +117,7 @@ function SlideToConfirm({
         style={{ width: `calc(${share} * (100% - 3.5rem) + 3.5rem)` }}
       />
       <span
-        className="pointer-events-none absolute inset-0 flex items-center justify-center pl-12 font-medium text-sm transition-opacity"
+        className="pointer-events-none absolute inset-0 flex items-center justify-center px-14 font-medium text-sm transition-opacity"
         style={{ opacity: state === 'idle' ? 1 - share * 1.4 : 1 }}
         aria-hidden="true"
       >

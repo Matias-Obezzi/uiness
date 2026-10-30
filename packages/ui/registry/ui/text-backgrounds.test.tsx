@@ -72,6 +72,23 @@ describe('physics', () => {
     expect(Math.hypot(a.x - b.x, a.y - b.y)).toBeGreaterThan(38)
   })
 
+  it('lets a pile of many bodies come to rest instead of trembling', () => {
+    const bodies = Array.from({ length: 18 }, (_, i) => ({
+      x: 40 + ((i * 97) % 520),
+      y: -i * 50,
+      vx: 0,
+      vy: 0,
+      r: 18 + ((i * 37) % 5) * 7,
+    }))
+    for (let i = 0; i < 1500; i++) stepBodies(bodies, 600, 400, null)
+    const before = bodies.map((b) => [b.x, b.y])
+    for (let i = 0; i < 60; i++) stepBodies(bodies, 600, 400, null)
+    const drift = Math.max(
+      ...bodies.map((b, i) => Math.hypot(b.x - (before[i]?.[0] ?? 0), b.y - (before[i]?.[1] ?? 0))),
+    )
+    expect(drift).toBeLessThan(2)
+  })
+
   it('puts the sun east at dawn, high at noon and down at night', () => {
     expect(sunAt(6).across).toBeCloseTo(0)
     expect(sunAt(12).up).toBeCloseTo(1)

@@ -126,7 +126,7 @@ function AmountPad({
         }
       }}
       className={cn(
-        'flex flex-col items-center gap-6 rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
+        'flex w-full flex-col items-center gap-6 rounded-xl outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50',
         className,
       )}
       {...props}

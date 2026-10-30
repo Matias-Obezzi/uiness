@@ -142,14 +142,15 @@ function ReceiptPrinter({
             setPull(0)
           }}
           className={cn(
-            'relative -mt-1 bg-background px-4 pt-4 pb-5 font-mono text-xs shadow-md',
+            // Paper is paper in either theme: off-white, printed in near-black.
+            'relative -mt-1 bg-(--paper) px-4 pt-4 pb-5 font-mono text-neutral-900 text-xs shadow-md [--paper:#fbfaf6]',
             done && !torn && 'cursor-grab touch-none active:cursor-grabbing',
             !dragging &&
               'transition-transform duration-(--duration-slow,300ms) ease-(--easing-spring,ease-out)',
             torn &&
               'translate-y-[140%] rotate-6 opacity-0 transition-[translate,rotate,opacity] duration-700 ease-in motion-reduce:transition-none',
             // A zigzag torn edge at the bottom.
-            'after:absolute after:inset-x-0 after:top-full after:h-2 after:bg-[linear-gradient(-45deg,transparent_6px,var(--background)_0),linear-gradient(45deg,transparent_6px,var(--background)_0)] after:bg-[length:12px_8px] after:bg-repeat-x',
+            'after:absolute after:inset-x-0 after:top-full after:h-2 after:bg-[linear-gradient(-45deg,transparent_6px,var(--paper)_0),linear-gradient(45deg,transparent_6px,var(--paper)_0)] after:bg-[length:12px_8px] after:bg-repeat-x',
           )}
           style={
             torn
@@ -176,7 +177,7 @@ function ReceiptPrinter({
           )}
           {row(
             lines.length + 1,
-            <hr className="my-2 border-foreground/40 border-dashed" />,
+            <hr className="my-2 border-neutral-900/40 border-dashed" />,
             'rule',
           )}
           {row(
@@ -187,7 +188,7 @@ function ReceiptPrinter({
             </p>,
             'total',
           )}
-          {!done && <p className="mt-2 text-center text-muted-foreground">{labels.printing}</p>}
+          {!done && <p className="mt-2 text-center text-neutral-600">{labels.printing}</p>}
         </section>
       </div>
       {done && !torn && (

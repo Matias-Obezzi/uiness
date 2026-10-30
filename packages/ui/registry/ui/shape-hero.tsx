@@ -10,29 +10,39 @@ const GRAVITY = 0.45
 const BOUNCE = 0.35
 const SHAPES = ['circle', 'square', 'pill', 'triangle'] as const
 
-/** Moves bodies one step: gravity, walls and floor, then pushes overlapping ones apart. */
+/** Keeps a body inside the box, taking out the speed that would carry it through a wall. */
+function contain(b: Body, width: number, height: number) {
+  if (b.y + b.r > height) {
+    b.y = height - b.r
+    if (b.vy > 0) b.vy *= -BOUNCE
+    // Resting on the floor, it rubs to a stop instead of skating.
+    b.vx *= 0.9
+    if (Math.abs(b.vy) < GRAVITY) b.vy = 0
+  }
+  if (b.x - b.r < 0) {
+    b.x = b.r
+    if (b.vx < 0) b.vx *= -BOUNCE
+  }
+  if (b.x + b.r > width) {
+    b.x = width - b.r
+    if (b.vx > 0) b.vx *= -BOUNCE
+  }
+}
+
+/**
+ * Moves bodies one step: gravity, then pushes overlapping ones apart and takes out the speed
+ * that closes the gap, so a pile comes to rest instead of trembling, then walls and floor.
+ */
 export function stepBodies(bodies: Body[], width: number, height: number, held: number | null) {
   for (const [i, b] of bodies.entries()) {
     if (i === held) continue
     b.vy += GRAVITY
-    b.vx *= 0.995
+    b.vx *= 0.99
     b.x += b.vx
     b.y += b.vy
-    if (b.y + b.r > height) {
-      b.y = height - b.r
-      b.vy *= -BOUNCE
-      b.vx *= 0.9
-    }
-    if (b.x - b.r < 0) {
-      b.x = b.r
-      b.vx *= -BOUNCE
-    }
-    if (b.x + b.r > width) {
-      b.x = width - b.r
-      b.vx *= -BOUNCE
-    }
+    contain(b, width, height)
   }
-  for (let pass = 0; pass < 3; pass++)
+  for (let pass = 0; pass < 4; pass++) {
     for (let i = 0; i < bodies.length; i++)
       for (let j = i + 1; j < bodies.length; j++) {
         const a = bodies[i] as Body
@@ -42,13 +52,25 @@ export function stepBodies(bodies: Body[], width: number, height: number, held: 
         const d = Math.hypot(dx, dy) || 0.01
         const overlap = a.r + b.r - d
         if (overlap <= 0) continue
+        const nx = dx / d
+        const ny = dy / d
         // The one held stays where the pointer has it; the other gives way.
-        const share = i === held ? [0, 1] : j === held ? [1, 0] : [0.5, 0.5]
-        a.x -= (dx / d) * overlap * (share[0] as number)
-        a.y -= (dy / d) * overlap * (share[0] as number)
-        b.x += (dx / d) * overlap * (share[1] as number)
-        b.y += (dy / d) * overlap * (share[1] as number)
+        const [sa, sb] = i === held ? [0, 1] : j === held ? [1, 0] : [0.5, 0.5]
+        a.x -= nx * overlap * sa
+        a.y -= ny * overlap * sa
+        b.x += nx * overlap * sb
+        b.y += ny * overlap * sb
+        const closing = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny
+        if (closing < 0) {
+          const impulse = -(1 + BOUNCE) * closing
+          a.vx -= nx * impulse * sa
+          a.vy -= ny * impulse * sa
+          b.vx += nx * impulse * sb
+          b.vy += ny * impulse * sb
+        }
       }
+    for (const [i, b] of bodies.entries()) if (i !== held) contain(b, width, height)
+  }
 }
 
 export interface ShapeHeroProps extends React.ComponentProps<'section'> {

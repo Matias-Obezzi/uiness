@@ -89,7 +89,7 @@ function GlitchText({
         ref={red}
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 text-[#ff2d55] opacity-0 mix-blend-screen"
-        style={{ left: -2 }}
+        style={{ transform: 'translateX(-2px)' }}
       >
         {text}
       </span>
@@ -97,7 +97,7 @@ function GlitchText({
         ref={cyan}
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 text-[#00e5ff] opacity-0 mix-blend-screen"
-        style={{ left: 2 }}
+        style={{ transform: 'translateX(2px)' }}
       >
         {text}
       </span>
