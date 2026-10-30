@@ -1,6 +1,6 @@
 {
   "name": "@uiness/transitions",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "View transitions between pages and states, declared per element: shared elements that morph, parts that stay put, entrances and exits, staggered lists and a page effect that reverses going back. React Router, Next.js, sites of separate pages or any state change. Zero dependencies.",
   "keywords": [
     "view-transitions",
